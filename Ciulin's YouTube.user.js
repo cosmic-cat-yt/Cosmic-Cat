@@ -42,13 +42,14 @@
                         a = a.find(a => a.tabRenderer.title === 'Community');
                     } catch(err) {
                         a = null;
+                        console.error("A")
                     }
                     if(a) {
                         var b = a.tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents;
                         var j;
                         var data = {};
                         for (j = 0; j < b.length; j++) {
-                            if(!b[j].continuationItemRenderer) {
+                            if(!b[j].continuationItemRenderer && !b[j].messageRenderer) {
                                 data[j] = {};
                                 data[j].text = "";
                                 data[j].image = "";
@@ -226,8 +227,8 @@
         var BOOL_LOGIN = null;
         if(getCookie("APISID")) {
             // GET USERNAME
-            var T_OPENAVTAR = await waitForElm("#avatar-btn").then((elm) => {document.querySelectorAll("ytd-topbar-menu-button-renderer")[2].click()});
-            var T_GETNAME = await waitForElm("#account-name").then((elm) => {document.wegiYT.data.name = elm.innerText;document.wegiYT.data.link = document.querySelector("ytd-compact-link-renderer #endpoint").href});
+            //var T_OPENAVTAR = await waitForElm("#avatar-btn").then((elm) => {document.querySelectorAll("ytd-topbar-menu-button-renderer")[2].click()});
+            //var T_GETNAME = await waitForElm("#account-name").then((elm) => {document.wegiYT.data.name = elm.innerText;document.wegiYT.data.link = document.querySelector("ytd-compact-link-renderer #endpoint").href});
 
             VALUE_USERNAME = document.wegiYT.data.name;
             VALUE_USERLINK = document.wegiYT.data.link;
