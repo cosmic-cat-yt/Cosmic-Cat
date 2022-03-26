@@ -149,23 +149,25 @@
     //setTimeout(function(){document.querySelectorAll("ytd-topbar-menu-button-renderer.ytd-masthead")[2].click()}, 2s0
 
     function waitForElm(selector) {
-        return new Promise(resolve => {
-            if (document.querySelector(selector)) {
-                return resolve(document.querySelector(selector));
-            }
-
-            const observer = new MutationObserver(mutations => {
-                if (document.querySelector(selector)) {
-                    resolve(document.querySelector(selector));
-                    observer.disconnect();
-                }
-            });
-
-            observer.observe(document.body, {
-                childList: true,
-                subtree: true
-            });
-        });
+  return new Promise((resolve, reject) => {
+    let el = document.querySelector(selector);
+    if (el) {
+      resolve(el);
+      return
+    }
+    new MutationObserver((mutationRecords, observer) => {
+      // Query for elements matching the specified selector
+      Array.from(document.querySelectorAll(selector)).forEach((element) => {
+        resolve(element);
+        //Once we have resolved we don't need the observer anymore.
+        observer.disconnect();
+      });
+    })
+      .observe(document.documentElement, {
+        childList: true,
+        subtree: true
+      });
+  });
     };
 
     // Build Classic YouTube
@@ -244,8 +246,242 @@
 
         var OBJ_CHANNEL = "";
 
+        // Watch (WIP)
+        if(window.location.pathname.split("/")[1].match(/watch/i)) {
+            console.debug("A")
+            OBJ_CHANNEL = `<div id="content" class="">
+            <div id="watch-container" itemscope="" itemtype="http://schema.org/VideoObject">
+            <div id="watch-headline-container">
+            <div id="watch-headline" class="watch-headline">
+            <h1 id="watch-headline-title">
+            <span id="eow-title" class="" dir="ltr" title="Warrior cats intro - fan animation by SSS">
+            Warrior cats intro - fan animation by SSS
+            </span>
+            </h1>
+            <div id="watch-headline-user-info">
+            <span class="yt-uix-button-group">
+            <button href="/user/ssswarriorcats?feature=watch" type="button" class="start yt-uix-button" onclick=";window.location.href=this.getAttribute('href');return false;" role="button">
+            <span class="yt-uix-button-content">ssswarriorcats</span>
+            </button>
+            <div class="yt-subscription-button-hovercard yt-uix-hovercard">
+            <button href="https://accounts.google.com/ServiceLogin?uilel=3&amp;service=youtube&amp;passive=true&amp;continue=http%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26nomobiletemp%3D1%26hl%3Den_US%26next%3Dhttp%253A%252F%252Fwww.youtube.com%252Fwatch%253Fv%253D2mMWz9evo-s&amp;hl=en_US&amp;ltmpl=sso" type="button" class="yt-subscription-button yt-subscription-button-js-default end yt-uix-button" onclick=";window.location.href=this.getAttribute('href');return false;" data-enable-hovercard="true" data-subscription-value="ssswarriorcats" data-force-position="true" data-position="topright" data-subscription-feature="watch" data-subscription-type="" role="button" data-subscription-initialized="true">
+            <img class="yt-uix-button-icon yt-uix-button-icon-subscribe" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
+            <span class="yt-uix-button-content">
+            <span class="subscribe-label">Subscribe</span>
+            <span class="subscribed-label">Subscribed</span>
+            <span class="unsubscribe-label">Unsubscribe</span>
+            </span>
+            </button>
+            <div class="yt-uix-hovercard-content hid">
+            <p class="loading-spinner">
+            <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
+            Loading...
+            </p>
+            </div>
+            </div>
+            </span>
+            </div>
+
+
+
+
+    <div id="watch-more-from-user" class="collapsed">
+      <div id="watch-channel-discoverbox" class="yt-rounded">
+        <span id="watch-channel-loading">Loading...</span>
+      </div>
+    </div>
+  </div>
+
+  </div>
+
+  <div id="watch-video-container">
+    <div id="watch-video">
+
+
+
+
+
+      <div id="watch-video-extra">
+
+
+      </div>
+
+    </div>
+  </div>
+
+  <div id="watch-main-container">
+    <div id="watch-main">
+      <div id="watch-panel">
+
+
+
+  <div id="watch-actions">
+      <div id="watch-actions-right">
+          <span class="watch-view-count">
+    <strong>756,731</strong>
+  </span>
+  <button onclick=";return false;" title="Show video statistics" type="button" id="watch-insight-button" class="yt-uix-tooltip yt-uix-tooltip-reverse yt-uix-button yt-uix-tooltip yt-uix-button-empty" data-button-action="yt.www.watch.actions.stats" role="button"><img class="yt-uix-button-icon yt-uix-button-icon-watch-insight" src="//web.archive.org/web/20111207174929im_/https://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Show video statistics"></button>
+
+      </div>
+      <span id="watch-like-unlike" class="yt-uix-button-group"><button onclick=";return false;" title="I like this" type="button" class="start yt-uix-tooltip-reverse yt-uix-button yt-uix-tooltip" id="watch-like" data-button-action="yt.www.watch.actions.like" role="button"><img class="yt-uix-button-icon yt-uix-button-icon-watch-like" src="//web.archive.org/web/20111207174929im_/https://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="I like this"><span class="yt-uix-button-content">Like </span></button><button onclick=";return false;" title="I dislike this" type="button" class="end yt-uix-tooltip-reverse yt-uix-button yt-uix-tooltip yt-uix-button-empty" id="watch-unlike" data-button-action="yt.www.watch.actions.unlike" role="button"><img class="yt-uix-button-icon yt-uix-button-icon-watch-unlike" src="//web.archive.org/web/20111207174929im_/https://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="I dislike this"></button></span>
+  <button onclick=";return false;" title="Add to favorites or playlist" type="button" class="addto-button watch show-label yt-uix-tooltip-reverse yt-uix-button yt-uix-tooltip" id="watch-addto-button" data-button-menu-id="some-nonexistent-id" data-video-ids="2mMWz9evo-s" data-button-action="yt.www.watch.actions.showSigninOrCreateChannelWarning" data-feature="watch" role="button"><img class="yt-uix-button-icon yt-uix-button-icon-addto" src="//web.archive.org/web/20111207174929im_/https://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Add to favorites or playlist"><span class="yt-uix-button-content"><span class="addto-label">Add to</span> </span><img class="yt-uix-button-arrow" src="//web.archive.org/web/20111207174929im_/https://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""></button>
+
+  <button onclick=";return false;" title="Share or embed this video" type="button" class="yt-uix-tooltip-reverse yt-uix-button yt-uix-tooltip" id="watch-share" data-button-action="yt.www.watch.actions.share" role="button"><span class="yt-uix-button-content">Share </span></button>
+
+  <button onclick=";return false;" title="Flag as inappropriate" type="button" class="yt-uix-tooltip-reverse yt-uix-button yt-uix-tooltip yt-uix-button-empty" id="watch-flag" data-button-action="yt.www.watch.actions.flag" role="button"><img class="yt-uix-button-icon yt-uix-button-icon-watch-flag" src="//web.archive.org/web/20111207174929im_/https://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Flag as inappropriate"></button>
+
+
+  </div>
+
+  <div id="watch-actions-area-container" class="hid">
+    <div id="watch-actions-area" class="yt-rounded">
+        <div id="watch-actions-loading" class="watch-actions-panel hid">
+Loading...
+  </div>
+  <div id="watch-actions-logged-out" class="watch-actions-panel hid">
+      <div class="yt-alert yt-alert-warn yt-alert-small yt-alert-naked yt-rounded "><span class="yt-alert-icon"><img src="//web.archive.org/web/20111207174929im_/https://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="icon master-sprite" alt="Alert icon"></span><div class="yt-alert-content">          <strong><a href="https://web.archive.org/web/20111207174929/https://accounts.google.com/ServiceLogin?uilel=3&amp;service=youtube&amp;passive=true&amp;continue=http%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26nomobiletemp%3D1%26hl%3Den_US%26next%3Dhttp%253A%252F%252Fwww.youtube.com%252Fwatch%253Fv%253D2mMWz9evo-s&amp;hl=en_US<mpl=sso">Sign In</a> or <a href="/web/20111207174929/https://www.youtube.com/signup?next=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D2mMWz9evo-s">Sign Up</a> now!
+</strong>
+
+</div></div>
+  </div>
+  <div id="watch-actions-error" class="watch-actions-panel hid">
+    <div class="yt-alert yt-alert-error yt-alert-small yt-alert-naked yt-rounded "><span class="yt-alert-icon"><img src="//web.archive.org/web/20111207174929im_/https://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="icon master-sprite" alt="Alert icon"></span><div id="watch-error-string" class="yt-alert-content"></div></div>
+  </div>
+  <div id="watch-actions-share" class="watch-actions-panel hid"></div>
+
+  <div id="watch-actions-ajax" class="watch-actions-panel hid"></div>
+
+  <div class="close">
+    <img src="//web.archive.org/web/20111207174929im_/https://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="close-button" onclick="yt.www.watch.actions.hide();">
+  </div>
+
+    </div>
+  </div>
+  <div id="watch-info">
+
+  <div id="watch-description" class="watch-expander yt-uix-expander" data-expander-action="yt.www.watch.watch5.handleToggleDescription">
+    <div id="watch-description-clip">
+      <p id="watch-uploader-info">
+        Uploaded by     <a href="/web/20111207174929/https://www.youtube.com/user/ssswarriorcats" class="yt-user-name author" rel="author" dir="ltr">ssswarriorcats</a>
+ on <span id="eow-date" class="watch-video-date">Sep  8, 2008</span>
+
+      </p>
+      <div id="watch-description-text">
+        <p id="eow-description">original story, narrative idea, characters belong to novel Warrior cats into the wild, official website:<br><a href="https://web.archive.org/web/20111207174929/http://www.warriorcats.com/warriorshell.html" target="_blank" title="http://www.warriorcats.com/warriorshell.html" rel="nofollow" dir="ltr" class="yt-uix-redirect-link">http://www.warriorcats.com/warriorshell.html</a><br><br>Truelight (theme for DNAngel) <br><br>for uncolored (work in progress version <a href="https://web.archive.org/web/20111207174929/http://uk.youtube.com/watch?v=TTl_3bTqMxY" target="_blank" title="http://uk.youtube.com/watch?v=TTl_3bTqMxY" rel="nofollow" dir="ltr" class="yt-uix-redirect-link">http://uk.youtube.com/watch?v=TTl_3bTqMxY</a>)<br><br>some friends asked me what programs i used, I might just answer it here:<br>The animation is created with graphic tablet drawn straight into Flash (8), layout is done in Photoshop, additional effect (lens flare) is added in After Effect, and finally export from Windows movie maker just to make the animation small and easy for submission. the whole process is done in my 5 and half years old pc ^_o i'm somehow proud of its age and loyalty.<br><br>The reason I use Flash is because I don't have light box and enough paper, scanner at home, Flash is time saving way to make animation myself with few other friends.<br><br>Ps. Flash is a program for creating web animation, interactive things and websites, motion graphic, usually use with Illustrator and other vector programs. FBF animator like me only used 5% features of Flash.<br><br><br>as Rosi suggested, I created this new account only for our Warrior cat_into the wild animations.<br><br>The account will be decorated soon.<br><br>I know spotted leaf isn't white, but somehow me and Rosi imaged her a white cat before realizing that she isnt. ^^ll I think I'll keep her white in these animations.<br><br>This is my first time shading my animation, and first attempt to animate cats fighting, there are still a lot need to improve in my future works.<br><br>subtitle will be both English and Chinese, voice will be English.<br><br>Directed by me (Yuji/badasi) and Rosi, Animation assistant Zing. I'll make a list of audicians once the 1st episode is finished.</p>
+      </div>
+        <div id="watch-description-extras">
+    <h4>Category:</h4>
+        <p id="eow-category"><a href="/web/20111207174929/https://www.youtube.com/videos?c=1">Film &amp; Animation</a></p>
+
+
+
+      <h4>Tags:</h4>
+        <ul id="eow-tags" class="watch-info-tag-list">
+    <li><a href="/web/20111207174929/https://www.youtube.com/results?search_query=warrior&amp;search=tag">warrior</a></li>
+    <li><a href="/web/20111207174929/https://www.youtube.com/results?search_query=cats&amp;search=tag">cats</a></li>
+    <li><a href="/web/20111207174929/https://www.youtube.com/results?search_query=yuji&amp;search=tag">yuji</a></li>
+    <li><a href="/web/20111207174929/https://www.youtube.com/results?search_query=badasi&amp;search=tag">badasi</a></li>
+    <li><a href="/web/20111207174929/https://www.youtube.com/results?search_query=rosi&amp;search=tag">rosi</a></li>
+    <li><a href="/web/20111207174929/https://www.youtube.com/results?search_query=zing&amp;search=tag">zing</a></li>
+    <li><a href="/web/20111207174929/https://www.youtube.com/results?search_query=into&amp;search=tag">into</a></li>
+    <li><a href="/web/20111207174929/https://www.youtube.com/results?search_query=the&amp;search=tag">the</a></li>
+    <li><a href="/web/20111207174929/https://www.youtube.com/results?search_query=wild&amp;search=tag">wild</a></li>
+    <li><a href="/web/20111207174929/https://www.youtube.com/results?search_query=animation&amp;search=tag">animation</a></li>
+  </ul>
+
+
+      <h4>License:</h4>
+        <p id="eow-reuse">
+Standard YouTube License
+  </p>
+
+
+  </div>
+
+    </div>
+    <div id="watch-description-fadeout"></div>
+
+      <ul id="watch-description-extra-info">
+      <li>
+        <div class="watch-sparkbars">
+          <div class="watch-sparkbar-likes" style="width: 97.8425522148%"></div>
+          <div class="watch-sparkbar-dislikes" style="width: 2.15744778517%"></div>
+        </div>
+        <span class="watch-likes-dislikes">
+<span class="likes">4,263</span> likes, <span class="dislikes">94</span> dislikes
+        </span>
+      </li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </ul>
+
+
+            <div class="horizontal-rule ">
+    <span class="first"></span>
+    <span class="second"></span>
+    <span class="third"></span>
+  </div>
+
+  <div id="watch-description-toggle" class="yt-uix-expander-head">
+    <div id="watch-description-expand" class="expand">
+        <button type="button" class="metadata-inline yt-uix-button yt-uix-button-text" onclick=";return false;" role="button"><span class="yt-uix-button-content">Show more <img src="//web.archive.org/web/20111207174929im_/https://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Show more">
+ </span></button>
+    </div>
+    <div id="watch-description-collapse" class="collapse">
+        <button type="button" class="metadata-inline yt-uix-button yt-uix-button-text" onclick=";return false;" role="button"><span class="yt-uix-button-content">Show less <img src="//web.archive.org/web/20111207174929im_/https://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Show less">
+ </span></button>
+    </div>
+  </div>
+
+
+
+  </div>
+
+  </div>
+
+
+
+      </div>
+
+      <div class="clear"></div>
+    </div>
+    <div style="visibility: hidden; height: 0px; padding: 0px; overflow: hidden;">
+
+
+
+  <div id="baseDiv"></div>
+
+    </div>
+  </div>
+  <!-- end watch-main-container -->
+</div>
+
+    </div>`
+        }
+
         // Channel (WIP)
-        if(window.location.pathname.split("/")[1].match(/channel|user|c/i)) {
+        if(window.location.pathname.split("/")[1].match(/channel|user|^c{1}$/i)) {
             if (/community|about|channels|playlists|membership|store/.test(window.location.pathname.split("/")[3])) window.location.href = window.location.pathname.split("/").slice(0,3).join("/")
             let channelData = await new Promise(resolve => {
                 var xhr = new XMLHttpRequest();
@@ -293,10 +529,8 @@
             DOMHEAD.appendChild(document.createElement("title"));
             setInterval(function(){document.head.querySelector("title").innerText = `${VALUE_CHANNELNAME}'s Channel - YouTube`}, 100);
 
-            console.log("MICROWAVE NOISES INTENSIFIES")
-            //var VALUE_SUBSCRIB = await waitForElm("#subscriber-count").then((elm) => {document.wegiYT.data.subcount = elm.innerText.split(" ")[0]});
-            console.log("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE *internal developer screaming*")
-            VALUE_SUBSCRIBE = "100";
+            var VALUE_SUBSCRIB = await waitForElm("#subscriber-count").then((elm) => {document.wegiYT.data.subcount = elm.innerText.split(" ")[0]});
+            VALUE_SUBSCRIBE = document.wegiYT.data.subcount;
             if(VALUE_SUBSCRIBE.match(/K/)) {
                 if(VALUE_SUBSCRIBE.match(/\./)) {
                    console.info(
