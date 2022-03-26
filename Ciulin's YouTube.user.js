@@ -224,22 +224,18 @@
         var BOOL_LOGIN = null;
         if(getCookie("APISID")) {
             // GET USERNAME
-            console.log("BEEP")
             var T_OPENAVTAR = await waitForElm("#avatar-btn").then((elm) => {document.querySelectorAll("ytd-topbar-menu-button-renderer")[2].click()});
             var T_GETNAME = await waitForElm("#account-name").then((elm) => {document.wegiYT.data.name = elm.innerText;document.wegiYT.data.link = document.querySelector("ytd-compact-link-renderer #endpoint").href});
 
-            console.log("BOOP")
             VALUE_USERNAME = document.wegiYT.data.name;
             VALUE_USERLINK = document.wegiYT.data.link;
 
             OBJ_LOGIN = `<a href="${VALUE_USERLINK}">${VALUE_USERNAME}</a>`;
             BOOL_LOGIN = true;
-            console.log("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")
         } else {
             var login_url = "https://accounts.google.com/ServiceLogin?service=youtube&uilel=3&passive=true&continue=https%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26app%3Ddesktop%26hl%3Den%26next%3Dhttps%253A%252F%252Fwww.youtube.com%252F&hl=en&ec=65620";
             OBJ_LOGIN = `<a class="start" href="https://www.youtube.com/signup">Create Account</a><span class="masthead-link-separator">|</span><a class="end" href="${login_url}">Sign In</a>`;
             BOOL_LOGIN = false;
-            console.log("null was here. fu gui >:3")
         };
 
         var OBJ_USER = `<div id="masthead-user-bar-container"><div id="masthead-user-bar"><div id="masthead-user">${OBJ_LOGIN}</div></div></div>`;
@@ -297,7 +293,9 @@
             DOMHEAD.appendChild(document.createElement("title"));
             setInterval(function(){document.head.querySelector("title").innerText = `${VALUE_CHANNELNAME}'s Channel - YouTube`}, 100);
 
+            console.log("MICROWAVE NOISES INTENSIFIES")
             var VALUE_SUBSCRIB = await waitForElm("#subscriber-count").then((elm) => {document.wegiYT.data.subcount = elm.innerText.split(" ")[0]});
+            console.log("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE *internal developer screaming*")
             VALUE_SUBSCRIBE = document.wegiYT.data.subcount;
             if(VALUE_SUBSCRIBE.match(/K/)) {
                 if(VALUE_SUBSCRIBE.match(/\./)) {
@@ -346,6 +344,13 @@
             </button>
             </span>`
                 }
+            } else {
+                OBJ_SUBSCRIBE = `<span class="subscription-container">
+            <button type="button" class="subscribe-button yt-uix-button yt-uix-button-urgent yt-uix-tooltip" onclick=";return false;" title="Click to be notified of new videos from this channel" role="button">
+            <span class="yt-uix-button-content">Subscribe</span>
+            <img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
+            </button>
+            </span>`
             }
 
             // Check if /user/
