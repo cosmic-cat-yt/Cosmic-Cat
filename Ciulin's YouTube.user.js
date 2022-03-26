@@ -294,9 +294,9 @@
             setInterval(function(){document.head.querySelector("title").innerText = `${VALUE_CHANNELNAME}'s Channel - YouTube`}, 100);
 
             console.log("MICROWAVE NOISES INTENSIFIES")
-            var VALUE_SUBSCRIB = await waitForElm("#subscriber-count").then((elm) => {document.wegiYT.data.subcount = elm.innerText.split(" ")[0]});
+            //var VALUE_SUBSCRIB = await waitForElm("#subscriber-count").then((elm) => {document.wegiYT.data.subcount = elm.innerText.split(" ")[0]});
             console.log("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE *internal developer screaming*")
-            VALUE_SUBSCRIBE = document.wegiYT.data.subcount;
+            VALUE_SUBSCRIBE = "100";
             if(VALUE_SUBSCRIBE.match(/K/)) {
                 if(VALUE_SUBSCRIBE.match(/\./)) {
                    console.info(
