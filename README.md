@@ -4,7 +4,7 @@
 
 ## SETUP
 
-Install Tampermonkey
-Download Script
-Easy
+Install Tampermonkey for your Browser.
+Download Ciulin's YouTube.user.js
+Easy!
 
