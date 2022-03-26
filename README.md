@@ -1,6 +1,6 @@
-#### Ciulin's YouTube
-## This is the only extension that brings the old YouTube design back. 
-## Better than YouTube Redux! 
+# Ciulin's YouTube
+#### This is the only true extension that brings the old YouTube design back. 
+#### Better than YouTube Redux! 
 
 ## SETUP
 
