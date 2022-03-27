@@ -254,7 +254,14 @@
             var VALUE_VIDEODATE = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.dateText.simpleText;
             var VALUE_CHANNELNAME = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer.owner.videoOwnerRenderer.title.runs[0].text;
             var VALUE_VIDEOVIEWS = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.viewCount.videoViewCountRenderer.viewCount.simpleText.split(" ")[0];
-            var VALUE_VIDEODESCRIPTION = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer.description.runs;
+            var VALUE_VIDEODESCRIPTIO = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer.description.runs;
+            var VALUE_VIDEODESCRIPTION = "";
+            var i;
+            for (i = 0; i < VALUE_VIDEODESCRIPTIO.length; i++) {
+                VALUE_VIDEODESCRIPTION += VALUE_VIDEODESCRIPTIO[i].text;
+            }
+            VALUE_VIDEODESCRIPTION = VALUE_VIDEODESCRIPTION.replace(/(?:\r\n|\r|\n)/g, '<br>');
+            console.log(VALUE_VIDEODESCRIPTION)
             OBJ_CHANNEL = `<div id="content" class="">
             <div id="watch-container" itemscope="" itemtype="http://schema.org/VideoObject">
             <div id="watch-headline-container">
@@ -355,11 +362,11 @@ Loading...
 
       </p>
       <div id="watch-description-text">
-        <p id="eow-description"><a href="https://web.archive.org/web/20111207174929/http://www.warriorcats.com/warriorshell.html" target="_blank" title="http://www.warriorcats.com/warriorshell.html" rel="nofollow" dir="ltr" class="yt-uix-redirect-link">http://www.warriorcats.com/warriorshell.html</a></p>
+        <p id="eow-description">${VALUE_VIDEODESCRIPTION}<a href="https://web.archive.org/web/20111207174929/http://www.warriorcats.com/warriorshell.html" target="_blank" title="http://www.warriorcats.com/warriorshell.html" rel="nofollow" dir="ltr" class="yt-uix-redirect-link">http://www.warriorcats.com/warriorshell.html</a></p>
       </div>
         <div id="watch-description-extras">
     <h4>Category:</h4>
-        <p id="eow-category"><a href="/web/20111207174929/https://www.youtube.com/videos?c=1">Film &amp; Animation</a></p>
+        <p id="eow-category"><a href="//www.youtube.com/videos">Film &amp; Animation</a></p>
 
 
 
