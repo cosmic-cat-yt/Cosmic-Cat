@@ -253,15 +253,31 @@
             var VALUE_VIDEOTITLE = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.title.runs[0].text;
             var VALUE_VIDEODATE = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.dateText.simpleText;
             var VALUE_CHANNELNAME = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer.owner.videoOwnerRenderer.title.runs[0].text;
+            var VALUE_CHANNELURL = document.querySelector(".ytd-channel-name .yt-formatted-string").href;
             var VALUE_VIDEOVIEWS = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.viewCount.videoViewCountRenderer.viewCount.simpleText.split(" ")[0];
             var VALUE_VIDEODESCRIPTIO = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer.description.runs;
             var VALUE_VIDEODESCRIPTION = "";
+            var VALUE_VIDEOCATEGORY = ytInitialPlayerResponse.microformat.playerMicroformatRenderer.category;
+            var VALUE_VIDEOTAG = ytInitialPlayerResponse.videoDetails.keywords;
+            var VALUE_VIDEOTAGS = "";
             var i;
             for (i = 0; i < VALUE_VIDEODESCRIPTIO.length; i++) {
-                VALUE_VIDEODESCRIPTION += VALUE_VIDEODESCRIPTIO[i].text;
+                if(VALUE_VIDEODESCRIPTIO[i].navigationEndpoint && !VALUE_VIDEODESCRIPTIO[i].loggingDirectives) {
+                    VALUE_VIDEODESCRIPTION += `<a href="${VALUE_VIDEODESCRIPTIO[i].text}" target="_blank" title="${VALUE_VIDEODESCRIPTIO[i].text}" rel="nofollow" dir="ltr" class="yt-uix-redirect-link">${VALUE_VIDEODESCRIPTIO[i].text}</a></p>`;
+                };
+                if(VALUE_VIDEODESCRIPTIO[i].loggingDirectives) {
+                    VALUE_VIDEOTAG.push(VALUE_VIDEODESCRIPTIO[i].text.split("#")[1])
+                    console.log(VALUE_VIDEODESCRIPTIO[i].text)
+                };
+                if(!VALUE_VIDEODESCRIPTIO[i].navigationEndpoint && !VALUE_VIDEODESCRIPTIO[i].loggingDirectives) {
+                    VALUE_VIDEODESCRIPTION += VALUE_VIDEODESCRIPTIO[i].text;
+                };
+            };
+            for (i = 0; i < VALUE_VIDEOTAG.length; i++) {
+                VALUE_VIDEOTAGS += `<li><a href="https://www.youtube.com/results?search_query=${VALUE_VIDEOTAG[i]}&amp;search=tag">${VALUE_VIDEOTAG[i]}</a></li>`;
             }
             VALUE_VIDEODESCRIPTION = VALUE_VIDEODESCRIPTION.replace(/(?:\r\n|\r|\n)/g, '<br>');
-            console.log(VALUE_VIDEODESCRIPTION)
+
             OBJ_CHANNEL = `<div id="content" class="">
             <div id="watch-container" itemscope="" itemtype="http://schema.org/VideoObject">
             <div id="watch-headline-container">
@@ -273,7 +289,7 @@
             </h1>
             <div id="watch-headline-user-info">
             <span class="yt-uix-button-group">
-            <button href="/user/ssswarriorcats?feature=watch" type="button" class="start yt-uix-button" onclick=";window.location.href=this.getAttribute('href');return false;" role="button">
+            <button href="${VALUE_CHANNELURL}?feature=watch" type="button" class="start yt-uix-button" onclick=";window.location.href=this.getAttribute('href');return false;" role="button">
             <span class="yt-uix-button-content">${VALUE_CHANNELNAME}</span>
             </button>
             <div class="yt-subscription-button-hovercard yt-uix-hovercard">
@@ -357,32 +373,23 @@ Loading...
   <div id="watch-description" class="watch-expander yt-uix-expander" data-expander-action="yt.www.watch.watch5.handleToggleDescription">
     <div id="watch-description-clip">
       <p id="watch-uploader-info">
-        Uploaded by     <a href="https://www.youtube.com/user/ssswarriorcats" class="yt-user-name author" rel="author" dir="ltr">${VALUE_CHANNELNAME}</a>
+        Uploaded by     <a href="${VALUE_CHANNELURL}" class="yt-user-name author" rel="author" dir="ltr">${VALUE_CHANNELNAME}</a>
  on <span id="eow-date" class="watch-video-date">${VALUE_VIDEODATE}</span>
 
       </p>
       <div id="watch-description-text">
-        <p id="eow-description">${VALUE_VIDEODESCRIPTION}<a href="https://web.archive.org/web/20111207174929/http://www.warriorcats.com/warriorshell.html" target="_blank" title="http://www.warriorcats.com/warriorshell.html" rel="nofollow" dir="ltr" class="yt-uix-redirect-link">http://www.warriorcats.com/warriorshell.html</a></p>
+        <p id="eow-description">${VALUE_VIDEODESCRIPTION}
       </div>
         <div id="watch-description-extras">
     <h4>Category:</h4>
-        <p id="eow-category"><a href="//www.youtube.com/videos">Film &amp; Animation</a></p>
+        <p id="eow-category"><a href="//www.youtube.com/videos">${VALUE_VIDEOCATEGORY}</a></p>
 
 
 
       <h4>Tags:</h4>
         <ul id="eow-tags" class="watch-info-tag-list">
-    <li><a href="/web/20111207174929/https://www.youtube.com/results?search_query=warrior&amp;search=tag">warrior</a></li>
-    <li><a href="/web/20111207174929/https://www.youtube.com/results?search_query=cats&amp;search=tag">cats</a></li>
-    <li><a href="/web/20111207174929/https://www.youtube.com/results?search_query=yuji&amp;search=tag">yuji</a></li>
-    <li><a href="/web/20111207174929/https://www.youtube.com/results?search_query=badasi&amp;search=tag">badasi</a></li>
-    <li><a href="/web/20111207174929/https://www.youtube.com/results?search_query=rosi&amp;search=tag">rosi</a></li>
-    <li><a href="/web/20111207174929/https://www.youtube.com/results?search_query=zing&amp;search=tag">zing</a></li>
-    <li><a href="/web/20111207174929/https://www.youtube.com/results?search_query=into&amp;search=tag">into</a></li>
-    <li><a href="/web/20111207174929/https://www.youtube.com/results?search_query=the&amp;search=tag">the</a></li>
-    <li><a href="/web/20111207174929/https://www.youtube.com/results?search_query=wild&amp;search=tag">wild</a></li>
-    <li><a href="/web/20111207174929/https://www.youtube.com/results?search_query=animation&amp;search=tag">animation</a></li>
-  </ul>
+        ${VALUE_VIDEOTAGS}
+        </ul>
 
 
       <h4>License:</h4>
@@ -439,11 +446,11 @@ Standard YouTube License
 
   <div id="watch-description-toggle" class="yt-uix-expander-head">
     <div id="watch-description-expand" class="expand">
-        <button type="button" class="metadata-inline yt-uix-button yt-uix-button-text" onclick=";return false;" role="button"><span class="yt-uix-button-content">Show more <img src="//web.archive.org/web/20111207174929im_/https://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Show more">
+        <button type="button" class="metadata-inline yt-uix-button yt-uix-button-text" onclick=";return false;" role="button"><span class="yt-uix-button-content">Show more <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Show more">
  </span></button>
     </div>
     <div id="watch-description-collapse" class="collapse">
-        <button type="button" class="metadata-inline yt-uix-button yt-uix-button-text" onclick=";return false;" role="button"><span class="yt-uix-button-content">Show less <img src="//web.archive.org/web/20111207174929im_/https://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Show less">
+        <button type="button" class="metadata-inline yt-uix-button yt-uix-button-text" onclick=";return false;" role="button"><span class="yt-uix-button-content">Show less <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Show less">
  </span></button>
     </div>
   </div>
@@ -468,7 +475,6 @@ Standard YouTube License
 
     </div>
   </div>
-  <!-- end watch-main-container -->
 </div>
 
     </div>`
@@ -770,6 +776,7 @@ Standard YouTube License
     if(window.location.pathname.split("/")[1].match(/watch/i)) {
         waitForElm("#watch-video").then((elm) => {
             document.querySelector("#watch-video").appendChild(document.querySelector("ytd-player"));
+            setInterval(function() {
             document.querySelector("ytd-player").style = "height: 390px;width: 640px;display: block;";
             document.querySelector(".video-stream").style.height = "390px";
             document.querySelector(".video-stream").style.width = "640px";
@@ -778,6 +785,7 @@ Standard YouTube License
             document.querySelector("#movie_player").style.background = "black";
             document.querySelector(".ytp-chapter-hover-container").style.width = "640px";
             document.querySelector(".ytp-chrome-bottom").style = "width:640px";
+            }, 1e3);
 
             var xhr = new XMLHttpRequest();
             xhr.open("GET", "https://returnyoutubedislikeapi.com/Votes?videoId=" + window.location.search.split("?v=")[1]);
@@ -791,7 +799,11 @@ Standard YouTube License
                 document.querySelector(".likes").innerText = likes.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 document.querySelector(".dislikes").innerText = dislikes.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             })
-            waitForElm(".ytp-preview").then((elm) => {document.querySelector(".ytp-preview").parentNode.removeChild(document.querySelector(".ytp-preview"));})
+            waitForElm(".ytp-preview").then((elm) => {
+                document.querySelector(".ytp-preview").parentNode.removeChild(document.querySelector(".ytp-preview"));
+                document.querySelector(".html5-endscreen").parentNode.removeChild(document.querySelector(".html5-endscreen"));
+                document.querySelectorAll('.ytp-ce-element').forEach(e => e.remove());
+            })
         })
     }
 })();
