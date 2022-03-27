@@ -29,6 +29,9 @@
     document.wegiYT = {};
 
     document.wegiYT.data = {};
+    document.wegiYT.func = {};
+    var BOOL_LOGIN = null;
+    var BOOL_SUBSCRIBED = "";
 
     document.wegiYT.load = async function(name) {
         if(name == "recent_feed") {
@@ -171,6 +174,16 @@
   });
     };
 
+    // Get Subscription Data
+    function getSubscription() {
+        if(window.location.pathname.split("/")[1].match(/channel|user|^c{1}$/i)) {
+            return document.querySelector(".ytd-subscribe-button-renderer").innerText.replace(/(\n| )/gi, "");
+        }
+        if(window.location.pathname.split("/")[1].match(/watch/i)) {
+            return ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer.owner.videoOwnerRenderer.subscriptionButton.subscribed ? "subscribed" : "subscribe"
+        }
+    }
+
     // Build Classic YouTube
     async function buildYouTube() {
         var DOMHTML = document.querySelector("html");
@@ -224,7 +237,6 @@
             var VALUE_USERLINK;
 
         var OBJ_LOGIN = ``;
-        var BOOL_LOGIN = null;
         if(getCookie("APISID")) {
             // GET USERNAME
             var T_OPENAVTAR = await waitForElm("#avatar-btn").then((elm) => {document.querySelectorAll("ytd-topbar-menu-button-renderer")[2].click()});
@@ -258,8 +270,10 @@
             var VALUE_VIDEODESCRIPTIO = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer.description.runs;
             var VALUE_VIDEODESCRIPTION = "";
             var VALUE_VIDEOCATEGORY = ytInitialPlayerResponse.microformat.playerMicroformatRenderer.category;
-            var VALUE_VIDEOTAG = ytInitialPlayerResponse.videoDetails.keywords;
+            var VALUE_VIDEOTAG = ytInitialPlayerResponse.videoDetails.keywords ? ytInitialPlayerResponse.videoDetails.keywords : "";
             var VALUE_VIDEOTAGS = "";
+            var isLiked = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.videoActions.menuRenderer.topLevelButtons[0].toggleButtonRenderer.isToggled ? "liked" : "";
+            var isDisliked = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.videoActions.menuRenderer.topLevelButtons[1].toggleButtonRenderer.isToggled ? "unliked" : "";
             var i;
             for (i = 0; i < VALUE_VIDEODESCRIPTIO.length; i++) {
                 if(VALUE_VIDEODESCRIPTIO[i].navigationEndpoint && !VALUE_VIDEODESCRIPTIO[i].loggingDirectives) {
@@ -293,7 +307,7 @@
             <span class="yt-uix-button-content">${VALUE_CHANNELNAME}</span>
             </button>
             <div class="yt-subscription-button-hovercard yt-uix-hovercard">
-            <button href="" type="button" class="yt-subscription-button yt-subscription-button-js-default end yt-uix-button" onclick=";window.location.href=this.getAttribute('href');return false;" role="button">
+            <button href="" type="button" class="yt-subscription-button yt-subscription-button-js-default end yt-uix-button ${getSubscription()}" onclick="document.wegiYT.func.subscribe();return false;" role="button">
             <img class="yt-uix-button-icon yt-uix-button-icon-subscribe" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
             <span class="yt-uix-button-content">
             <span class="subscribe-label">Subscribe</span>
@@ -331,32 +345,47 @@
             <span class="watch-view-count">
             <strong>${VALUE_VIDEOVIEWS}</strong>
             </span>
-  <button onclick=";return false;" title="Show video statistics" type="button" id="watch-insight-button" class="yt-uix-tooltip yt-uix-tooltip-reverse yt-uix-button yt-uix-tooltip yt-uix-button-empty" data-button-action="yt.www.watch.actions.stats" role="button"><img class="yt-uix-button-icon yt-uix-button-icon-watch-insight" src="//web.archive.org/web/20111207174929im_/https://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Show video statistics"></button>
-
-      </div>
-      <span id="watch-like-unlike" class="yt-uix-button-group"><button onclick=";return false;" title="I like this" type="button" class="start yt-uix-tooltip-reverse yt-uix-button yt-uix-tooltip" id="watch-like" data-button-action="yt.www.watch.actions.like" role="button"><img class="yt-uix-button-icon yt-uix-button-icon-watch-like" src="//web.archive.org/web/20111207174929im_/https://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="I like this"><span class="yt-uix-button-content">Like </span></button><button onclick=";return false;" title="I dislike this" type="button" class="end yt-uix-tooltip-reverse yt-uix-button yt-uix-tooltip yt-uix-button-empty" id="watch-unlike" data-button-action="yt.www.watch.actions.unlike" role="button"><img class="yt-uix-button-icon yt-uix-button-icon-watch-unlike" src="//web.archive.org/web/20111207174929im_/https://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="I dislike this"></button></span>
-  <button onclick=";return false;" title="Add to favorites or playlist" type="button" class="addto-button watch show-label yt-uix-tooltip-reverse yt-uix-button yt-uix-tooltip" id="watch-addto-button" data-button-menu-id="some-nonexistent-id" data-video-ids="2mMWz9evo-s" data-button-action="yt.www.watch.actions.showSigninOrCreateChannelWarning" data-feature="watch" role="button"><img class="yt-uix-button-icon yt-uix-button-icon-addto" src="//web.archive.org/web/20111207174929im_/https://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Add to favorites or playlist"><span class="yt-uix-button-content"><span class="addto-label">Add to</span> </span><img class="yt-uix-button-arrow" src="//web.archive.org/web/20111207174929im_/https://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""></button>
-
-  <button onclick=";return false;" title="Share or embed this video" type="button" class="yt-uix-tooltip-reverse yt-uix-button yt-uix-tooltip" id="watch-share" data-button-action="yt.www.watch.actions.share" role="button"><span class="yt-uix-button-content">Share </span></button>
-
-  <button onclick=";return false;" title="Flag as inappropriate" type="button" class="yt-uix-tooltip-reverse yt-uix-button yt-uix-tooltip yt-uix-button-empty" id="watch-flag" data-button-action="yt.www.watch.actions.flag" role="button"><img class="yt-uix-button-icon yt-uix-button-icon-watch-flag" src="//web.archive.org/web/20111207174929im_/https://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Flag as inappropriate"></button>
-
-
-  </div>
-
-  <div id="watch-actions-area-container" class="hid">
-    <div id="watch-actions-area" class="yt-rounded">
-        <div id="watch-actions-loading" class="watch-actions-panel hid">
-Loading...
-  </div>
-  <div id="watch-actions-logged-out" class="watch-actions-panel hid">
-      <div class="yt-alert yt-alert-warn yt-alert-small yt-alert-naked yt-rounded "><span class="yt-alert-icon"><img src="//web.archive.org/web/20111207174929im_/https://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="icon master-sprite" alt="Alert icon"></span><div class="yt-alert-content">          <strong><a href="https://web.archive.org/web/20111207174929/https://accounts.google.com/ServiceLogin?uilel=3&amp;service=youtube&amp;passive=true&amp;continue=http%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26nomobiletemp%3D1%26hl%3Den_US%26next%3Dhttp%253A%252F%252Fwww.youtube.com%252Fwatch%253Fv%253D2mMWz9evo-s&amp;hl=en_US<mpl=sso">Sign In</a> or <a href="/web/20111207174929/https://www.youtube.com/signup?next=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D2mMWz9evo-s">Sign Up</a> now!
-</strong>
+            <button onclick=";return false;" title="Show video statistics" type="button" id="watch-insight-button" class="yt-uix-tooltip yt-uix-tooltip-reverse yt-uix-button yt-uix-tooltip yt-uix-button-empty" data-button-action="yt.www.watch.actions.stats" role="button">
+            <img class="yt-uix-button-icon yt-uix-button-icon-watch-insight" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Show video statistics">
+            </button>
+            </div>
+            <span id="watch-like-unlike" class="yt-uix-button-group">
+            <button onclick="document.wegiYT.func.likeThis();return false;" title="I like this" type="button" class="start yt-uix-tooltip-reverse yt-uix-button yt-uix-tooltip ${isLiked}" id="watch-like" role="button">
+            <img class="yt-uix-button-icon yt-uix-button-icon-watch-like" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="I like this">
+            <span class="yt-uix-button-content">Like</span>
+            </button>
+            <button onclick="document.wegiYT.func.dislikeThis();return false;" title="I dislike this" type="button" class="end yt-uix-tooltip-reverse yt-uix-button yt-uix-tooltip yt-uix-button-empty ${isDisliked}" id="watch-unlike" role="button">
+            <img class="yt-uix-button-icon yt-uix-button-icon-watch-unlike" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="I dislike this">
+            </button>
+            </span>
+            <button onclick=";return false;" title="Add to favorites or playlist" type="button" class="addto-button watch show-label yt-uix-tooltip-reverse yt-uix-button yt-uix-tooltip" id="watch-addto-button" data-button-menu-id="some-nonexistent-id" data-video-ids="2mMWz9evo-s" data-button-action="yt.www.watch.actions.showSigninOrCreateChannelWarning" data-feature="watch" role="button">
+            <img class="yt-uix-button-icon yt-uix-button-icon-addto" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Add to favorites or playlist">
+            <span class="yt-uix-button-content">
+            <span class="addto-label">Add to</span>
+            </span>
+            <img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
+            </button>
+            <button onclick=";return false;" title="Share or embed this video" type="button" class="yt-uix-tooltip-reverse yt-uix-button yt-uix-tooltip" id="watch-share" data-button-action="yt.www.watch.actions.share" role="button"><span class="yt-uix-button-content">Share</span>
+            </button>
+            <button onclick=";return false;" title="Flag as inappropriate" type="button" class="yt-uix-tooltip-reverse yt-uix-button yt-uix-tooltip yt-uix-button-empty" id="watch-flag" data-button-action="yt.www.watch.actions.flag" role="button"><img class="yt-uix-button-icon yt-uix-button-icon-watch-flag" src="//web.archive.org/web/20111207174929im_/https://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Flag as inappropriate"></button>
+            </div>
+            <div id="watch-actions-area-container" class="hid">
+            <div id="watch-actions-area" class="yt-rounded">
+            <div id="watch-actions-loading" class="watch-actions-panel hid">Loading...</div>
+            <div id="watch-actions-logged-out" class="watch-actions-panel hid">
+            <div class="yt-alert yt-alert-warn yt-alert-small yt-alert-naked yt-rounded ">
+            <span class="yt-alert-icon">
+            <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="icon master-sprite" alt="Alert icon">
+            </span>
+            <div class="yt-alert-content">
+            <strong>
+            <a href="https://accounts.google.com/ServiceLogin?uilel=3&amp;service=youtube&amp;passive=true&amp;continue=http%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26nomobiletemp%3D1%26hl%3Den_US%26next%3Dhttp%253A%252F%252Fwww.youtube.com%252Fwatch%253Fv%253D2mMWz9evo-s&amp;hl=en_US<mpl=sso">Sign In</a> or <a href="https://www.youtube.com/signup?next=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D2mMWz9evo-s">Sign Up</a> now!
+            </strong>
 
 </div></div>
   </div>
   <div id="watch-actions-error" class="watch-actions-panel hid">
-    <div class="yt-alert yt-alert-error yt-alert-small yt-alert-naked yt-rounded "><span class="yt-alert-icon"><img src="//web.archive.org/web/20111207174929im_/https://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="icon master-sprite" alt="Alert icon"></span><div id="watch-error-string" class="yt-alert-content"></div></div>
+    <div class="yt-alert yt-alert-error yt-alert-small yt-alert-naked yt-rounded "><span class="yt-alert-icon"><img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="icon master-sprite" alt="Alert icon"></span><div id="watch-error-string" class="yt-alert-content"></div></div>
   </div>
   <div id="watch-actions-share" class="watch-actions-panel hid"></div>
 
@@ -529,6 +558,10 @@ Standard YouTube License
             DOMHEAD.appendChild(document.createElement("title"));
             setInterval(function(){document.head.querySelector("title").innerText = `${VALUE_CHANNELNAME}'s Channel - YouTube`}, 100);
 
+            if(VALUE_CHANNELNAME !== VALUE_USERNAME) {
+                OBJ_SUBSCRIBE = getSubscription();
+            }
+
             var VALUE_SUBSCRIB = await waitForElm("#subscriber-count").then((elm) => {document.wegiYT.data.subcount = elm.innerText.split(" ")[0]});
             VALUE_SUBSCRIBE = document.wegiYT.data.subcount;
             if(VALUE_SUBSCRIBE.match(/K/)) {
@@ -558,34 +591,6 @@ Standard YouTube License
 
             VALUE_DESCRIPTION = ytInitialData.metadata.channelMetadataRenderer.description;
             VALUE_DESCRIPTION = VALUE_DESCRIPTION.replace(/\n/g, "<br />");
-
-
-            //OBJ_SUBCON = `<span class="subscription-subscribed-container" onclick=";document.yt.btnSubscribe(0)" ${aaa}><span class="subscription-options-button subscription-expander yt-uix-expander yt-uix-expander-collapsed"><span class="yt-uix-expander-head yt-rounded"><button class="yt-uix-expander-arrow" onclick="return false;"></button><span class="yt-alert yt-alert-success yt-alert-small yt-alert-naked yt-rounded"><img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="icon" alt="Alert icon"><span class="yt-alert-content">Subscribed</span></span></span></span></span><button ${bbb} type="button" class="subscribe-button yt-uix-button yt-uix-button-urgent yt-uix-tooltip" onclick=";document.yt.btnSubscribe(0)" title="Click to be notified of new videos from this channel" role="button"><span class="yt-uix-button-content">Subscribe</span></button>`;
-            if(BOOL_LOGIN == true && VALUE_CHANNELNAME !== VALUE_USERNAME) {
-                var a = document.querySelector(".ytd-subscribe-button-renderer").innerText.replace(/(\n| )/gi, "");
-                if(a == "Subscribed") {
-                    OBJ_SUBSCRIBE = `<span class="subscription-container">
-            <button type="button" class="subscribe-button yt-uix-button yt-uix-button-urgent yt-uix-tooltip" onclick=";return false;" title="Click to be notified of new videos from this channel" role="button">
-            <span class="yt-uix-button-content">Unsubscribe</span>
-            <img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
-            </button>
-            </span>`
-                } else {
-                    OBJ_SUBSCRIBE = `<span class="subscription-container">
-            <button type="button" class="subscribe-button yt-uix-button yt-uix-button-urgent yt-uix-tooltip" onclick=";return false;" title="Click to be notified of new videos from this channel" role="button">
-            <span class="yt-uix-button-content">Subscribe</span>
-            <img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
-            </button>
-            </span>`
-                }
-            } else {
-                OBJ_SUBSCRIBE = `<span class="subscription-container">
-            <button type="button" class="subscribe-button yt-uix-button yt-uix-button-urgent yt-uix-tooltip" onclick=";return false;" title="Click to be notified of new videos from this channel" role="button">
-            <span class="yt-uix-button-content">Subscribe</span>
-            <img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
-            </button>
-            </span>`
-            }
 
             // Check if /user/
             if(window.location.href.match(/\/user/i)) {
@@ -640,7 +645,12 @@ Standard YouTube License
             </div>
             <div style="whitespace:no-wrap;position:relative;width:170px;">
             <div>
-            ${OBJ_SUBSCRIBE}
+            <span class="subscription-container">
+            <button type="button" class="subscribe-button yt-uix-button yt-uix-button-urgent yt-uix-tooltip" onclick="document.wegiYT.func.subscribe();return false;" title="Click to be notified of new videos from this channel" role="button">
+            <span class="yt-uix-button-content">${OBJ_SUBSCRIBE}</span>
+            <img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
+            </button>
+            </span>
             </div>
             </div>
             </div>
@@ -676,7 +686,23 @@ Standard YouTube License
             <div class="channel-title outer-box-color" style="font-size:11px" id="channel_base_title">${VALUE_CHANNELNAME}'s Channel</div>
             </div>
             <div id="subscribe-buttons">
-            ${OBJ_SUBSCRIBE}
+            <span class="subscription-container">
+            <button type="button" class="subscribe-button yt-uix-button yt-uix-button-urgent yt-uix-tooltip" onclick="document.wegiYT.func.subscribe();return false;" title="Click to be notified of new videos from this channel" role="button" data-tooltip-text="Click to be notified of new videos from this channel">
+            <span class="yt-uix-button-content">${OBJ_SUBSCRIBE}</span>
+            </button>
+            <span class="subscription-subscribed-container hid">
+            <span class="subscription-options-button subscription-expander yt-uix-expander yt-uix-expander-collapsed">
+            <span class="yt-uix-expander-head yt-rounded">
+            <button class="yt-uix-expander-arrow" onclick="return false;">
+            </button>
+            <span class="yt-alert yt-alert-success yt-alert-small yt-alert-naked yt-rounded">
+            <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="icon" alt="Alert icon">
+            <span class="yt-alert-content">Subscribed</span>
+            </span>
+            </span>
+            </span>
+            </span>
+            </span>
             </div>
             </div>
             <div id="playnav-chevron">&nbsp;</div>
@@ -783,8 +809,8 @@ Standard YouTube License
             document.querySelector("#movie_player").style.height = "390px";
             document.querySelector("#movie_player").style.width = "640px";
             document.querySelector("#movie_player").style.background = "black";
-            document.querySelector(".ytp-chapter-hover-container").style.width = "640px";
-            document.querySelector(".ytp-chrome-bottom").style = "width:640px";
+            //document.querySelector(".ytp-chapter-hover-container").style.width = "640px";
+            document.querySelector(".ytp-chrome-bottom").style.left = "0px";
             }, 1e3);
 
             var xhr = new XMLHttpRequest();
@@ -805,5 +831,49 @@ Standard YouTube License
                 document.querySelectorAll('.ytp-ce-element').forEach(e => e.remove());
             })
         })
+    };
+
+    // Rating Functions
+    document.wegiYT.func.likeThis = function() {
+        if(BOOL_LOGIN == true) {
+            document.querySelectorAll("#top-level-buttons-computed ytd-toggle-button-renderer")[0].click();
+            if(document.querySelector("#watch-like").classList.contains("liked")) {
+                document.querySelector("#watch-like").classList.remove("liked");
+            } else {
+                document.querySelector("#watch-like").classList.add("liked");
+                document.querySelector("#watch-unlike").classList.remove("unliked");
+            }
+        }
+    }
+    document.wegiYT.func.dislikeThis = function() {
+        if(BOOL_LOGIN == true) {
+            document.querySelectorAll("#top-level-buttons-computed ytd-toggle-button-renderer")[1].click();
+            if(document.querySelector("#watch-unlike").classList.contains("unliked")) {
+                document.querySelector("#watch-unlike").classList.remove("unliked");
+            } else {
+                document.querySelector("#watch-unlike").classList.add("unliked");
+                document.querySelector("#watch-like").classList.remove("liked");
+            }
+        }
+    }
+
+    // Subscribe Function
+    document.wegiYT.func.subscribe = async function() {
+        if(BOOL_LOGIN == true) {
+            if(getSubscription() == "subscribed") {
+                document.querySelector("ytd-subscribe-button-renderer tp-yt-paper-button").click();
+                await waitForElm("#confirm-button").then((elm) => {elm.click()})
+                console.log(getSubscription())
+                document.querySelectorAll(".subscribe-button .yt-uix-button-content").forEach(function(a) { a.innerText = "Subscribe"});
+                document.querySelector(".yt-subscription-button").classList.remove("subscribed")
+                BOOL_SUBSCRIBED = "subscribe";
+            } else {
+                document.querySelector("ytd-subscribe-button-renderer tp-yt-paper-button").click();
+                document.querySelectorAll(".subscribe-button .yt-uix-button-content").forEach(function(a) { a.innerText = "Subscribed"});
+                document.querySelector(".yt-subscription-button").classList.add("subscribed")
+                BOOL_SUBSCRIBED = "subscribed";
+            }
+
+        }
     }
 })();
