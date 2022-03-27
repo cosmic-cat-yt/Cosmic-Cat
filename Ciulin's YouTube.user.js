@@ -719,6 +719,300 @@ Standard YouTube License
             </div>`
         }
 
+        // Search Results
+        if(window.location.pathname.split("/")[1].match(/results/i)) {
+            var searchpar = (new URL(document.location)).searchParams.get("search_query");
+            var i;
+            var results = ytInitialData.contents.twoColumnSearchResultsRenderer.primaryContents.sectionListRenderer.contents[0].itemSectionRenderer.contents;
+            var parse = "";
+            DOMHEAD.innerHTML += '<link rel="stylesheet" href="//s.ytimg.com/yt/cssbin/www-refresh-vflj_nHFo.css">';
+
+            for(i = 0; i < results.length; i++) {
+                if(results[i].videoRenderer) {
+                    console.log(results[i].videoRenderer)
+                    var description = results[i].videoRenderer.detailedMetadataSnippets ? results[i].videoRenderer.detailedMetadataSnippets[0].snippetText.runs[0].text : "";
+                    var time = results[i].videoRenderer.lengthText ? results[i].videoRenderer.lengthText.simpleText : "";
+                    var pub = results[i].videoRenderer.publishedTimeText ? results[i].videoRenderer.publishedTimeText.simpleText: "";
+                    var main = `<div class="result-item yt-uix-tile yt-tile-default *sr">
+            <div class="thumb-container">
+            <a href="http://www.youtube.com/watch?v=${results[i].videoRenderer.videoId}" class="ux-thumb-wrap contains-addto result-item-thumb">
+            <span class="video-thumb ux-thumb ux-thumb-128">
+            <span class="clip" style="height: auto;width: auto;">
+            <span class="clip-inner">
+            <img alt="Thumbnail" src="${results[i].videoRenderer.thumbnail.thumbnails[0].url}" data-group-key="thumb-group-1" style="position: static">
+            <span class="vertical-align">
+            </span>
+            </span>
+            </span>
+            </span>
+            <span class="video-time">${time}</span>
+            <button onclick=";return false;" title="Watch Later" type="button" class="addto-button video-actions addto-watch-later-button-sign-in yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" data-button-menu-id="shared-addto-watch-later-login" data-video-ids="${results[i].videoRenderer.videoId}" role="button">
+            <span class="yt-uix-button-content">
+            <span class="addto-label">Watch Later</span>
+            <span class="addto-label-error">Error</span>
+            <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
+            </span>
+            <img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""></button>
+            </a>
+            </div>
+            <div class="result-item-main-content">
+            <h3>
+            <a href="http://www.youtube.com/watch?v=${results[i].videoRenderer.videoId}" class="yt-uix-tile-link" dir="ltr" title="${results[i].videoRenderer.title.runs[0].text}">${results[i].videoRenderer.title.runs[0].text}</a>
+            </h3>
+            <p id="video-description-${results[i].videoRenderer.videoId}" class="description" dir="ltr">${description}<b>...</b></p>
+            <ul class="single-line-lego-list"><li><a href="http://www.youtube.com/results?search_query=${searchpar}%2C+hd" class="yt-badge-std">hd</a>
+            </li>
+            </ul>
+            <p class="facets">
+            <span class="username-prepend">by</span>
+            <a href="http://www.youtube.com/user/CaptainSparklez" class="yt-user-name " dir="ltr">${results[i].videoRenderer.ownerText.runs[0].text}</a> <span class="metadata-separator">|</span>  <span class="date-added">${pub}</span> <span class="metadata-separator">|</span>  <span class="viewcount">${results[i].videoRenderer.viewCountText.simpleText}</span>
+            </p>
+            </div>
+            </div>`;
+                    parse += main;
+                }
+            }
+
+
+
+            OBJ_CHANNEL = `<div id="content">
+            <div id="search-header">
+            <div id="search-header-inner">
+            <p class="num-results">About <strong>3,370,000</strong> results</p>
+            <h2>Search results for <strong class="query"><span class="search-title-lego">${searchpar}</span></strong>
+            </h2>
+            </div>
+            <hr class="yt-horizontal-rule" style="border: 1px solid #ebebeb;">
+            </div>
+            <div id="search-refinements">
+            <div id="lego-refine-block">
+            <div class="sort-by floatR">
+            <span class="sort-by-title" style="color: #555">Sort by:</span>
+            <button type="button" class="yt-uix-button yt-uix-button-text" onclick=";return false;" role="button">
+            <span class="yt-uix-button-content">Relevance </span>
+            <img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
+            <ul class="yt-uix-button-menu yt-uix-button-menu-text hid" role="menu" aria-haspopup="true" style="min-width: 92px; left: 902.467px; top: 210px; display: none;">
+            <li role="menuitem" id="aria-id-68537613644">
+            <span href="http://www.youtube.com/results?search_type=videos&amp;search_query=${searchpar}&amp;search_sort=video_date_uploaded" class=" yt-uix-button-menu-item" onclick=";window.location.href=this.getAttribute('href');return false;">Upload date</span>
+            </li>
+            <li role="menuitem" id="aria-id-52246167700">
+            <span href="http://www.youtube.com/results?search_type=videos&amp;search_query=${searchpar}&amp;search_sort=video_view_count" class=" yt-uix-button-menu-item" onclick=";window.location.href=this.getAttribute('href');return false;">View count</span>
+            </li>
+            <li role="menuitem" id="aria-id-43856570253">
+            <span href="http://www.youtube.com/results?search_type=videos&amp;search_query=${searchpar}&amp;search_sort=video_avg_rating" class=" yt-uix-button-menu-item" onclick=";window.location.href=this.getAttribute('href');return false;">Rating</span>
+            </li>
+            </ul>
+            </button>
+            </div>
+            <button type="button" id="lego-refine-toggle" onclick=";return false;" class="yt-uix-button yt-uix-button-text" data-button-toggle="true" role="button">
+            <span class="yt-uix-button-content">Filter </span>
+            <img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
+            </button>
+            <div id="search-lego-refinements" class="hid" style="display: none;">
+            <div class="search-refinements-block search-refinements-links">
+            <div class="search-refinements-block-title">Sort by</div>
+            <ul>
+            <li>
+            <span class="lego-content-selected">Relevance</span>
+            </li>
+            <li>
+            <a href="http://www.youtube.com/results?search_type=videos&amp;search_query=${searchpar}&amp;search_sort=video_date_uploaded">Upload date</a>
+            </li>
+            <li>
+            <a href="http://www.youtube.com/results?search_type=videos&amp;search_query=${searchpar}&amp;search_sort=video_view_count">View count</a>
+            </li>
+            <li>
+            <a href="http://www.youtube.com/results?search_type=videos&amp;search_query=${searchpar}&amp;search_sort=video_avg_rating">Rating</a>
+            </li>
+            </ul>
+            </div>
+            <div class="search-refinements-block filters">
+            <div class="search-refinements-block-title">Filter</div>
+            <ul>
+            <li>
+            <span class="lego lego-property  append-lego" data-lego-name="today">
+            <a class="lego-action" title="Search for ${searchpar}, today" href="http://www.youtube.com/results?search_query=${searchpar}%2C+today">
+            <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif"></a>
+            <a class="lego-action-placeholder" title="Search for ${searchpar}, today" href="http://www.youtube.com/results?search_query=${searchpar}%2C+today">
+            <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif"></a>
+            <a class="lego-content" title="Search for ${searchpar}, today" href="http://www.youtube.com/results?search_query=${searchpar}%2C+today">uploaded today</a>
+            </span>
+            </li>
+            <li>
+            <span class="lego lego-property  append-lego" data-lego-name="this week">
+            <a class="lego-action" title="Search for ${searchpar}, this week" href="http://www.youtube.com/results?search_query=${searchpar}%2C+this+week">
+            <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif"></a>
+            <a class="lego-action-placeholder" title="Search for ${searchpar}, this week" href="http://www.youtube.com/results?search_query=${searchpar}%2C+this+week">
+            <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif"></a>
+            <a class="lego-content" title="Search for ${searchpar}, this week" href="http://www.youtube.com/results?search_query=${searchpar}%2C+this+week">uploaded this week</a>
+            </span>
+            </li>
+            <li>
+            <span class="lego lego-property  append-lego" data-lego-name="this month">
+            <a class="lego-action" title="Search for ${searchpar}, this month" href="http://www.youtube.com/results?search_query=${searchpar}%2C+this+month">
+            <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
+            </a>
+            <a class="lego-action-placeholder" title="Search for ${searchpar}, this month" href="http://www.youtube.com/results?search_query=${searchpar}%2C+this+month">
+            <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
+            </a>
+            <a class="lego-content" title="Search for ${searchpar}, this month" href="http://www.youtube.com/results?search_query=${searchpar}%2C+this+month">uploaded this month</a>
+            </span>
+            </li>
+            </ul>
+            </div>
+            <div class="search-refinements-block filters">
+            <div class="search-refinements-block-title">&nbsp;</div>
+            <ul>
+            <li>
+            <span class="lego lego-property  append-lego" data-lego-name="channel">
+            <a class="lego-action" title="Search for ${searchpar}, channel" href="http://www.youtube.com/results?search_query=${searchpar}%2C+channel">
+            <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
+            </a>
+            <a class="lego-action-placeholder" title="Search for ${searchpar}, channel" href="http://www.youtube.com/results?search_query=${searchpar}%2C+channel">
+            <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
+            </a>
+            <a class="lego-content" title="Search for ${searchpar}, channel" href="http://www.youtube.com/results?search_query=${searchpar}%2C+channel">channel</a>
+            </span>
+            </li>
+            <li>
+            <span class="lego lego-property  append-lego" data-lego-name="playlist">
+            <a class="lego-action" title="Search for ${searchpar}, playlist" href="http://www.youtube.com/results?search_query=${searchpar}%2C+playlist">
+            <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
+            </a>
+            <a class="lego-action-placeholder" title="Search for ${searchpar}, playlist" href="http://www.youtube.com/results?search_query=${searchpar}%2C+playlist">
+            <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
+            </a>
+            <a class="lego-content" title="Search for ${searchpar}, playlist" href="http://www.youtube.com/results?search_query=${searchpar}%2C+playlist">playlist</a>
+            </span>
+            </li>
+            <li>
+            <span class="lego lego-property  append-lego" data-lego-name="movie">
+            <a class="lego-action" title="Search for ${searchpar}, movie" href="http://www.youtube.com/results?search_query=${searchpar}%2C+movie">
+            <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
+            </a>
+            <a class="lego-action-placeholder" title="Search for ${searchpar}, movie" href="http://www.youtube.com/results?search_query=${searchpar}%2C+movie">
+            <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
+            </a>
+            <a class="lego-content" title="Search for ${searchpar}, movie" href="http://www.youtube.com/results?search_query=${searchpar}%2C+movie">movie</a>
+            </span>
+            </li>
+            <li>
+            <span class="lego lego-property  append-lego" data-lego-name="show">
+            <a class="lego-action" title="Search for ${searchpar}, show" href="http://www.youtube.com/results?search_query=${searchpar}%2C+show">
+            <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
+            </a>
+            <a class="lego-action-placeholder" title="Search for ${searchpar}, show" href="http://www.youtube.com/results?search_query=${searchpar}%2C+show">
+            <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
+            </a>
+            <a class="lego-content" title="Search for ${searchpar}, show" href="http://www.youtube.com/results?search_query=${searchpar}%2C+show">show</a>
+            </span>
+            </li>
+            <li>
+            <span class="lego lego-property  append-lego" data-lego-name="3d">
+            <a class="lego-action" title="Search for ${searchpar}, 3d" href="http://www.youtube.com/results?search_query=${searchpar}%2C+3d">
+            <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
+            </a>
+            <a class="lego-action-placeholder" title="Search for ${searchpar}, 3d" href="http://www.youtube.com/results?search_query=${searchpar}%2C+3d">
+            <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
+            </a>
+            <a class="lego-content" title="Search for ${searchpar}, 3d" href="http://www.youtube.com/results?search_query=${searchpar}%2C+3d">3D</a>
+            </span>
+            </li>
+            </ul>
+            </div>
+            <div class="search-refinements-block filters">
+            <div class="search-refinements-block-title">&nbsp;</div>
+            <ul>
+            <li>
+            <span class="lego lego-property  append-lego" data-lego-name="hd">
+            <a class="lego-action" title="Search for ${searchpar}, hd" href="http://www.youtube.com/results?search_query=${searchpar}%2C+hd">
+            <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
+            </a>
+            <a class="lego-action-placeholder" title="Search for ${searchpar}, hd" href="http://www.youtube.com/results?search_query=${searchpar}%2C+hd">
+            <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
+            </a>
+            <a class="lego-content" title="Search for ${searchpar}, hd" href="http://www.youtube.com/results?search_query=${searchpar}%2C+hd">HD (high definition)</a>
+            </span>
+            </li>
+            <li>
+            <span class="lego lego-property  append-lego" data-lego-name="cc">
+            <a class="lego-action" title="Search for ${searchpar}, cc" href="http://www.youtube.com/results?search_query=${searchpar}%2C+cc">
+            <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif"></a>
+            <a class="lego-action-placeholder" title="Search for ${searchpar}, cc" href="http://www.youtube.com/results?search_query=${searchpar}%2C+cc">
+            <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
+            </a>
+            <a class="lego-content" title="Search for ${searchpar}, cc" href="http://www.youtube.com/results?search_query=${searchpar}%2C+cc">CC (closed caption)</a>
+            </span>
+            </li>
+            <li>
+            <span class="lego lego-property  append-lego" data-lego-name="long">
+            <a class="lego-action" title="Search for ${searchpar}, long" href="http://www.youtube.com/results?search_query=${searchpar}%2C+long">
+            <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
+            </a>
+            <a class="lego-action-placeholder" title="Search for ${searchpar}, long" href="http://www.youtube.com/results?search_query=${searchpar}%2C+long">
+            <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
+            </a>
+            <a class="lego-content" title="Search for ${searchpar}, long" href="http://www.youtube.com/results?search_query=${searchpar}%2C+long">longer than 20 min</a>
+            </span>
+            </li>
+            <li>
+            <span class="lego lego-property  append-lego" data-lego-name="partner">
+            <a class="lego-action" title="Search for ${searchpar}, partner" href="http://www.youtube.com/results?search_query=${searchpar}%2C+partner">
+            <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
+            </a>
+            <a class="lego-action-placeholder" title="Search for ${searchpar}, partner" href="http://www.youtube.com/results?search_query=${searchpar}%2C+partner">
+            <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
+            </a>
+            <a class="lego-content" title="Search for ${searchpar}, partner" href="http://www.youtube.com/results?search_query=${searchpar}%2C+partner">partner video</a>
+            </span>
+            </li>
+            <li>
+            <span class="lego lego-property  append-lego" data-lego-name="creativecommons">
+            <a class="lego-action" title="Search for ${searchpar}, creativecommons" href="http://www.youtube.com/results?search_query=${searchpar}%2C+creativecommons">
+            <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
+            </a>
+            <a class="lego-action-placeholder" title="Search for ${searchpar}, creativecommons" href="http://www.youtube.com/results?search_query=${searchpar}%2C+creativecommons">
+            <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
+            </a>
+            <a class="lego-content" title="Search for ${searchpar}, creativecommons" href="http://www.youtube.com/results?search_query=${searchpar}%2C+creativecommons">creative commons</a>
+            </span>
+            </li>
+            <li>
+            <li>
+            <span class="lego lego-property  append-lego" data-lego-name="live">
+            <a class="lego-action" title="Search for ${searchpar}, live" href="http://www.youtube.com/results?search_query=${searchpar}%2C+live">
+            <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
+            </a>
+            <a class="lego-action-placeholder" title="Search for ${searchpar}, live" href="http://www.youtube.com/results?search_query=${searchpar}%2C+live">
+            <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
+            </a>
+            <a class="lego-content" title="Search for ${searchpar}, live" href="http://www.youtube.com/results?search_query=${searchpar}%2C+live">live</a>
+            </span>
+            </li>
+            </li>
+            </ul>
+            </div>
+            <div class="clearL"></div>
+            </div>
+            </div>
+            </div>
+            <div class="yt-horizontal-rule">
+            <span class="first"></span>
+            <span class="second"></span>
+            <span class="third"></span>
+            </div>
+            <div id="search-base-div">
+            <div id="search-main" class="ytg-4col new-snippets">
+            <div id="results-main-content">
+            <div id="search-results">
+            ${parse}
+            </div>
+            </div>
+            </div>
+            </div>
+            </div>`
+        }
+
         // Mastheat
         OBJ_MASTHEAD = `<div id="masthead" class="" dir="ltr">
         <a id="logo-container" href="https://www.youtube.com/" title="YouTube home">
