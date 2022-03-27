@@ -227,8 +227,8 @@
         var BOOL_LOGIN = null;
         if(getCookie("APISID")) {
             // GET USERNAME
-            //var T_OPENAVTAR = await waitForElm("#avatar-btn").then((elm) => {document.querySelectorAll("ytd-topbar-menu-button-renderer")[2].click()});
-            //var T_GETNAME = await waitForElm("#account-name").then((elm) => {document.wegiYT.data.name = elm.innerText;document.wegiYT.data.link = document.querySelector("ytd-compact-link-renderer #endpoint").href});
+            var T_OPENAVTAR = await waitForElm("#avatar-btn").then((elm) => {document.querySelectorAll("ytd-topbar-menu-button-renderer")[2].click()});
+            var T_GETNAME = await waitForElm("#account-name").then((elm) => {document.wegiYT.data.name = elm.innerText;document.wegiYT.data.link = document.querySelector("ytd-compact-link-renderer #endpoint").href});
 
             VALUE_USERNAME = document.wegiYT.data.name;
             VALUE_USERLINK = document.wegiYT.data.link;
@@ -250,22 +250,27 @@
         // Watch (WIP)
         if(window.location.pathname.split("/")[1].match(/watch/i)) {
             console.debug("A")
+            var VALUE_VIDEOTITLE = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.title.runs[0].text;
+            var VALUE_VIDEODATE = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.dateText.simpleText;
+            var VALUE_CHANNELNAME = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer.owner.videoOwnerRenderer.title.runs[0].text;
+            var VALUE_VIDEOVIEWS = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.viewCount.videoViewCountRenderer.viewCount.simpleText.split(" ")[0];
+            var VALUE_VIDEODESCRIPTION = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer.description.runs;
             OBJ_CHANNEL = `<div id="content" class="">
             <div id="watch-container" itemscope="" itemtype="http://schema.org/VideoObject">
             <div id="watch-headline-container">
             <div id="watch-headline" class="watch-headline">
             <h1 id="watch-headline-title">
-            <span id="eow-title" class="" dir="ltr" title="Warrior cats intro - fan animation by SSS">
-            Warrior cats intro - fan animation by SSS
+            <span id="eow-title" class="" dir="ltr" title="${VALUE_VIDEOTITLE}">
+            ${VALUE_VIDEOTITLE}
             </span>
             </h1>
             <div id="watch-headline-user-info">
             <span class="yt-uix-button-group">
             <button href="/user/ssswarriorcats?feature=watch" type="button" class="start yt-uix-button" onclick=";window.location.href=this.getAttribute('href');return false;" role="button">
-            <span class="yt-uix-button-content">ssswarriorcats</span>
+            <span class="yt-uix-button-content">${VALUE_CHANNELNAME}</span>
             </button>
             <div class="yt-subscription-button-hovercard yt-uix-hovercard">
-            <button href="https://accounts.google.com/ServiceLogin?uilel=3&amp;service=youtube&amp;passive=true&amp;continue=http%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26nomobiletemp%3D1%26hl%3Den_US%26next%3Dhttp%253A%252F%252Fwww.youtube.com%252Fwatch%253Fv%253D2mMWz9evo-s&amp;hl=en_US&amp;ltmpl=sso" type="button" class="yt-subscription-button yt-subscription-button-js-default end yt-uix-button" onclick=";window.location.href=this.getAttribute('href');return false;" data-enable-hovercard="true" data-subscription-value="ssswarriorcats" data-force-position="true" data-position="topright" data-subscription-feature="watch" data-subscription-type="" role="button" data-subscription-initialized="true">
+            <button href="" type="button" class="yt-subscription-button yt-subscription-button-js-default end yt-uix-button" onclick=";window.location.href=this.getAttribute('href');return false;" role="button">
             <img class="yt-uix-button-icon yt-uix-button-icon-subscribe" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
             <span class="yt-uix-button-content">
             <span class="subscribe-label">Subscribe</span>
@@ -282,45 +287,27 @@
             </div>
             </span>
             </div>
-
-
-
-
-    <div id="watch-more-from-user" class="collapsed">
-      <div id="watch-channel-discoverbox" class="yt-rounded">
-        <span id="watch-channel-loading">Loading...</span>
-      </div>
-    </div>
-  </div>
-
-  </div>
-
-  <div id="watch-video-container">
-    <div id="watch-video">
-
-
-
-
-
-      <div id="watch-video-extra">
-
-
-      </div>
-
-    </div>
-  </div>
-
-  <div id="watch-main-container">
-    <div id="watch-main">
-      <div id="watch-panel">
-
-
-
-  <div id="watch-actions">
-      <div id="watch-actions-right">
-          <span class="watch-view-count">
-    <strong>756,731</strong>
-  </span>
+            <div id="watch-more-from-user" class="collapsed">
+            <div id="watch-channel-discoverbox" class="yt-rounded">
+            <span id="watch-channel-loading">Loading...</span>
+            </div>
+            </div>
+            </div>
+            </div>
+            <div id="watch-video-container">
+            <div id="watch-video">
+            <div id="watch-video-extra">
+            </div>
+            </div>
+            </div>
+            <div id="watch-main-container">
+            <div id="watch-main">
+            <div id="watch-panel">
+            <div id="watch-actions">
+            <div id="watch-actions-right">
+            <span class="watch-view-count">
+            <strong>${VALUE_VIDEOVIEWS}</strong>
+            </span>
   <button onclick=";return false;" title="Show video statistics" type="button" id="watch-insight-button" class="yt-uix-tooltip yt-uix-tooltip-reverse yt-uix-button yt-uix-tooltip yt-uix-button-empty" data-button-action="yt.www.watch.actions.stats" role="button"><img class="yt-uix-button-icon yt-uix-button-icon-watch-insight" src="//web.archive.org/web/20111207174929im_/https://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Show video statistics"></button>
 
       </div>
@@ -353,7 +340,7 @@ Loading...
   <div id="watch-actions-ajax" class="watch-actions-panel hid"></div>
 
   <div class="close">
-    <img src="//web.archive.org/web/20111207174929im_/https://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="close-button" onclick="yt.www.watch.actions.hide();">
+    <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="close-button" onclick="yt.www.watch.actions.hide();">
   </div>
 
     </div>
@@ -363,12 +350,12 @@ Loading...
   <div id="watch-description" class="watch-expander yt-uix-expander" data-expander-action="yt.www.watch.watch5.handleToggleDescription">
     <div id="watch-description-clip">
       <p id="watch-uploader-info">
-        Uploaded by     <a href="/web/20111207174929/https://www.youtube.com/user/ssswarriorcats" class="yt-user-name author" rel="author" dir="ltr">ssswarriorcats</a>
- on <span id="eow-date" class="watch-video-date">Sep  8, 2008</span>
+        Uploaded by     <a href="https://www.youtube.com/user/ssswarriorcats" class="yt-user-name author" rel="author" dir="ltr">${VALUE_CHANNELNAME}</a>
+ on <span id="eow-date" class="watch-video-date">${VALUE_VIDEODATE}</span>
 
       </p>
       <div id="watch-description-text">
-        <p id="eow-description">original story, narrative idea, characters belong to novel Warrior cats into the wild, official website:<br><a href="https://web.archive.org/web/20111207174929/http://www.warriorcats.com/warriorshell.html" target="_blank" title="http://www.warriorcats.com/warriorshell.html" rel="nofollow" dir="ltr" class="yt-uix-redirect-link">http://www.warriorcats.com/warriorshell.html</a><br><br>Truelight (theme for DNAngel) <br><br>for uncolored (work in progress version <a href="https://web.archive.org/web/20111207174929/http://uk.youtube.com/watch?v=TTl_3bTqMxY" target="_blank" title="http://uk.youtube.com/watch?v=TTl_3bTqMxY" rel="nofollow" dir="ltr" class="yt-uix-redirect-link">http://uk.youtube.com/watch?v=TTl_3bTqMxY</a>)<br><br>some friends asked me what programs i used, I might just answer it here:<br>The animation is created with graphic tablet drawn straight into Flash (8), layout is done in Photoshop, additional effect (lens flare) is added in After Effect, and finally export from Windows movie maker just to make the animation small and easy for submission. the whole process is done in my 5 and half years old pc ^_o i'm somehow proud of its age and loyalty.<br><br>The reason I use Flash is because I don't have light box and enough paper, scanner at home, Flash is time saving way to make animation myself with few other friends.<br><br>Ps. Flash is a program for creating web animation, interactive things and websites, motion graphic, usually use with Illustrator and other vector programs. FBF animator like me only used 5% features of Flash.<br><br><br>as Rosi suggested, I created this new account only for our Warrior cat_into the wild animations.<br><br>The account will be decorated soon.<br><br>I know spotted leaf isn't white, but somehow me and Rosi imaged her a white cat before realizing that she isnt. ^^ll I think I'll keep her white in these animations.<br><br>This is my first time shading my animation, and first attempt to animate cats fighting, there are still a lot need to improve in my future works.<br><br>subtitle will be both English and Chinese, voice will be English.<br><br>Directed by me (Yuji/badasi) and Rosi, Animation assistant Zing. I'll make a list of audicians once the 1st episode is finished.</p>
+        <p id="eow-description"><a href="https://web.archive.org/web/20111207174929/http://www.warriorcats.com/warriorshell.html" target="_blank" title="http://www.warriorcats.com/warriorshell.html" rel="nofollow" dir="ltr" class="yt-uix-redirect-link">http://www.warriorcats.com/warriorshell.html</a></p>
       </div>
         <div id="watch-description-extras">
     <h4>Category:</h4>
@@ -404,12 +391,11 @@ Standard YouTube License
 
       <ul id="watch-description-extra-info">
       <li>
-        <div class="watch-sparkbars">
-          <div class="watch-sparkbar-likes" style="width: 97.8425522148%"></div>
-          <div class="watch-sparkbar-dislikes" style="width: 2.15744778517%"></div>
+        <div class="watch-sparkbars" style="background-color:red">
+          <div class="watch-sparkbar-likes"></div>
         </div>
         <span class="watch-likes-dislikes">
-<span class="likes">4,263</span> likes, <span class="dislikes">94</span> dislikes
+<span class="likes"></span> likes, <span class="dislikes"></span> dislikes
         </span>
       </li>
 
@@ -774,4 +760,31 @@ Standard YouTube License
         </div>`
     }
     window.onload = buildYouTube();
+    if(window.location.pathname.split("/")[1].match(/watch/i)) {
+        waitForElm("#watch-video").then((elm) => {
+            document.querySelector("#watch-video").appendChild(document.querySelector("ytd-player"));
+            document.querySelector("ytd-player").style = "height: 390px;width: 640px;display: block;";
+            document.querySelector(".video-stream").style.height = "390px";
+            document.querySelector(".video-stream").style.width = "640px";
+            document.querySelector("#movie_player").style.height = "390px";
+            document.querySelector("#movie_player").style.width = "640px";
+            document.querySelector("#movie_player").style.background = "black";
+            document.querySelector(".ytp-chapter-hover-container").style.width = "640px";
+            document.querySelector(".ytp-chrome-bottom").style = "width:640px";
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "https://returnyoutubedislikeapi.com/Votes?videoId=" + window.location.search.split("?v=")[1]);
+            xhr.send();
+            xhr.addEventListener('load', event => {
+                var result = JSON.parse(event.target.response);
+                var likes = result.likes;
+                var dislikes = result.dislikes;
+                var rating = likes + dislikes > 0 ? (likes / (likes + dislikes)) * 100 : 50;
+                document.querySelector(".watch-sparkbar-likes").style.width = rating + "%"
+                document.querySelector(".likes").innerText = likes.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                document.querySelector(".dislikes").innerText = dislikes.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            })
+            waitForElm(".ytp-preview").then((elm) => {document.querySelector(".ytp-preview").parentNode.removeChild(document.querySelector(".ytp-preview"));})
+        })
+    }
 })();
