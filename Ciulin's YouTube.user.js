@@ -679,9 +679,14 @@ Standard YouTube License
             </div>`
 
             var OBJ_HOMEVIDEO = ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer;
+            var dec = "";
+
+            if(OBJ_HOMEVIDEO) {
+                dec = OBJ_HOMEVIDEO.description ? OBJ_HOMEVIDEO.description.runs[0].text : "";
+            }
             var OBJ_PLAYNAVA = `<div id="playnav-body">
             <div id="playnav-player" class="playnav-player-container" style="visibility: visible; left: 0px;">
-            <iframe style="width:640px; height: 390px;" src="https://www.youtube.com/embed/${OBJ_HOMEVIDEO.videoId}?fs=0&rel=0&modestbranding=1" id="movie_player"></iframe>
+            <iframe style="width:640px; height: 390px;" src="${OBJ_HOMEVIDEO ? "https://www.youtube.com/embed/" + OBJ_HOMEVIDEO.videoId + "?fs=0&rel=0&modestbranding=1" : ""}" id="movie_player"></iframe>
             </div>
             <div id="playnav-playview" class="" style="display: block;">
             <div id="playnav-left-panel" style="display: block;">
@@ -747,16 +752,16 @@ Standard YouTube License
 
   <div id="playnav-curvideo-title" class="inner-box-link-color" dir="ltr">
 
-    <span style="cursor:pointer;margin-right:7px" onclick="document.location.href='/watch?v=${OBJ_HOMEVIDEO.videoId}'" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">
-      ${OBJ_HOMEVIDEO.title.runs[0].text}
+    <span style="cursor:pointer;margin-right:7px" onclick="document.location.href='/watch?v=${OBJ_HOMEVIDEO ? OBJ_HOMEVIDEO.videoId : ""}'" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">
+      ${OBJ_HOMEVIDEO ? OBJ_HOMEVIDEO.title.runs[0].text : ""}
     </span>
   </div>
 
   <div id="playnav-curvideo-info-line">
 From: <span id="playnav-curvideo-channel-name"><a href="${window.location.href}">${ytInitialData.metadata.channelMetadataRenderer.title}</a></span>&nbsp;|
-    <span dir="ltr">${OBJ_HOMEVIDEO.publishedTimeText.runs[0].text}</span>
+    <span dir="ltr">${OBJ_HOMEVIDEO ? OBJ_HOMEVIDEO.publishedTimeText.runs[0].text : ""}</span>
       &nbsp;|
-        <span id="playnav-curvideo-view-count">${OBJ_HOMEVIDEO.viewCountText.simpleText}</span>
+        <span id="playnav-curvideo-view-count">${OBJ_HOMEVIDEO ? OBJ_HOMEVIDEO.viewCountText.simpleText : ""}</span>
   </div>
 
   <div class="cb"></div>
@@ -768,20 +773,11 @@ From: <span id="playnav-curvideo-channel-name"><a href="${window.location.href}"
     <div class="cb"></div>
 
   <div id="playnav-curvideo-description-container">
-    <div id="playnav-curvideo-description" dir="ltr">${OBJ_HOMEVIDEO.description ? OBJ_HOMEVIDEO.description.runs[0].text : ""}
-      <div id="playnav-curvideo-description-more-holder" style="display: block;">
-        <div id="playnav-curvideo-description-more" class="inner-box-bg-color">
-          ...&nbsp;<a class="channel-cmd" href="javascript:;" onclick="playnav.toggleFullVideoDescription(true)">(more info)</a>&nbsp;&nbsp;
-        </div>
-        <div class="cb"></div>
-      </div>
-      <span id="playnav-curvideo-description-less">
-        <a href="javascript:;" class="channel-cmd" onclick="playnav.toggleFullVideoDescription(false)">(less info)</a>
-      </span>
+    <div id="playnav-curvideo-description" dir="ltr">${OBJ_HOMEVIDEO ? dec : ""}
     </div>
   </div>
 
-  <a href="http://www.youtube.com/watch?v=${OBJ_HOMEVIDEO.videoId}" id="playnav-watch-link" onclick="playnav.goToWatchPage()">View comments, related videos, and more</a>
+  <a href="http://www.youtube.com/watch?v=${OBJ_HOMEVIDEO ? OBJ_HOMEVIDEO.videoId : ""}" id="playnav-watch-link" onclick="playnav.goToWatchPage()">View comments, related videos, and more</a>
 
 
   <div id="playnav-curvideo-controls">
