@@ -158,11 +158,13 @@
                         var j;
                         var data = {};
                         for (j = 0; j < b.length; j++) {
+                            if(!b[j].continuationItemRenderer) {
                             data[j] = {};
                             data[j].title = b[j].gridVideoRenderer.title.runs[0].text;
                             data[j].videoId = b[j].gridVideoRenderer.videoId;
                             data[j].views = b[j].gridVideoRenderer.viewCountText.simpleText;
                             data[j].date = b[j].gridVideoRenderer.publishedTimeText.simpleText;
+                            }
                         };
                         resolve(data);
                     }
