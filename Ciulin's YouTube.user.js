@@ -133,7 +133,96 @@
             </div>`
 
             return DOM;
-        }
+        };
+
+        if(name == "channel_videos") {
+            console.log("0")
+            document.wegiYT.data.channelVideos = new Promise(async resolve => {
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", `https://www.youtube.com/${window.location.pathname}/videos`);
+                xhr.onload = function(e) {
+                    let a = JSON.parse(xhr.response.split("var ytInitialData = ")[1].split(";</script>")[0]).contents.twoColumnBrowseResultsRenderer.tabs;
+
+                    try {
+                        a = a.find(a => a.tabRenderer.title === 'Videos');
+                    } catch(err) {
+                        return resolve(
+                            [
+                                {text: "This YouTube channel does not have a community tab!", author: "System", timestamp: "Now", image: ""}
+                            ]
+                        );
+                    }
+
+                    if(a.tabRenderer) {
+                        var b = a.tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].gridRenderer.items;
+                        var j;
+                        var data = {};
+                        for (j = 0; j < b.length; j++) {
+                            data[j] = {};
+                            data[j].title = b[j].gridVideoRenderer.title.runs[0].text;
+                            data[j].videoId = b[j].gridVideoRenderer.videoId;
+                            data[j].views = b[j].gridVideoRenderer.viewCountText.simpleText;
+                            data[j].date = b[j].gridVideoRenderer.publishedTimeText.simpleText;
+                        };
+                        resolve(data);
+                    }
+                }
+                xhr.onerror = function () {
+                    console.error("** An error occurred during the XMLHttpRequest");
+                };
+                xhr.send();
+            });
+
+            var videos = await document.wegiYT.data.channelVideos;
+            var string = "";
+            var i;
+
+            Object.entries(videos).forEach((entry) => {
+                var [key, object] = entry;
+                i = parseInt(key) + 1
+                var a = `
+                <div id="playnav-video-play-uploads-12-${object.videoId}" class="playnav-item playnav-video">
+                <div style="display:none" class="encryptedVideoId">${object.videoId}</div>
+                <div id="playnav-video-play-uploads-12-${object.videoId}-selector" class="selector"></div>
+                <div class="content">
+                <div class="playnav-video-thumb">
+                <a href="http://www.youtube.com/watch?v=${object.videoId}" class="ux-thumb-wrap contains-addto">
+                <span class="video-thumb ux-thumb-96 ">
+                <span class="clip">
+                <img src="//i1.ytimg.com/vi/${object.videoId}/default.jpg" alt="Thumbnail" class="" onclick=";return false;" title="${object.title}">
+                </span>
+                </span>
+                <span class="video-time">6:36</span>
+                <span dir="ltr" class="yt-uix-button-group addto-container short video-actions">
+                <button type="button" class="master-sprite start yt-uix-button yt-uix-button-short yt-uix-tooltip" onclick=";return false;" title="" role="button" aria-pressed="false">
+                <img class="yt-uix-button-icon-addto" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
+                <span class="yt-uix-button-content">
+                <span class="addto-label">Add to</span>
+                </span>
+                </button>
+                <button type="button" class="end yt-uix-button yt-uix-button-short yt-uix-tooltip" onclick=";return false;" title="" role="button" aria-pressed="false">
+                <img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
+                </button>
+                </span>
+                <span class="video-in-quicklist">Added to queue</span>
+                </a>
+                </div>
+                <div class="playnav-video-info">
+                <a href="http://www.youtube.com/watch?v=${object.videoId}" class="playnav-item-title ellipsis" onclick=";return false;" id="playnav-video-title-play-uploads-12-${object.videoId}">
+                <span dir="ltr">${object.title}</span>
+                </a>
+                <div class="metadata">
+                <span dir="ltr">${object.views}  -  ${object.date}</span>
+                </div>
+                <div style="display:none" id="playnav-video-play-uploads-12">${object.videoId}</div>
+                </div>
+                </div>
+                </div>`;
+                string += a;
+            });
+
+            return string;
+        };
     };
 
     // getCookie (from w3school.org)
@@ -684,9 +773,12 @@ Standard YouTube License
             if(OBJ_HOMEVIDEO) {
                 dec = OBJ_HOMEVIDEO.description ? OBJ_HOMEVIDEO.description.runs[0].text : "";
             }
+
+            var OBJ_VIDEOS = await document.wegiYT.load("channel_videos")
+
             var OBJ_PLAYNAVA = `<div id="playnav-body">
             <div id="playnav-player" class="playnav-player-container" style="visibility: visible; left: 0px;">
-            <iframe style="width:640px; height: 390px;" src="${OBJ_HOMEVIDEO ? "https://www.youtube.com/embed/" + OBJ_HOMEVIDEO.videoId + "?fs=0&rel=0&modestbranding=1" : ""}" id="movie_player"></iframe>
+            <iframe style="width:640px; height: 390px; background-color: #000;" src="${OBJ_HOMEVIDEO ? "https://www.youtube.com/embed/" + OBJ_HOMEVIDEO.videoId + "?fs=0&rel=0&modestbranding=1" : ""}" id="movie_player"></iframe>
             </div>
             <div id="playnav-playview" class="" style="display: block;">
             <div id="playnav-left-panel" style="display: block;">
@@ -711,7 +803,7 @@ Standard YouTube License
             </tr>
             <tr>
             <td class="panel-tab-indicator-cell inner-box-opacity">
-            <div class="panel-tab-indicator-arrow"></div>
+            <div class="panel-tab-indicator-arrow" style="border-bottom-color: rgb(238, 238, 255) !important;"></div>
             </td>
             </tr>
             </tbody>
@@ -721,7 +813,7 @@ Standard YouTube License
             </table>
             </div>
             <div class="cb"></div>
-            <div class="playnav-video-panel inner-box-colors border-box-sizing">
+            <div class="playnav-video-panel inner-box-colors border-box-sizing" style="background-color: rgb(238, 238, 255); color: rgb(51, 51, 51);">
             <div id="playnav-video-panel-inner" class="playnav-video-panel-inner border-box-sizing" style="overflow: auto;">
             <div id="playnav-panel-info" class="scrollable" style="display: block;">
             <div id="channel-like-action">
@@ -804,7 +896,7 @@ From: <span id="playnav-curvideo-channel-name"><a href="${window.location.href}"
 
     <div id="playnav-play-content" style="height: 601px;">
         <div class="playnav-playlist-holder" id="playnav-play-playlist-uploads-holder">
-                  <div id="playnav-play-uploads-scrollbox" class="scrollbox-wrapper inner-box-colors">
+                  <div id="playnav-play-uploads-scrollbox" style="background-color: rgb(238, 238, 255); color: rgb(51, 51, 51);" class="scrollbox-wrapper inner-box-colors">
     <div class="scrollbox-content playnav-playlist-non-all">
 
 
@@ -814,39 +906,7 @@ From: <span id="playnav-curvideo-channel-name"><a href="${window.location.href}"
 
 
                 <div id="playnav-play-uploads-page-0" class="scrollbox-page loaded videos-rows-50">
-
-
-
-
-
-  <div id="playnav-video-play-uploads-12-0gY_9semywg" class="playnav-item playnav-video">
-    <div style="display:none" class="encryptedVideoId">0gY_9semywg</div>
-
-    <div id="playnav-video-play-uploads-12-0gY_9semywg-selector" class="selector"></div>
-    <div class="content">
-      <div class="playnav-video-thumb">
-      <a href="/web/20110124093422/http://www.youtube.com/watch?v=0gY_9semywg" class="ux-thumb-wrap contains-addto"><span class="video-thumb ux-thumb-96 "><span class="clip"><img src="//web.archive.org/web/20110124093422im_/http://i1.ytimg.com/vi/0gY_9semywg/default.jpg" alt="Thumbnail" class="" onclick="playnav.playVideo('uploads','12','0gY_9semywg');return false;" title="5 Questions for Pomplamoose"></span></span><span class="video-time">6:36</span><span dir="ltr" class="yt-uix-button-group addto-container short video-actions" data-video-ids="0gY_9semywg" data-feature="thumbnail"><button type="button" class="master-sprite start yt-uix-button yt-uix-button-short yt-uix-tooltip" onclick=";return false;" title="" data-button-action="yt.www.addtomenu.add" role="button" aria-pressed="false"><img class="yt-uix-button-icon-addto" src="//web.archive.org/web/20110124093422im_/http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""> <span class="yt-uix-button-content"><span class="addto-label">Add to</span></span></button><button type="button" class="end yt-uix-button yt-uix-button-short yt-uix-tooltip" onclick=";return false;" title="" data-button-menu-id="shared-addto-menu" data-button-action="" role="button" aria-pressed="false"> <img class="yt-uix-button-arrow" src="//web.archive.org/web/20110124093422im_/http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""></button></span><span class="video-in-quicklist">Added to queue    </span></a>
-      </div>
-      <div class="playnav-video-info">
-        <a href="/web/20110124093422/http://www.youtube.com/watch?v=0gY_9semywg" class="playnav-item-title ellipsis" onclick="playnav.playVideo('uploads','12','0gY_9semywg');return false;" id="playnav-video-title-play-uploads-12-0gY_9semywg"><span dir="ltr">5 Questions for Pomplamoose</span></a>
-
-        <div class="metadata">
-
-
-
-
-
-
-              <span dir="ltr">4,379 views  -  5 days ago</span>
-
-
-
-        </div>
-
-        <div style="display:none" id="playnav-video-play-uploads-12">0gY_9semywg</div>
-      </div>
-    </div>
-  </div>
+${OBJ_VIDEOS}
   <div id="uploads-cb" class="cb"></div>
 
                 </div>
@@ -872,10 +932,10 @@ From: <span id="playnav-curvideo-channel-name"><a href="${window.location.href}"
 
       </div>`
 
-            OBJ_PLAYNAV = `<div id="user_playlist_navigator" class="outer-box yt-rounded">
-            <div id="playnav-channel-header" class="inner-box-bg-color">
+            OBJ_PLAYNAV = `<div id="user_playlist_navigator" style="background-color: rgb(153, 153, 153); color: rgb(0, 0, 0);" class="outer-box yt-rounded">
+            <div id="playnav-channel-header" class="inner-box-bg-color" style="background-color: rgb(238, 238, 255); color: rgb(51, 51, 51);">
             <div id="playnav-title-bar">
-            <div id="playnav-channel-name" class="outer-box-bg-color">
+            <div id="playnav-channel-name" style="background-color: rgb(153, 153, 153); color: rgb(0, 0, 0);" class="outer-box-bg-color">
             <div class="channel-thumb-holder outer-box-color-as-border-color"><div class="user-thumb-semismall">
             <div>
             <img src="${VALUE_CHANNELICON}">
@@ -906,7 +966,7 @@ From: <span id="playnav-curvideo-channel-name"><a href="${window.location.href}"
             </span>
             </div>
             </div>
-            <div id="playnav-chevron">&nbsp;</div>
+            <div id="playnav-chevron" style="border-left-color: rgb(153, 153, 153);">&nbsp;</div>
             </div>
             <div id="playnav-navbar">
             <table>
@@ -924,7 +984,7 @@ From: <span id="playnav-curvideo-channel-name"><a href="${window.location.href}"
             ${OBJ_PLAYNAVA}
             </div>`
 
-            OBJ_CHANNEL = `<div id="channel-body" class="jsloaded">
+            OBJ_CHANNEL = `<div id="channel-body" style="background-color: rgb(204, 204, 204)" class="jsloaded">
             <div id="channel-base-div">
             ${OBJ_PLAYNAV}
             ${OBJ_CHANCON}
