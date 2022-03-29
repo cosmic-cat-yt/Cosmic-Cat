@@ -5,6 +5,7 @@
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @match        https://www.youtube.com/*
+// @exclude      https://www.youtube.com/embed/*
 // @icon         https://www.google.com/s2/favicons?domain=youtube.com
 // @grant unsafeWindow
 // @grant GM_addStyle
@@ -32,6 +33,7 @@
     document.wegiYT.func = {};
     var BOOL_LOGIN = null;
     var BOOL_SUBSCRIBED = "";
+    var VALUE_USERNAME;
 
     document.wegiYT.load = async function(name) {
         if(name == "recent_feed") {
@@ -44,10 +46,13 @@
                     try {
                         a = a.find(a => a.tabRenderer.title === 'Community');
                     } catch(err) {
-                        a = null;
-                        console.error("A")
+                        return resolve(
+                            [
+                                {text: "This YouTube channel does not have a community tab!", author: "System", timestamp: "Now", image: ""}
+                            ]
+                        );
                     }
-                    if(a) {
+                    if(a.tabRenderer) {
                         var b = a.tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents;
                         var j;
                         var data = {};
@@ -68,12 +73,9 @@
                             };
                         };
                         resolve(data);
-                    } else {
-                        resolve({text: "This YouTube channel does not have a community tab!"});
                     }
                 };
                 xhr.onerror = function () {
-                    resolve(undefined);
                     console.error("** An error occurred during the XMLHttpRequest");
                 };
                 xhr.send();
@@ -177,7 +179,13 @@
     // Get Subscription Data
     function getSubscription() {
         if(window.location.pathname.split("/")[1].match(/channel|user|^c{1}$/i)) {
-            return document.querySelector(".ytd-subscribe-button-renderer").innerText.replace(/(\n| )/gi, "");
+            if(document.querySelector(".ytd-subscribe-button-renderer")) {
+                console.log("AA")
+                return document.querySelector(".ytd-subscribe-button-renderer").innerText.replace(/(\n| )/gi, "");
+            } else {
+                console.log("AA")
+                return "Subscribe";
+            }
         }
         if(window.location.pathname.split("/")[1].match(/watch/i)) {
             return ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer.owner.videoOwnerRenderer.subscriptionButton.subscribed ? "subscribed" : "subscribe"
@@ -233,7 +241,6 @@
         // Userbar
 
         // SET USERNAME
-            var VALUE_USERNAME;
             var VALUE_USERLINK;
 
         var OBJ_LOGIN = ``;
@@ -267,7 +274,7 @@
             var VALUE_CHANNELNAME = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer.owner.videoOwnerRenderer.title.runs[0].text;
             var VALUE_CHANNELURL = document.querySelector(".ytd-channel-name .yt-formatted-string").href;
             var VALUE_VIDEOVIEWS = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.viewCount.videoViewCountRenderer.viewCount.simpleText.split(" ")[0];
-            var VALUE_VIDEODESCRIPTIO = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer.description.runs;
+            var VALUE_VIDEODESCRIPTIO = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer.description ? ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer.description.runs : "";
             var VALUE_VIDEODESCRIPTION = "";
             var VALUE_VIDEOCATEGORY = ytInitialPlayerResponse.microformat.playerMicroformatRenderer.category;
             var VALUE_VIDEOTAG = ytInitialPlayerResponse.videoDetails.keywords ? ytInitialPlayerResponse.videoDetails.keywords : "";
@@ -558,9 +565,9 @@ Standard YouTube License
             DOMHEAD.appendChild(document.createElement("title"));
             setInterval(function(){document.head.querySelector("title").innerText = `${VALUE_CHANNELNAME}'s Channel - YouTube`}, 100);
 
-            if(VALUE_CHANNELNAME !== VALUE_USERNAME) {
+            //if(VALUE_CHANNELNAME !== VALUE_USERNAME) {
                 OBJ_SUBSCRIBE = getSubscription();
-            }
+            //}
 
             var VALUE_SUBSCRIB = await waitForElm("#subscriber-count").then((elm) => {document.wegiYT.data.subcount = elm.innerText.split(" ")[0]});
             VALUE_SUBSCRIBE = document.wegiYT.data.subcount;
@@ -671,6 +678,204 @@ Standard YouTube License
             <div class="cb"></div>
             </div>`
 
+            var OBJ_HOMEVIDEO = ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer;
+            var OBJ_PLAYNAVA = `<div id="playnav-body">
+            <div id="playnav-player" class="playnav-player-container" style="visibility: visible; left: 0px;">
+            <iframe style="width:640px; height: 390px;" src="https://www.youtube.com/embed/${OBJ_HOMEVIDEO.videoId}?fs=0&rel=0&modestbranding=1" id="movie_player"></iframe>
+            </div>
+            <div id="playnav-playview" class="" style="display: block;">
+            <div id="playnav-left-panel" style="display: block;">
+            <div class="playnav-player-container"></div>
+            <div id="playnav-video-details">
+            <div id="playnav-bottom-links">
+            <div id="playnav-bottom-links-clip" class="playnav-bottom-links-clip">
+            <table>
+            <tbody>
+            <tr>
+            <td id="playnav-panel-tab-info" class="panel-tab-selected">
+            <table class="panel-tabs">
+            <tbody>
+            <tr>
+            <td class="panel-tab-title-cell">
+            <div class="playnav-panel-tab-icon" id="panel-icon-info" onclick="playnav.selectPanel('info')"></div>
+            <div class="playnav-bottom-link" id="info-bottom-link">
+            <a href="javascript:;" onclick="playnav.selectPanel('info')">Info</a>
+            </div>
+            <div class="spacer">&nbsp;</div>
+            </td>
+            </tr>
+            <tr>
+            <td class="panel-tab-indicator-cell inner-box-opacity">
+            <div class="panel-tab-indicator-arrow"></div>
+            </td>
+            </tr>
+            </tbody>
+            </table>
+            </tr>
+            </tbody>
+            </table>
+            </div>
+            <div class="cb"></div>
+            <div class="playnav-video-panel inner-box-colors border-box-sizing">
+            <div id="playnav-video-panel-inner" class="playnav-video-panel-inner border-box-sizing" style="overflow: auto;">
+            <div id="playnav-panel-info" class="scrollable" style="display: block;">
+            <div id="channel-like-action">
+            <div id="channel-like-buttons">
+            <button title="I like this" type="button" class="master-sprite yt-uix-button yt-uix-tooltip" onclick=";return false;" id="watch-like" data-button-action="playnav.like" role="button" aria-pressed="false"><img class="yt-uix-button-icon-watch-like" src="https://web.archive.org/web/20110124093422im_///s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""> <span class="yt-uix-button-content">Like</span></button>
+        &nbsp;
+        <button title="I dislike this" type="button" class="master-sprite yt-uix-button yt-uix-tooltip" onclick=";return false;" id="watch-unlike" data-button-action="playnav.unlike" role="button" aria-pressed="false"><img class="yt-uix-button-icon-watch-unlike" src="https://web.archive.org/web/20110124093422im_///s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""> </button>
+      </div>
+      <form method="post" action="/web/20110124093422mp_/http://www.youtube.com/watch_ajax" name="likeForm" class="hid">
+
+        <input type="hidden" name="action_like_video" value="1">
+        <input type="hidden" name="video_id" value="T_wa5kV5_ek">
+      <input name="session_token" type="hidden" value="0BEQM2RGtVcN1WF1-RTAuMZMI898MTI5NTk0ODA2Mg=="></form>
+      <form method="post" action="/web/20110124093422mp_/http://www.youtube.com/watch_ajax" name="unlikeForm" class="hid">
+
+        <input type="hidden" name="action_dislike_video" value="1">
+        <input type="hidden" name="video_id" value="T_wa5kV5_ek">
+      <input name="session_token" type="hidden" value="0BEQM2RGtVcN1WF1-RTAuMZMI898MTI5NTk0ODA2Mg=="></form>
+        <div id="channel-like-logged-out" class="hid">
+            <strong><a href="https://web.archive.org/web/20110124093422mp_/https://www.google.com/accounts/ServiceLogin?uilel=3&amp;service=youtube&amp;passive=true&amp;continue=http%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26nomobiletemp%3D1%26hl%3Den_US%26next%3D%252Fuser%252FYouTube&amp;hl=en_US&amp;ltmpl=sso">Sign In</a> or <a href="https://web.archive.org/web/20110124093422mp_/https://www.google.com/accounts/LogoutWarning?continue=http%3A%2F%2Fwww.youtube.com%2Fcreate_account%3Fnext%3D%252Fuser%252FYouTube&amp;ltmpl=sso&amp;service=youtube&amp;hl=en_US">Sign Up</a> now!
+</strong>
+
+        </div>
+      <div id="channel-like-close" class="hid">
+        <div class="close"><img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="master-sprite close-button" onclick="playnav.hideLike();"></div>
+      </div>
+    </div>
+
+  <div id="playnav-curvideo-title" class="inner-box-link-color" dir="ltr">
+
+    <span style="cursor:pointer;margin-right:7px" onclick="document.location.href='/watch?v=${OBJ_HOMEVIDEO.videoId}'" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">
+      ${OBJ_HOMEVIDEO.title.runs[0].text}
+    </span>
+  </div>
+
+  <div id="playnav-curvideo-info-line">
+From: <span id="playnav-curvideo-channel-name"><a href="${window.location.href}">${ytInitialData.metadata.channelMetadataRenderer.title}</a></span>&nbsp;|
+    <span dir="ltr">${OBJ_HOMEVIDEO.publishedTimeText.runs[0].text}</span>
+      &nbsp;|
+        <span id="playnav-curvideo-view-count">${OBJ_HOMEVIDEO.viewCountText.simpleText}</span>
+  </div>
+
+  <div class="cb"></div>
+
+    <div id="channel-like-result" class="hid">
+      <div id="watch-actions-area" class="yt-rounded">&nbsp;</div>
+    </div>
+    <div id="channel-like-loading" class="hid">Loading...</div>
+    <div class="cb"></div>
+
+  <div id="playnav-curvideo-description-container">
+    <div id="playnav-curvideo-description" dir="ltr">${OBJ_HOMEVIDEO.description ? OBJ_HOMEVIDEO.description.runs[0].text : ""}
+      <div id="playnav-curvideo-description-more-holder" style="display: block;">
+        <div id="playnav-curvideo-description-more" class="inner-box-bg-color">
+          ...&nbsp;<a class="channel-cmd" href="javascript:;" onclick="playnav.toggleFullVideoDescription(true)">(more info)</a>&nbsp;&nbsp;
+        </div>
+        <div class="cb"></div>
+      </div>
+      <span id="playnav-curvideo-description-less">
+        <a href="javascript:;" class="channel-cmd" onclick="playnav.toggleFullVideoDescription(false)">(less info)</a>
+      </span>
+    </div>
+  </div>
+
+  <a href="http://www.youtube.com/watch?v=${OBJ_HOMEVIDEO.videoId}" id="playnav-watch-link" onclick="playnav.goToWatchPage()">View comments, related videos, and more</a>
+
+
+  <div id="playnav-curvideo-controls">
+  </div>
+
+  <div class="cb"></div>
+</div>
+
+          <div id="playnav-panel-comments" class="hid"></div>
+
+        <div id="playnav-panel-favorite" class="hid"></div>
+        <div id="playnav-panel-share" class="hid scrollable"></div>
+        <div id="playnav-panel-playlists" class="hid"></div>
+        <div id="playnav-panel-flag" class="hid scrollable"></div>
+      </div>
+    </div>
+  </div>
+
+            </div>
+          </div>
+            <div id="playnav-play-panel">
+
+
+
+    <div id="playnav-play-content" style="height: 601px;">
+        <div class="playnav-playlist-holder" id="playnav-play-playlist-uploads-holder">
+                  <div id="playnav-play-uploads-scrollbox" class="scrollbox-wrapper inner-box-colors">
+    <div class="scrollbox-content playnav-playlist-non-all">
+
+
+      <div class="scrollbox-body" style="height: 514px;">
+        <div class="outer-scrollbox">
+          <div id="playnav-play-uploads-items" class="inner-scrollbox">
+
+
+                <div id="playnav-play-uploads-page-0" class="scrollbox-page loaded videos-rows-50">
+
+
+
+
+
+  <div id="playnav-video-play-uploads-12-0gY_9semywg" class="playnav-item playnav-video">
+    <div style="display:none" class="encryptedVideoId">0gY_9semywg</div>
+
+    <div id="playnav-video-play-uploads-12-0gY_9semywg-selector" class="selector"></div>
+    <div class="content">
+      <div class="playnav-video-thumb">
+      <a href="/web/20110124093422/http://www.youtube.com/watch?v=0gY_9semywg" class="ux-thumb-wrap contains-addto"><span class="video-thumb ux-thumb-96 "><span class="clip"><img src="//web.archive.org/web/20110124093422im_/http://i1.ytimg.com/vi/0gY_9semywg/default.jpg" alt="Thumbnail" class="" onclick="playnav.playVideo('uploads','12','0gY_9semywg');return false;" title="5 Questions for Pomplamoose"></span></span><span class="video-time">6:36</span><span dir="ltr" class="yt-uix-button-group addto-container short video-actions" data-video-ids="0gY_9semywg" data-feature="thumbnail"><button type="button" class="master-sprite start yt-uix-button yt-uix-button-short yt-uix-tooltip" onclick=";return false;" title="" data-button-action="yt.www.addtomenu.add" role="button" aria-pressed="false"><img class="yt-uix-button-icon-addto" src="//web.archive.org/web/20110124093422im_/http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""> <span class="yt-uix-button-content"><span class="addto-label">Add to</span></span></button><button type="button" class="end yt-uix-button yt-uix-button-short yt-uix-tooltip" onclick=";return false;" title="" data-button-menu-id="shared-addto-menu" data-button-action="" role="button" aria-pressed="false"> <img class="yt-uix-button-arrow" src="//web.archive.org/web/20110124093422im_/http://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""></button></span><span class="video-in-quicklist">Added to queue    </span></a>
+      </div>
+      <div class="playnav-video-info">
+        <a href="/web/20110124093422/http://www.youtube.com/watch?v=0gY_9semywg" class="playnav-item-title ellipsis" onclick="playnav.playVideo('uploads','12','0gY_9semywg');return false;" id="playnav-video-title-play-uploads-12-0gY_9semywg"><span dir="ltr">5 Questions for Pomplamoose</span></a>
+
+        <div class="metadata">
+
+
+
+
+
+
+              <span dir="ltr">4,379 views  -  5 days ago</span>
+
+
+
+        </div>
+
+        <div style="display:none" id="playnav-video-play-uploads-12">0gY_9semywg</div>
+      </div>
+    </div>
+  </div>
+  <div id="uploads-cb" class="cb"></div>
+
+                </div>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+        </div>
+    </div>
+  </div>
+
+
+
+
+
+        </div>
+
+      </div>`
+
             OBJ_PLAYNAV = `<div id="user_playlist_navigator" class="outer-box yt-rounded">
             <div id="playnav-channel-header" class="inner-box-bg-color">
             <div id="playnav-title-bar">
@@ -706,7 +911,22 @@ Standard YouTube License
             </div>
             </div>
             <div id="playnav-chevron">&nbsp;</div>
-            </div><div class="cb"></div></div></div>`
+            </div>
+            <div id="playnav-navbar">
+            <table>
+            <tbody>
+            <tr>
+            <td>
+            <a class="navbar-tab inner-box-link-color navbar-tab-selected" id="playnav-navbar-tab-playlists">Uploads</a>
+            </td>
+            </tr>
+            </tbody>
+            </table>
+            </div>
+            <div class="cb"></div>
+            </div>
+            ${OBJ_PLAYNAVA}
+            </div>`
 
             OBJ_CHANNEL = `<div id="channel-body" class="jsloaded">
             <div id="channel-base-div">
@@ -759,7 +979,7 @@ Standard YouTube License
             <h3>
             <a href="http://www.youtube.com/watch?v=${results[i].videoRenderer.videoId}" class="yt-uix-tile-link" dir="ltr" title="${results[i].videoRenderer.title.runs[0].text}">${results[i].videoRenderer.title.runs[0].text}</a>
             </h3>
-            <p id="video-description-${results[i].videoRenderer.videoId}" class="description" dir="ltr">${description}<b>...</b></p>
+            <p id="video-description-${results[i].videoRenderer.videoId}" class="description" dir="ltr">${description}</p>
             <ul class="single-line-lego-list"><li><a href="http://www.youtube.com/results?search_query=${searchpar}%2C+hd" class="yt-badge-std">hd</a>
             </li>
             </ul>
@@ -996,7 +1216,7 @@ Standard YouTube License
             </div>
             </div>
             </div>
-            <div class="yt-horizontal-rule">
+            <div class="yt-horizontal-rule" style="border-top: 2px solid #ddd;border-bottom: 2px solid #fff;">
             <span class="first"></span>
             <span class="second"></span>
             <span class="third"></span>
@@ -1151,9 +1371,19 @@ Standard YouTube License
         }
     }
 
+    // Modal Functions
+    document.wegiYT.func.showModal = function(text) {
+        alert(text)
+    }
+
     // Subscribe Function
     document.wegiYT.func.subscribe = async function() {
         if(BOOL_LOGIN == true) {
+            console.log(ytInitialData.metadata.channelMetadataRenderer.title + "\n" + VALUE_USERNAME)
+            if(ytInitialData.metadata.channelMetadataRenderer.title == VALUE_USERNAME) {
+                return document.wegiYT.func.showModal("No need to subscribe to yourself!")
+            }
+
             if(getSubscription() == "subscribed") {
                 document.querySelector("ytd-subscribe-button-renderer tp-yt-paper-button").click();
                 await waitForElm("#confirm-button").then((elm) => {elm.click()})
