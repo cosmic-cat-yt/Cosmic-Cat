@@ -186,10 +186,10 @@
                 <div id="playnav-video-play-uploads-12-${object.videoId}-selector" class="selector"></div>
                 <div class="content">
                 <div class="playnav-video-thumb">
-                <a href="http://www.youtube.com/watch?v=${object.videoId}" class="ux-thumb-wrap contains-addto">
+                <a href="http://www.youtube.com/watch?v=${object.videoId}" onclick="document.wegiYT.player.loadVideoById('${object.videoId}');return false;" class="ux-thumb-wrap contains-addto">
                 <span class="video-thumb ux-thumb-96 ">
                 <span class="clip">
-                <img src="//i1.ytimg.com/vi/${object.videoId}/default.jpg" alt="Thumbnail" class="" onclick=";return false;" title="${object.title}">
+                <img src="//i1.ytimg.com/vi/${object.videoId}/default.jpg" alt="Thumbnail" class="" onclick="document.wegiYT.player.loadVideoById('${object.videoId}');return false;" title="${object.title}">
                 </span>
                 </span>
                 <span class="video-time">6:36</span>
@@ -204,11 +204,10 @@
                 <img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
                 </button>
                 </span>
-                <span class="video-in-quicklist">Added to queue</span>
                 </a>
                 </div>
                 <div class="playnav-video-info">
-                <a href="http://www.youtube.com/watch?v=${object.videoId}" class="playnav-item-title ellipsis" onclick=";return false;" id="playnav-video-title-play-uploads-12-${object.videoId}">
+                <a href="http://www.youtube.com/watch?v=${object.videoId}" class="playnav-item-title ellipsis" onclick="document.wegiYT.player.loadVideoById('${object.videoId}');return false;" id="playnav-video-title-play-uploads-12-${object.videoId}">
                 <span dir="ltr">${object.title}</span>
                 </a>
                 <div class="metadata">
@@ -778,7 +777,7 @@ Standard YouTube License
 
             var OBJ_PLAYNAVA = `<div id="playnav-body">
             <div id="playnav-player" class="playnav-player-container" style="visibility: visible; left: 0px;">
-            <iframe style="width:640px; height: 390px; background-color: #000;" src="${OBJ_HOMEVIDEO ? "https://www.youtube.com/embed/" + OBJ_HOMEVIDEO.videoId + "?fs=0&rel=0&modestbranding=1" : ""}" id="movie_player"></iframe>
+            <div style="width:640px; height: 390px; background-color: #000;" id="video_player"></div>
             </div>
             <div id="playnav-playview" class="" style="display: block;">
             <div id="playnav-left-panel" style="display: block;">
@@ -1402,6 +1401,33 @@ ${OBJ_VIDEOS}
             })
         })
     };
+    if(window.location.pathname.split("/")[1].match(/channel|user|^c{1}$/i)) {
+       waitForElm("#video_player").then((elm) => {
+            var tag = document.createElement('script');
+            tag.src = "https://www.youtube.com/iframe_api";
+            var firstScriptTag = document.querySelector("#video_player");
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+            console.log("a")
+
+            function insertAfter(newNode, existingNode) {
+                existingNode.parentNode.insertBefore(newNode, existingNode.nextSibling);
+            }
+
+            var a = document.createElement("script")
+            a.innerText = `function onYouTubeIframeAPIReady() {
+                document.wegiYT.player = new YT.Player('video_player', {
+                    height: '390',
+                    width: '640',
+                    videoId: ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer ? ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer.videoId : "",
+                    playerVars: {
+                        'enablejsapi': 1,
+                        'rel': 0
+                    }
+                });
+            }`;
+            insertAfter(a, firstScriptTag);
+        })
+    }
 
     // Rating Functions
     document.wegiYT.func.likeThis = function() {
