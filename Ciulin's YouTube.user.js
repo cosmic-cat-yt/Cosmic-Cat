@@ -834,9 +834,9 @@ Standard YouTube License
 
   <div id="playnav-curvideo-title" class="inner-box-link-color" dir="ltr">
 
-    <span style="cursor:pointer;margin-right:7px" onclick="document.location.href='/watch?v=${OBJ_HOMEVIDEO ? OBJ_HOMEVIDEO.videoId : ""}'" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">
+    <a style="cursor:pointer;margin-right:7px" href="/watch?v=${OBJ_HOMEVIDEO ? OBJ_HOMEVIDEO.videoId : ""}" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">
       ${OBJ_HOMEVIDEO ? OBJ_HOMEVIDEO.title.runs[0].text : ""}
-    </span>
+    </a>
   </div>
 
   <div id="playnav-curvideo-info-line">
@@ -1454,9 +1454,9 @@ ${OBJ_VIDEOS}
             let a = JSON.parse(xhr.response.split("var ytInitialPlayerResponse = ")[1].split(";var")[0]).videoDetails;
             if(a) {
                 var data = {};
-                document.querySelector("#playnav-curvideo-title span").removeAttribute("onclick");
-                document.querySelector("#playnav-curvideo-title span").setAttribute("href", "/watch?v='" + a.videoId);
-                document.querySelector("#playnav-curvideo-title span").innerText = a.title;
+                document.querySelector("#playnav-curvideo-title a").removeAttribute("onclick");
+                document.querySelector("#playnav-curvideo-title a").setAttribute("href", "/watch?v=" + a.videoId);
+                document.querySelector("#playnav-curvideo-title a").innerText = a.title;
                 document.querySelector("#playnav-curvideo-description").innerText = a.shortDescription;
                 document.querySelector("#playnav-curvideo-view-count").innerText = a.viewCount + " views";
                 document.querySelector("#playnav-watch-link").href = "https://www.youtube.com/watch?v=" + a.videoId;
