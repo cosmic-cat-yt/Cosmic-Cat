@@ -190,10 +190,10 @@
                 <div id="playnav-video-play-uploads-12-${object.videoId}-selector" class="selector"></div>
                 <div class="content">
                 <div class="playnav-video-thumb">
-                <a href="http://www.youtube.com/watch?v=${object.videoId}" onclick="document.wegiYT.player.loadVideoById('${object.videoId}');return false;" class="ux-thumb-wrap contains-addto">
+                <a href="http://www.youtube.com/watch?v=${object.videoId}" onclick="document.wegiYT.func.loadVideo('${object.videoId}');return false;" class="ux-thumb-wrap contains-addto">
                 <span class="video-thumb ux-thumb-96 ">
                 <span class="clip">
-                <img src="//i1.ytimg.com/vi/${object.videoId}/default.jpg" alt="Thumbnail" class="" onclick="document.wegiYT.player.loadVideoById('${object.videoId}');return false;" title="${object.title}">
+                <img src="//i1.ytimg.com/vi/${object.videoId}/default.jpg" alt="Thumbnail" class="" onclick="document.wegiYT.func.loadVideo('${object.videoId}');return false;" title="${object.title}">
                 </span>
                 </span>
                 <span class="video-time">${object.duration}</span>
@@ -211,7 +211,7 @@
                 </a>
                 </div>
                 <div class="playnav-video-info">
-                <a href="http://www.youtube.com/watch?v=${object.videoId}" class="playnav-item-title ellipsis" onclick="document.wegiYT.player.loadVideoById('${object.videoId}');return false;" id="playnav-video-title-play-uploads-12-${object.videoId}">
+                <a href="http://www.youtube.com/watch?v=${object.videoId}" class="playnav-item-title ellipsis" onclick="document.wegiYT.func.loadVideo('${object.videoId}');return false;" id="playnav-video-title-play-uploads-12-${object.videoId}">
                 <span dir="ltr">${object.title}</span>
                 </a>
                 <div class="metadata">
@@ -821,27 +821,14 @@ Standard YouTube License
             <div id="playnav-panel-info" class="scrollable" style="display: block;">
             <div id="channel-like-action">
             <div id="channel-like-buttons">
-            <button title="I like this" type="button" class="master-sprite yt-uix-button yt-uix-tooltip" onclick=";return false;" id="watch-like" data-button-action="playnav.like" role="button" aria-pressed="false"><img class="yt-uix-button-icon-watch-like" src="https://web.archive.org/web/20110124093422im_///s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""> <span class="yt-uix-button-content">Like</span></button>
+            <button title="I like this" type="button" class="master-sprite yt-uix-button yt-uix-tooltip" onclick="window.location.href = 'https://www.youtube.com/watch?v=${OBJ_HOMEVIDEO.videoId}';return false;" id="watch-like" role="button" aria-pressed="false">
+            <img class="yt-uix-button-icon-watch-like" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
+            <span class="yt-uix-button-content">Like</span>
+            </button>
         &nbsp;
-        <button title="I dislike this" type="button" class="master-sprite yt-uix-button yt-uix-tooltip" onclick=";return false;" id="watch-unlike" data-button-action="playnav.unlike" role="button" aria-pressed="false"><img class="yt-uix-button-icon-watch-unlike" src="https://web.archive.org/web/20110124093422im_///s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""> </button>
-      </div>
-      <form method="post" action="/web/20110124093422mp_/http://www.youtube.com/watch_ajax" name="likeForm" class="hid">
-
-        <input type="hidden" name="action_like_video" value="1">
-        <input type="hidden" name="video_id" value="T_wa5kV5_ek">
-      <input name="session_token" type="hidden" value="0BEQM2RGtVcN1WF1-RTAuMZMI898MTI5NTk0ODA2Mg=="></form>
-      <form method="post" action="/web/20110124093422mp_/http://www.youtube.com/watch_ajax" name="unlikeForm" class="hid">
-
-        <input type="hidden" name="action_dislike_video" value="1">
-        <input type="hidden" name="video_id" value="T_wa5kV5_ek">
-      <input name="session_token" type="hidden" value="0BEQM2RGtVcN1WF1-RTAuMZMI898MTI5NTk0ODA2Mg=="></form>
-        <div id="channel-like-logged-out" class="hid">
-            <strong><a href="https://web.archive.org/web/20110124093422mp_/https://www.google.com/accounts/ServiceLogin?uilel=3&amp;service=youtube&amp;passive=true&amp;continue=http%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26nomobiletemp%3D1%26hl%3Den_US%26next%3D%252Fuser%252FYouTube&amp;hl=en_US&amp;ltmpl=sso">Sign In</a> or <a href="https://web.archive.org/web/20110124093422mp_/https://www.google.com/accounts/LogoutWarning?continue=http%3A%2F%2Fwww.youtube.com%2Fcreate_account%3Fnext%3D%252Fuser%252FYouTube&amp;ltmpl=sso&amp;service=youtube&amp;hl=en_US">Sign Up</a> now!
-</strong>
-
-        </div>
-      <div id="channel-like-close" class="hid">
-        <div class="close"><img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="master-sprite close-button" onclick="playnav.hideLike();"></div>
+        <button title="I dislike this" type="button" class="master-sprite yt-uix-button yt-uix-tooltip" onclick="window.location.href = 'https://www.youtube.com/watch?v=${OBJ_HOMEVIDEO.videoId}';return false;" id="watch-unlike" role="button" aria-pressed="false">
+        <img class="yt-uix-button-icon-watch-unlike" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
+        </button>
       </div>
     </div>
 
@@ -1457,7 +1444,32 @@ ${OBJ_VIDEOS}
         }
     }
 
-    // Modal Functions
+    // Load Video Function
+    document.wegiYT.func.loadVideo = function(id) {
+        if(!id) return console.error("No ID was specified");
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "https://www.youtube.com/watch?v=" + id);
+        xhr.onload = function(e) {
+            console.log(JSON.parse(xhr.response.split("var ytInitialPlayerResponse = ")[1].split(";var")[0]).videoDetails)
+            let a = JSON.parse(xhr.response.split("var ytInitialPlayerResponse = ")[1].split(";var")[0]).videoDetails;
+            if(a) {
+                var data = {};
+                document.querySelector("#playnav-curvideo-title span").removeAttribute("onclick");
+                document.querySelector("#playnav-curvideo-title span").setAttribute("href", "/watch?v='" + a.videoId);
+                document.querySelector("#playnav-curvideo-title span").innerText = a.title;
+                document.querySelector("#playnav-curvideo-description").innerText = a.shortDescription;
+                document.querySelector("#playnav-curvideo-view-count").innerText = a.viewCount + " views";
+                document.querySelector("#playnav-watch-link").href = "https://www.youtube.com/watch?v=" + a.videoId;
+                document.wegiYT.player.loadVideoById(a.videoId);
+            }
+        }
+        xhr.onerror = function () {
+            console.error("** An error occurred during the XMLHttpRequest");
+        };
+        xhr.send();
+    }
+
+    // Modal Function
     document.wegiYT.func.showModal = function(text) {
         alert(text)
     }
