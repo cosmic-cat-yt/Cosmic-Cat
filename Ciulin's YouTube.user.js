@@ -851,7 +851,7 @@ Standard YouTube License
 From: <span id="playnav-curvideo-channel-name"><a href="${window.location.href}">${ytInitialData.metadata.channelMetadataRenderer.title}</a></span>&nbsp;|
     <span dir="ltr">${OBJ_HOMEVIDEO ? OBJ_HOMEVIDEO.publishedTimeText.runs[0].text : ""}</span>
       &nbsp;|
-        <span id="playnav-curvideo-view-count">${OBJ_HOMEVIDEO ? OBJ_HOMEVIDEO.viewCountText.simpleText : ""}</span>
+        <span id="playnav-curvideo-view-count">${OBJ_HOMEVIDEO ? OBJ_HOMEVIDEO.viewCountText.simpleText.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ""}</span>
   </div>
 
   <div class="cb"></div>
@@ -1387,7 +1387,8 @@ ${OBJ_VIDEOS}
                     videoId: ytInitialPlayerResponse.videoDetails.videoId,
                     playerVars: {
                         'enablejsapi': 1,
-                        'rel': 0
+                        'rel': 0,
+                        'origin': 'https://www.youtube.com'
                     }
                 });
             }`;
@@ -1485,8 +1486,9 @@ ${OBJ_VIDEOS}
                 document.querySelector("#playnav-curvideo-title a").removeAttribute("onclick");
                 document.querySelector("#playnav-curvideo-title a").setAttribute("href", "/watch?v=" + a.videoId);
                 document.querySelector("#playnav-curvideo-title a").innerText = a.title;
+                document.querySelector("#playnav-curvideo-info-line span[dir='ltr']").innerText = `${Math.floor(a.lengthSeconds / 60)}:${a.lengthSeconds - Math.floor(a.lengthSeconds / 60) * 60}`;
                 document.querySelector("#playnav-curvideo-description").innerText = a.shortDescription;
-                document.querySelector("#playnav-curvideo-view-count").innerText = a.viewCount + " views";
+                document.querySelector("#playnav-curvideo-view-count").innerText = a.viewCount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " views";
                 document.querySelector("#playnav-watch-link").href = "https://www.youtube.com/watch?v=" + a.videoId;
                 document.wegiYT.player.loadVideoById(a.videoId);
             }
