@@ -1407,11 +1407,6 @@ ${OBJ_VIDEOS}
                 document.querySelector(".likes").innerText = likes.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 document.querySelector(".dislikes").innerText = dislikes.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             })
-            waitForElm(".ytp-preview").then((elm) => {
-                document.querySelector(".ytp-preview").parentNode.removeChild(document.querySelector(".ytp-preview"));
-                document.querySelector(".html5-endscreen").parentNode.removeChild(document.querySelector(".html5-endscreen"));
-                document.querySelectorAll('.ytp-ce-element').forEach(e => e.remove());
-            })
         })
     };
     if(window.location.pathname.split("/")[1].match(/channel|user|^c{1}$/i)) {
@@ -1448,9 +1443,14 @@ ${OBJ_VIDEOS}
             document.querySelectorAll("#top-level-buttons-computed ytd-toggle-button-renderer")[0].click();
             if(document.querySelector("#watch-like").classList.contains("liked")) {
                 document.querySelector("#watch-like").classList.remove("liked");
+                document.querySelector("span.likes").innerText = new Number(document.querySelector("span.likes").innerText) - 1;
             } else {
                 document.querySelector("#watch-like").classList.add("liked");
+                if(document.querySelector("#watch-unlike").classList.contains("unliked")) {
+                    document.querySelector("span.dislikes").innerText = new Number(document.querySelector("span.dislikes").innerText) - 1;
+                }
                 document.querySelector("#watch-unlike").classList.remove("unliked");
+                document.querySelector("span.likes").innerText = new Number(document.querySelector("span.likes").innerText) + 1;
             }
         }
     }
@@ -1459,9 +1459,15 @@ ${OBJ_VIDEOS}
             document.querySelectorAll("#top-level-buttons-computed ytd-toggle-button-renderer")[1].click();
             if(document.querySelector("#watch-unlike").classList.contains("unliked")) {
                 document.querySelector("#watch-unlike").classList.remove("unliked");
+                document.querySelector("span.dislikes").innerText = new Number(document.querySelector("span.dislikes").innerText) - 1;
             } else {
                 document.querySelector("#watch-unlike").classList.add("unliked");
+                if(document.querySelector("#watch-like").classList.contains("liked")) {
+                    document.querySelector("span.likes").innerText = new Number(document.querySelector("span.likes").innerText) - 1;
+                }
                 document.querySelector("#watch-like").classList.remove("liked");
+                //document.querySelector("span.likes").innerText = new Number(document.querySelector("span.likes").innerText) - 1;
+                document.querySelector("span.dislikes").innerText = new Number(document.querySelector("span.dislikes").innerText) + 1;
             }
         }
     }
