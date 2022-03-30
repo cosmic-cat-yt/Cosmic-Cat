@@ -1443,14 +1443,14 @@ ${OBJ_VIDEOS}
             document.querySelectorAll("#top-level-buttons-computed ytd-toggle-button-renderer")[0].click();
             if(document.querySelector("#watch-like").classList.contains("liked")) {
                 document.querySelector("#watch-like").classList.remove("liked");
-                document.querySelector("span.likes").innerText = new Number(document.querySelector("span.likes").innerText) - 1;
+                document.querySelector("span.likes").innerText = (new Number(document.querySelector("span.likes").innerText.replace(/,/g, "")) - 1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             } else {
                 document.querySelector("#watch-like").classList.add("liked");
                 if(document.querySelector("#watch-unlike").classList.contains("unliked")) {
-                    document.querySelector("span.dislikes").innerText = new Number(document.querySelector("span.dislikes").innerText) - 1;
+                    document.querySelector("span.dislikes").innerText = (new Number(document.querySelector("span.dislikes").innerText.replace(/,/g, "")) - 1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }
                 document.querySelector("#watch-unlike").classList.remove("unliked");
-                document.querySelector("span.likes").innerText = new Number(document.querySelector("span.likes").innerText) + 1;
+                document.querySelector("span.likes").innerText = (new Number(document.querySelector("span.likes").innerText.replace(/,/g, "")) + 1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             }
         }
     }
@@ -1459,15 +1459,15 @@ ${OBJ_VIDEOS}
             document.querySelectorAll("#top-level-buttons-computed ytd-toggle-button-renderer")[1].click();
             if(document.querySelector("#watch-unlike").classList.contains("unliked")) {
                 document.querySelector("#watch-unlike").classList.remove("unliked");
-                document.querySelector("span.dislikes").innerText = new Number(document.querySelector("span.dislikes").innerText) - 1;
+                document.querySelector("span.dislikes").innerText = (new Number(document.querySelector("span.dislikes").innerText.replace(/,/g, "")) - 1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             } else {
                 document.querySelector("#watch-unlike").classList.add("unliked");
                 if(document.querySelector("#watch-like").classList.contains("liked")) {
-                    document.querySelector("span.likes").innerText = new Number(document.querySelector("span.likes").innerText) - 1;
+                    document.querySelector("span.likes").innerText = (new Number(document.querySelector("span.likes").innerText.replace(/,/g, "")) - 1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }
                 document.querySelector("#watch-like").classList.remove("liked");
                 //document.querySelector("span.likes").innerText = new Number(document.querySelector("span.likes").innerText) - 1;
-                document.querySelector("span.dislikes").innerText = new Number(document.querySelector("span.dislikes").innerText) + 1;
+                document.querySelector("span.dislikes").innerText = (new Number(document.querySelector("span.dislikes").innerText.replace(/,/g, "")) + 1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             }
         }
     }
