@@ -432,8 +432,7 @@
             </div>
             <div id="watch-video-container">
             <div id="watch-video">
-            <div id="watch-video-extra">
-            </div>
+            <div id="video_player"></div>
             </div>
             </div>
             <div id="watch-main-container">
@@ -775,6 +774,15 @@ Standard YouTube License
 
             if(OBJ_HOMEVIDEO) {
                 dec = OBJ_HOMEVIDEO.description ? OBJ_HOMEVIDEO.description.runs[0].text : "";
+            } else {
+                OBJ_HOMEVIDEO = {};
+                OBJ_HOMEVIDEO.videoId = "";
+                OBJ_HOMEVIDEO.title = {};
+                OBJ_HOMEVIDEO.title.runs = [{text: ""}];
+                OBJ_HOMEVIDEO.publishedTimeText = {};
+                OBJ_HOMEVIDEO.publishedTimeText.runs = [{"text": ""}];
+                OBJ_HOMEVIDEO.viewCountText = {};
+                OBJ_HOMEVIDEO.viewCountText.simpleText = "";
             }
 
             var OBJ_VIDEOS = await document.wegiYT.load("channel_videos")
@@ -1360,18 +1368,32 @@ ${OBJ_VIDEOS}
     }
     window.onload = buildYouTube();
     if(window.location.pathname.split("/")[1].match(/watch/i)) {
-        waitForElm("#watch-video").then((elm) => {
-            document.querySelector("#watch-video").appendChild(document.querySelector("ytd-player"));
-            setInterval(function() {
-            document.querySelector("ytd-player").style = "height: 390px;width: 640px;display: block;";
-            document.querySelector(".video-stream").style.height = "390px";
-            document.querySelector(".video-stream").style.width = "640px";
-            document.querySelector("#movie_player").style.height = "390px";
-            document.querySelector("#movie_player").style.width = "640px";
-            document.querySelector("#movie_player").style.background = "black";
-            //document.querySelector(".ytp-chapter-hover-container").style.width = "640px";
-            document.querySelector(".ytp-chrome-bottom").style.left = "0px";
-            }, 1e3);
+        waitForElm("#video_player").then((elm) => {
+            var tag = document.createElement('script');
+            tag.src = "https://www.youtube.com/iframe_api";
+            var firstScriptTag = document.querySelector("#video_player");
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+            console.log("a")
+
+            function insertAfter(newNode, existingNode) {
+                existingNode.parentNode.insertBefore(newNode, existingNode.nextSibling);
+            }
+
+            var a = document.createElement("script")
+            a.innerText = `function onYouTubeIframeAPIReady() {
+                document.wegiYT.player = new YT.Player('video_player', {
+                    height: '390',
+                    width: '640',
+                    videoId: ytInitialPlayerResponse.videoDetails.videoId,
+                    playerVars: {
+                        'enablejsapi': 1,
+                        'rel': 0
+                    }
+                });
+            }`;
+            insertAfter(a, firstScriptTag);
+
+            document.querySelector("ytd-player").parentNode.removeChild(document.querySelector("ytd-player"));
 
             var xhr = new XMLHttpRequest();
             xhr.open("GET", "https://returnyoutubedislikeapi.com/Votes?videoId=" + window.location.search.split("?v=")[1]);
