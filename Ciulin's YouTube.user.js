@@ -159,11 +159,13 @@
                         var data = {};
                         for (j = 0; j < b.length; j++) {
                             if(!b[j].continuationItemRenderer) {
-                            data[j] = {};
-                            data[j].title = b[j].gridVideoRenderer.title.runs[0].text;
-                            data[j].videoId = b[j].gridVideoRenderer.videoId;
-                            data[j].views = b[j].gridVideoRenderer.viewCountText.simpleText;
-                            data[j].date = b[j].gridVideoRenderer.publishedTimeText.simpleText;
+                                console.log(b)
+                                data[j] = {};
+                                data[j].title = b[j].gridVideoRenderer.title.runs[0].text;
+                                data[j].videoId = b[j].gridVideoRenderer.videoId;
+                                data[j].views = b[j].gridVideoRenderer.viewCountText.simpleText;
+                                data[j].date = b[j].gridVideoRenderer.publishedTimeText.simpleText;
+                                data[j].duration = b[j].gridVideoRenderer.thumbnailOverlays.find(a => a.thumbnailOverlayTimeStatusRenderer).thumbnailOverlayTimeStatusRenderer.text.simpleText;
                             }
                         };
                         resolve(data);
@@ -194,7 +196,7 @@
                 <img src="//i1.ytimg.com/vi/${object.videoId}/default.jpg" alt="Thumbnail" class="" onclick="document.wegiYT.player.loadVideoById('${object.videoId}');return false;" title="${object.title}">
                 </span>
                 </span>
-                <span class="video-time">6:36</span>
+                <span class="video-time">${object.duration}</span>
                 <span dir="ltr" class="yt-uix-button-group addto-container short video-actions">
                 <button type="button" class="master-sprite start yt-uix-button yt-uix-button-short yt-uix-tooltip" onclick=";return false;" title="" role="button" aria-pressed="false">
                 <img class="yt-uix-button-icon-addto" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
