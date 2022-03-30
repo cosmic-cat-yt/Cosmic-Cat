@@ -1,6 +1,8 @@
 # Ciulin's YouTube
-#### This is the only true extension that brings the old YouTube design back. 
-#### Better than YouTube Redux! 
+#### This script recreates the 2011-2012 layout of YouTube completely!
+#### No polymer used!
+
+#### I made this because I don't like how YouTube Redux barely recreates the old design. And there aren't any other scripts/extensions other than YouTube Redux.
 
 ## SETUP
 
