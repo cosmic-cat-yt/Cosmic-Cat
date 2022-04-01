@@ -601,7 +601,7 @@
 
         // Channel (WIP)
         if(window.location.pathname.split("/")[1].match(/channel|user|^c{1}$/i)) {
-            if (/community|about|channels|playlists|membership|store/.test(window.location.pathname.split("/")[3])) window.location.href = window.location.pathname.split("/").slice(0,3).join("/")
+            if (/community|videos|about|channels|playlists|membership|store/.test(window.location.pathname.split("/")[3])) window.location.href = window.location.pathname.split("/").slice(0,3).join("/")
             let channelData = await new Promise(resolve => {
                 var xhr = new XMLHttpRequest();
                 xhr.open("GET", `https://www.youtube.com/${window.location.pathname}/about`)
@@ -1022,7 +1022,7 @@ ${OBJ_VIDEOS}
             </ul>
             <p class="facets">
             <span class="username-prepend">by</span>
-            <a href="http://www.youtube.com${results[i].videoRenderer.longBylineText.runs[0].navigationEndpoint.browseEndpoint.canonicalBaseUrl}" class="yt-user-name " dir="ltr">${results[i].videoRenderer.ownerText.runs[0].text}</a> <span class="metadata-separator">|</span>  <span class="date-added">${pub}</span> <span class="metadata-separator">|</span>  <span class="viewcount">${results[i].videoRenderer.viewCountText.simpleText}</span>
+            <a href="http://www.youtube.com${results[i].videoRenderer.longBylineText.runs[0].navigationEndpoint.browseEndpoint.canonicalBaseUrl}" class="yt-user-name " dir="ltr">${results[i].videoRenderer.ownerText.runs[0].text}</a> <span class="metadata-separator">|</span>  <span class="date-added">${pub}</span> <span class="metadata-separator">|</span>  <span class="viewcount">${results[i].videoRenderer.viewCountText ? results[i].videoRenderer.viewCountText.simpleText : "LIVE"}</span>
             </p>
             </div>
             </div>`;
