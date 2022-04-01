@@ -386,7 +386,7 @@
             var VALUE_SUGGESTEDVIDEO = ytInitialData.contents.twoColumnWatchNextResults.secondaryResults.secondaryResults.results[1].itemSectionRenderer.contents;
             var OBJ_SUGGESTEDVIDEOS = "";
             for (i = 0; i < VALUE_SUGGESTEDVIDEO.length; i++) {
-                if(!VALUE_SUGGESTEDVIDEO[i].continuationItemRenderer) {
+                if(!VALUE_SUGGESTEDVIDEO[i].continuationItemRenderer && VALUE_SUGGESTEDVIDEO[i].compactVideoRenderer) {
                 OBJ_SUGGESTEDVIDEOS += `<li class="video-list-item">
             <a href="https://www.youtube.com/watch?v=${VALUE_SUGGESTEDVIDEO[i].compactVideoRenderer.videoId}" class="video-list-item-link">
             <span class="ux-thumb-wrap contains-addto">
@@ -994,7 +994,7 @@ ${OBJ_VIDEOS}
             </span>
             </span>
             <span class="video-time">${time}</span>
-            <button onclick=";return false;" title="Watch Later" type="button" class="addto-button video-actions addto-watch-later-button-sign-in yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" data-button-menu-id="shared-addto-watch-later-login" data-video-ids="${results[i].videoRenderer.videoId}" role="button">
+            <button onclick=";return false;" title="Watch Later" type="button" class="addto-button video-actions addto-watch-later-button-sign-in yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" role="button">
             <span class="yt-uix-button-content">
             <span class="addto-label">Watch Later</span>
             <span class="addto-label-error">Error</span>
@@ -1026,7 +1026,7 @@ ${OBJ_VIDEOS}
             OBJ_CHANNEL = `<div id="content">
             <div id="search-header">
             <div id="search-header-inner">
-            <p class="num-results">About <strong>3,370,000</strong> results</p>
+            <p class="num-results">About <strong>${ytInitialData.estimatedResults.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</strong> results</p>
             <h2>Search results for <strong class="query"><span class="search-title-lego">${searchpar}</span></strong>
             </h2>
             </div>
