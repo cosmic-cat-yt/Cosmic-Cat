@@ -12,3 +12,7 @@ Easy!
 
 ## To-do
 #### There are lots of features missing. I'm doing my best to add them all in.
+
+## Disclaimer
+I'm not good at coding, so some of my code is unoptimized and could've been written in a better way.
+Feel free to contribute tho! Just don't modify the HTML code ^^;
