@@ -4,6 +4,8 @@
 // @version      0.1
 // @description  Broadcast Yourself
 // @author       CiulinUwU
+// @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
+// @downloadURL  https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
 // @match        https://www.youtube.com/*
 // @exclude      https://www.youtube.com/embed/*
 // @icon         https://www.google.com/s2/favicons?domain=youtube.com
