@@ -1013,7 +1013,7 @@ ${OBJ_VIDEOS}
             </ul>
             <p class="facets">
             <span class="username-prepend">by</span>
-            <a href="http://www.youtube.com/user/CaptainSparklez" class="yt-user-name " dir="ltr">${results[i].videoRenderer.ownerText.runs[0].text}</a> <span class="metadata-separator">|</span>  <span class="date-added">${pub}</span> <span class="metadata-separator">|</span>  <span class="viewcount">${results[i].videoRenderer.viewCountText.simpleText}</span>
+            <a href="http://www.youtube.com${results[i].videoRenderer.longBylineText.runs[0].navigationEndpoint.browseEndpoint.canonicalBaseUrl}" class="yt-user-name " dir="ltr">${results[i].videoRenderer.ownerText.runs[0].text}</a> <span class="metadata-separator">|</span>  <span class="date-added">${pub}</span> <span class="metadata-separator">|</span>  <span class="viewcount">${results[i].videoRenderer.viewCountText.simpleText}</span>
             </p>
             </div>
             </div>`;
