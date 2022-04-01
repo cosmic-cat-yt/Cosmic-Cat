@@ -379,7 +379,7 @@
             var i;
             for (i = 0; i < VALUE_VIDEODESCRIPTIO.length; i++) {
                 if(VALUE_VIDEODESCRIPTIO[i].navigationEndpoint && !VALUE_VIDEODESCRIPTIO[i].loggingDirectives) {
-                    VALUE_VIDEODESCRIPTION += `<a href="${VALUE_VIDEODESCRIPTIO[i].text}" target="_blank" title="${VALUE_VIDEODESCRIPTIO[i].text}" rel="nofollow" dir="ltr" class="yt-uix-redirect-link">${VALUE_VIDEODESCRIPTIO[i].text}</a></p>`;
+                    VALUE_VIDEODESCRIPTION += `<a href="${decodeURIComponent(VALUE_VIDEODESCRIPTIO[i].navigationEndpoint.urlEndpoint.url.split("q=")[1])}" target="_blank" title="${decodeURIComponent(VALUE_VIDEODESCRIPTIO[i].navigationEndpoint.urlEndpoint.url.split("q=")[1])}" rel="nofollow" dir="ltr" class="yt-uix-redirect-link">${decodeURIComponent(VALUE_VIDEODESCRIPTIO[i].navigationEndpoint.urlEndpoint.url.split("q=")[1])}</a></p>`;
                 };
                 if(VALUE_VIDEODESCRIPTIO[i].loggingDirectives) {
                     VALUE_VIDEOTAG.push(VALUE_VIDEODESCRIPTIO[i].text.split("#")[1])
