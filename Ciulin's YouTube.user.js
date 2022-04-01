@@ -1501,7 +1501,7 @@ ${OBJ_VIDEOS}
     // Subscribe Function
     document.wegiYT.func.subscribe = async function() {
         if(BOOL_LOGIN == true) {
-            if(ytInitialData.metadata.channelMetadataRenderer.title == VALUE_USERNAME) {
+            if(ytInitialData.metadata ? ytInitialData.metadata.channelMetadataRenderer.title : "" == VALUE_USERNAME) {
                 return document.wegiYT.func.showModal("No need to subscribe to yourself!")
             }
 
