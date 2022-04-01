@@ -383,6 +383,34 @@
                 VALUE_VIDEOTAGS += `<li><a href="https://www.youtube.com/results?search_query=${VALUE_VIDEOTAG[i]}&amp;search=tag">${VALUE_VIDEOTAG[i]}</a></li>`;
             }
             VALUE_VIDEODESCRIPTION = VALUE_VIDEODESCRIPTION.replace(/(?:\r\n|\r|\n)/g, '<br>');
+            var VALUE_SUGGESTEDVIDEO = ytInitialData.contents.twoColumnWatchNextResults.secondaryResults.secondaryResults.results[1].itemSectionRenderer.contents;
+            var OBJ_SUGGESTEDVIDEOS = "";
+            for (i = 0; i < VALUE_SUGGESTEDVIDEO.length; i++) {
+                if(!VALUE_SUGGESTEDVIDEO[i].continuationItemRenderer) {
+                OBJ_SUGGESTEDVIDEOS += `<li class="video-list-item">
+            <a href="https://www.youtube.com/watch?v=${VALUE_SUGGESTEDVIDEO[i].compactVideoRenderer.videoId}" class="video-list-item-link">
+            <span class="ux-thumb-wrap contains-addto">
+            <span class="video-thumb ux-thumb ux-thumb-110">
+            <span class="clip">
+            <img src="//i1.ytimg.com/vi/${VALUE_SUGGESTEDVIDEO[i].compactVideoRenderer.videoId}/default.jpg" alt="Thumbnail">
+            </span>
+            </span>
+            <span class="video-time">${VALUE_SUGGESTEDVIDEO[i].compactVideoRenderer.lengthText.simpleText}</span>
+            <button type="button" class="addto-button short video-actions yt-uix-button yt-uix-button-short" onclick=";return false;" role="button">
+            <img class="yt-uix-button-icon yt-uix-button-icon-addto" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
+            <span class="yt-uix-button-content">
+            <span class="addto-label">Add to</span>
+            </span>
+            <img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
+            </button>
+            </span>
+            <span dir="ltr" class="title" title="${VALUE_SUGGESTEDVIDEO[i].compactVideoRenderer.title.simpleText}">${VALUE_SUGGESTEDVIDEO[i].compactVideoRenderer.title.simpleText}</span>
+            <span class="stat">by ${VALUE_SUGGESTEDVIDEO[i].compactVideoRenderer.shortBylineText.runs[0].text}</span>
+            <span class="stat view-count">${VALUE_SUGGESTEDVIDEO[i].compactVideoRenderer.viewCountText.simpleText}</span>
+            </a>
+            </li>`;
+                }
+            }
 
             OBJ_CHANNEL = `<div id="content" class="">
             <div id="watch-container" itemscope="" itemtype="http://schema.org/VideoObject">
@@ -472,132 +500,94 @@
             <strong>
             <a href="https://accounts.google.com/ServiceLogin?uilel=3&amp;service=youtube&amp;passive=true&amp;continue=http%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26nomobiletemp%3D1%26hl%3Den_US%26next%3Dhttp%253A%252F%252Fwww.youtube.com%252Fwatch%253Fv%253D2mMWz9evo-s&amp;hl=en_US<mpl=sso">Sign In</a> or <a href="https://www.youtube.com/signup?next=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D2mMWz9evo-s">Sign Up</a> now!
             </strong>
-
-</div></div>
-  </div>
-  <div id="watch-actions-error" class="watch-actions-panel hid">
-    <div class="yt-alert yt-alert-error yt-alert-small yt-alert-naked yt-rounded "><span class="yt-alert-icon"><img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="icon master-sprite" alt="Alert icon"></span><div id="watch-error-string" class="yt-alert-content"></div></div>
-  </div>
-  <div id="watch-actions-share" class="watch-actions-panel hid"></div>
-
-  <div id="watch-actions-ajax" class="watch-actions-panel hid"></div>
-
-  <div class="close">
-    <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="close-button" onclick="yt.www.watch.actions.hide();">
-  </div>
-
-    </div>
-  </div>
-  <div id="watch-info">
-
-  <div id="watch-description" class="watch-expander yt-uix-expander" data-expander-action="yt.www.watch.watch5.handleToggleDescription">
-    <div id="watch-description-clip">
-      <p id="watch-uploader-info">
-        Uploaded by     <a href="${VALUE_CHANNELURL}" class="yt-user-name author" rel="author" dir="ltr">${VALUE_CHANNELNAME}</a>
- on <span id="eow-date" class="watch-video-date">${VALUE_VIDEODATE}</span>
-
-      </p>
-      <div id="watch-description-text">
-        <p id="eow-description">${VALUE_VIDEODESCRIPTION}
-      </div>
-        <div id="watch-description-extras">
-    <h4>Category:</h4>
-        <p id="eow-category"><a href="//www.youtube.com/videos">${VALUE_VIDEOCATEGORY}</a></p>
-
-
-
-      <h4>Tags:</h4>
-        <ul id="eow-tags" class="watch-info-tag-list">
-        ${VALUE_VIDEOTAGS}
-        </ul>
-
-
-      <h4>License:</h4>
-        <p id="eow-reuse">
-Standard YouTube License
-  </p>
-
-
-  </div>
-
-    </div>
-    <div id="watch-description-fadeout"></div>
-
-      <ul id="watch-description-extra-info">
-      <li>
-        <div class="watch-sparkbars" style="background-color:red">
-          <div class="watch-sparkbar-likes"></div>
-        </div>
-        <span class="watch-likes-dislikes">
-<span class="likes"></span> likes, <span class="dislikes"></span> dislikes
-        </span>
-      </li>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  </ul>
-
-
+            </div>
+            </div>
+            </div>
+            <div id="watch-actions-error" class="watch-actions-panel hid">
+            <div class="yt-alert yt-alert-error yt-alert-small yt-alert-naked yt-rounded ">
+            <span class="yt-alert-icon">
+            <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="icon master-sprite" alt="Alert icon">
+            </span>
+            <div id="watch-error-string" class="yt-alert-content"></div>
+            </div>
+            </div>
+            <div id="watch-actions-share" class="watch-actions-panel hid"></div>
+            <div id="watch-actions-ajax" class="watch-actions-panel hid"></div>
+            <div class="close">
+            <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="close-button" onclick="yt.www.watch.actions.hide();">
+            </div>
+            </div>
+            </div>
+            <div id="watch-info">
+            <div id="watch-description" class="watch-expander yt-uix-expander" data-expander-action="yt.www.watch.watch5.handleToggleDescription">
+            <div id="watch-description-clip">
+            <p id="watch-uploader-info">Uploaded by <a href="${VALUE_CHANNELURL}" class="yt-user-name author" rel="author" dir="ltr">${VALUE_CHANNELNAME}</a> on <span id="eow-date" class="watch-video-date">${VALUE_VIDEODATE}</span></p>
+            <div id="watch-description-text">
+            <p id="eow-description">${VALUE_VIDEODESCRIPTION}</p>
+            </div>
+            <div id="watch-description-extras">
+            <h4>Category:</h4>
+            <p id="eow-category"><a href="//www.youtube.com/videos">${VALUE_VIDEOCATEGORY}</a></p>
+            <h4>Tags:</h4>
+            <ul id="eow-tags" class="watch-info-tag-list">
+            ${VALUE_VIDEOTAGS}
+            </ul>
+            <h4>License:</h4>
+            <p id="eow-reuse">Standard YouTube License</p>
+            </div>
+            </div>
+            <div id="watch-description-fadeout"></div>
+            <ul id="watch-description-extra-info">
+            <li>
+            <div class="watch-sparkbars" style="background-color:red">
+            <div class="watch-sparkbar-likes"></div>
+            </div>
+            <span class="watch-likes-dislikes">
+            <span class="likes"></span> likes, <span class="dislikes"></span> dislikes
+            </span>
+            </li>
+            </ul>
             <div class="horizontal-rule ">
-    <span class="first"></span>
-    <span class="second"></span>
-    <span class="third"></span>
-  </div>
-
-  <div id="watch-description-toggle" class="yt-uix-expander-head">
-    <div id="watch-description-expand" class="expand">
-        <button type="button" class="metadata-inline yt-uix-button yt-uix-button-text" onclick=";return false;" role="button"><span class="yt-uix-button-content">Show more <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Show more">
- </span></button>
-    </div>
-    <div id="watch-description-collapse" class="collapse">
-        <button type="button" class="metadata-inline yt-uix-button yt-uix-button-text" onclick=";return false;" role="button"><span class="yt-uix-button-content">Show less <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Show less">
- </span></button>
-    </div>
-  </div>
-
-
-
-  </div>
-
-  </div>
-
-
-
-      </div>
-
-      <div class="clear"></div>
-    </div>
-    <div style="visibility: hidden; height: 0px; padding: 0px; overflow: hidden;">
-
-
-
-  <div id="baseDiv"></div>
-
-    </div>
-  </div>
-</div>
-
-    </div>`
+            <span class="first"></span>
+            <span class="second"></span>
+            <span class="third"></span>
+            </div>
+            <div id="watch-description-toggle" class="yt-uix-expander-head">
+            <div id="watch-description-expand" class="expand">
+            <button type="button" class="metadata-inline yt-uix-button yt-uix-button-text" onclick=";return false;" role="button">
+            <span class="yt-uix-button-content">Show more <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Show more"></span>
+            </button>
+            </div>
+            <div id="watch-description-collapse" class="collapse">
+            <button type="button" class="metadata-inline yt-uix-button yt-uix-button-text" onclick=";return false;" role="button">
+            <span class="yt-uix-button-content">Show less <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Show less"></span>
+            </button>
+            </div>
+            </div>
+            </div>
+            </div>
+            </div>
+            <div id="watch-sidebar">
+            <div class="watch-sidebar-section ">
+            <div id="watch-related-container" class="watch-sidebar-body">
+            <ul id="watch-related" class="video-list">
+            ${OBJ_SUGGESTEDVIDEOS}
+            </ul>
+            <p class="content"></p>
+            </div>
+            </div>
+            <span class="vertical-rule-main"></span>
+            <span class="vertical-rule-corner-top"></span>
+            <span class="vertical-rule-corner-bottom"></span>
+            </div>
+            <div class="clear"></div>
+            </div>
+            <div style="visibility: hidden; height: 0px; padding: 0px; overflow: hidden;">
+            <div id="baseDiv"></div>
+            </div>
+            </div>
+            </div>
+            </div>`
         }
 
         // Channel (WIP)
