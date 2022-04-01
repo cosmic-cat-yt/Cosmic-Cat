@@ -1352,7 +1352,6 @@ ${OBJ_VIDEOS}
     }
     window.onload = buildYouTube();
     if(window.location.pathname.split("/")[1].match(/watch/i)) {
-        document.querySelector("ytd-player").parentNode.removeChild(document.querySelector("ytd-player"));
         waitForElm("#video_player").then((elm) => {
             var tag = document.createElement('script');
             tag.src = "https://www.youtube.com/iframe_api";
@@ -1377,6 +1376,8 @@ ${OBJ_VIDEOS}
                 });
             }`;
             insertAfter(a, firstScriptTag);
+
+            document.querySelector("ytd-player").parentNode.removeChild(document.querySelector("ytd-player"));
 
             var xhr = new XMLHttpRequest();
             xhr.open("GET", "https://returnyoutubedislikeapi.com/Votes?videoId=" + window.location.search.split("?v=")[1]);
