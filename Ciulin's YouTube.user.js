@@ -316,10 +316,19 @@
         DOMHEAD.innerHTML += '<link rel="stylesheet" href="//theunknownlugiastudio.com/poopoo/www-the-rest-vflNb6rAI.css">';
 
         // BODY
-        var o_DOMBODY = document.createElement("old_body");
-        o_DOMBODY.setAttribute("style", "display:none");
-        DOMHTML.appendChild(o_DOMBODY);
-        o_DOMBODY.appendChild(document.querySelector("body"));
+        var O_DOMBODY = document.querySelector("body");
+        var O_DOMBODYNEW = document.createElement("old_body");
+        var index;
+        while (O_DOMBODY.firstChild) {
+            O_DOMBODYNEW.appendChild(O_DOMBODY.firstChild);
+        }
+        for (index = O_DOMBODY.attributes.length - 1; index >= 0; --index) {
+            O_DOMBODYNEW.attributes.setNamedItem(O_DOMBODY.attributes[index].cloneNode());
+        }
+        O_DOMBODYNEW.style = "display:none";
+        O_DOMBODY.parentNode.replaceChild(O_DOMBODYNEW, O_DOMBODY);
+
+        var o_DOMBODY = document.querySelector("old_body");
         var DOMBODY = document.createElement("body");
         DOMBODY.setAttribute("class", "date-" + VALUE_DATE + " " + VALUE_LANG + " ltr thumb-normal");
         DOMBODY.setAttribute("dir", "ltr");
