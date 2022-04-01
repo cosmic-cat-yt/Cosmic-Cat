@@ -10,9 +10,15 @@ Install Tampermonkey for your Browser: https://www.tampermonkey.net<br/>
 Download the script: [Ciulin's YouTube.user.js](https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js)<br/>
 Easy!
 
+## Update System
+1.2.3<br/>
+1 < Major Release<br/>
+2 < New Page<br/>
+3 < Bug/Minor fixes<br/>
+
 ## To-do
 #### There are lots of features missing. I'm doing my best to add them all in.
 
 ## Disclaimer
-I'm not good at coding, so some of my code is unoptimized and could've been written in a better way.
+I'm not good at coding, so some of my code is unoptimized and could've been written in a better way.<br/>
 Feel free to contribute tho! Just don't modify the HTML code ^^;
