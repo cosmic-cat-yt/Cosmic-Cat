@@ -61,7 +61,6 @@
                                 data[j] = {};
                                 data[j].text = "";
                                 data[j].image = "";
-                                console.log(b[j])
                                 if(b[j].backstagePostThreadRenderer.post.backstagePostRenderer.contentText.runs) {
                                     data[j].text = b[j].backstagePostThreadRenderer.post.backstagePostRenderer.contentText.runs[0].text;
                                 }
@@ -136,7 +135,6 @@
         };
 
         if(name == "channel_videos") {
-            console.log("0")
             document.wegiYT.data.channelVideos = new Promise(async resolve => {
                 var xhr = new XMLHttpRequest();
                 xhr.open("GET", `https://www.youtube.com/${window.location.pathname}/videos`);
@@ -159,7 +157,6 @@
                         var data = {};
                         for (j = 0; j < b.length; j++) {
                             if(!b[j].continuationItemRenderer) {
-                                console.log(b)
                                 data[j] = {};
                                 data[j].title = b[j].gridVideoRenderer.title.runs[0].text;
                                 data[j].videoId = b[j].gridVideoRenderer.videoId;
@@ -272,10 +269,8 @@
     function getSubscription() {
         if(window.location.pathname.split("/")[1].match(/channel|user|^c{1}$/i)) {
             if(document.querySelector(".ytd-subscribe-button-renderer")) {
-                console.log("AA")
                 return document.querySelector(".ytd-subscribe-button-renderer").innerText.replace(/(\n| )/gi, "");
             } else {
-                console.log("AA")
                 return "Subscribe";
             }
         }
@@ -360,7 +355,6 @@
 
         // Watch (WIP)
         if(window.location.pathname.split("/")[1].match(/watch/i)) {
-            console.debug("A")
             var VALUE_VIDEOTITLE = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.title.runs[0].text;
             var VALUE_VIDEODATE = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.dateText.simpleText;
             var VALUE_CHANNELNAME = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer.owner.videoOwnerRenderer.title.runs[0].text;
@@ -380,7 +374,6 @@
                 };
                 if(VALUE_VIDEODESCRIPTIO[i].loggingDirectives) {
                     VALUE_VIDEOTAG.push(VALUE_VIDEODESCRIPTIO[i].text.split("#")[1])
-                    console.log(VALUE_VIDEODESCRIPTIO[i].text)
                 };
                 if(!VALUE_VIDEODESCRIPTIO[i].navigationEndpoint && !VALUE_VIDEODESCRIPTIO[i].loggingDirectives) {
                     VALUE_VIDEODESCRIPTION += VALUE_VIDEODESCRIPTIO[i].text;
@@ -664,26 +657,18 @@ Standard YouTube License
             VALUE_SUBSCRIBE = document.wegiYT.data.subcount;
             if(VALUE_SUBSCRIBE.match(/K/)) {
                 if(VALUE_SUBSCRIBE.match(/\./)) {
-                   console.info(
-                       VALUE_SUBSCRIBE = VALUE_SUBSCRIBE.replace(/\./, "").replace(/K/, "00").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                   )
+                    VALUE_SUBSCRIBE = VALUE_SUBSCRIBE.replace(/\./, "").replace(/K/, "00").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
                 }
             }
             if(VALUE_SUBSCRIBE.match(/M/)) {
                 if(VALUE_SUBSCRIBE.match(/\d{3}/)) {
-                   console.info(
-                       VALUE_SUBSCRIBE = VALUE_SUBSCRIBE.replace(/\./, "").replace(/M/, "000000").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                   )
+                    VALUE_SUBSCRIBE = VALUE_SUBSCRIBE.replace(/\./, "").replace(/M/, "000000").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
                 }
                 if(VALUE_SUBSCRIBE.match(/\d{2,3}\.\d{1,2}/)) {
-                   console.info(
-                       VALUE_SUBSCRIBE = VALUE_SUBSCRIBE.replace(/\./, "").replace(/M/, "00000").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                   )
+                    VALUE_SUBSCRIBE = VALUE_SUBSCRIBE.replace(/\./, "").replace(/M/, "00000").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
                 }
                 if(VALUE_SUBSCRIBE.match(/\d{1,3}/)) {
-                   console.info(
-                       VALUE_SUBSCRIBE = VALUE_SUBSCRIBE.replace(/\./, "").replace(/M/, "0000").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                   )
+                    VALUE_SUBSCRIBE = VALUE_SUBSCRIBE.replace(/\./, "").replace(/M/, "0000").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
                 }
             }
 
@@ -1003,7 +988,6 @@ ${OBJ_VIDEOS}
 
             for(i = 0; i < results.length; i++) {
                 if(results[i].videoRenderer) {
-                    console.log(results[i].videoRenderer)
                     var description = results[i].videoRenderer.detailedMetadataSnippets ? results[i].videoRenderer.detailedMetadataSnippets[0].snippetText.runs[0].text : "";
                     var time = results[i].videoRenderer.lengthText ? results[i].videoRenderer.lengthText.simpleText : "";
                     var pub = results[i].videoRenderer.publishedTimeText ? results[i].videoRenderer.publishedTimeText.simpleText: "";
@@ -1368,12 +1352,12 @@ ${OBJ_VIDEOS}
     }
     window.onload = buildYouTube();
     if(window.location.pathname.split("/")[1].match(/watch/i)) {
+        document.querySelector("ytd-player").parentNode.removeChild(document.querySelector("ytd-player"));
         waitForElm("#video_player").then((elm) => {
             var tag = document.createElement('script');
             tag.src = "https://www.youtube.com/iframe_api";
             var firstScriptTag = document.querySelector("#video_player");
             firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-            console.log("a")
 
             function insertAfter(newNode, existingNode) {
                 existingNode.parentNode.insertBefore(newNode, existingNode.nextSibling);
@@ -1393,8 +1377,6 @@ ${OBJ_VIDEOS}
                 });
             }`;
             insertAfter(a, firstScriptTag);
-
-            document.querySelector("ytd-player").parentNode.removeChild(document.querySelector("ytd-player"));
 
             var xhr = new XMLHttpRequest();
             xhr.open("GET", "https://returnyoutubedislikeapi.com/Votes?videoId=" + window.location.search.split("?v=")[1]);
@@ -1416,7 +1398,6 @@ ${OBJ_VIDEOS}
             tag.src = "https://www.youtube.com/iframe_api";
             var firstScriptTag = document.querySelector("#video_player");
             firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-            console.log("a")
 
             function insertAfter(newNode, existingNode) {
                 existingNode.parentNode.insertBefore(newNode, existingNode.nextSibling);
@@ -1476,21 +1457,43 @@ ${OBJ_VIDEOS}
     // Load Video Function
     document.wegiYT.func.loadVideo = function(id) {
         if(!id) return console.error("No ID was specified");
+        var description;
+        description = new Promise(async resolve => {
+            var quick = new XMLHttpRequest();
+            quick.open("GET", "https://www.youtube.com/watch?v=" + id);
+            quick.onload = function(e) {
+                let a = JSON.parse(quick.response.split("var ytInitialPlayerResponse = ")[1].split(";var")[0]).videoDetails;
+                if(a) {
+                    return resolve(a.shortDescription);
+                }
+            }
+            quick.send();
+        });
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", "https://www.youtube.com/watch?v=" + id);
-        xhr.onload = function(e) {
-            console.log(JSON.parse(xhr.response.split("var ytInitialPlayerResponse = ")[1].split(";var")[0]).videoDetails)
-            let a = JSON.parse(xhr.response.split("var ytInitialPlayerResponse = ")[1].split(";var")[0]).videoDetails;
-            if(a) {
-                var data = {};
+        xhr.open("GET", `https://www.youtube.com/${window.location.pathname}/videos`);
+        xhr.onload = async function(e) {
+            let a = JSON.parse(xhr.response.split("var ytInitialData = ")[1].split(";</script>")[0]).contents.twoColumnBrowseResultsRenderer.tabs;
+            try {
+                a = a.find(a => a.tabRenderer.title === 'Videos');
+            } catch(err) {
+            }
+            if(a.tabRenderer) {
+                var b = a.tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].gridRenderer.items;
+                try {
+                    b = b.find(a => a.gridVideoRenderer.videoId === id);
+                    b = b.gridVideoRenderer;
+                } catch(err) {
+                    return console.error("Video does not exist or can't be found");
+                }
                 document.querySelector("#playnav-curvideo-title a").removeAttribute("onclick");
-                document.querySelector("#playnav-curvideo-title a").setAttribute("href", "/watch?v=" + a.videoId);
-                document.querySelector("#playnav-curvideo-title a").innerText = a.title;
-                document.querySelector("#playnav-curvideo-info-line span[dir='ltr']").innerText = `${Math.floor(a.lengthSeconds / 60)}:${a.lengthSeconds - Math.floor(a.lengthSeconds / 60) * 60}`;
-                document.querySelector("#playnav-curvideo-description").innerText = a.shortDescription;
-                document.querySelector("#playnav-curvideo-view-count").innerText = a.viewCount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " views";
-                document.querySelector("#playnav-watch-link").href = "https://www.youtube.com/watch?v=" + a.videoId;
-                document.wegiYT.player.loadVideoById(a.videoId);
+                document.querySelector("#playnav-curvideo-title a").setAttribute("href", "/watch?v=" + b.videoId);
+                document.querySelector("#playnav-curvideo-title a").innerText = b.title.runs[0].text;
+                document.querySelector("#playnav-curvideo-info-line span[dir='ltr']").innerText = b.publishedTimeText.simpleText;
+                document.querySelector("#playnav-curvideo-description").innerText = await description;
+                document.querySelector("#playnav-curvideo-view-count").innerText = b.viewCountText.simpleText.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                document.querySelector("#playnav-watch-link").href = "https://www.youtube.com/watch?v=" + b.videoId;
+                document.wegiYT.player.loadVideoById(b.videoId);
+
             }
         }
         xhr.onerror = function () {
@@ -1507,7 +1510,6 @@ ${OBJ_VIDEOS}
     // Subscribe Function
     document.wegiYT.func.subscribe = async function() {
         if(BOOL_LOGIN == true) {
-            console.log(ytInitialData.metadata.channelMetadataRenderer.title + "\n" + VALUE_USERNAME)
             if(ytInitialData.metadata.channelMetadataRenderer.title == VALUE_USERNAME) {
                 return document.wegiYT.func.showModal("No need to subscribe to yourself!")
             }
@@ -1515,7 +1517,6 @@ ${OBJ_VIDEOS}
             if(getSubscription() == "subscribed") {
                 document.querySelector("ytd-subscribe-button-renderer tp-yt-paper-button").click();
                 await waitForElm("#confirm-button").then((elm) => {elm.click()})
-                console.log(getSubscription())
                 document.querySelectorAll(".subscribe-button .yt-uix-button-content").forEach(function(a) { a.innerText = "Subscribe"});
                 document.querySelector(".yt-subscription-button").classList.remove("subscribed")
                 BOOL_SUBSCRIBED = "subscribe";
