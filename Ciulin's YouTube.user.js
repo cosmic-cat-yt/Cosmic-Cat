@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.3.27
+// @version      0.3.28
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -408,7 +408,7 @@
             <img src="//i1.ytimg.com/vi/${VALUE_SUGGESTEDVIDEO[i].compactVideoRenderer.videoId}/default.jpg" alt="Thumbnail">
             </span>
             </span>
-            <span class="video-time">${VALUE_SUGGESTEDVIDEO[i].compactVideoRenderer.lengthText.simpleText}</span>
+            <span class="video-time">${VALUE_SUGGESTEDVIDEO[i].compactVideoRenderer.lengthText ? VALUE_SUGGESTEDVIDEO[i].compactVideoRenderer.lengthText.simpleText : "LIVE"}</span>
             <button type="button" class="addto-button short video-actions yt-uix-button yt-uix-button-short" onclick=";return false;" role="button">
             <img class="yt-uix-button-icon yt-uix-button-icon-addto" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
             <span class="yt-uix-button-content">
