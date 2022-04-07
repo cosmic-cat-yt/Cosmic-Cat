@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.3.29
+// @version      0.4.0
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -363,6 +363,180 @@
         var OBJ_FOOTER;
 
         var OBJ_CHANNEL = "";
+
+        // Home Page (WIP)
+        if(window.location.pathname == "/") {
+            DOMHEAD.innerHTML += '<link rel="stylesheet" href="//s.ytimg.com/yt/cssbin/www-guide-vflOh_ROh.css">';
+            var list_of_videos = ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.richGridRenderer.contents;
+            var OBJ_VIDEOS = "";
+            for (i = 0; i < list_of_videos.length; i++) {
+                if(!list_of_videos[i].richSectionRenderer && !list_of_videos[i].continuationItemRenderer && !list_of_videos[i].richItemRenderer.content.displayAdRenderer && !list_of_videos[i].richItemRenderer.content.radioRenderer) {
+                    var a = list_of_videos[i].richItemRenderer.content.videoRenderer;
+                    OBJ_VIDEOS += `<li class="feed-item-container">
+            <div class="feed-item upload">
+            <div class="feed-item-content">
+            <h3 class="feed-item-title">
+            <span class="feed-item-author">
+            <a href="http://www.youtube.com${a.ownerText.runs[0].navigationEndpoint.browseEndpoint.canonicalBaseUrl}" class="yt-user-photo">
+            <span class="video-thumb ux-thumb ux-thumb-profile-24">
+            <span class="clip">
+            <span class="clip-inner">
+            <img src="${a.channelThumbnailSupportedRenderers.channelThumbnailWithLinkRenderer.thumbnail.thumbnails[0].url}" alt="${a.ownerText.runs[0].text}">
+            <span class="vertical-align"></span>
+            </span>
+            </span>
+            </span>
+            </a>
+            </span>
+            <span class="feed-item-owner">
+            <a href="http://www.youtube.com${a.ownerText.runs[0].navigationEndpoint.browseEndpoint.canonicalBaseUrl}" class="yt-user-name" dir="ltr">${a.ownerText.runs[0].text}</a>
+            </span> ${a.publishedTimeText ? "uploaded" : "is LIVE"} <span class="time-created">${a.publishedTimeText ? a.publishedTimeText.simpleText : ""}</span>
+            </h3>
+            <div class="feed-item-visual">
+            <div class="feed-item-visual-thumb">
+            <a class="ux-thumb-wrap contains-addto yt-uix-sessionlink" href="http://www.youtube.com/watch?v=${a.videoId}">
+            <span class="video-thumb ux-thumb ux-thumb-288">
+            <span class="clip">
+            <span class="clip-inner">
+            <img src="//i3.ytimg.com/vi/${a.videoId}/hqdefault.jpg" alt="Thumbnail">
+            <span class="vertical-align"></span>
+            </span>
+            </span>
+            </span>
+            <span class="video-time">1:05:14</span>
+            <button type="button" class="addto-button short video-actions yt-uix-button yt-uix-button-short" onclick=";return false;" role="button">
+            <img class="yt-uix-button-icon yt-uix-button-icon-addto" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
+            <span class="yt-uix-button-content">
+            <span class="addto-label">Add to</span>
+            </span>
+            <img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
+            </button>
+            </a>
+            </div>
+            <div class="feed-item-visual-content">
+            <div class="feed-item-visual-description">
+            <h4>
+            <a class="title yt-uix-sessionlink" href="http://www.youtube.com/watch?v=${a.videoId}" dir="ltr">${a.title.runs[0].text}</a>
+            </h4>
+            <div class="description" dir="ltr">
+            <p>${a.descriptionSnippet ? a.descriptionSnippet.runs[0].text : ""}</p>
+            </div>
+            </div>
+            <p class="metadata">
+            <a href="http://www.youtube.com${a.ownerText.runs[0].navigationEndpoint.browseEndpoint.canonicalBaseUrl}" class="yt-user-name" dir="ltr">${a.ownerText.runs[0].text}</a>
+            <span class="view-count">${a.viewCountText.simpleText ? a.viewCountText.simpleText : a.viewCountText.runs[0].text + a.viewCountText.runs[1].text}</span>
+            </p>
+            </div>
+            </div>
+            </div>
+            </div>
+            </li>`;
+                }
+            }
+
+            OBJ_CHANNEL = `<div id="content">
+            <div class="guide-layout-container enable-fancy-subscribe-button">
+            <div class="guide-container">
+            <div id="guide-builder-promo">
+            <h2>Sign in to customize your homepage</h2>
+            <div id="guide-builder-promo-buttons" class="signed-out">
+            <button href="https://accounts.google.com/ServiceLogin?uilel=3&amp;service=youtube&amp;passive=true&amp;continue=http%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26nomobiletemp%3D1%26hl%3Den_US%26next%3D%252F%253Ffeature%253Dsignin&amp;hl=en_US&amp;ltmpl=sso" type="button" class=" yt-uix-button yt-uix-button-dark" onclick=";window.location.href=this.getAttribute('href');return false;" role="button">
+            <span class="yt-uix-button-content">Sign In </span>
+            </button>
+            <button href="/signup?next=%2Fchannels%3Ffeature%3Dsignup" type="button" class=" yt-uix-button yt-uix-button-primary" onclick=";window.location.href=this.getAttribute('href');return false;" role="button">
+            <span class="yt-uix-button-content">Create Account </span>
+            </button>
+            </div>
+            </div>
+            <div class="guide">
+            <div class="guide-section yt-uix-expander  first ">
+            <h3 class="guide-item-container selected-child">
+            <a class="guide-item selected" data-feed-name="youtube" data-feed-type="system">
+            <span class="thumb">
+            <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="" class="system-icon category">
+            </span>
+            <span class="display-name">From YouTube</span>
+            </a>
+            </h3>
+            <ul>
+            <li class="guide-item-container ">
+            <a class="guide-item" data-feed-name="trending" data-feed-type="system">
+            <span class="thumb">
+            <img class="system-icon system trending" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
+            </span>
+            <span class="display-name">Trending</span>
+            </a>
+            </li>
+            </ul>
+            </div>
+            </div>
+            </div>
+            <div class="guide-background"></div>
+            <div id="video-sidebar">
+            <h3>Recommended</h3>
+            <ul id="recommended-videos">
+            <li class="video-list-item recommended-video-item" data-video-id="tCSmIYmPOi4">
+            <a href="/web/20120125172025/http://www.youtube.com/watch?v=tCSmIYmPOi4" class="video-list-item-link yt-uix-sessionlink">
+            <span class="ux-thumb-wrap contains-addto "><span class="video-thumb ux-thumb ux-thumb-110">
+            <span class="clip">
+            <span class="clip-inner">
+            <img src="//i1.ytimg.com/vi/tCSmIYmPOi4/default.jpg" alt="Thumbnail">
+            <span class="vertical-align">
+            </span>
+            </span>
+            </span>
+            </span>
+            <span class="video-time">3:13</span>
+            <button type="button" class="addto-button short video-actions yt-uix-button yt-uix-button-short" onclick=";return false;" role="button">
+            <img class="yt-uix-button-icon yt-uix-button-icon-addto" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
+            <span class="yt-uix-button-content">
+            <span class="addto-label">Add to</span>
+            </span>
+            <img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
+            </button>
+            </span>
+            <span dir="ltr" class="title" title="&quot;Imagine...&quot;">"Imagine..."</span>
+            <span class="stat">by <span class="yt-user-name " dir="ltr">ghwavideos</span>
+            </span>
+            <span class="stat view-count">11,119 views</span>
+            </a>
+            </li>
+            </ul>
+            </div>
+            <div id="feed">
+            <div id="feed-main-youtube" class="individual-feed">
+            <div class="feed-header no-metadata before-feed-content">
+            <div class="feed-header-thumb">
+            <img class="feed-header-icon youtube" alt="" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
+            </div>
+            <div class="feed-header-details">
+            <h2>From YouTube</h2>
+            </div>
+            </div>
+            <div class="feed-container">
+            <div class="feed-page">
+            <ul>
+            ${OBJ_VIDEOS}
+            </ul>
+            </div>
+            </div>
+            </div>
+            <div id="feed-error" class="individual-feed hid">
+            <p class="feed-message">We were unable to complete the request, please try again later.</p>
+            </div>
+            <div id="feed-loading-template" class="hid">
+            <div class="feed-message">
+            <p class="loading-spinner">
+            <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
+            Loading...
+            </p>
+            </div>
+            </div>
+            </div>
+            <div id="feed-background"></div>
+            </div>
+            </div>`;
+        }
 
         // Watch (WIP)
         if(window.location.pathname.split("/")[1].match(/watch/i)) {
