@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.1
+// @version      0.4.2
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -403,7 +403,7 @@
             </span>
             </span>
             </span>
-            <span class="video-time">${a.thumbnailOverlays[0].thumbnailOverlayTimeStatusRenderer.text.simpleText}</span>
+            <span class="video-time">${a.thumbnailOverlays[0].thumbnailOverlayTimeStatusRenderer ? a.thumbnailOverlays[0].thumbnailOverlayTimeStatusRenderer.text.simpleText : "LIVE"}</span>
             <button type="button" class="addto-button short video-actions yt-uix-button yt-uix-button-short" onclick=";return false;" role="button">
             <img class="yt-uix-button-icon yt-uix-button-icon-addto" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
             <span class="yt-uix-button-content">
