@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.2
+// @version      0.4.3
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -434,6 +434,12 @@
                 }
             }
 
+            var T_OPENGUIDE = await waitForElm("#guide-button").then((elm) => {elm.click()});
+            var OBJ_SUBS = [];
+            var T_GUIDERENDERER = await waitForElm("#guide-renderer").then((elm) => {
+                console.debug(document.querySelectorAll("ytd-guide-section-renderer")[1].querySelectorAll("ytd-guide-entry-renderer.ytd-guide-section-renderer"))
+            });
+
             OBJ_CHANNEL = `<div id="content">
             <div class="guide-layout-container enable-fancy-subscribe-button">
             <div class="guide-container">
@@ -536,6 +542,7 @@
             <div id="feed-background"></div>
             </div>
             </div>`;
+            setInterval(() => {document.body.style = ""}, 1000)
         }
 
         // Watch (WIP)
