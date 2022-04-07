@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.3.28
+// @version      0.3.29
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -314,8 +314,8 @@
         //DOMHEAD.appendChild(document.querySelector("link[rel='search']"))
         DOMHEAD.innerHTML += '<link rel="icon" href="https://s.ytimg.com/yt/favicon-refresh-vfldLzJxy.ico">';
         DOMHEAD.innerHTML += '<link rel="shortcut icon" href="https://s.ytimg.com/yt/favicon-refresh-vfldLzJxy.ico">';
-        DOMHEAD.innerHTML += '<link rel="stylesheet" href="//theunknownlugiastudio.com/poopoo/www-refresh-vflzVUPsm.css">';
-        DOMHEAD.innerHTML += '<link rel="stylesheet" href="//theunknownlugiastudio.com/poopoo/www-the-rest-vflNb6rAI.css">';
+        DOMHEAD.innerHTML += '<link rel="stylesheet" href="//s.ytimg.com/yt/cssbin/www-refresh-vflzVUPsm.css">';
+        DOMHEAD.innerHTML += '<link rel="stylesheet" href="//s.ytimg.com/yt/cssbin/www-the-rest-vflNb6rAI.css">';
 
         // BODY
         var O_DOMBODY = document.querySelector("body");
@@ -645,7 +645,7 @@
             var OBJ_USERPROFILE;
             var OBJ_PROFILEINFONAME = "";
             // Append stylesheet
-            DOMHEAD.innerHTML += '<link rel="stylesheet" href="//theunknownlugiastudio.com/poopoo/www-channel_new-vflrWkVe_.css">';
+            DOMHEAD.innerHTML += '<link rel="stylesheet" href="//s.ytimg.com/yt/cssbin/www-channel_new-vflrWkVe_.css">';
 
             // Modify title
             o_DOMBODY.querySelector("title").parentNode.removeChild(o_DOMBODY.querySelector("title"));
