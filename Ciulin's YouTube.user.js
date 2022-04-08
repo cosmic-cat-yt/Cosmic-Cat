@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.6
+// @version      0.4.7
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -434,12 +434,6 @@
                 }
             }
 
-            var T_OPENGUIDE = await waitForElm("#guide-button").then((elm) => {elm.click()});
-            var OBJ_SUBS = [];
-            var T_GUIDERENDERER = await waitForElm("#guide-renderer").then((elm) => {
-                console.debug(document.querySelectorAll("ytd-guide-section-renderer")[1].querySelectorAll("ytd-guide-entry-renderer.ytd-guide-section-renderer"))
-            });
-
             OBJ_CHANNEL = `<div id="content">
             <div class="guide-layout-container enable-fancy-subscribe-button">
             <div class="guide-container">
@@ -517,7 +511,7 @@
         // Watch (WIP)
         if(window.location.pathname.split("/")[1].match(/watch/i)) {
             var VALUE_VIDEOTITLE = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.title.runs[0].text;
-            var VALUE_VIDEODATE = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.dateText.simpleText.split(" ").splice(1).join(" ");
+            var VALUE_VIDEODATE = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.dateText.simpleText.split("Premiered")[1] ? ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.dateText.simpleText.split("Premiered")[1] : ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.dateText.simpleText;
             var VALUE_CHANNELNAME = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer.owner.videoOwnerRenderer.title.runs[0].text;
             var VALUE_CHANNELURL = "https://www.youtube.com" + ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer.owner.videoOwnerRenderer.navigationEndpoint.browseEndpoint.canonicalBaseUrl;
             var VALUE_VIDEOVIEWS = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.viewCount.videoViewCountRenderer.viewCount.simpleText.split(" ")[0];
@@ -1696,7 +1690,7 @@ ${OBJ_VIDEOS}
     }
 
     // loadGuideNav Function
-    document.wegiYT.func.loadGuideNav = async function(a) {
+    document.wegiYT.func.loadGuideNav = function(a) {
         var guide = document.querySelector("#guide");
         if(guide.getAttribute("data-last-clicked-item") !== a.getAttribute("data-feed-name")) {
             guide.setAttribute("data-last-clicked-item", a.getAttribute("data-feed-name"));
@@ -1706,10 +1700,17 @@ ${OBJ_VIDEOS}
             a.classList.add("selected");
             document.querySelector("#feed-loading-template").classList.remove("hid");
             document.querySelector("#feed-main-youtube").classList.add("hid");
+            document.querySelector("#feed-error").classList.add("hid");
             var url = a.getAttribute("data-feed-url");
             var xhr = new XMLHttpRequest();
             xhr.open("GET", `https://www.youtube.com/${url}`);
-            xhr.onload = async function(e) {
+            xhr.timeout = 4000;
+            xhr.ontimeout = function () {
+                console.error("** An error occurred during the XMLHttpRequest");
+                document.querySelector("#feed-loading-template").classList.add("hid");
+                document.querySelector("#feed-error").classList.remove("hid");
+            };
+            xhr.onload = function(e) {
                 let b = JSON.parse(xhr.response.split("var ytInitialData = ")[1].split(";</script>")[0]).contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content;
                 let v = b.sectionListRenderer ? b.sectionListRenderer : b.richGridRenderer;
                 let x = v.contents[0].itemSectionRenderer ? v.contents[0].itemSectionRenderer.contents[0].shelfRenderer.content.expandedShelfContentsRenderer.items : v.contents;
