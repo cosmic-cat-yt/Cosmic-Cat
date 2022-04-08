@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.5
+// @version      0.4.6
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -455,9 +455,9 @@
             </div>
             </div>
             <div class="guide">
-            <div class="guide-section yt-uix-expander  first ">
+            <div class="guide-section yt-uix-expander first ">
             <h3 class="guide-item-container selected-child">
-            <a class="guide-item selected" data-feed-name="youtube" data-feed-type="system">
+            <a class="guide-item selected" data-feed-name="youtube" data-feed-url="" onclick="document.wegiYT.func.loadGuideNav(this)">
             <span class="thumb">
             <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="" class="system-icon category">
             </span>
@@ -466,7 +466,7 @@
             </h3>
             <ul>
             <li class="guide-item-container ">
-            <a class="guide-item" data-feed-name="trending" data-feed-type="system">
+            <a class="guide-item" data-feed-name="trending" data-feed-url="feed/trending" onclick="document.wegiYT.func.loadGuideNav(this)">
             <span class="thumb">
             <img class="system-icon system trending" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
             </span>
@@ -478,50 +478,19 @@
             </div>
             </div>
             <div class="guide-background"></div>
-            <div id="video-sidebar">
-            <h3>Recommended</h3>
-            <ul id="recommended-videos">
-            <li class="video-list-item recommended-video-item" data-video-id="tCSmIYmPOi4">
-            <a href="/web/20120125172025/http://www.youtube.com/watch?v=tCSmIYmPOi4" class="video-list-item-link yt-uix-sessionlink">
-            <span class="ux-thumb-wrap contains-addto "><span class="video-thumb ux-thumb ux-thumb-110">
-            <span class="clip">
-            <span class="clip-inner">
-            <img src="//i1.ytimg.com/vi/tCSmIYmPOi4/default.jpg" alt="Thumbnail">
-            <span class="vertical-align">
-            </span>
-            </span>
-            </span>
-            </span>
-            <span class="video-time">3:13</span>
-            <button type="button" class="addto-button short video-actions yt-uix-button yt-uix-button-short" onclick=";return false;" role="button">
-            <img class="yt-uix-button-icon yt-uix-button-icon-addto" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
-            <span class="yt-uix-button-content">
-            <span class="addto-label">Add to</span>
-            </span>
-            <img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
-            </button>
-            </span>
-            <span dir="ltr" class="title" title="&quot;Imagine...&quot;">"Imagine..."</span>
-            <span class="stat">by <span class="yt-user-name " dir="ltr">ghwavideos</span>
-            </span>
-            <span class="stat view-count">11,119 views</span>
-            </a>
-            </li>
-            </ul>
-            </div>
-            <div id="feed">
+            <div id="feed" style="width: 790px;">
             <div id="feed-main-youtube" class="individual-feed">
             <div class="feed-header no-metadata before-feed-content">
             <div class="feed-header-thumb">
             <img class="feed-header-icon youtube" alt="" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
             </div>
             <div class="feed-header-details">
-            <h2>From YouTube</h2>
+            <h2 class="feed-header-info">From YouTube</h2>
             </div>
             </div>
             <div class="feed-container">
             <div class="feed-page">
-            <ul>
+            <ul class="feed-list">
             ${OBJ_VIDEOS}
             </ul>
             </div>
@@ -539,7 +508,7 @@
             </div>
             </div>
             </div>
-            <div id="feed-background"></div>
+            <div id="feed-background" style="width: 790px;"></div>
             </div>
             </div>`;
             setInterval(() => {document.body.style = ""}, 1000)
@@ -548,9 +517,9 @@
         // Watch (WIP)
         if(window.location.pathname.split("/")[1].match(/watch/i)) {
             var VALUE_VIDEOTITLE = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.title.runs[0].text;
-            var VALUE_VIDEODATE = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.dateText.simpleText;
+            var VALUE_VIDEODATE = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.dateText.simpleText.split(" ").splice(1).join(" ");
             var VALUE_CHANNELNAME = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer.owner.videoOwnerRenderer.title.runs[0].text;
-            var VALUE_CHANNELURL = document.querySelector(".ytd-channel-name .yt-formatted-string").href;
+            var VALUE_CHANNELURL = "https://www.youtube.com" + ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer.owner.videoOwnerRenderer.navigationEndpoint.browseEndpoint.canonicalBaseUrl;
             var VALUE_VIDEOVIEWS = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.viewCount.videoViewCountRenderer.viewCount.simpleText.split(" ")[0];
             var VALUE_VIDEODESCRIPTIO = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer.description ? ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer.description.runs : "";
             var VALUE_VIDEODESCRIPTION = "";
@@ -797,9 +766,11 @@
                         if(!a[i].expandableTabRenderer && a[i].tabRenderer.title == "About") {
                             var longmf = a[i].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelAboutFullMetadataRenderer.joinedDateText;
                             var bitchmf = a[i].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelAboutFullMetadataRenderer.viewCountText;
+                            var smh = a[i].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelAboutFullMetadataRenderer.country;
                             var data = {};
                             data.viewers = bitchmf ? bitchmf.simpleText.split(" ")[0] : "None";
                             data.creationdate = longmf ? longmf.runs[1].text : "Unknown";
+                            data.country = smh ? smh.simpleText : "None";
                             resolve(data);
                         }
                     }
@@ -889,6 +860,11 @@
             <div class="show_info outer-box-bg-as-border">
             <div class="profile-info-label">Subscribers:</div>
             <div class="profile-info-value" id="profile_show_subscriber_count">${VALUE_SUBSCRIBE}</div>
+            <div class="cb"></div>
+            </div>
+            <div class="show_info outer-box-bg-as-border">
+            <div class="profile-info-label">Country:</div>
+            <div class="profile-info-value" id="profile_show_subscriber_count">${channelData.country}</div>
             <div class="cb"></div>
             </div>
             <div class="show_info outer-box-bg-as-border" style="border-bottom-width:1px;margin-bottom:4px;line-height:140%" dir="ltr">${VALUE_DESCRIPTION}</div>
@@ -1174,7 +1150,8 @@ ${OBJ_VIDEOS}
             for(i = 0; i < results.length; i++) {
                 if(results[i].videoRenderer) {
                     var description = results[i].videoRenderer.detailedMetadataSnippets ? results[i].videoRenderer.detailedMetadataSnippets[0].snippetText.runs[0].text : "";
-                    var time = results[i].videoRenderer.lengthText ? results[i].videoRenderer.lengthText.simpleText : "";
+                    var time = results[i].videoRenderer.lengthText ? results[i].videoRenderer.lengthText.simpleText : "LIVE";
+
                     var pub = results[i].videoRenderer.publishedTimeText ? results[i].videoRenderer.publishedTimeText.simpleText: "";
                     var main = `<div class="result-item yt-uix-tile yt-tile-default *sr">
             <div class="thumb-container">
@@ -1208,7 +1185,7 @@ ${OBJ_VIDEOS}
             </ul>
             <p class="facets">
             <span class="username-prepend">by</span>
-            <a href="http://www.youtube.com${results[i].videoRenderer.longBylineText.runs[0].navigationEndpoint.browseEndpoint.canonicalBaseUrl}" class="yt-user-name " dir="ltr">${results[i].videoRenderer.ownerText.runs[0].text}</a> <span class="metadata-separator">|</span>  <span class="date-added">${pub}</span> <span class="metadata-separator">|</span>  <span class="viewcount">${results[i].videoRenderer.viewCountText ? results[i].videoRenderer.viewCountText.simpleText : "LIVE"}</span>
+            <a href="http://www.youtube.com${results[i].videoRenderer.longBylineText.runs[0].navigationEndpoint.browseEndpoint.canonicalBaseUrl}" class="yt-user-name " dir="ltr">${results[i].videoRenderer.ownerText.runs[0].text}</a> <span class="metadata-separator">|</span>  <span class="date-added">${pub}</span> <span class="metadata-separator">|</span>  <span class="viewcount">${results[i].videoRenderer.viewCountText.simpleText ? results[i].videoRenderer.viewCountText.simpleText : results[i].videoRenderer.viewCountText.runs[0].text + results[i].videoRenderer.viewCountText.runs[1].text}</span>
             </p>
             </div>
             </div>`;
@@ -1715,6 +1692,100 @@ ${OBJ_VIDEOS}
                 BOOL_SUBSCRIBED = "subscribed";
             }
 
+        }
+    }
+
+    // loadGuideNav Function
+    document.wegiYT.func.loadGuideNav = async function(a) {
+        var guide = document.querySelector("#guide");
+        if(guide.getAttribute("data-last-clicked-item") !== a.getAttribute("data-feed-name")) {
+            guide.setAttribute("data-last-clicked-item", a.getAttribute("data-feed-name"));
+            document.querySelector(".selected-child").classList.remove("selected-child");
+            document.querySelector(".selected").classList.remove("selected");
+            a.parentNode.classList.add("selected-child");
+            a.classList.add("selected");
+            document.querySelector("#feed-loading-template").classList.remove("hid");
+            document.querySelector("#feed-main-youtube").classList.add("hid");
+            var url = a.getAttribute("data-feed-url");
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", `https://www.youtube.com/${url}`);
+            xhr.onload = async function(e) {
+                let b = JSON.parse(xhr.response.split("var ytInitialData = ")[1].split(";</script>")[0]).contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content;
+                let v = b.sectionListRenderer ? b.sectionListRenderer : b.richGridRenderer;
+                let x = v.contents[0].itemSectionRenderer ? v.contents[0].itemSectionRenderer.contents[0].shelfRenderer.content.expandedShelfContentsRenderer.items : v.contents;
+                let i;
+                var OBJ_VIDEOS = "";
+                document.querySelector(".feed-header-info").innerText = a.querySelector(".display-name").innerText;
+                for (i = 0; i < x.length; i++) {
+                    let z = x[i].richItemRenderer ? x[i].richItemRenderer.content : x[i].videoRenderer;
+                    if(!x[i].richSectionRenderer && !x[i].continuationItemRenderer && !z.displayAdRenderer && !z.radioRenderer) {
+                    let a = x[i].videoRenderer ? x[i].videoRenderer : x[i].richItemRenderer.content.videoRenderer;
+                    OBJ_VIDEOS += `<li class="feed-item-container">
+            <div class="feed-item upload">
+            <div class="feed-item-content">
+            <h3 class="feed-item-title">
+            <span class="feed-item-author">
+            <a href="http://www.youtube.com${a.ownerText.runs[0].navigationEndpoint.browseEndpoint.canonicalBaseUrl}" class="yt-user-photo">
+            <span class="video-thumb ux-thumb ux-thumb-profile-24">
+            <span class="clip">
+            <span class="clip-inner">
+            <img src="${a.channelThumbnailSupportedRenderers.channelThumbnailWithLinkRenderer.thumbnail.thumbnails[0].url}" alt="${a.ownerText.runs[0].text}">
+            <span class="vertical-align"></span>
+            </span>
+            </span>
+            </span>
+            </a>
+            </span>
+            <span class="feed-item-owner">
+            <a href="http://www.youtube.com${a.ownerText.runs[0].navigationEndpoint.browseEndpoint.canonicalBaseUrl}" class="yt-user-name" dir="ltr">${a.ownerText.runs[0].text}</a>
+            </span> ${a.publishedTimeText ? "uploaded" : "is LIVE"} <span class="time-created">${a.publishedTimeText ? a.publishedTimeText.simpleText : ""}</span>
+            </h3>
+            <div class="feed-item-visual">
+            <div class="feed-item-visual-thumb">
+            <a class="ux-thumb-wrap contains-addto yt-uix-sessionlink" href="http://www.youtube.com/watch?v=${a.videoId}">
+            <span class="video-thumb ux-thumb ux-thumb-288">
+            <span class="clip">
+            <span class="clip-inner">
+            <img src="//i3.ytimg.com/vi/${a.videoId}/hqdefault.jpg" alt="Thumbnail">
+            <span class="vertical-align"></span>
+            </span>
+            </span>
+            </span>
+            <span class="video-time">${a.thumbnailOverlays[0].thumbnailOverlayTimeStatusRenderer ? a.thumbnailOverlays[0].thumbnailOverlayTimeStatusRenderer.text.simpleText : "LIVE"}</span>
+            <button type="button" class="addto-button short video-actions yt-uix-button yt-uix-button-short" onclick=";return false;" role="button">
+            <img class="yt-uix-button-icon yt-uix-button-icon-addto" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
+            <span class="yt-uix-button-content">
+            <span class="addto-label">Add to</span>
+            </span>
+            <img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
+            </button>
+            </a>
+            </div>
+            <div class="feed-item-visual-content">
+            <div class="feed-item-visual-description">
+            <h4>
+            <a class="title yt-uix-sessionlink" href="http://www.youtube.com/watch?v=${a.videoId}" dir="ltr">${a.title.runs[0].text}</a>
+            </h4>
+            <div class="description" dir="ltr">
+            <p>${a.descriptionSnippet ? a.descriptionSnippet.runs[0].text : ""}</p>
+            </div>
+            </div>
+            <p class="metadata">
+            <a href="http://www.youtube.com${a.ownerText.runs[0].navigationEndpoint.browseEndpoint.canonicalBaseUrl}" class="yt-user-name" dir="ltr">${a.ownerText.runs[0].text}</a>
+            <span class="view-count">${a.viewCountText.simpleText ? a.viewCountText.simpleText : a.viewCountText.runs[0].text + a.viewCountText.runs[1].text}</span>
+            </p>
+            </div>
+            </div>
+            </div>
+            </div>
+            </li>`;
+                    }
+                }
+                document.querySelector(".feed-list").innerHTML = OBJ_VIDEOS;
+                document.querySelector("#feed-loading-template").classList.add("hid");
+                document.querySelector("#feed-main-youtube").classList.remove("hid");
+            }
+            xhr.send();
         }
     }
 })();
