@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.3
+// @version      0.4.4
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -943,6 +943,7 @@
 
             if(OBJ_HOMEVIDEO) {
                 dec = OBJ_HOMEVIDEO.description ? OBJ_HOMEVIDEO.description.runs[0].text : "";
+                document.querySelector("old_body").querySelector("ytd-player").parentNode.removeChild(document.querySelector("old_body").querySelector("ytd-player"))
             } else {
                 OBJ_HOMEVIDEO = {};
                 OBJ_HOMEVIDEO.videoId = "";
@@ -1695,7 +1696,8 @@ ${OBJ_VIDEOS}
     // Subscribe Function
     document.wegiYT.func.subscribe = async function() {
         if(BOOL_LOGIN == true) {
-            if(ytInitialData.metadata ? ytInitialData.metadata.channelMetadataRenderer.title : "" == VALUE_USERNAME) {
+            var str = ytInitialData.metadata ? ytInitialData.metadata.channelMetadataRenderer.title : "";
+            if(str == document.wegiYT.data.name) {
                 return document.wegiYT.func.showModal("No need to subscribe to yourself!")
             }
 
