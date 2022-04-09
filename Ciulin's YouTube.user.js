@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.10
+// @version      0.4.11
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -270,8 +270,9 @@
     // Get Subscription Data
     function getSubscription() {
         if(window.location.pathname.split("/")[1].match(/channel|user|^c{1}$/i)) {
-            var a = document.querySelector(".ytd-subscribe-button-renderer").hasAttribute("subscribed");
-            return a ? true : false;
+            var a = document.querySelector(".ytd-subscribe-button-renderer");
+            if(!a) return true;
+            return a.hasAttribute("subscribed") ? true : false;
         }
         if(window.location.pathname.split("/")[1].match(/watch/i)) {
             return ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer.owner.videoOwnerRenderer.subscriptionButton.subscribed ? true : false;
