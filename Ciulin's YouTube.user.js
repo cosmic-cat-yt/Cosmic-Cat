@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.11
+// @version      0.4.12
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -1554,17 +1554,18 @@ ${OBJ_VIDEOS}
     };
     if(window.location.pathname.split("/")[1].match(/channel|user|^c{1}$/i)) {
        waitForElm("#video_player").then((elm) => {
-            var tag = document.createElement('script');
-            tag.src = "https://www.youtube.com/iframe_api";
-            var firstScriptTag = document.querySelector("#video_player");
-            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+           var tag = document.createElement('script');
+           tag.src = "https://www.youtube.com/iframe_api";
+           var firstScriptTag = document.querySelector("#video_player");
+           firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-            function insertAfter(newNode, existingNode) {
-                existingNode.parentNode.insertBefore(newNode, existingNode.nextSibling);
-            }
+           function insertAfter(newNode, existingNode) {
+               existingNode.parentNode.insertBefore(newNode, existingNode.nextSibling);
+           }
 
-            var a = document.createElement("script")
-            a.innerText = `function onYouTubeIframeAPIReady() {
+           if(ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer) {
+               var a = document.createElement("script");
+               a.innerText = `function onYouTubeIframeAPIReady() {
                 document.wegiYT.player = new YT.Player('video_player', {
                     height: '390',
                     width: '640',
@@ -1575,8 +1576,9 @@ ${OBJ_VIDEOS}
                     }
                 });
             }`;
-            insertAfter(a, firstScriptTag);
-        })
+               insertAfter(a, firstScriptTag);
+           }
+       })
     }
 
     // Rating Functions
