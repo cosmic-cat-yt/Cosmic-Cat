@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.7
+// @version      0.4.8
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -270,14 +270,11 @@
     // Get Subscription Data
     function getSubscription() {
         if(window.location.pathname.split("/")[1].match(/channel|user|^c{1}$/i)) {
-            if(document.querySelector(".ytd-subscribe-button-renderer")) {
-                return document.querySelector(".ytd-subscribe-button-renderer").innerText.replace(/(\n| )/gi, "");
-            } else {
-                return "Subscribe";
-            }
+            var a = document.querySelector(".ytd-subscribe-button-renderer").hasAttribute("subscribed");
+            return a ? true : false;
         }
         if(window.location.pathname.split("/")[1].match(/watch/i)) {
-            return ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer.owner.videoOwnerRenderer.subscriptionButton.subscribed ? "subscribed" : "subscribe"
+            return ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer.owner.videoOwnerRenderer.subscriptionButton.subscribed ? true : false;
         }
     }
 
@@ -568,6 +565,7 @@
             </li>`;
                 }
             }
+            var VALUE_SUBBUTTON = getSubscription() ? "subscribed" : "subscribe";
 
             OBJ_CHANNEL = `<div id="content" class="">
             <div id="watch-container" itemscope="" itemtype="http://schema.org/VideoObject">
@@ -584,7 +582,7 @@
             <span class="yt-uix-button-content">${VALUE_CHANNELNAME}</span>
             </button>
             <div class="yt-subscription-button-hovercard yt-uix-hovercard">
-            <button href="" type="button" class="yt-subscription-button yt-subscription-button-js-default end yt-uix-button ${getSubscription()}" onclick="document.wegiYT.func.subscribe();return false;" role="button">
+            <button href="" type="button" class="yt-subscription-button yt-subscription-button-js-default end yt-uix-button ${VALUE_SUBBUTTON}" onclick="document.wegiYT.func.subscribe();return false;" role="button">
             <img class="yt-uix-button-icon yt-uix-button-icon-subscribe" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
             <span class="yt-uix-button-content">
             <span class="subscribe-label">Subscribe</span>
@@ -643,7 +641,9 @@
             </button>
             <button onclick=";return false;" title="Share or embed this video" type="button" class="yt-uix-tooltip-reverse yt-uix-button yt-uix-tooltip" id="watch-share" data-button-action="yt.www.watch.actions.share" role="button"><span class="yt-uix-button-content">Share</span>
             </button>
-            <button onclick=";return false;" title="Flag as inappropriate" type="button" class="yt-uix-tooltip-reverse yt-uix-button yt-uix-tooltip yt-uix-button-empty" id="watch-flag" data-button-action="yt.www.watch.actions.flag" role="button"><img class="yt-uix-button-icon yt-uix-button-icon-watch-flag" src="//web.archive.org/web/20111207174929im_/https://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Flag as inappropriate"></button>
+            <button onclick=";return false;" title="Flag as inappropriate" type="button" class="yt-uix-tooltip-reverse yt-uix-button yt-uix-tooltip yt-uix-button-empty" id="watch-flag" data-button-action="yt.www.watch.actions.flag" role="button">
+            <img class="yt-uix-button-icon yt-uix-button-icon-watch-flag" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Flag as inappropriate">
+            </button>
             </div>
             <div id="watch-actions-area-container" class="hid">
             <div id="watch-actions-area" class="yt-rounded">
@@ -799,7 +799,7 @@
             setInterval(function(){document.head.querySelector("title").innerText = `${VALUE_CHANNELNAME}'s Channel - YouTube`}, 100);
 
             //if(VALUE_CHANNELNAME !== VALUE_USERNAME) {
-                OBJ_SUBSCRIBE = getSubscription();
+                OBJ_SUBSCRIBE = getSubscription() ? "Subscribed" : "Subscribe";
             //}
 
             var VALUE_SUBSCRIB = await waitForElm("#subscriber-count").then((elm) => {document.wegiYT.data.subcount = elm.innerText.split(" ")[0]});
@@ -1672,8 +1672,8 @@ ${OBJ_VIDEOS}
             if(str == document.wegiYT.data.name) {
                 return document.wegiYT.func.showModal("No need to subscribe to yourself!")
             }
-
-            if(getSubscription() == "subscribed") {
+            var a = getSubscription() ? true : false;
+            if(a == true) {
                 document.querySelector("ytd-subscribe-button-renderer tp-yt-paper-button").click();
                 await waitForElm("#confirm-button").then((elm) => {elm.click()})
                 document.querySelectorAll(".subscribe-button .yt-uix-button-content").forEach(function(a) { a.innerText = "Subscribe"});
