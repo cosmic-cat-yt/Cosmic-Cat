@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.14
+// @version      0.4.15-1
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -1514,36 +1514,91 @@ ${OBJ_VIDEOS}
     window.onload = buildYouTube();
 
     // Make Player
-    document.wegiYT.func.buildPlayer = function(videoId) {
-        var tag = document.createElement('script');
-        tag.src = "https://www.youtube.com/iframe_api";
-        var firstScriptTag = document.querySelector("#video_player");
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    document.wegiYT.func.buildPlayer = function(videoId, time) {
+        var DOM = document.querySelector("#video_player");
+        DOM.player = {};
 
-        function insertAfter(newNode, existingNode) {
-            existingNode.parentNode.insertBefore(newNode, existingNode.nextSibling);
-        }
+        /* DOM_embedVideo */
+        (function(){
+            var DOM_embedVideo = document.createElement("div");
+            var DOM_embedVideoA = document.createElement("div");
+            var DOM_embedVideoB = document.createElement("div");
+            DOM_embedVideo.setAttribute("class", "video_container");
+            DOM_embedVideoA.setAttribute("id", "video_main_content");
+            DOM_embedVideoB.setAttribute("class", "video_blank");
+            DOM_embedVideo.appendChild(DOM_embedVideoA);
+            DOM_embedVideo.appendChild(DOM_embedVideoB);
+            DOM.appendChild(DOM_embedVideo);
+        })();
 
-        var a = document.createElement("script");
-        a.innerText = `function onYouTubeIframeAPIReady() {
-                document.wegiYT.player = new YT.Player('video_player', {
+        /* DOM_playBar */
+        (function(){
+            var DOM_playBar = document.createElement("div");
+            DOM_playBar.setAttribute("class", "video_playbar");
+            DOM_playBar.innerHTML = `<button class="playbar-play" onclick="document.wegiYT.player.playVideo();">PLAY</button>`;
+            DOM.appendChild(DOM_playBar);
+        })();
+
+
+        // DOM CSS
+        (function(){
+            var a = document.createElement("style");
+            a.setAttribute("class", "player_style");
+            a.innerText = `#video_player {width:640px;height:390px;} .video_container {position:relative;z-index:-1;} #video_main_content {position:relative;z-index:-2;} .video_blank {width: 640px;height: 390px;background-color: black;position: absolute;z-index: -1;top: 0;}`;
+            DOM.appendChild(a);
+        })();
+
+        // DOM JS
+        (function(){
+            function insertAfter(newNode, existingNode) {
+                existingNode.parentNode.insertBefore(newNode, existingNode.nextSibling);
+            }
+
+            var tag = document.createElement('script');
+            tag.src = "https://www.youtube.com/iframe_api";
+            var firstScriptTag = document.querySelector("#video_player");
+            insertAfter(tag, firstScriptTag);
+
+            var a = document.createElement("script");
+            var script = `
+            function onYouTubeIframeAPIReady(){
+                document.wegiYT.player = new YT.Player('video_main_content', {
                     height: '390',
                     width: '640',
                     videoId: '${videoId}',
                     playerVars: {
                         'enablejsapi': 1,
-                        'rel': 0
+                        'rel': 0,
+                        'start': '${time}',
+                        'controls': '0'
+                    },
+                    events: {
+                        'onReady': onPlayerReady,
+                        'onStateChange': onStateChange
                     }
                 });
-            }`;
-        insertAfter(a, firstScriptTag);
+            };
+
+            function onPlayerReady() {};
+            function onStateChange(e) {
+            console.debug(e.data);
+                if (e.data == 1) {
+                    document.querySelector(".video_blank").classList.add("hid");
+                    document.querySelector(".playbar-play").setAttribute("onclick", "document.wegiYT.player.pauseVideo();");
+                    document.querySelector(".playbar-play").innerText = "PAUSE";
+                }
+            };
+            `;
+            script = script.replace(/(?:\r\n|\r|\n)/g, "");
+            a.innerText = script;
+            insertAfter(a, tag);
+        })();
     };
 
     if(window.location.pathname.split("/")[1].match(/watch/i)) {
         waitForElm("#video_player").then((elm) => {
-            document.wegiYT.func.buildPlayer(ytInitialPlayerResponse.videoDetails.videoId, 0)
-
             document.querySelector("ytd-player").parentNode.removeChild(document.querySelector("ytd-player"));
+            document.wegiYT.func.buildPlayer(ytInitialPlayerResponse.videoDetails.videoId, window.location.href.split("t=")[1] ? window.location.href.split("t=")[1].split("s")[0] : 1)
 
             var xhr = new XMLHttpRequest();
             xhr.open("GET", "https://returnyoutubedislikeapi.com/Votes?videoId=" + window.location.search.split("?v=")[1]);
