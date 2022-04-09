@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.8
+// @version      0.4.9
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -46,7 +46,7 @@
                     let a = JSON.parse(xhr.response.split("var ytInitialData = ")[1].split(";</script>")[0]).contents.twoColumnBrowseResultsRenderer.tabs;
 
                     try {
-                        a = a.find(a => a.tabRenderer.title === 'Community');
+                        a = a.find(a => a.tabRenderer.endpoint.commandMetadata.webCommandMetadata.url.split("/")[3] === 'community');
                     } catch(err) {
                         return resolve(
                             [
@@ -144,7 +144,7 @@
                     let a = JSON.parse(xhr.response.split("var ytInitialData = ")[1].split(";</script>")[0]).contents.twoColumnBrowseResultsRenderer.tabs;
 
                     try {
-                        a = a.find(a => a.tabRenderer.title === 'Videos');
+                        a = a.find(a => a.tabRenderer.endpoint.commandMetadata.webCommandMetadata.url.split("/")[3] === 'videos');
                     } catch(err) {
                         return resolve(
                             [
@@ -757,7 +757,7 @@
                     var a = JSON.parse(xhr.response.split("var ytInitialData = ")[1].split(";</script>")[0]).contents.twoColumnBrowseResultsRenderer.tabs;
                     var i;
                     for (i = 0; i < a.length; i++) {
-                        if(!a[i].expandableTabRenderer && a[i].tabRenderer.title == "About") {
+                        if(!a[i].expandableTabRenderer && a[i].tabRenderer.endpoint.commandMetadata.webCommandMetadata.url.split("/")[3] == "about") {
                             var longmf = a[i].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelAboutFullMetadataRenderer.joinedDateText;
                             var bitchmf = a[i].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelAboutFullMetadataRenderer.viewCountText;
                             var smh = a[i].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelAboutFullMetadataRenderer.country;
