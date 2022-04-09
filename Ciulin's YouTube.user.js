@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.12
+// @version      0.4.13
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -1508,33 +1508,36 @@ ${OBJ_VIDEOS}
         </div>`
     }
     window.onload = buildYouTube();
-    if(window.location.pathname.split("/")[1].match(/watch/i)) {
-        waitForElm("#video_player").then((elm) => {
-            var tag = document.createElement('script');
-            tag.src = "https://www.youtube.com/iframe_api";
-            var firstScriptTag = document.querySelector("#video_player");
-            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-            function insertAfter(newNode, existingNode) {
-                existingNode.parentNode.insertBefore(newNode, existingNode.nextSibling);
-            }
+    // Make Player
+    document.wegiYT.func.buildPlayer = function(videoId) {
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.querySelector("#video_player");
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-            var time = window.location.href.split("t=")[1] ? window.location.href.split("t=")[1].split("s")[0] : 1;
-            var a = document.createElement("script")
-            a.innerText = `function onYouTubeIframeAPIReady() {
+        function insertAfter(newNode, existingNode) {
+            existingNode.parentNode.insertBefore(newNode, existingNode.nextSibling);
+        }
+
+        var a = document.createElement("script");
+        a.innerText = `function onYouTubeIframeAPIReady() {
                 document.wegiYT.player = new YT.Player('video_player', {
                     height: '390',
                     width: '640',
-                    videoId: ytInitialPlayerResponse.videoDetails.videoId,
+                    videoId: '${videoId}',
                     playerVars: {
                         'enablejsapi': 1,
-                        'rel': 0,
-                        'origin': 'https://www.youtube.com',
-                        'start': '${time}'
+                        'rel': 0
                     }
                 });
             }`;
-            insertAfter(a, firstScriptTag);
+        insertAfter(a, firstScriptTag);
+    };
+
+    if(window.location.pathname.split("/")[1].match(/watch/i)) {
+        waitForElm("#video_player").then((elm) => {
+            document.wegiYT.func.buildPlayer(ytInitialPlayerResponse.videoDetails.videoId, 0)
 
             document.querySelector("ytd-player").parentNode.removeChild(document.querySelector("ytd-player"));
 
@@ -1554,29 +1557,8 @@ ${OBJ_VIDEOS}
     };
     if(window.location.pathname.split("/")[1].match(/channel|user|^c{1}$/i)) {
        waitForElm("#video_player").then((elm) => {
-           var tag = document.createElement('script');
-           tag.src = "https://www.youtube.com/iframe_api";
-           var firstScriptTag = document.querySelector("#video_player");
-           firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-           function insertAfter(newNode, existingNode) {
-               existingNode.parentNode.insertBefore(newNode, existingNode.nextSibling);
-           }
-
            if(ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer) {
-               var a = document.createElement("script");
-               a.innerText = `function onYouTubeIframeAPIReady() {
-                document.wegiYT.player = new YT.Player('video_player', {
-                    height: '390',
-                    width: '640',
-                    videoId: ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer ? ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer.videoId : "",
-                    playerVars: {
-                        'enablejsapi': 1,
-                        'rel': 0
-                    }
-                });
-            }`;
-               insertAfter(a, firstScriptTag);
+               document.wegiYT.func.buildPlayer(ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer ? ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer.videoId : "")
            }
        })
     }
@@ -1619,6 +1601,9 @@ ${OBJ_VIDEOS}
     // Load Video Function
     document.wegiYT.func.loadVideo = function(id) {
         if(!id) return console.error("No ID was specified");
+        if(!document.querySelector("iframe.video_player")) {
+            document.wegiYT.func.buildPlayer();
+        }
         var description;
         description = new Promise(async resolve => {
             var quick = new XMLHttpRequest();
