@@ -1,13 +1,12 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.14
+// @version      0.4.15
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
 // @downloadURL  https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
 // @match        https://www.youtube.com/*
-// @exclude      https://www.youtube.com/embed/*
 // @icon         https://www.google.com/s2/favicons?domain=youtube.com
 // @grant unsafeWindow
 // @grant GM_addStyle
@@ -29,17 +28,39 @@
 
 (function() {
     'use strict';
-    document.wegiYT = {};
+    document.ciulinYT = {};
 
-    document.wegiYT.data = {};
-    document.wegiYT.func = {};
+    document.ciulinYT.data = {};
+    document.ciulinYT.func = {};
     var BOOL_LOGIN = null;
     var BOOL_SUBSCRIBED = "";
-    var VALUE_USERNAME;
+    var VALUE_USERNAME = "";
 
-    document.wegiYT.load = async function(name) {
+    function waitForElm(selector) {
+        return new Promise((resolve, reject) => {
+            let el = document.querySelector(selector);
+            if (el) {
+                resolve(el);
+                return
+            }
+            new MutationObserver((mutationRecords, observer) => {
+                Array.from(document.querySelectorAll(selector)).forEach((element) => {
+                    resolve(element);
+                    observer.disconnect();
+                });
+            })
+                .observe(document.documentElement, {
+                childList: true,
+                subtree: true
+            });
+        });
+    };
+
+    if(window.location.pathname.split("/")[1] !== "embed"){
+
+    document.ciulinYT.load = async function(name) {
         if(name == "recent_feed") {
-            document.wegiYT.data.communityPosts = new Promise(async resolve => {
+            document.ciulinYT.data.communityPosts = new Promise(async resolve => {
                 var xhr = new XMLHttpRequest();
                 xhr.open("GET", `https://www.youtube.com/${window.location.pathname}/community`);
                 xhr.onload = function(e) {
@@ -82,7 +103,7 @@
                 xhr.send();
             })
 
-            var posts = await document.wegiYT.data.communityPosts;
+            var posts = await document.ciulinYT.data.communityPosts;
             var string = "";
             var i;
 
@@ -137,7 +158,7 @@
         };
 
         if(name == "channel_videos") {
-            document.wegiYT.data.channelVideos = new Promise(async resolve => {
+            document.ciulinYT.data.channelVideos = new Promise(async resolve => {
                 var xhr = new XMLHttpRequest();
                 xhr.open("GET", `https://www.youtube.com/${window.location.pathname}/videos`);
                 xhr.onload = function(e) {
@@ -176,7 +197,7 @@
                 xhr.send();
             });
 
-            var videos = await document.wegiYT.data.channelVideos;
+            var videos = await document.ciulinYT.data.channelVideos;
             var string = "";
             var i;
 
@@ -189,10 +210,10 @@
                 <div id="playnav-video-play-uploads-12-${object.videoId}-selector" class="selector"></div>
                 <div class="content">
                 <div class="playnav-video-thumb">
-                <a href="http://www.youtube.com/watch?v=${object.videoId}" onclick="document.wegiYT.func.loadVideo('${object.videoId}');return false;" class="ux-thumb-wrap contains-addto">
+                <a href="http://www.youtube.com/watch?v=${object.videoId}" onclick="document.ciulinYT.func.loadVideo('${object.videoId}');return false;" class="ux-thumb-wrap contains-addto">
                 <span class="video-thumb ux-thumb-96 ">
                 <span class="clip">
-                <img src="//i1.ytimg.com/vi/${object.videoId}/default.jpg" alt="Thumbnail" class="" onclick="document.wegiYT.func.loadVideo('${object.videoId}');return false;" title="${object.title}">
+                <img src="//i1.ytimg.com/vi/${object.videoId}/default.jpg" alt="Thumbnail" class="" onclick="document.ciulinYT.func.loadVideo('${object.videoId}');return false;" title="${object.title}">
                 </span>
                 </span>
                 <span class="video-time">${object.duration}</span>
@@ -210,7 +231,7 @@
                 </a>
                 </div>
                 <div class="playnav-video-info">
-                <a href="http://www.youtube.com/watch?v=${object.videoId}" class="playnav-item-title ellipsis" onclick="document.wegiYT.func.loadVideo('${object.videoId}');return false;" id="playnav-video-title-play-uploads-12-${object.videoId}">
+                <a href="http://www.youtube.com/watch?v=${object.videoId}" class="playnav-item-title ellipsis" onclick="document.ciulinYT.func.loadVideo('${object.videoId}');return false;" id="playnav-video-title-play-uploads-12-${object.videoId}">
                 <span dir="ltr">${object.title}</span>
                 </a>
                 <div class="metadata">
@@ -244,28 +265,6 @@
         return "";
     }
     //setTimeout(function(){document.querySelectorAll("ytd-topbar-menu-button-renderer.ytd-masthead")[2].click()}, 2s0
-
-    function waitForElm(selector) {
-  return new Promise((resolve, reject) => {
-    let el = document.querySelector(selector);
-    if (el) {
-      resolve(el);
-      return
-    }
-    new MutationObserver((mutationRecords, observer) => {
-      // Query for elements matching the specified selector
-      Array.from(document.querySelectorAll(selector)).forEach((element) => {
-        resolve(element);
-        //Once we have resolved we don't need the observer anymore.
-        observer.disconnect();
-      });
-    })
-      .observe(document.documentElement, {
-        childList: true,
-        subtree: true
-      });
-  });
-    };
 
     // Get Subscription Data
     function getSubscription() {
@@ -317,7 +316,7 @@
 
         // BODY
         var O_DOMBODY = document.querySelector("body");
-        var O_DOMBODYNEW = document.createElement("old_body");
+        var O_DOMBODYNEW = document.createElement("old-body");
         var index;
         while (O_DOMBODY.firstChild) {
             O_DOMBODYNEW.appendChild(O_DOMBODY.firstChild);
@@ -328,7 +327,7 @@
         O_DOMBODYNEW.style = "display:none";
         O_DOMBODY.parentNode.replaceChild(O_DOMBODYNEW, O_DOMBODY);
 
-        var o_DOMBODY = document.querySelector("old_body");
+        var o_DOMBODY = document.querySelector("old-body");
         var DOMBODY = document.createElement("body");
         DOMBODY.setAttribute("class", "date-" + VALUE_DATE + " " + VALUE_LANG + " ltr thumb-normal");
         DOMBODY.setAttribute("dir", "ltr");
@@ -343,10 +342,10 @@
         if(getCookie("APISID")) {
             // GET USERNAME
             var T_OPENAVTAR = await waitForElm("#avatar-btn").then((elm) => {document.querySelectorAll("ytd-topbar-menu-button-renderer")[2].click()});
-            var T_GETNAME = await waitForElm("#account-name").then((elm) => {document.wegiYT.data.name = elm.innerText;document.wegiYT.data.link = document.querySelector("ytd-compact-link-renderer #endpoint").href});
+            var T_GETNAME = await waitForElm("#account-name").then((elm) => {document.ciulinYT.data.name = elm.innerText;document.ciulinYT.data.link = document.querySelector("ytd-compact-link-renderer #endpoint").href});
 
-            VALUE_USERNAME = document.wegiYT.data.name;
-            VALUE_USERLINK = document.wegiYT.data.link;
+            VALUE_USERNAME = document.ciulinYT.data.name;
+            VALUE_USERLINK = document.ciulinYT.data.link;
 
             OBJ_LOGIN = `<a href="${VALUE_USERLINK}">${VALUE_USERNAME}</a>`;
             BOOL_LOGIN = true;
@@ -364,9 +363,11 @@
 
         // Home Page (WIP)
         if(window.location.pathname == "/") {
+            (function(){
             DOMHEAD.innerHTML += '<link rel="stylesheet" href="//s.ytimg.com/yt/cssbin/www-guide-vflOh_ROh.css">';
             var list_of_videos = ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.richGridRenderer.contents;
             var OBJ_VIDEOS = "";
+            var i;
             for (i = 0; i < list_of_videos.length; i++) {
                 if(!list_of_videos[i].richSectionRenderer && !list_of_videos[i].continuationItemRenderer && !list_of_videos[i].richItemRenderer.content.displayAdRenderer && !list_of_videos[i].richItemRenderer.content.radioRenderer) {
                     var a = list_of_videos[i].richItemRenderer.content.videoRenderer;
@@ -429,8 +430,8 @@
             </div>
             </div>
             </li>`;
-                }
-            }
+                };
+            };
 
             OBJ_CHANNEL = `<div id="content">
             <div class="guide-layout-container enable-fancy-subscribe-button">
@@ -449,7 +450,7 @@
             <div class="guide">
             <div class="guide-section yt-uix-expander first ">
             <h3 class="guide-item-container selected-child">
-            <a class="guide-item selected" data-feed-name="youtube" data-feed-url="" onclick="document.wegiYT.func.loadGuideNav(this)">
+            <a class="guide-item selected" data-feed-name="youtube" data-feed-url="" onclick="document.ciulinYT.func.loadGuideNav(this)">
             <span class="thumb">
             <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="" class="system-icon category">
             </span>
@@ -458,7 +459,7 @@
             </h3>
             <ul>
             <li class="guide-item-container ">
-            <a class="guide-item" data-feed-name="trending" data-feed-url="feed/trending" onclick="document.wegiYT.func.loadGuideNav(this)">
+            <a class="guide-item" data-feed-name="trending" data-feed-url="feed/trending" onclick="document.ciulinYT.func.loadGuideNav(this)">
             <span class="thumb">
             <img class="system-icon system trending" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
             </span>
@@ -503,13 +504,21 @@
             <div id="feed-background" style="width: 790px;"></div>
             </div>
             </div>`;
-            setInterval(() => {document.body.style = ""}, 1000)
-        }
+            setInterval(() => {document.body.style = ""}, 1000);
+            })();
+        };
 
         // Watch (WIP)
         if(window.location.pathname.split("/")[1].match(/watch/i)) {
+            (async function(){
             var VALUE_VIDEOTITLE = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.title.runs[0].text;
-            var VALUE_VIDEODATE = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.dateText.simpleText.split("Premiered")[1] ? ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.dateText.simpleText.split("Premiered")[1] : ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.dateText.simpleText;
+            var VALUE_VIDEODATE = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.dateText.simpleText;
+            if(ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.dateText.simpleText.split("streaming on")[1]) {
+                VALUE_VIDEODATE = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.dateText.simpleText.split("streaming on")[1] ? ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.dateText.simpleText.split("streaming on")[1] : ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.dateText.simpleText;
+            }
+            if(ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.dateText.simpleText.split("Premiered")[1]) {
+                VALUE_VIDEODATE = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.dateText.simpleText.split("Premiered")[1] ? ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.dateText.simpleText.split("Premiered")[1] : ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.dateText.simpleText;
+            }
             var VALUE_CHANNELNAME = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer.owner.videoOwnerRenderer.title.runs[0].text;
             var VALUE_CHANNELURL = "https://www.youtube.com" + ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer.owner.videoOwnerRenderer.navigationEndpoint.browseEndpoint.canonicalBaseUrl;
             var VALUE_VIDEOVIEWS = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.viewCount.videoViewCountRenderer.viewCount.simpleText.split(" ")[0];
@@ -522,20 +531,21 @@
             var isDisliked = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.videoActions.menuRenderer.topLevelButtons[1].toggleButtonRenderer.isToggled ? "unliked" : "";
             var i;
             for (i = 0; i < VALUE_VIDEODESCRIPTIO.length; i++) {
-                console.log(VALUE_VIDEODESCRIPTIO[i].navigationEndpoint)
                 if(VALUE_VIDEODESCRIPTIO[i].navigationEndpoint && VALUE_VIDEODESCRIPTIO[i].navigationEndpoint.urlEndpoint && !VALUE_VIDEODESCRIPTIO[i].loggingDirectives && !VALUE_VIDEODESCRIPTIO[i].watchEndpoint) {
                     var a = VALUE_VIDEODESCRIPTIO[i].navigationEndpoint.urlEndpoint.url.split("q=")[1] ? VALUE_VIDEODESCRIPTIO[i].navigationEndpoint.urlEndpoint.url.split("q=")[1] : VALUE_VIDEODESCRIPTIO[i].navigationEndpoint.urlEndpoint.url;
-                    VALUE_VIDEODESCRIPTION += `<a href="${decodeURIComponent(a)}" target="_blank" title="${decodeURIComponent(a)}" rel="nofollow" dir="ltr" class="yt-uix-redirect-link">${decodeURIComponent(a)}</a></p>`;
+                    VALUE_VIDEODESCRIPTION += `<a href="${decodeURIComponent(a)}" target="_blank" title="${decodeURIComponent(a)}" rel="nofollow" dir="ltr" class="yt-uix-redirect-link">${decodeURIComponent(a)}</a>`;
                 };
-                if(VALUE_VIDEODESCRIPTIO[i].loggingDirectives) {
-                    VALUE_VIDEOTAG.push(VALUE_VIDEODESCRIPTIO[i].text.split("#")[1])
+                if(VALUE_VIDEODESCRIPTIO[i].text.split("#")[1]) {
+                    VALUE_VIDEODESCRIPTION += `<a href="https://www.youtube.com/tags/${VALUE_VIDEODESCRIPTIO[i].text.split("#")[1]}" target="_blank" title="#${VALUE_VIDEODESCRIPTIO[i].text.split("#")[1]}" rel="nofollow" dir="ltr" class="yt-uix-redirect-link">#${VALUE_VIDEODESCRIPTIO[i].text.split("#")[1]}</a>`;
+                };
+                if(VALUE_VIDEODESCRIPTIO[i].loggingDirectives && VALUE_VIDEODESCRIPTIO[i].text.split("@")[1]) {
+                    VALUE_VIDEODESCRIPTION += `<a href="https://www.youtube.com${VALUE_VIDEODESCRIPTIO[i].navigationEndpoint.browseEndpoint.canonicalBaseUrl}" target="_blank" title="${VALUE_VIDEODESCRIPTIO[i].text}" rel="nofollow" dir"ltr" class="yt-utx-redirect-link">${VALUE_VIDEODESCRIPTIO[i].text}</a>`;
                 };
                 if(!VALUE_VIDEODESCRIPTIO[i].navigationEndpoint && !VALUE_VIDEODESCRIPTIO[i].loggingDirectives) {
                     VALUE_VIDEODESCRIPTION += VALUE_VIDEODESCRIPTIO[i].text;
                 };
                 if(VALUE_VIDEODESCRIPTIO[i].navigationEndpoint && VALUE_VIDEODESCRIPTIO[i].navigationEndpoint.watchEndpoint) {
-                    VALUE_VIDEODESCRIPTION += `<a href="https://youtu.be/${VALUE_VIDEODESCRIPTIO[i].navigationEndpoint.watchEndpoint.videoId}" target="_blank" title="https://youtu.be/${VALUE_VIDEODESCRIPTIO[i].navigationEndpoint.watchEndpoint.videoId}" rel="nofollow" dir="ltr" class="yt-uix-redirect-link">https://youtu.be/${VALUE_VIDEODESCRIPTIO[i].navigationEndpoint.watchEndpoint.videoId}</a></p>`;
-                    console.log(VALUE_VIDEODESCRIPTIO[i])
+                    VALUE_VIDEODESCRIPTION += `<a href="https://youtu.be/${VALUE_VIDEODESCRIPTIO[i].navigationEndpoint.watchEndpoint.videoId}" target="_blank" title="https://youtu.be/${VALUE_VIDEODESCRIPTIO[i].navigationEndpoint.watchEndpoint.videoId}" rel="nofollow" dir="ltr" class="yt-uix-redirect-link">https://youtu.be/${VALUE_VIDEODESCRIPTIO[i].navigationEndpoint.watchEndpoint.videoId}</a>`;
                 }
             };
             for (i = 0; i < VALUE_VIDEOTAG.length; i++) {
@@ -565,7 +575,7 @@
             </span>
             <span dir="ltr" class="title" title="${VALUE_SUGGESTEDVIDEO[i].compactVideoRenderer.title.simpleText}">${VALUE_SUGGESTEDVIDEO[i].compactVideoRenderer.title.simpleText}</span>
             <span class="stat">by ${VALUE_SUGGESTEDVIDEO[i].compactVideoRenderer.shortBylineText.runs[0].text}</span>
-            <span class="stat view-count">${VALUE_SUGGESTEDVIDEO[i].compactVideoRenderer.viewCountText.simpleText}</span>
+            <span class="stat view-count">${VALUE_SUGGESTEDVIDEO[i].compactVideoRenderer.viewCountText.simpleText ? VALUE_SUGGESTEDVIDEO[i].compactVideoRenderer.viewCountText.simpleText : VALUE_SUGGESTEDVIDEO[i].compactVideoRenderer.viewCountText.runs[0].text + VALUE_SUGGESTEDVIDEO[i].compactVideoRenderer.viewCountText.runs[1].text}</span>
             </a>
             </li>`;
                 }
@@ -587,7 +597,7 @@
             <span class="yt-uix-button-content">${VALUE_CHANNELNAME}</span>
             </button>
             <div class="yt-subscription-button-hovercard yt-uix-hovercard">
-            <button href="" type="button" class="yt-subscription-button yt-subscription-button-js-default end yt-uix-button ${VALUE_SUBBUTTON}" onclick="document.wegiYT.func.subscribe();return false;" role="button">
+            <button href="" type="button" class="yt-subscription-button yt-subscription-button-js-default end yt-uix-button ${VALUE_SUBBUTTON}" onclick="document.ciulinYT.func.subscribe();return false;" role="button">
             <img class="yt-uix-button-icon yt-uix-button-icon-subscribe" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
             <span class="yt-uix-button-content">
             <span class="subscribe-label">Subscribe</span>
@@ -613,7 +623,7 @@
             </div>
             <div id="watch-video-container">
             <div id="watch-video">
-            <div id="video_player"></div>
+            <div id="video-player"></div>
             </div>
             </div>
             <div id="watch-main-container">
@@ -629,11 +639,11 @@
             </button>
             </div>
             <span id="watch-like-unlike" class="yt-uix-button-group">
-            <button onclick="document.wegiYT.func.likeThis();return false;" title="I like this" type="button" class="start yt-uix-tooltip-reverse yt-uix-button yt-uix-tooltip ${isLiked}" id="watch-like" role="button">
+            <button onclick="document.ciulinYT.func.likeThis();return false;" title="I like this" type="button" class="start yt-uix-tooltip-reverse yt-uix-button yt-uix-tooltip ${isLiked}" id="watch-like" role="button">
             <img class="yt-uix-button-icon yt-uix-button-icon-watch-like" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="I like this">
             <span class="yt-uix-button-content">Like</span>
             </button>
-            <button onclick="document.wegiYT.func.dislikeThis();return false;" title="I dislike this" type="button" class="end yt-uix-tooltip-reverse yt-uix-button yt-uix-tooltip yt-uix-button-empty ${isDisliked}" id="watch-unlike" role="button">
+            <button onclick="document.ciulinYT.func.dislikeThis();return false;" title="I dislike this" type="button" class="end yt-uix-tooltip-reverse yt-uix-button yt-uix-tooltip yt-uix-button-empty ${isDisliked}" id="watch-unlike" role="button">
             <img class="yt-uix-button-icon yt-uix-button-icon-watch-unlike" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="I dislike this">
             </button>
             </span>
@@ -749,13 +759,15 @@
             </div>
             </div>
             </div>
-            </div>`
+            </div>`;
+            })();
         }
 
         // Channel (WIP)
         if(window.location.pathname.split("/")[1].match(/channel|user|^c{1}$/i)) {
+            var FUNC = (async function() {
             if (/community|videos|about|channels|playlists|membership|store/.test(window.location.pathname.split("/")[3])) window.location.href = window.location.pathname.split("/").slice(0,3).join("/")
-            let channelData = await new Promise(resolve => {
+            const channelData = await new Promise(resolve => {
                 var xhr = new XMLHttpRequest();
                 xhr.open("GET", `https://www.youtube.com/${window.location.pathname}/about`)
                 xhr.onload = function(e) {
@@ -807,8 +819,14 @@
                 OBJ_SUBSCRIBE = getSubscription() ? "Subscribed" : "Subscribe";
             //}
 
-            var VALUE_SUBSCRIB = await waitForElm("#subscriber-count").then((elm) => {document.wegiYT.data.subcount = elm.innerText.split(" ")[0]});
-            VALUE_SUBSCRIBE = document.wegiYT.data.subcount;
+            document.ciulinYT.data.subcount = "0";
+
+            try {
+                var VALUE_SUBSCRIB = await waitForElm("#subscriber-count").then((elm) => {document.ciulinYT.data.subcount = elm.innerText.split(" ")[0]});
+            } catch(err) {
+                console.debug("A");
+            };
+            VALUE_SUBSCRIBE = document.ciulinYT.data.subcount;
             if(VALUE_SUBSCRIBE.match(/K/)) {
                 if(VALUE_SUBSCRIBE.match(/\./)) {
                     VALUE_SUBSCRIBE = VALUE_SUBSCRIBE.replace(/\./, "").replace(/K/, "00").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
@@ -888,7 +906,7 @@
             <div style="whitespace:no-wrap;position:relative;width:170px;">
             <div>
             <span class="subscription-container">
-            <button type="button" class="subscribe-button yt-uix-button yt-uix-button-urgent yt-uix-tooltip" onclick="document.wegiYT.func.subscribe();return false;" title="Click to be notified of new videos from this channel" role="button">
+            <button type="button" class="subscribe-button yt-uix-button yt-uix-button-urgent yt-uix-tooltip" onclick="document.ciulinYT.func.subscribe();return false;" title="Click to be notified of new videos from this channel" role="button">
             <span class="yt-uix-button-content">${OBJ_SUBSCRIBE}</span>
             <img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
             </button>
@@ -900,8 +918,11 @@
             </div>
             ${OBJ_USERPROFILE}
             </div>`;
-
-            OBJ_RECENTACT = await document.wegiYT.load("recent_feed")
+            try {
+                OBJ_RECENTACT = await document.ciulinYT.load("recent_feed")
+            } catch(err) {
+                OBJ_RECENTACT = "<p>Recent Feed cannot be init!</p>"
+            }
 
             OBJ_RIGHTCOLL = `<div class="right-column" id="main-channel-right">
             ${OBJ_RECENTACT}
@@ -911,14 +932,14 @@
             OBJ_CHANCON = `<div class="outer-box" id="main-channel-content" style="z-index: 0">
             ${OBJ_LEFTCOLL}${OBJ_RIGHTCOLL}
             <div class="cb"></div>
-            </div>`
+            </div>`;
 
             var OBJ_HOMEVIDEO = ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer;
             var dec = "";
 
             if(OBJ_HOMEVIDEO) {
                 dec = OBJ_HOMEVIDEO.description ? OBJ_HOMEVIDEO.description.runs[0].text : "";
-                document.querySelector("old_body").querySelector("ytd-player").parentNode.removeChild(document.querySelector("old_body").querySelector("ytd-player"))
+                document.querySelector("old-body").querySelector("ytd-player").parentNode.removeChild(document.querySelector("old-body").querySelector("ytd-player"))
             } else {
                 OBJ_HOMEVIDEO = {};
                 OBJ_HOMEVIDEO.videoId = "";
@@ -930,11 +951,16 @@
                 OBJ_HOMEVIDEO.viewCountText.simpleText = "";
             }
 
-            var OBJ_VIDEOS = await document.wegiYT.load("channel_videos")
+            var OBJ_VIDEOS = "";
+            try {
+                OBJ_VIDEOS = await document.ciulinYT.load("channel_videos");
+            } catch(err) {
+                OBJ_VIDEOS = "<p>Videos cannot be loaded</p>";
+            };
 
             var OBJ_PLAYNAVA = `<div id="playnav-body">
             <div id="playnav-player" class="playnav-player-container" style="visibility: visible; left: 0px;">
-            <div style="width:640px; height: 390px; background-color: #000;" id="video_player"></div>
+            <div id="video-player"></div>
             </div>
             <div id="playnav-playview" class="" style="display: block;">
             <div id="playnav-left-panel" style="display: block;">
@@ -1091,7 +1117,7 @@ ${OBJ_VIDEOS}
             </div>
             <div id="subscribe-buttons">
             <span class="subscription-container">
-            <button type="button" class="subscribe-button yt-uix-button yt-uix-button-urgent yt-uix-tooltip" onclick="document.wegiYT.func.subscribe();return false;" title="Click to be notified of new videos from this channel" role="button" data-tooltip-text="Click to be notified of new videos from this channel">
+            <button type="button" class="subscribe-button yt-uix-button yt-uix-button-urgent yt-uix-tooltip" onclick="document.ciulinYT.func.subscribe();return false;" title="Click to be notified of new videos from this channel" role="button" data-tooltip-text="Click to be notified of new videos from this channel">
             <span class="yt-uix-button-content">${OBJ_SUBSCRIBE}</span>
             </button>
             <span class="subscription-subscribed-container hid">
@@ -1127,7 +1153,7 @@ ${OBJ_VIDEOS}
             ${OBJ_PLAYNAVA}
             </div>`
 
-            OBJ_CHANNEL = `<div id="channel-body" style="background-color: rgb(204, 204, 204)" class="jsloaded">
+            return `<div id="channel-body" style="background-color: rgb(204, 204, 204)" class="jsloaded">
             <div id="channel-base-div">
             ${OBJ_PLAYNAV}
             ${OBJ_CHANCON}
@@ -1136,10 +1162,13 @@ ${OBJ_VIDEOS}
             <div class="cb">
             <div class="clear"></div>
             </div>`
-        }
+            })();
+            OBJ_CHANNEL = await FUNC;
+        };
 
         // Search Results
         if(window.location.pathname.split("/")[1].match(/results/i)) {
+            (function(){
             var searchpar = (new URL(document.location)).searchParams.get("search_query");
             var i;
             var results = ytInitialData.contents.twoColumnSearchResultsRenderer.primaryContents.sectionListRenderer.contents[0].itemSectionRenderer.contents;
@@ -1189,8 +1218,8 @@ ${OBJ_VIDEOS}
             </div>
             </div>`;
                     parse += main;
-                }
-            }
+                };
+            };
 
 
 
@@ -1429,8 +1458,9 @@ ${OBJ_VIDEOS}
             </div>
             </div>
             </div>
-            </div>`
-        }
+            </div>`;
+            })();
+        };
 
         // Mastheat
         OBJ_MASTHEAD = `<div id="masthead" class="" dir="ltr">
@@ -1509,41 +1539,225 @@ ${OBJ_VIDEOS}
         ${OBJ_CHANNEL}
         </div>
         ${OBJ_FOOTER}
-        </div>`
-    }
+        </div>`;
+    };
     window.onload = buildYouTube();
 
+    // SVG Manager
+    document.ciulinYT.func.setSVG = function(dom, n) {
+        dom.innerHTML = document.ciulinYT.data.SVG[n];
+        console.log({dom: dom, n:n});
+    };
+
     // Make Player
-    document.wegiYT.func.buildPlayer = function(videoId) {
-        var tag = document.createElement('script');
-        tag.src = "https://www.youtube.com/iframe_api";
-        var firstScriptTag = document.querySelector("#video_player");
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    document.ciulinYT.func.buildPlayer = function(videoId, time) {
+        var DOM = document.querySelector("#video-player");
+        DOM.player = {};
 
-        function insertAfter(newNode, existingNode) {
-            existingNode.parentNode.insertBefore(newNode, existingNode.nextSibling);
-        }
+        document.ciulinYT.data.SVG = {};
+        document.ciulinYT.data.playerSheet = ` data:image/png;base64,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`;
+        document.ciulinYT.data.playbarSheet = `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAZCAIAAAB/8tMoAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAhSURBVBhXY7h69SoTCDAzMxNNMzAwgNmMjIyEMMP///8BIN0GJrVyhfoAAAAASUVORK5CYII=`;
+        document.ciulinYT.data.playbarShadow = `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAZCAIAAACZ2xhsAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAA6SURBVChTY1y2bJm4uLiAgAA3NzcTAxgwggGIA2UBwWCRgQAMZXCA0AMECBkEB8gCkthkIIB0AxgZAbxaA1A95vt3AAAAAElFTkSuQmCC`;
+        document.ciulinYT.data.playbarSeeker = `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAaCAYAAAB2BDbRAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABQSURBVBhXbYqxDYAwEANP7kkmyDBZiDYTsUK2oosUpTK8oEK4OFu22UsxB1gJ0HaDs3eHQ2vNqrWinDNKKU6htZZlmy9ifNIYA8053+4fcAGeySL/5lJgnAAAAABJRU5ErkJggg==`;
 
-        var a = document.createElement("script");
-        a.innerText = `function onYouTubeIframeAPIReady() {
-                document.wegiYT.player = new YT.Player('video_player', {
-                    height: '390',
+        /* DOM_embedVideo */
+        (function(){
+            var DOM_embedVideo = document.createElement("div");
+            var DOM_embedVideoA = document.createElement("div");
+            var DOM_embedVideoB = document.createElement("div");
+            DOM_embedVideo.setAttribute("class", "video-container");
+            DOM_embedVideoA.setAttribute("id", "video-main-content");
+            DOM_embedVideoB.setAttribute("class", "video-blank fitwidth fitheight");
+            DOM_embedVideo.appendChild(DOM_embedVideoA);
+            DOM_embedVideo.appendChild(DOM_embedVideoB);
+            DOM.appendChild(DOM_embedVideo);
+        })();
+
+        /* DOM_playBar */
+        (function(){
+            var DOM_playBar = document.createElement("div");
+            DOM_playBar.setAttribute("class", "video-playbar");
+            DOM_playBar.innerHTML = `<div class="playbar-progressbar-container">
+            <span id="playbar-progressbar" value="0" max="100"></span>
+            </div>
+            <div class="playbar-bottom-container">
+            <div class="playbar-buttons-container">
+            <button class="playbar-button playbar-play" onclick="document.ciulinYT.player.playVideo();">
+            <i class="playbar-play"></i>
+            </button>
+            <div class="playbar-volume-container">
+            <button class="playbar-button playbar-volume" data-state="3" onclick="document.ciulinYT.func.mutePlayer(this.getAttribute('data-state'))">
+            <i class="playbar-volume"></i>
+            </button>
+            <div class="playbar-volume-slider-container">
+            <div class="playbar-shadow"></div>
+            <div class="playbar-volume-slider">
+            <input type="range" id="playbar-seek" max="100" value="100" oninput="document.ciulinYT.func.setVolume(this.value);">
+            </div>
+            </div>
+            </div>
+            </div>
+            <div class="playbar-shadow"></div>
+            <div class="playbar-timestamp-container">
+            <span class="playbar-timestamp"><a id="playbar-timestamp-current">0:00</a> / <a id="playbar-timestamp-total">0:00</a></span>
+            </div>
+            </div>`;
+            DOM.appendChild(DOM_playBar);
+        })();
+
+
+        // DOM CSS
+        (function(){
+            var a = document.createElement("style");
+            a.setAttribute("class", "player-style");
+            var script = `
+            #video-player {width:640px;height:390px;}
+            .fitwidth {width:640px;}
+            .fitheight {height:390px;}
+            .video-container {height: 360px;position:relative;z-index:-1;}
+            #video-main-content {position:relative;z-index:-2;}
+            .video-blank {background-color: black;position: absolute;z-index: -1;top: 0;}
+            .video-playbar {width:640px;height:30px;}
+            .playbar-bottom-container {background: url(${document.ciulinYT.data.playbarSheet});width: 640px; height: 24.6px;display:inline-flex;user-select: none;max-width:638px;border: 1px solid #ccc; border-left-color: #bfbfbf; border-right-color: #bfbfbf;}
+            .playbar-buttons-container {height: 24.6px; display:inline-flex;}
+            .playbar-buttom-container div {display: inline-block;}
+            .playbar-button {background: no-repeat url(${document.ciulinYT.data.playerSheet}) 0px 0px;width: 30px;height: 24.6px;}
+            .playbar-progressbar-container {height: 4px;position: relative; background-color:#c2c2c2;}
+            #playbar-progressbar {height: 4px;position: absolute;top: 0;width: 100%;border:0;background-color:#b03434;}
+            .playbar-button:hover {background: no-repeat url(${document.ciulinYT.data.playerSheet}) -30px 0px;}
+            .playbar-timestamp {padding-left: 9px;font-size: 10px; line-height:25px;}
+            .playbar-timestamp a {color:black;cursor:default;}
+            .playbar-timestamp a:hover {text-decoration:none;}
+            button.playbar-volume {border-left: 1px solid #bfbfbf;}
+            .playbar-volume-slider-container {display: none;width:64px;}
+            .playbar-volume-container {display: inline-flex;}
+            .playbar-volume-container:hover .playbar-volume-slider-container {display: inline-flex;}
+            .playbar-volume-slider {line-height: 22px;}
+            #playbar-seek {-webkit-appearance: none;width: 53px;height: 4px;outline: none;}
+            #playbar-seek::-moz-range-progress {background: url(${document.ciulinYT.data.playbarSeeker}) 0px 0px;height: 5px;}
+            #playbar-seek::-moz-range-track, #playbar-seek::-webkit-slider-runnable-track {-webkit-appearance: none;background: url(${document.ciulinYT.data.playbarSeeker}) 0px -6px;height: 5px;}
+            #playbar-seek::-moz-range-thumb, #playbar-seek::-webkit-slider-thumb {-webkit-appearance: none;width: 4px;height: 15px;background: url(${document.ciulinYT.data.playbarSeeker}) 0px -11px;cursor: pointer;border-radius:0;}
+            i {display:block;}
+            .playbar-shadow {background: url(${document.ciulinYT.data.playbarShadow});width: 4px;}
+            i.playbar-play {background: no-repeat url(${document.ciulinYT.data.playerSheet}) 0px -40px;height: 14px; width: 11px;margin-left: auto;margin-right: auto;}
+            button.playbar-play:hover i.playbar-play {background: no-repeat url(${document.ciulinYT.data.playerSheet}) -12px -40px;height: 14px; width: 11px;margin-left: auto;margin-right: auto;}
+            i.playbar-pause {background: no-repeat url(${document.ciulinYT.data.playerSheet}) 0px -25px;height: 14px; width: 11px;margin-left: auto;margin-right: auto;}
+            button.playbar-play:hover i.playbar-pause {background: no-repeat url(${document.ciulinYT.data.playerSheet}) -11px -25px;height: 14px; width: 11px;margin-left: auto;margin-right: auto;}
+            button.playbar-volume[data-state^="3"] i.playbar-volume {background: no-repeat url(${document.ciulinYT.data.playerSheet}) 0px -55px;height: 23px; width: 25px;margin-left: auto;}
+            .playbar-volume-container:hover button.playbar-volume[data-state^="3"] i.playbar-volume {background: no-repeat url(${document.ciulinYT.data.playerSheet}) -27px -55px;height: 23px; width: 25px;margin-left: auto;}
+            button.playbar-volume[data-state^="2"] i.playbar-volume {background: no-repeat url(${document.ciulinYT.data.playerSheet}) 0px -76px;height: 23px; width: 25px;margin-left: auto;}
+            .playbar-volume-container:hover button.playbar-volume[data-state^="2"] i.playbar-volume {background: no-repeat url(${document.ciulinYT.data.playerSheet}) -27px -76px;height: 23px; width: 25px;margin-left: auto;}
+            button.playbar-volume[data-state^="1"] i.playbar-volume {background: no-repeat url(${document.ciulinYT.data.playerSheet}) 0px -97px;height: 23px; width: 25px;margin-left: auto;}
+            .playbar-volume-container:hover button.playbar-volume[data-state^="1"] i.playbar-volume {background: no-repeat url(${document.ciulinYT.data.playerSheet}) -27px -97px;height: 23px; width: 25px;margin-left: auto;}
+            button.playbar-volume[data-state^="0"] i.playbar-volume {background: no-repeat url(${document.ciulinYT.data.playerSheet}) 0px -118px;height: 23px; width: 25px;margin-left: auto;}
+            .playbar-volume-container:hover button.playbar-volume[data-state^="0"] i.playbar-volume {background: no-repeat url(${document.ciulinYT.data.playerSheet}) -27px -118px;height: 23px; width: 25px;margin-left: auto;}
+            `;
+            script = script.replace(/(?:\r\n|\r|\n)/g, "");
+            a.innerText = script;
+            DOM.appendChild(a);
+        })();
+
+        // DOM JS
+        (function(){
+            function insertAfter(newNode, existingNode) {
+                existingNode.parentNode.insertBefore(newNode, existingNode.nextSibling);
+            }
+
+            var tag = document.createElement('script');
+            tag.src = "https://www.youtube.com/iframe_api";
+            var firstScriptTag = document.querySelector("#video-player");
+            insertAfter(tag, firstScriptTag);
+
+            var a = document.createElement("script");
+            var script = `
+            var timer = [];
+            var timeSpent = [];
+            function onYouTubeIframeAPIReady(){
+                document.ciulinYT.player = new YT.Player('video-main-content', {
+                    height: '360',
                     width: '640',
                     videoId: '${videoId}',
                     playerVars: {
                         'enablejsapi': 1,
-                        'rel': 0
+                        'rel': 0,
+                        'start': '${time}',
+                        'controls': '0'
+                    },
+                    events: {
+                        'onReady': onPlayerReady,
+                        'onStateChange': onStateChange
                     }
                 });
-            }`;
-        insertAfter(a, firstScriptTag);
+            };
+
+            function showPercentage(){
+                var percent = 0;
+                for(var i=0, l=timeSpent.length; i<l; i++){
+                    if(timeSpent[i]) percent++;
+                };
+                percent = Math.round(percent / timeSpent.length * 100);
+                var minute = parseInt(document.ciulinYT.player.getCurrentTime() / 60, 10);
+                var second = Math.round(document.ciulinYT.player.getCurrentTime() % 60);
+                if(second < 10) second = "0" + second;
+                document.querySelector("#playbar-progressbar").setAttribute("style", "width:" + percent + "%");
+                document.querySelector("#playbar-timestamp-current").innerText = minute + ":" + second;
+            };
+
+            function record(){
+                timeSpent[ parseInt(document.ciulinYT.player.getCurrentTime()) ] = true;
+                showPercentage();
+            };
+
+            function onPlayerReady() {
+                var minute = parseInt(document.ciulinYT.player.getDuration() / 60, 10);
+                var second = document.ciulinYT.player.getDuration() % 60;
+                if(second < 10) second = "0" + second;
+                document.querySelector("#playbar-timestamp-total").innerText = minute + ":" + second;
+            };
+            function onStateChange(e) {
+                if (e.data == -1) {
+                    timeSpent = [];
+                    clearInterval(timer);
+                    var minute = parseInt(document.ciulinYT.player.getDuration() / 60, 10);
+                    var second = document.ciulinYT.player.getDuration() % 60;
+                    if(second < 10) second = "0" + second;
+                    document.querySelector("#playbar-timestamp-total").innerText = minute + ":" + second;
+                };
+                if (e.data == 0) {
+                    document.querySelector("button.playbar-play").setAttribute("onclick", "document.ciulinYT.player.playVideo();");
+                    document.querySelector("i.playbar-pause").setAttribute("class", "playbar-play");
+                    document.querySelector("#video-player").player.state = "ENDED";
+                };
+                if (e.data == 1) {
+                    if(document.querySelector("#video-player").player.state === "ENDED") {
+                       timeSpent = [];
+                       document.querySelector("#video-player").player.state = "PLAYING";
+                    };
+                    if(!timeSpent.length){
+                       for(var i=0, l=parseInt(document.ciulinYT.player.getDuration()); i<l; i++) timeSpent.push(false);
+                    };
+                    clearInterval(timer);
+                    timer = setInterval(record);
+                    document.querySelector(".video-blank").classList.add("hid");
+                    document.querySelector("button.playbar-play").setAttribute("onclick", "document.ciulinYT.player.pauseVideo();");
+                    document.querySelector("i.playbar-play").setAttribute("class", "playbar-pause");
+                };
+                if (e.data == 2) {
+                    document.querySelector("button.playbar-play").setAttribute("onclick", "document.ciulinYT.player.playVideo();");
+                    document.querySelector("i.playbar-pause").setAttribute("class", "playbar-play");
+                };
+            };
+            //`;
+            script = script.replace(/(?:\r\n|\r|\n)/g, "");
+            a.innerText = script;
+            insertAfter(a, tag);
+        })();
     };
 
     if(window.location.pathname.split("/")[1].match(/watch/i)) {
-        waitForElm("#video_player").then((elm) => {
-            document.wegiYT.func.buildPlayer(ytInitialPlayerResponse.videoDetails.videoId, 0)
-
+        waitForElm("#video-player").then((elm) => {
             document.querySelector("ytd-player").parentNode.removeChild(document.querySelector("ytd-player"));
+            document.ciulinYT.func.buildPlayer(ytInitialPlayerResponse.videoDetails.videoId, window.location.href.split("t=")[1] ? window.location.href.split("t=")[1].split("s")[0] : 1);
 
             var xhr = new XMLHttpRequest();
             xhr.open("GET", "https://returnyoutubedislikeapi.com/Votes?videoId=" + window.location.search.split("?v=")[1]);
@@ -1556,19 +1770,51 @@ ${OBJ_VIDEOS}
                 document.querySelector(".watch-sparkbar-likes").style.width = rating + "%"
                 document.querySelector(".likes").innerText = likes.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 document.querySelector(".dislikes").innerText = dislikes.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            })
-        })
+            });
+        });
     };
     if(window.location.pathname.split("/")[1].match(/channel|user|^c{1}$/i)) {
-       waitForElm("#video_player").then((elm) => {
-           if(ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer) {
-               document.wegiYT.func.buildPlayer(ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer ? ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer.videoId : "")
-           }
-       })
-    }
+       waitForElm("#video-player").then((elm) => {
+           //if(ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer) {
+               document.ciulinYT.func.buildPlayer(ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer ? ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer.videoId : "")
+           //}
+       });
+    };
 
+    // Mute Functions
+    document.ciulinYT.func.mutePlayer = function(state) {
+        state = Number(state);
+        if(state == 0) {
+            document.ciulinYT.player.unMute();
+            document.querySelector("button.playbar-volume").setAttribute("data-state", "1");
+        };
+        if(state !== 0) {
+            document.ciulinYT.player.mute();
+            document.querySelector("#playbar-seek").value = 0;
+            document.querySelector("button.playbar-volume").setAttribute("data-state", "0");
+        };
+    };
+
+    // Set Volume Functions
+    document.ciulinYT.func.setVolume = function(vol) {
+        vol = Number(vol);
+        if(vol == 0) {
+            document.ciulinYT.func.mutePlayer();
+        };
+        if(vol > 0 && vol < 20) {
+            document.querySelector("button.playbar-volume").setAttribute("data-state", "1");
+        };
+        if(vol > 20 && vol < 80) {
+            document.querySelector("button.playbar-volume").setAttribute("data-state", "2");
+        };
+        if(vol > 80 && vol < 100) {
+            document.querySelector("button.playbar-volume").setAttribute("data-state", "3");
+        };
+        if(document.ciulinYT.player.isMuted() == true) {document.ciulinYT.player.unMute()};
+        document.ciulinYT.player.setVolume(vol);
+    };
     // Rating Functions
-    document.wegiYT.func.likeThis = function() {
+    document.ciulinYT.func.likeThis = function() {
         if(BOOL_LOGIN == true) {
             document.querySelectorAll("#top-level-buttons-computed ytd-toggle-button-renderer")[0].click();
             if(document.querySelector("#watch-like").classList.contains("liked")) {
@@ -1578,13 +1824,13 @@ ${OBJ_VIDEOS}
                 document.querySelector("#watch-like").classList.add("liked");
                 if(document.querySelector("#watch-unlike").classList.contains("unliked")) {
                     document.querySelector("span.dislikes").innerText = (new Number(document.querySelector("span.dislikes").innerText.replace(/,/g, "")) - 1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                }
+                };
                 document.querySelector("#watch-unlike").classList.remove("unliked");
                 document.querySelector("span.likes").innerText = (new Number(document.querySelector("span.likes").innerText.replace(/,/g, "")) + 1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            }
-        }
-    }
-    document.wegiYT.func.dislikeThis = function() {
+            };
+        };
+    };
+    document.ciulinYT.func.dislikeThis = function() {
         if(BOOL_LOGIN == true) {
             document.querySelectorAll("#top-level-buttons-computed ytd-toggle-button-renderer")[1].click();
             if(document.querySelector("#watch-unlike").classList.contains("unliked")) {
@@ -1594,20 +1840,17 @@ ${OBJ_VIDEOS}
                 document.querySelector("#watch-unlike").classList.add("unliked");
                 if(document.querySelector("#watch-like").classList.contains("liked")) {
                     document.querySelector("span.likes").innerText = (new Number(document.querySelector("span.likes").innerText.replace(/,/g, "")) - 1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                }
+                };
                 document.querySelector("#watch-like").classList.remove("liked");
                 //document.querySelector("span.likes").innerText = new Number(document.querySelector("span.likes").innerText) - 1;
                 document.querySelector("span.dislikes").innerText = (new Number(document.querySelector("span.dislikes").innerText.replace(/,/g, "")) + 1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            }
-        }
-    }
+            };
+        };
+    };
 
     // Load Video Function
-    document.wegiYT.func.loadVideo = function(id) {
+    document.ciulinYT.func.loadVideo = function(id) {
         if(!id) return console.error("No ID was specified");
-        if(!document.querySelector("iframe.video_player")) {
-            document.wegiYT.func.buildPlayer();
-        }
         var description;
         description = new Promise(async resolve => {
             var quick = new XMLHttpRequest();
@@ -1643,46 +1886,46 @@ ${OBJ_VIDEOS}
                 document.querySelector("#playnav-curvideo-description").innerText = await description;
                 document.querySelector("#playnav-curvideo-view-count").innerText = b.viewCountText.simpleText.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 document.querySelector("#playnav-watch-link").href = "https://www.youtube.com/watch?v=" + b.videoId;
-                document.wegiYT.player.loadVideoById(b.videoId);
+                document.ciulinYT.player.loadVideoById(b.videoId, 1);
             }
         }
         xhr.onerror = function () {
             console.error("** An error occurred during the XMLHttpRequest");
         };
         xhr.send();
-    }
+    };
 
     // Modal Function
-    document.wegiYT.func.showModal = function(text) {
-        alert(text)
-    }
+    document.ciulinYT.func.showModal = function(text) {
+        alert(text);
+    };
 
     // Subscribe Function
-    document.wegiYT.func.subscribe = async function() {
+    document.ciulinYT.func.subscribe = async function() {
         if(BOOL_LOGIN == true) {
             var str = ytInitialData.metadata ? ytInitialData.metadata.channelMetadataRenderer.title : "";
-            if(str == document.wegiYT.data.name) {
-                return document.wegiYT.func.showModal("No need to subscribe to yourself!")
-            }
+            if(str == document.ciulinYT.data.name) {
+                return document.ciulinYT.func.showModal("No need to subscribe to yourself!");
+            };
             var a = getSubscription() ? true : false;
             if(a == true) {
                 document.querySelector("ytd-subscribe-button-renderer tp-yt-paper-button").click();
-                await waitForElm("#confirm-button").then((elm) => {elm.click()})
+                await waitForElm("#confirm-button").then((elm) => {elm.click()});
                 document.querySelectorAll(".subscribe-button .yt-uix-button-content").forEach(function(a) { a.innerText = "Subscribe"});
-                document.querySelector(".yt-subscription-button").classList.remove("subscribed")
+                document.querySelector(".yt-subscription-button").classList.remove("subscribed");
                 BOOL_SUBSCRIBED = "subscribe";
             } else {
                 document.querySelector("ytd-subscribe-button-renderer tp-yt-paper-button").click();
                 document.querySelectorAll(".subscribe-button .yt-uix-button-content").forEach(function(a) { a.innerText = "Subscribed"});
-                document.querySelector(".yt-subscription-button").classList.add("subscribed")
+                document.querySelector(".yt-subscription-button").classList.add("subscribed");
                 BOOL_SUBSCRIBED = "subscribed";
-            }
+            };
 
-        }
-    }
+        };
+    };
 
     // loadGuideNav Function
-    document.wegiYT.func.loadGuideNav = function(a) {
+    document.ciulinYT.func.loadGuideNav = function(a) {
         var guide = document.querySelector("#guide");
         if(guide.getAttribute("data-last-clicked-item") !== a.getAttribute("data-feed-name")) {
             guide.setAttribute("data-last-clicked-item", a.getAttribute("data-feed-name"));
@@ -1772,13 +2015,21 @@ ${OBJ_VIDEOS}
             </div>
             </div>
             </li>`;
-                    }
-                }
+                    };
+                };
                 document.querySelector(".feed-list").innerHTML = OBJ_VIDEOS;
                 document.querySelector("#feed-loading-template").classList.add("hid");
                 document.querySelector("#feed-main-youtube").classList.remove("hid");
-            }
+            };
             xhr.send();
-        }
-    }
+        };
+    };
+    };
+
+    if(window.location.pathname.split("/")[1] == "embed"){
+        document.querySelector(".ytp-show-cards-title").parentNode.removeChild(document.querySelector(".ytp-show-cards-title"));
+        waitForElm(".ytp-watermark").then((elm) => {elm.parentNode.removeChild(elm)});
+        waitForElm(".html5-endscreen").then((elm) => {elm.parentNode.removeChild(elm)});
+        waitForElm(".ytp-pause-overlay").then((elm) => {elm.parentNode.removeChild(elm)});
+    };
 })();
