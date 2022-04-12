@@ -1,8 +1,20 @@
 # Ciulin's YouTube
-#### This script recreates the 2011-2012 layout of YouTube completely!
-#### No polymer used!
+#### This script aims to create YouTube's layout from 2012.
+#### Completely replaces Polymer!
 
 #### I made this because I don't like how YouTube Redux barely recreates the old design. And there aren't any other scripts/extensions other than YouTube Redux.
+
+## Features
+2012 YT Layout!<br/>
+Channel 2.0!<br/>
+Redesigned Player!<br/>
+Play videos directly on someone's channel page!<br/>
+See community posts as recent activity!<br/>
+And many more!<br/>
+
+## Compatability
+Works best on Firefox!<br/>
+Minor things are broken on Chromium/Webkit-based browsers.
 
 ## SETUP
 
