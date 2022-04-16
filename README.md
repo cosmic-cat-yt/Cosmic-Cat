@@ -10,6 +10,7 @@ Channel 2.0!<br/>
 Redesigned Player!<br/>
 Play videos directly on someone's channel page!<br/>
 See community posts as recent activity!<br/>
+Dislike videos!<br/>
 And many more!<br/>
 
 ## Compatiability
