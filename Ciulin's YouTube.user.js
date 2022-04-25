@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.18
+// @version      0.4.19
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -1648,7 +1648,7 @@ ${OBJ_VIDEOS}
             left {display: inline-flex;width: 600px;}
             .playbar-button {background: no-repeat url(${document.ciulinYT.data.playerSheet}) 0px 0px;width: 30px;height: 24.6px;}
             .playbar-progressbar-container {height: 4px;position: relative; background-color:#c2c2c2;}
-            #playbar-progressbar {height: 4px;position: absolute;top: 0;width: 100%;border:0;background-color:#b03434;}
+            #playbar-progressbar {height: 4px;position: absolute;top: 0;width: 100%;border:0;background-color:#b03434;max-width:100%;}
             .playbar-button:hover {background: no-repeat url(${document.ciulinYT.data.playerSheet}) -30px 0px;}
             .playbar-timestamp {padding-left: 9px;font-size: 10px; line-height:25px;}
             .playbar-timestamp a {color:black;cursor:default;}
@@ -1695,10 +1695,11 @@ ${OBJ_VIDEOS}
             var firstScriptTag = document.querySelector("#video-player");
             insertAfter(tag, firstScriptTag);
 
+            var timm = time ? `'time':` + time + "," : ``;
+
             var a = document.createElement("script");
             var script = `
-            var timer = [];
-            var timeSpent = [];
+            var progress;
             function onYouTubeIframeAPIReady(){
                 document.ciulinYT.player = new YT.Player('video-main-content', {
                     height: '360',
@@ -1707,7 +1708,7 @@ ${OBJ_VIDEOS}
                     playerVars: {
                         'enablejsapi': 1,
                         'rel': 0,
-                        'start': '${time}',
+                        ${timm}
                         'controls': '0'
                     },
                     events: {
@@ -1717,57 +1718,34 @@ ${OBJ_VIDEOS}
                 });
             };
 
-            function showPercentage(){
-                var percent = 0;
-                for(var i=0, l=timeSpent.length; i<l; i++){
-                    if(timeSpent[i]) percent++;
-                };
-                percent = Math.round(percent / timeSpent.length * 100);
-                var minute = parseInt(document.ciulinYT.player.getCurrentTime() / 60, 10);
-                var second = Math.round(document.ciulinYT.player.getCurrentTime() % 60);
-                if(second < 10) second = "0" + second;
-                document.querySelector("#playbar-progressbar").setAttribute("style", "width:" + percent + "%");
-                document.querySelector("#playbar-timestamp-current").innerText = minute + ":" + second;
-            };
-
-            function record(){
-                timeSpent[ parseInt(document.ciulinYT.player.getCurrentTime()) ] = true;
-                showPercentage();
-            };
-
             function onPlayerReady() {
-                var minute = parseInt(document.ciulinYT.player.getDuration() / 60, 10);
-                var second = document.ciulinYT.player.getDuration() % 60;
-                if(second < 10) second = "0" + second;
-                document.querySelector("#playbar-timestamp-total").innerText = minute + ":" + second;
+            /* total */
+                var tminute = parseInt(document.ciulinYT.player.getDuration() / 60, 10);
+                var tsecond = document.ciulinYT.player.getDuration() % 60;
+                if(tsecond < 10) tsecond = "0" + tsecond;
+                document.querySelector("#playbar-timestamp-total").innerText = tminute + ":" + tsecond;
             };
             function onStateChange(e) {
-                if (e.data == -1) {
-                    timeSpent = [];
-                    clearInterval(timer);
-                    var minute = parseInt(document.ciulinYT.player.getDuration() / 60, 10);
-                    var second = document.ciulinYT.player.getDuration() % 60;
-                    if(second < 10) second = "0" + second;
-                    document.querySelector("#playbar-timestamp-total").innerText = minute + ":" + second;
-                };
                 if (e.data == 0) {
+                    clearInterval(progress);
                     document.querySelector("button.playbar-play").setAttribute("onclick", "document.ciulinYT.player.playVideo();");
                     document.querySelector("i.playbar-pause").setAttribute("class", "playbar-play");
                     document.querySelector("#video-player").player.state = "ENDED";
                 };
                 if (e.data == 1) {
                     if(document.querySelector("#video-player").player.state === "ENDED") {
-                       timeSpent = [];
                        document.querySelector("#video-player").player.state = "PLAYING";
                     };
-                    if(!timeSpent.length){
-                       for(var i=0, l=parseInt(document.ciulinYT.player.getDuration()); i<l; i++) timeSpent.push(false);
-                    };
-                    clearInterval(timer);
-                    timer = setInterval(record);
                     document.querySelector(".video-blank").style = "background: rgba(0, 0, 0, 0);";
                     document.querySelector("button.playbar-play").setAttribute("onclick", "document.ciulinYT.player.pauseVideo();");
                     document.querySelector("i.playbar-play").setAttribute("class", "playbar-pause");
+                    progress = setInterval(function () {
+                var cminute = parseInt(document.ciulinYT.player.getCurrentTime() / 60, 10);
+                var csecond = Math.round(document.ciulinYT.player.getCurrentTime() % 60);
+                if(csecond < 10) csecond = "0" + csecond;
+                document.querySelector("#playbar-progressbar").setAttribute("style", "width:" + document.ciulinYT.player.getCurrentTime() / document.ciulinYT.player.getDuration() * 100 + "%");
+                document.querySelector("#playbar-timestamp-current").innerText = cminute + ":" + csecond;
+                })
                 };
                 if (e.data == 2) {
                     document.querySelector("button.playbar-play").setAttribute("onclick", "document.ciulinYT.player.playVideo();");
