@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.17
+// @version      0.4.18
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -552,7 +552,8 @@
                 VALUE_VIDEOTAGS += `<li><a href="https://www.youtube.com/results?search_query=${VALUE_VIDEOTAG[i]}&amp;search=tag">${VALUE_VIDEOTAG[i]}</a></li>`;
             }
             VALUE_VIDEODESCRIPTION = VALUE_VIDEODESCRIPTION.replace(/(?:\r\n|\r|\n)/g, '<br>');
-            var VALUE_SUGGESTEDVIDEO = ytInitialData.contents.twoColumnWatchNextResults.secondaryResults.secondaryResults.results[1].itemSectionRenderer.contents;
+            var JSONDEFER = ytInitialData.contents.twoColumnWatchNextResults.secondaryResults.secondaryResults.results[1].itemSectionRenderer ? ytInitialData.contents.twoColumnWatchNextResults.secondaryResults.secondaryResults.results[1].itemSectionRenderer.contents : ytInitialData.contents.twoColumnWatchNextResults.secondaryResults.secondaryResults.results;
+            var VALUE_SUGGESTEDVIDEO = JSONDEFER;
             var OBJ_SUGGESTEDVIDEOS = "";
             for (i = 0; i < VALUE_SUGGESTEDVIDEO.length; i++) {
                 if(!VALUE_SUGGESTEDVIDEO[i].continuationItemRenderer && VALUE_SUGGESTEDVIDEO[i].compactVideoRenderer) {
@@ -1547,7 +1548,14 @@ ${OBJ_VIDEOS}
         ${OBJ_FOOTER}
         </div>`;
     };
-    window.onload = buildYouTube();
+    (async function(){
+        if(getCookie("CONSENT").indexOf("YES") === 0) {
+            window.onload = buildYouTube();
+        } else {
+            await waitForElm("#dialog");
+            await waitForElm(".ytd-consent-bump-v2-lightbox").then((elm) => {document.querySelector("#dialog").querySelectorAll("ytd-button-renderer")[3].querySelector("#button").addEventListener("click", function(){location = '';})})
+        }
+    })();
 
     // SVG Manager
     document.ciulinYT.func.setSVG = function(dom, n) {
@@ -1788,7 +1796,7 @@ ${OBJ_VIDEOS}
 
     if(window.location.pathname.split("/")[1].match(/watch/i)) {
         waitForElm("#video-player").then((elm) => {
-            document.querySelector("ytd-player").parentNode.removeChild(document.querySelector("ytd-player"));
+            waitForElm("ytd-player").then((elm) => {elm.parentNode.removeChild(elm);})
             document.ciulinYT.func.buildPlayer(ytInitialPlayerResponse.videoDetails.videoId, window.location.href.split("t=")[1] ? window.location.href.split("t=")[1].split("s")[0] : 1);
 
             var xhr = new XMLHttpRequest();
