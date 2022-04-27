@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.20
+// @version      0.4.21
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -1988,7 +1988,7 @@ ${OBJ_VIDEOS}
     };
 
     document.ciulinYT.func.setProPos = function(e) {
-        document.ciulinYT.player.seekTo(ProPosUp(e));
+        document.ciulinYT.player.seekTo((e.pageX - e.currentTarget.offsetLeft) / 640 * document.ciulinYT.player.getDuration());
 
     };
 
