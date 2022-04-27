@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.19
+// @version      0.4.20
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -624,7 +624,7 @@
             </div>
             </div>
             <div id="watch-video-container">
-            <div id="watch-video">
+            <div id="watch-video" style="position:inherit">
             <div id="video-player"></div>
             </div>
             </div>
@@ -1591,9 +1591,10 @@ ${OBJ_VIDEOS}
         (function(){
             var DOM_playBar = document.createElement("div");
             DOM_playBar.setAttribute("class", "video-playbar");
-            DOM_playBar.innerHTML = `<div class="playbar-progressbar-container">
+            DOM_playBar.innerHTML = `<div class="playbar-progressbar-container" onmousemove="document.ciulinYT.func.preProPos(event)" onclick="document.ciulinYT.func.setProPos(event)">
             <span id="playbar-progressbar" value="0" max="100"></span>
             </div>
+            <div class="playbar-a hid"></div>
             <div class="playbar-bottom-container">
             <left>
             <div class="playbar-buttons-container left">
@@ -1629,7 +1630,6 @@ ${OBJ_VIDEOS}
             DOM.appendChild(DOM_playBar);
         })();
 
-
         // DOM CSS
         (function(){
             var a = document.createElement("style");
@@ -1649,6 +1649,7 @@ ${OBJ_VIDEOS}
             .playbar-button {background: no-repeat url(${document.ciulinYT.data.playerSheet}) 0px 0px;width: 30px;height: 24.6px;}
             .playbar-progressbar-container {height: 4px;position: relative; background-color:#c2c2c2;}
             #playbar-progressbar {height: 4px;position: absolute;top: 0;width: 100%;border:0;background-color:#b03434;max-width:100%;}
+            .playbar-a {height:3px;}
             .playbar-button:hover {background: no-repeat url(${document.ciulinYT.data.playerSheet}) -30px 0px;}
             .playbar-timestamp {padding-left: 9px;font-size: 10px; line-height:25px;}
             .playbar-timestamp a {color:black;cursor:default;}
@@ -1743,7 +1744,7 @@ ${OBJ_VIDEOS}
                 var cminute = parseInt(document.ciulinYT.player.getCurrentTime() / 60, 10);
                 var csecond = Math.round(document.ciulinYT.player.getCurrentTime() % 60);
                 if(csecond < 10) csecond = "0" + csecond;
-                document.querySelector("#playbar-progressbar").setAttribute("style", "width:" + document.ciulinYT.player.getCurrentTime() / document.ciulinYT.player.getDuration() * 100 + "%");
+                document.querySelector("#playbar-progressbar").style.width = document.ciulinYT.player.getCurrentTime() / document.ciulinYT.player.getDuration() * 100 + "%";
                 document.querySelector("#playbar-timestamp-current").innerText = cminute + ":" + csecond;
                 })
                 };
@@ -1768,7 +1769,14 @@ ${OBJ_VIDEOS}
                     document.querySelector(".video-container").removeAttribute("style");
                     document.querySelector("left").removeAttribute("style");
                 }
-            })
+            });
+            document.querySelector("#video-player").addEventListener("mouseenter", (e) => {
+                document.querySelector(".video-container").style.height = "349px";
+                document.querySelector(".video-playbar").style.height = "40px";
+                document.querySelector(".playbar-progressbar-container").style.height = "12px";
+                document.querySelector("#playbar-progressbar").style.height = "12px";
+                document.querySelector(".playbar-a").classList.remove("hid");
+            });
         })();
     };
 
@@ -1964,6 +1972,24 @@ ${OBJ_VIDEOS}
             };
 
         };
+    };
+
+    // ProPos
+    function ProPosUp(e){
+        var left = e.currentTarget.offsetLeft;
+        var width = e.currentTarget.offsetWidth;
+        var position = (e.pageX - left) / width * 100;
+        return position;
+    };
+
+    document.ciulinYT.func.preProPos = function(e) {
+        var bar = e.currentTarget.querySelector("#playbar-progressbar");
+        bar.style.width = ProPosUp(e) + '%';
+    };
+
+    document.ciulinYT.func.setProPos = function(e) {
+        document.ciulinYT.player.seekTo(ProPosUp(e));
+
     };
 
     // loadGuideNav Function
