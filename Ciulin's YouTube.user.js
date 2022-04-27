@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.21
+// @version      0.4.22
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -29,6 +29,14 @@
 (function() {
     'use strict';
     document.ciulinYT = {};
+    const ciulinYT = {};
+    ciulinYT.trackLength = function () {
+                var cminute = parseInt(document.ciulinYT.player.getCurrentTime() / 60, 10);
+                var csecond = Math.round(document.ciulinYT.player.getCurrentTime() % 60);
+                if(csecond < 10) csecond = "0" + csecond;
+                document.querySelector("#playbar-progressbar").style.width = document.ciulinYT.player.getCurrentTime() / document.ciulinYT.player.getDuration() * 100 + "%";
+                document.querySelector("#playbar-timestamp-current").innerText = cminute + ":" + csecond;
+                }
 
     document.ciulinYT.data = {};
     document.ciulinYT.func = {};
@@ -1700,7 +1708,6 @@ ${OBJ_VIDEOS}
 
             var a = document.createElement("script");
             var script = `
-            var progress;
             function onYouTubeIframeAPIReady(){
                 document.ciulinYT.player = new YT.Player('video-main-content', {
                     height: '360',
@@ -1728,7 +1735,7 @@ ${OBJ_VIDEOS}
             };
             function onStateChange(e) {
                 if (e.data == 0) {
-                    clearInterval(progress);
+                    clearInterval(ciulinYT.progress);
                     document.querySelector("button.playbar-play").setAttribute("onclick", "document.ciulinYT.player.playVideo();");
                     document.querySelector("i.playbar-pause").setAttribute("class", "playbar-play");
                     document.querySelector("#video-player").player.state = "ENDED";
@@ -1740,13 +1747,7 @@ ${OBJ_VIDEOS}
                     document.querySelector(".video-blank").style = "background: rgba(0, 0, 0, 0);";
                     document.querySelector("button.playbar-play").setAttribute("onclick", "document.ciulinYT.player.pauseVideo();");
                     document.querySelector("i.playbar-play").setAttribute("class", "playbar-pause");
-                    progress = setInterval(function () {
-                var cminute = parseInt(document.ciulinYT.player.getCurrentTime() / 60, 10);
-                var csecond = Math.round(document.ciulinYT.player.getCurrentTime() % 60);
-                if(csecond < 10) csecond = "0" + csecond;
-                document.querySelector("#playbar-progressbar").style.width = document.ciulinYT.player.getCurrentTime() / document.ciulinYT.player.getDuration() * 100 + "%";
-                document.querySelector("#playbar-timestamp-current").innerText = cminute + ":" + csecond;
-                })
+                    ciulinYT.progress = setInterval(${ciulinYT.trackLength});
                 };
                 if (e.data == 2) {
                     document.querySelector("button.playbar-play").setAttribute("onclick", "document.ciulinYT.player.playVideo();");
@@ -1776,6 +1777,15 @@ ${OBJ_VIDEOS}
                 document.querySelector(".playbar-progressbar-container").style.height = "12px";
                 document.querySelector("#playbar-progressbar").style.height = "12px";
                 document.querySelector(".playbar-a").classList.remove("hid");
+                clearInterval(ciulinYT.progress);
+            });
+            document.querySelector("#video-player").addEventListener("mouseleave", (e) => {
+                document.querySelector(".video-container").removeAttribute("style");
+                document.querySelector(".video-playbar").removeAttribute("style");
+                document.querySelector(".playbar-progressbar-container").removeAttribute("style");
+                document.querySelector("#playbar-progressbar").removeAttribute("style");
+                document.querySelector(".playbar-a").classList.add("hid");
+                ciulinYT.progress = setInterval(ciulinYT.trackLength)
             });
         })();
     };
@@ -1989,7 +1999,6 @@ ${OBJ_VIDEOS}
 
     document.ciulinYT.func.setProPos = function(e) {
         document.ciulinYT.player.seekTo((e.pageX - e.currentTarget.offsetLeft) / 640 * document.ciulinYT.player.getDuration());
-
     };
 
     // loadGuideNav Function
