@@ -2,7 +2,7 @@
 #### This userscript aims to recreate YouTube's old layout from 2012.
 #### Completely replaces Polymer!
 
-#### I made this because I don't like how YouTube Redux barely recreates the old design. And there aren't any other scripts/extensions other than YouTube Redux.
+#### I made this to challenge YouTube Redux and be one of the first scripts to truly bring back the original 2012 layout.
 
 ## Features
 2012 YT Layout!<br/>
