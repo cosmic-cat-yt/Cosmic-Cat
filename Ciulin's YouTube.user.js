@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.24
+// @version      0.4.25
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -1199,17 +1199,18 @@ ${OBJ_VIDEOS}
             DOMHEAD.innerHTML += '<link rel="stylesheet" href="//s.ytimg.com/yt/cssbin/www-refresh-vflj_nHFo.css">';
 
             for(i = 0; i < results.length; i++) {
+                // Handle Videos
                 if(results[i].videoRenderer) {
-                    var description = results[i].videoRenderer.detailedMetadataSnippets ? results[i].videoRenderer.detailedMetadataSnippets[0].snippetText.runs[0].text : "";
-                    var time = results[i].videoRenderer.lengthText ? results[i].videoRenderer.lengthText.simpleText : "LIVE";
-                    var views = "";
+                    let description = results[i].videoRenderer.detailedMetadataSnippets ? results[i].videoRenderer.detailedMetadataSnippets[0].snippetText.runs[0].text : "";
+                    let time = results[i].videoRenderer.lengthText ? results[i].videoRenderer.lengthText.simpleText : "LIVE";
+                    let views = "";
                     if(results[i].videoRenderer.viewCountText) {
                         views = results[i].videoRenderer.viewCountText.simpleText ? results[i].videoRenderer.viewCountText.simpleText : results[i].videoRenderer.viewCountText.runs[0].text + results[i].videoRenderer.viewCountText.runs[1].text;
                     }
                     console.debug(results[i].videoRenderer)
 
-                    var pub = results[i].videoRenderer.publishedTimeText ? results[i].videoRenderer.publishedTimeText.simpleText: "";
-                    var main = `<div class="result-item yt-uix-tile yt-tile-default *sr">
+                    let pub = results[i].videoRenderer.publishedTimeText ? results[i].videoRenderer.publishedTimeText.simpleText: "";
+                    let main = `<div class="result-item yt-uix-tile yt-tile-default *sr">
             <div class="thumb-container">
             <a href="http://www.youtube.com/watch?v=${results[i].videoRenderer.videoId}" class="ux-thumb-wrap contains-addto result-item-thumb">
             <span class="video-thumb ux-thumb ux-thumb-128">
@@ -1245,6 +1246,48 @@ ${OBJ_VIDEOS}
             </p>
             </div>
             </div>`;
+                    parse += main;
+                };
+
+                // Handle Channels
+                if(results[i].channelRenderer) {
+                    let description = results[i].channelRenderer.descriptionSnippet ? results[i].channelRenderer.descriptionSnippet.runs[0].text : "";
+                    let title = results[i].channelRenderer.title.simpleText;
+                    let link = "http://www.youtube.com" + results[i].channelRenderer.shortBylineText.runs[0].navigationEndpoint.browseEndpoint.canonicalBaseUrl;
+                    let thumbnail = results[i].channelRenderer.thumbnail.thumbnails[0].url;
+                    let videos = results[i].channelRenderer.videoCountText.runs[1] ? results[i].channelRenderer.videoCountText.runs[0].text + results[i].channelRenderer.videoCountText.runs[1].text : results[i].channelRenderer.videoCountText.runs[0].text // + results[i].channelRenderer.videoCountText.runs[1].text;
+                    let subs = results[i].channelRenderer.subscriberCountText ? results[i].channelRenderer.subscriberCountText.simpleText : "No subscribers";
+
+                    let main = `<div class="result-item yt-uix-tile yt-tile-default *sr channel">
+                    <div class="thumb-container">
+                    <a href="${link}" class="ux-thumb-wrap result-item-thumb">
+                    <span class="video-thumb ux-thumb ux-thumb-profile-77">
+                    <span class="clip" style="position:unset;">
+                    <span class="clip-inner">
+                    <img onload="" alt="Thumbnail" src="${thumbnail}">
+                    <span class="vertical-align">
+                    </span>
+                    </span>
+                    </span>
+                    </span>
+                    </a>
+                    </div>
+                    <div class="result-item-main-content">
+                    <h3>
+                    <a href="${link}" class="yt-uix-tile-link" dir="ltr" title="${title}">${title}</a>
+                    </h3>
+                    <p id="video-description-" class="description" dir="ltr">${description}</p>
+                    <ul class="single-line-lego-list">
+                    <li>
+                    <a href="http://www.youtube.com/results?search_type=search_users" class="yt-badge-std">CHANNEL</a>
+                    </li>
+                    </ul>
+                    <p class="facets">
+                    <span class="username-prepend">by</span> <a href="${link}" class="yt-user-name" dir="ltr">${title}</a><span class="metadata-separator"> | </span><span class="video-count">${videos}</span><span class="metadata-separator"> | </span><span class="channel-subscriber-count">${subs}</span>
+                    </p>
+                    </div>
+                    </div>`;
+
                     parse += main;
                 };
             };
