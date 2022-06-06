@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.22
+// @version      0.4.22-debug
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -28,6 +28,10 @@
 
 (function() {
     'use strict';
+    function debug(a) {
+        return console.debug(`[Ciulin's YouTube] ${a}`);
+    }
+    debug("Starting script...")
     document.ciulinYT = {};
     const ciulinYT = {};
     ciulinYT.trackLength = function () {
@@ -42,7 +46,6 @@
     document.ciulinYT.func = {};
     var BOOL_LOGIN = null;
     var BOOL_SUBSCRIBED = "";
-    var VALUE_USERNAME = "";
 
     function waitForElm(selector) {
         return new Promise((resolve, reject) => {
@@ -65,6 +68,7 @@
     };
 
     if(window.location.pathname.split("/")[1] !== "embed"){
+        debug("YouTube Type: Not an embed");
 
     document.ciulinYT.load = async function(name) {
         if(name == "recent_feed") {
@@ -288,6 +292,7 @@
 
     // Build Classic YouTube
     async function buildYouTube() {
+        debug("Execute buildYouTube");
         var DOMHTML = document.querySelector("html");
 
         // DATE
@@ -344,26 +349,26 @@
         // Userbar
 
         // SET USERNAME
-            var VALUE_USERLINK;
+        var OBJ_LOGIN = (async function(){
+            debug("Cookie Check: Searching for APISID")
+            if(!getCookie("APISID")) {
+                debug("Cookie Check: Didn't find APISID. User is logged out.");
+                var login_url = "https://accounts.google.com/ServiceLogin?service=youtube&uilel=3&passive=true&continue=https%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26app%3Ddesktop%26hl%3Den%26next%3Dhttps%253A%252F%252Fwww.youtube.com%252F&hl=en&ec=65620";
+                BOOL_LOGIN = false;
+                return `<div id="masthead-user-bar-container"><div id="masthead-user-bar"><div id="masthead-user"><a class="start" href="https://www.youtube.com/signup">Create Account</a><span class="masthead-link-separator">|</span><a class="end" href="${login_url}">Sign In</a></div></div></div>`;
+            }
 
-        var OBJ_LOGIN = ``;
-        if(getCookie("APISID")) {
-            // GET USERNAME
-            var T_OPENAVTAR = await waitForElm("#avatar-btn").then((elm) => {document.querySelectorAll("ytd-topbar-menu-button-renderer")[2].click()});
-            var T_GETNAME = await waitForElm("#account-name").then((elm) => {document.ciulinYT.data.name = elm.innerText;document.ciulinYT.data.link = document.querySelector("ytd-compact-link-renderer #endpoint").href});
+            debug("Cookie Check: Found APISID")
+            var T_OPENAVTAR = await waitForElm("#avatar-btn").then((elm) => {debug("waitForElm: #avatar-btn");document.querySelectorAll("ytd-topbar-menu-button-renderer")[2].click()});
+            var T_GETNAME = await waitForElm("#account-name").then((elm) => {debug("waitForElm: #account-name");document.ciulinYT.data.name = elm.innerText;document.ciulinYT.data.link = document.querySelector("ytd-compact-link-renderer #endpoint").href});
 
-            VALUE_USERNAME = document.ciulinYT.data.name;
-            VALUE_USERLINK = document.ciulinYT.data.link;
+            debug(`User Info: [Username: ${document.ciulinYT.data.name}] [Link: ${document.ciulinYT.data.link}]`);
 
-            OBJ_LOGIN = `<a href="${VALUE_USERLINK}">${VALUE_USERNAME}</a>`;
             BOOL_LOGIN = true;
-        } else {
-            var login_url = "https://accounts.google.com/ServiceLogin?service=youtube&uilel=3&passive=true&continue=https%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26app%3Ddesktop%26hl%3Den%26next%3Dhttps%253A%252F%252Fwww.youtube.com%252F&hl=en&ec=65620";
-            OBJ_LOGIN = `<a class="start" href="https://www.youtube.com/signup">Create Account</a><span class="masthead-link-separator">|</span><a class="end" href="${login_url}">Sign In</a>`;
-            BOOL_LOGIN = false;
-        };
+            return `<div id="masthead-user-bar-container"><div id="masthead-user-bar"><div id="masthead-user"><a href="${document.ciulinYT.data.link}">${document.ciulinYT.data.name}</a></div></div></div>`;
+        })();
+        const OBJ_USER = await OBJ_LOGIN;
 
-        var OBJ_USER = `<div id="masthead-user-bar-container"><div id="masthead-user-bar"><div id="masthead-user">${OBJ_LOGIN}</div></div></div>`;
         var OBJ_MASTHEAD;
         var OBJ_FOOTER;
 
@@ -371,6 +376,7 @@
 
         // Home Page (WIP)
         if(window.location.pathname == "/") {
+            debug("Renderer: Rendering Home Page");
             (function(){
             DOMHEAD.innerHTML += '<link rel="stylesheet" href="//s.ytimg.com/yt/cssbin/www-guide-vflOh_ROh.css">';
             var list_of_videos = ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.richGridRenderer.contents;
@@ -775,7 +781,7 @@
 
         // Channel (WIP)
         if(window.location.pathname.split("/")[1].match(/channel|user|^c{1}$/i)) {
-            var FUNC = (async function() {
+            var FUNC = (async function(){
             if (/community|videos|about|channels|playlists|membership|store/.test(window.location.pathname.split("/")[3])) window.location.href = window.location.pathname.split("/").slice(0,3).join("/")
             const channelData = await new Promise(resolve => {
                 var xhr = new XMLHttpRequest();
@@ -1477,6 +1483,13 @@ ${OBJ_VIDEOS}
             })();
         };
 
+        // Browse
+        if(window.location.pathname.match(/\/feed\/trending/i)) {
+            (async function(){
+                OBJ_CHANNEL = `TEST`;
+            })();
+        };
+
         // Mastheat
         OBJ_MASTHEAD = `<div id="masthead" class="" dir="ltr">
         <a id="logo-container" href="https://www.youtube.com/" title="YouTube home">
@@ -1557,12 +1570,16 @@ ${OBJ_VIDEOS}
         </div>`;
     };
     (async function(){
-        if(getCookie("CONSENT").indexOf("YES") === 0) {
-            window.onload = buildYouTube();
-        } else {
+        debug("Cookie Check: Searching for CONSENT");
+        if(!getCookie("CONSENT")) return debug("Cookie Check: CONSENT does not exist.");
+        if(getCookie("CONSENT").indexOf("YES") !== 0) {
+            debug("CONSENT screen: Pending request from Consent Screen");
             await waitForElm("#dialog");
-            await waitForElm(".ytd-consent-bump-v2-lightbox").then((elm) => {document.querySelector("#dialog").querySelectorAll("ytd-button-renderer")[3].querySelector("#button").addEventListener("click", function(){location = '';})})
+            await waitForElm(".ytd-consent-bump-v2-lightbox").then((elm) => {debug("Add refresh function to the accept button.");document.querySelector("#dialog").querySelectorAll("ytd-button-renderer")[3].querySelector("#button").addEventListener("click", function(){location = '';})})
+            return;
         }
+        debug("CONSENT screen: Passed");
+        window.onload = buildYouTube();
     })();
 
     // SVG Manager
