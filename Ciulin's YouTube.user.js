@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.22-debug3
+// @version      0.4.23
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -69,6 +69,13 @@
 
     if(window.location.pathname.split("/")[1] !== "embed"){
         debug("YouTube Type: Not an embed");
+        waitForElm("#ytd-player video").then((elm) => {
+            elm.pause();
+            elm.removeAttribute('src');
+            elm.load();
+            elm.parentNode.removeChild(elm);
+        })
+
 
     document.ciulinYT.load = async function(name) {
         if(name == "recent_feed") {
@@ -1257,7 +1264,7 @@ ${OBJ_VIDEOS}
             <div id="lego-refine-block">
             <div class="sort-by floatR">
             <span class="sort-by-title" style="color: #555">Sort by:</span>
-            <button type="button" class="yt-uix-button yt-uix-button-text" onclick=";return false;" role="button">
+            <button type="button" class="yt-uix-button yt-uix-button-text" onclick="document.ciulinYT.func.Modal('ul.yt-uix-button-menu');return false;" role="button">
             <span class="yt-uix-button-content">Relevance </span>
             <img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
             <ul class="yt-uix-button-menu yt-uix-button-menu-text hid" role="menu" aria-haspopup="true" style="min-width: 92px; left: 902.467px; top: 210px; display: none;">
@@ -1273,7 +1280,7 @@ ${OBJ_VIDEOS}
             </ul>
             </button>
             </div>
-            <button type="button" id="lego-refine-toggle" onclick=";return false;" class="yt-uix-button yt-uix-button-text" data-button-toggle="true" role="button">
+            <button type="button" id="lego-refine-toggle" onclick="document.ciulinYT.func.Modal('#search-lego-refinements');return false;" class="yt-uix-button yt-uix-button-text" data-button-toggle="true" role="button">
             <span class="yt-uix-button-content">Filter </span>
             <img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
             </button>
@@ -1813,7 +1820,6 @@ ${OBJ_VIDEOS}
 
     if(window.location.pathname.split("/")[1].match(/watch/i)) {
         waitForElm("#video-player").then((elm) => {
-            waitForElm("ytd-player").then((elm) => {elm.parentNode.removeChild(elm);})
             document.ciulinYT.func.buildPlayer(ytInitialPlayerResponse.videoDetails.videoId, window.location.href.split("t=")[1] ? window.location.href.split("t=")[1].split("s")[0] : 1);
 
             var xhr = new XMLHttpRequest();
@@ -1836,6 +1842,22 @@ ${OBJ_VIDEOS}
                document.ciulinYT.func.buildPlayer(ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer ? ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer.videoId : "")
            //}
        });
+    };
+
+    // Modal Function
+    document.ciulinYT.func.Modal = function(DOM) {
+        DOM = document.querySelector(DOM);
+        console.log(DOM)
+        // 0 = close DEFAULT | 1 = open
+        if (!DOM.classList.contains("hid")) {
+            DOM.classList.add("hid");
+            DOM.style = "display:none;";
+            console.log("BB")
+            return;
+        }
+        DOM.classList.remove("hid");
+        DOM.style = "display:block";
+        console.log("AA")
     };
 
     // Mute Functions
