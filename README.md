@@ -23,6 +23,9 @@ Install Tampermonkey for your Browser: https://www.tampermonkey.net<br/>
 Download the script: [Ciulin's YouTube.user.js](https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js)<br/>
 Easy!
 
+## ISSUES
+If you find any issues with my script, feel free to report it on the GitHub issues page!<br/>
+
 ## Note
 This is still all Work-In-Progress - So there are things missing.</br>
 If you know JavaScript/CSS/HTML, feel free to contribute!
