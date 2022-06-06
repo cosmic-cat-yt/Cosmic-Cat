@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.22-debug2
+// @version      0.4.22-debug3
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -1571,11 +1571,11 @@ ${OBJ_VIDEOS}
     };
     (async function(){
         debug("Cookie Check: Searching for CONSENT");
-        if(!getCookie("CONSENT")) return debug("Cookie Check: CONSENT does not exist.");
         if(getCookie("APISID")) {
             debug("CONSENT screen: Passed");
             return buildYouTube();
         };
+        if(!getCookie("CONSENT")) return debug("Cookie Check: CONSENT does not exist.");
         if(getCookie("CONSENT").indexOf("YES") !== 0) {
             debug("CONSENT screen: Pending request from Consent Screen");
             await waitForElm("#dialog");
