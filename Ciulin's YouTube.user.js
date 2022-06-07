@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.29
+// @version      0.4.30
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -293,11 +293,9 @@
         // Get Subscription Data
         function getSubscription() {
         if(window.location.pathname.split("/")[1].match(/channel|user|^c{1}$/i)) {
-            BOOL_SUBSCRIBE = true;
             return ytInitialData.header.c4TabbedHeaderRenderer.subscribeButton.subscribeButtonRenderer.subscribed;
         }
         if(window.location.pathname.split("/")[1].match(/watch/i)) {
-            BOOL_SUBSCRIBE = true;
             return ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer.owner.videoOwnerRenderer.subscriptionButton.subscribed;
         }
     }
@@ -811,8 +809,8 @@
         // Channel (WIP)
         if(window.location.pathname.split("/")[1].match(/channel|user|^c{1}$/i)) {
             var FUNC = (async function(){
-            if (/community|videos|about|channels|playlists|membership|store/.test(window.location.pathname.split("/")[3])) window.location.href = window.location.pathname.split("/").slice(0,3).join("/")
-            const channelData = await new Promise(resolve => {
+                if (/community|videos|about|channels|playlists|membership|store/.test(window.location.pathname.split("/")[3])) window.location.href = window.location.pathname.split("/").slice(0,3).join("/")
+                const channelData = await new Promise(resolve => {
                 var xhr = new XMLHttpRequest();
                 xhr.open("GET", `https://www.youtube.com/${window.location.pathname}/about`)
                 xhr.onload = function(e) {
@@ -845,68 +843,58 @@
                 xhr.send();
             })
 
-            var VALUE_CHANNELNAME = ytInitialData.metadata ? ytInitialData.metadata.channelMetadataRenderer.title : ytInitialData.header.interactiveTabbedHeaderRenderer.title.simpleText;
-            var VALUE_CHANNELICON = ytInitialData.metadata ? ytInitialData.metadata.channelMetadataRenderer.avatar.thumbnails[0].url : ytInitialData.header.interactiveTabbedHeaderRenderer.boxArt.thumbnails[0].url;
-            var VALUE_CHANNELURL = window.location.href;
-            var VALUE_SUBSCRIBE;
-            var VALUE_DESCRIPTION;
-            var OBJ_SUBSCRIBE;
-            var OBJ_PLAYNAV;
-            var OBJ_CHANCON;
-            var OBJ_RECENTACT;
-            var OBJ_RECENTOBJ;
-            var OBJ_LEFTCOLL;
-            var OBJ_RIGHTCOLL;
-            var OBJ_USERPROFILE;
-            var OBJ_PROFILEINFONAME = "";
-            // Append stylesheet
-            DOMHEAD.innerHTML += '<link rel="stylesheet" href="//s.ytimg.com/yt/cssbin/www-channel_new-vflrWkVe_.css">';
-
-            // Modify title
-            if(o_DOMBODY.querySelector("title")) {
-                o_DOMBODY.querySelector("title").parentNode.removeChild(o_DOMBODY.querySelector("title"));
-            };
-            DOMHEAD.appendChild(document.createElement("title"));
-            setInterval(function(){document.head.querySelector("title").innerText = `${VALUE_CHANNELNAME}'s Channel - YouTube`}, 100);
-
-            //if(VALUE_CHANNELNAME !== VALUE_USERNAME) {
-                OBJ_SUBSCRIBE = getSubscription() ? "Subscribed" : "Subscribe";
-            //}
-
-            document.ciulinYT.data.subcount = ytInitialData.header.c4TabbedHeaderRenderer ? ytInitialData.header.c4TabbedHeaderRenderer.subscriberCountText.simpleText.split(" ")[0] : "None";
-            VALUE_SUBSCRIBE = document.ciulinYT.data.subcount;
-            if(VALUE_SUBSCRIBE.match(/K/)) {
-                if(VALUE_SUBSCRIBE.match(/\./)) {
-                    VALUE_SUBSCRIBE = VALUE_SUBSCRIBE.replace(/\./, "").replace(/K/, "00").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                }
-            }
-            if(VALUE_SUBSCRIBE.match(/M/)) {
-                if(VALUE_SUBSCRIBE.match(/\d{3}/)) {
-                    VALUE_SUBSCRIBE = VALUE_SUBSCRIBE.replace(/\./, "").replace(/M/, "000000").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                }
-                if(VALUE_SUBSCRIBE.match(/\d{2,3}\.\d{1,2}/)) {
-                    VALUE_SUBSCRIBE = VALUE_SUBSCRIBE.replace(/\./, "").replace(/M/, "00000").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                }
-                if(VALUE_SUBSCRIBE.match(/\d{1,3}/)) {
-                    VALUE_SUBSCRIBE = VALUE_SUBSCRIBE.replace(/\./, "").replace(/M/, "0000").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                }
-            }
-
-            VALUE_DESCRIPTION = ytInitialData.metadata ? ytInitialData.metadata.channelMetadataRenderer.description : ytInitialData.header.interactiveTabbedHeaderRenderer.description.simpleText;
-            VALUE_DESCRIPTION = VALUE_DESCRIPTION.replace(/\n/g, "<br />");
-
-            // Check if /user/
-            if(window.location.href.match(/\/user/i)) {
-                OBJ_PROFILEINFONAME = `<div class="show_info outer-box-bg-as-border">
+                var VALUE_CHANNELNAME = ytInitialData.metadata ? ytInitialData.metadata.channelMetadataRenderer.title : ytInitialData.header.interactiveTabbedHeaderRenderer.title.simpleText;
+                var OBJ_PROFILEINFONAME = "";
+                var dec;
+                BOOL_SUBSCRIBE = getSubscription();
+                var VALUE_CHANNELICON = ytInitialData.metadata ? ytInitialData.metadata.channelMetadataRenderer.avatar.thumbnails[0].url : ytInitialData.header.interactiveTabbedHeaderRenderer.boxArt.thumbnails[0].url;
+                var VALUE_CHANNELURL = window.location.href;
+                document.ciulinYT.data.subcount = ytInitialData.header.c4TabbedHeaderRenderer ? ytInitialData.header.c4TabbedHeaderRenderer.subscriberCountText.simpleText.split(" ")[0] : "0";
+                if(document.ciulinYT.data.subcount.match(/K/)) {
+                    if(document.ciulinYT.data.subcount.match(/\./)) {
+                        document.ciulinYT.data.subcount = document.ciulinYT.data.subcount.replace(/\./, "").replace(/K/, "00").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                    };
+                };
+                if(document.ciulinYT.data.subcount.match(/M/)) {
+                    if(document.ciulinYT.data.subcount.match(/\d{3}/)) {
+                        document.ciulinYT.data.subcount = document.ciulinYT.data.subcount.replace(/\./, "").replace(/M/, "000000").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                    };
+                    if(document.ciulinYT.data.subcount.match(/\d{2,3}\.\d{1,2}/)) {
+                        document.ciulinYT.data.subcount = document.ciulinYT.data.subcount.replace(/\./, "").replace(/M/, "00000").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                    };
+                    if(document.ciulinYT.data.subcount.match(/\d{1,3}/)) {
+                        document.ciulinYT.data.subcount = document.ciulinYT.data.subcount.replace(/\./, "").replace(/M/, "0000").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                    };
+                };
+                var VALUE_DESCRIPTION = ytInitialData.metadata ? ytInitialData.metadata.channelMetadataRenderer.description.replace(/\n/g, "<br />") : ytInitialData.header.interactiveTabbedHeaderRenderer.description.simpleText.replace(/\n/g, "<br />");
+                var OBJ_SUBSCRIBE = getSubscription() ? "Subscribed" : "Subscribe";
+                if(window.location.href.match(/\/user/i)) {
+                    OBJ_PROFILEINFONAME = `<div class="show_info outer-box-bg-as-border">
             <div class="profile-info-label">Name:</div>
             <div class="profile-info-value" id="profile_show_viewed_count">${VALUE_CHANNELNAME}</div>
             <div class="cb"></div>
             </div>`;
 
-                VALUE_CHANNELNAME = window.location.href.split("/user/")[1];
-            }
-
-            OBJ_USERPROFILE = `<div id="user_profile" class="inner-box">
+                    VALUE_CHANNELNAME = window.location.href.split("/user/")[1];
+                }
+                var OBJ_VIDEOS;
+                try {
+                    OBJ_VIDEOS = await document.ciulinYT.load.channel_videos();
+                } catch(err) {
+                    OBJ_VIDEOS = "<p>Videos cannot be loaded</p>";
+                };
+                var OBJ_HOMEVIDEO = ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer;
+                if(OBJ_HOMEVIDEO) {
+                    dec = OBJ_HOMEVIDEO.description ? OBJ_HOMEVIDEO.description.runs[0].text : "";
+                    document.querySelector("old-body").querySelector("ytd-player").parentNode.removeChild(document.querySelector("old-body").querySelector("ytd-player"))
+                } else {
+                    OBJ_HOMEVIDEO = {};
+                    OBJ_HOMEVIDEO.videoId = "";
+                    OBJ_HOMEVIDEO.title = {runs: [{text: ""}]};
+                    OBJ_HOMEVIDEO.publishedTimeText = {runs: [{"text": ""}]};
+                    OBJ_HOMEVIDEO.viewCountText = {simpleText: ""};
+                };
+                var OBJ_USERPROFILE = `<div id="user_profile" class="inner-box">
             <div class="box-title title-text-color">Profile</div>
             <div class="cb"></div>
             <div id="user_profile-body">
@@ -924,7 +912,7 @@
             </div>
             <div class="show_info outer-box-bg-as-border">
             <div class="profile-info-label">Subscribers:</div>
-            <div class="profile-info-value" id="profile_show_subscriber_count">${VALUE_SUBSCRIBE}</div>
+            <div class="profile-info-value" id="profile_show_subscriber_count">${document.ciulinYT.data.subcount}</div>
             <div class="cb"></div>
             </div>
             <div class="show_info outer-box-bg-as-border">
@@ -936,77 +924,8 @@
             </div>
             </div>
             <div class="cb"></div>
-            </div>`
-
-            OBJ_LEFTCOLL = `<div class="left-column" id="main-channel-left">
-            <div class="inner-box">
-            <div style="float:left;padding:0 4px 4px 0" class="link-as-border-color">
-            <div class="user-thumb-xlarge">
-            <div>
-            <a href="${VALUE_CHANNELURL}"><img src="${VALUE_CHANNELICON}"></a>
-            </div>
-            </div>
-            </div>
-            <div style="float:left;width:170px">
-            <div class="box-title title-text-color" title="${VALUE_CHANNELNAME}" style="float:none;padding-left:4px;margin-top:-2px;width:170px;overflow:hidden;font-size:111%">
-            <span class="yt-user-name" dir="ltr">${VALUE_CHANNELNAME}</span>
-            </div>
-            <div style="whitespace:no-wrap;position:relative;width:170px;">
-            <div>
-            <span class="subscription-container">
-            <button type="button" class="subscribe-button yt-uix-button yt-uix-button-urgent yt-uix-tooltip" onclick="document.ciulinYT.func.subscribe();return false;" title="Click to be notified of new videos from this channel" role="button">
-            <span class="yt-uix-button-content">${OBJ_SUBSCRIBE}</span>
-            <img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
-            </button>
-            </span>
-            </div>
-            </div>
-            </div>
-            <div class="cb"></div>
-            </div>
-            ${OBJ_USERPROFILE}
             </div>`;
-            try {
-                OBJ_RECENTACT = await document.ciulinYT.load.recent_feed();
-            } catch(err) {
-                OBJ_RECENTACT = "<p>Recent Feed cannot be init!</p>"
-            }
-
-            OBJ_RIGHTCOLL = `<div class="right-column" id="main-channel-right">
-            ${OBJ_RECENTACT}
-            <div class="clear"></div>
-            </div>`
-
-            OBJ_CHANCON = `<div class="outer-box" id="main-channel-content" style="z-index: 0">
-            ${OBJ_LEFTCOLL}${OBJ_RIGHTCOLL}
-            <div class="cb"></div>
-            </div>`;
-
-            var OBJ_HOMEVIDEO = ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer;
-            var dec = "";
-
-            if(OBJ_HOMEVIDEO) {
-                dec = OBJ_HOMEVIDEO.description ? OBJ_HOMEVIDEO.description.runs[0].text : "";
-                document.querySelector("old-body").querySelector("ytd-player").parentNode.removeChild(document.querySelector("old-body").querySelector("ytd-player"))
-            } else {
-                OBJ_HOMEVIDEO = {};
-                OBJ_HOMEVIDEO.videoId = "";
-                OBJ_HOMEVIDEO.title = {};
-                OBJ_HOMEVIDEO.title.runs = [{text: ""}];
-                OBJ_HOMEVIDEO.publishedTimeText = {};
-                OBJ_HOMEVIDEO.publishedTimeText.runs = [{"text": ""}];
-                OBJ_HOMEVIDEO.viewCountText = {};
-                OBJ_HOMEVIDEO.viewCountText.simpleText = "";
-            }
-
-            var OBJ_VIDEOS = "";
-            try {
-                OBJ_VIDEOS = await document.ciulinYT.load.channel_videos();
-            } catch(err) {
-                OBJ_VIDEOS = "<p>Videos cannot be loaded</p>";
-            };
-
-            var OBJ_PLAYNAVA = `<div id="playnav-body">
+                var OBJ_PLAYNAVA = `<div id="playnav-body">
             <div id="playnav-player" class="playnav-player-container" style="visibility: visible; left: 0px;">
             <div id="video-player"></div>
             </div>
@@ -1052,104 +971,70 @@
             <img class="yt-uix-button-icon-watch-like" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
             <span class="yt-uix-button-content">Like</span>
             </button>
-        &nbsp;
-        <button title="I dislike this" type="button" class="master-sprite yt-uix-button yt-uix-tooltip" onclick="window.location.href = 'https://www.youtube.com/watch?v=${OBJ_HOMEVIDEO.videoId}';return false;" id="watch-unlike" role="button" aria-pressed="false">
-        <img class="yt-uix-button-icon-watch-unlike" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
-        </button>
-      </div>
-    </div>
-
-  <div id="playnav-curvideo-title" class="inner-box-link-color" dir="ltr">
-
-    <a style="cursor:pointer;margin-right:7px" href="/watch?v=${OBJ_HOMEVIDEO ? OBJ_HOMEVIDEO.videoId : ""}" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">
-      ${OBJ_HOMEVIDEO ? OBJ_HOMEVIDEO.title.runs[0].text : ""}
-    </a>
-  </div>
-
-  <div id="playnav-curvideo-info-line">
-From: <span id="playnav-curvideo-channel-name"><a href="${window.location.href}">${VALUE_CHANNELNAME}</a></span>&nbsp;|
-    <span dir="ltr">${OBJ_HOMEVIDEO ? OBJ_HOMEVIDEO.publishedTimeText.runs[0].text : ""}</span>
-      &nbsp;|
-        <span id="playnav-curvideo-view-count">${OBJ_HOMEVIDEO ? OBJ_HOMEVIDEO.viewCountText.simpleText.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ""}</span>
-  </div>
-
-  <div class="cb"></div>
-
-    <div id="channel-like-result" class="hid">
-      <div id="watch-actions-area" class="yt-rounded">&nbsp;</div>
-    </div>
-    <div id="channel-like-loading" class="hid">Loading...</div>
-    <div class="cb"></div>
-
-  <div id="playnav-curvideo-description-container">
-    <div id="playnav-curvideo-description" dir="ltr">${OBJ_HOMEVIDEO ? dec : ""}
-    </div>
-  </div>
-
-  <a href="http://www.youtube.com/watch?v=${OBJ_HOMEVIDEO ? OBJ_HOMEVIDEO.videoId : ""}" id="playnav-watch-link" onclick="playnav.goToWatchPage()">View comments, related videos, and more</a>
-
-
-  <div id="playnav-curvideo-controls">
-  </div>
-
-  <div class="cb"></div>
-</div>
-
-          <div id="playnav-panel-comments" class="hid"></div>
-
-        <div id="playnav-panel-favorite" class="hid"></div>
-        <div id="playnav-panel-share" class="hid scrollable"></div>
-        <div id="playnav-panel-playlists" class="hid"></div>
-        <div id="playnav-panel-flag" class="hid scrollable"></div>
-      </div>
-    </div>
-  </div>
-
+            &nbsp;
+            <button title="I dislike this" type="button" class="master-sprite yt-uix-button yt-uix-tooltip" onclick="window.location.href = 'https://www.youtube.com/watch?v=${OBJ_HOMEVIDEO.videoId}';return false;" id="watch-unlike" role="button" aria-pressed="false">
+            <img class="yt-uix-button-icon-watch-unlike" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
+            </button>
             </div>
-          </div>
+            </div>
+            <div id="playnav-curvideo-title" class="inner-box-link-color" dir="ltr">
+            <a style="cursor:pointer;margin-right:7px" href="/watch?v=${OBJ_HOMEVIDEO ? OBJ_HOMEVIDEO.videoId : ""}" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">
+            ${OBJ_HOMEVIDEO ? OBJ_HOMEVIDEO.title.runs[0].text : ""}
+            </a>
+            </div>
+            <div id="playnav-curvideo-info-line">
+            From: <span id="playnav-curvideo-channel-name"><a href="${window.location.href}">${VALUE_CHANNELNAME}</a></span>&nbsp;|
+            <span dir="ltr">${OBJ_HOMEVIDEO ? OBJ_HOMEVIDEO.publishedTimeText.runs[0].text : ""}</span>
+            &nbsp;|
+            <span id="playnav-curvideo-view-count">${OBJ_HOMEVIDEO ? OBJ_HOMEVIDEO.viewCountText.simpleText.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ""}</span>
+            </div>
+            <div class="cb"></div>
+            <div id="channel-like-result" class="hid">
+            <div id="watch-actions-area" class="yt-rounded">&nbsp;</div>
+            </div>
+            <div id="channel-like-loading" class="hid">Loading...</div>
+            <div class="cb"></div>
+            <div id="playnav-curvideo-description-container">
+            <div id="playnav-curvideo-description" dir="ltr">${OBJ_HOMEVIDEO ? dec : ""}
+            </div>
+            </div>
+            <a href="http://www.youtube.com/watch?v=${OBJ_HOMEVIDEO ? OBJ_HOMEVIDEO.videoId : ""}" id="playnav-watch-link" onclick="playnav.goToWatchPage()">View comments, related videos, and more</a>
+            <div id="playnav-curvideo-controls"></div>
+            <div class="cb"></div>
+            </div>
+            <div id="playnav-panel-comments" class="hid"></div>
+            <div id="playnav-panel-favorite" class="hid"></div>
+            <div id="playnav-panel-share" class="hid scrollable"></div>
+            <div id="playnav-panel-playlists" class="hid"></div>
+            <div id="playnav-panel-flag" class="hid scrollable"></div>
+            </div>
+            </div>
+            </div>
+            </div>
+            </div>
             <div id="playnav-play-panel">
-
-
-
-    <div id="playnav-play-content" style="height: 601px;">
-        <div class="playnav-playlist-holder" id="playnav-play-playlist-uploads-holder">
-                  <div id="playnav-play-uploads-scrollbox" style="background-color: rgb(238, 238, 255); color: rgb(51, 51, 51);" class="scrollbox-wrapper inner-box-colors">
-    <div class="scrollbox-content playnav-playlist-non-all">
-
-
-      <div class="scrollbox-body" style="height: 514px;">
-        <div class="outer-scrollbox">
-          <div id="playnav-play-uploads-items" class="inner-scrollbox">
-
-
-                <div id="playnav-play-uploads-page-0" class="scrollbox-page loaded videos-rows-50">
-${OBJ_VIDEOS}
-  <div id="uploads-cb" class="cb"></div>
-
-                </div>
-
-          </div>
-
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-
-        </div>
-    </div>
-  </div>
-
-
-
-
-
-        </div>
-
-      </div>`
-
-            OBJ_PLAYNAV = `<div id="user_playlist_navigator" style="background-color: rgb(153, 153, 153); color: rgb(0, 0, 0);" class="outer-box yt-rounded">
+            <div id="playnav-play-content" style="height: 601px;">
+            <div class="playnav-playlist-holder" id="playnav-play-playlist-uploads-holder">
+            <div id="playnav-play-uploads-scrollbox" style="background-color: rgb(238, 238, 255); color: rgb(51, 51, 51);" class="scrollbox-wrapper inner-box-colors">
+            <div class="scrollbox-content playnav-playlist-non-all">
+            <div class="scrollbox-body" style="height: 514px;">
+            <div class="outer-scrollbox">
+            <div id="playnav-play-uploads-items" class="inner-scrollbox">
+            <div id="playnav-play-uploads-page-0" class="scrollbox-page loaded videos-rows-50">
+            ${OBJ_VIDEOS}
+            <div id="uploads-cb" class="cb"></div>
+            </div>
+            </div>
+            </div>
+            </div>
+            </div>
+            </div>
+            </div>
+            </div>
+            </div>
+            </div>
+            </div>`;
+                var OBJ_PLAYNAV = `<div id="user_playlist_navigator" style="background-color: rgb(153, 153, 153); color: rgb(0, 0, 0);" class="outer-box yt-rounded">
             <div id="playnav-channel-header" class="inner-box-bg-color" style="background-color: rgb(238, 238, 255); color: rgb(51, 51, 51);">
             <div id="playnav-title-bar">
             <div id="playnav-channel-name" style="background-color: rgb(153, 153, 153); color: rgb(0, 0, 0);" class="outer-box-bg-color">
@@ -1199,13 +1084,68 @@ ${OBJ_VIDEOS}
             <div class="cb"></div>
             </div>
             ${OBJ_PLAYNAVA}
-            </div>`
+            </div>`;
+                var OBJ_RECENTACT;
+                try {
+                    OBJ_RECENTACT = await document.ciulinYT.load.recent_feed();
+                } catch(err) {
+                    OBJ_RECENTACT = "<p>Recent Feed cannot be init!</p>"
+                }
+                var OBJ_LEFTCOLL = `<div class="left-column" id="main-channel-left">
+            <div class="inner-box">
+            <div style="float:left;padding:0 4px 4px 0" class="link-as-border-color">
+            <div class="user-thumb-xlarge">
+            <div>
+            <a href="${VALUE_CHANNELURL}"><img src="${VALUE_CHANNELICON}"></a>
+            </div>
+            </div>
+            </div>
+            <div style="float:left;width:170px">
+            <div class="box-title title-text-color" title="${VALUE_CHANNELNAME}" style="float:none;padding-left:4px;margin-top:-2px;width:170px;overflow:hidden;font-size:111%">
+            <span class="yt-user-name" dir="ltr">${VALUE_CHANNELNAME}</span>
+            </div>
+            <div style="whitespace:no-wrap;position:relative;width:170px;">
+            <div>
+            <span class="subscription-container">
+            <button type="button" class="subscribe-button yt-uix-button yt-uix-button-urgent yt-uix-tooltip" onclick="document.ciulinYT.func.subscribe();return false;" title="Click to be notified of new videos from this channel" role="button">
+            <span class="yt-uix-button-content">${OBJ_SUBSCRIBE}</span>
+            <img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
+            </button>
+            </span>
+            </div>
+            </div>
+            </div>
+            <div class="cb"></div>
+            </div>
+            ${OBJ_USERPROFILE}
+            </div>`;
+                var OBJ_RIGHTCOLL = `<div class="right-column" id="main-channel-right">
+            ${OBJ_RECENTACT}
+            <div class="clear"></div>
+            </div>`;
+                var OBJ_CHANCON = `<div class="outer-box" id="main-channel-content" style="z-index: 0">
+            ${OBJ_LEFTCOLL}${OBJ_RIGHTCOLL}
+            <div class="cb"></div>
+            </div>`;
 
-            waitForElm("#video-player").then((elm) => {
-                document.ciulinYT.func.buildPlayer(ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer ? ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer.videoId : "")
-            });
+                // Append stylesheet
+                DOMHEAD.innerHTML += '<link rel="stylesheet" href="//s.ytimg.com/yt/cssbin/www-channel_new-vflrWkVe_.css">';
 
-            return `<div id="channel-body" style="background-color: rgb(204, 204, 204)" class="jsloaded">
+                // Modify title
+                if(o_DOMBODY.querySelector("title")) {
+                    o_DOMBODY.querySelector("title").parentNode.removeChild(o_DOMBODY.querySelector("title"));
+                };
+
+                DOMHEAD.appendChild(document.createElement("title"));
+                setInterval(function(){document.head.querySelector("title").innerText = `${VALUE_CHANNELNAME}'s Channel - YouTube`}, 100);
+
+                // Build player
+
+                waitForElm("#video-player").then((elm) => {
+                    document.ciulinYT.func.buildPlayer(ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer ? ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer.videoId : "")
+                });
+
+                return `<div id="channel-body" style="background-color: rgb(204, 204, 204)" class="jsloaded">
             <div id="channel-base-div">
             ${OBJ_PLAYNAV}
             ${OBJ_CHANCON}
@@ -1591,7 +1531,7 @@ ${OBJ_VIDEOS}
 
         // Browse
         if(window.location.pathname.match(/\/feed\/trending/i)) {
-            (async function(){
+            (async () => {
                 OBJ_CHANNEL = `TEST`;
             })();
         };
