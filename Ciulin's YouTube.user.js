@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.31
+// @version      0.4.32
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -292,13 +292,13 @@
 
         // Get Subscription Data
         function getSubscription() {
-        if(window.location.pathname.split("/")[1].match(/channel|user|^c{1}$/i)) {
-            return ytInitialData.header.c4TabbedHeaderRenderer.subscribeButton.subscribeButtonRenderer.subscribed;
+            if(window.location.pathname.split("/")[1].match(/channel|user|^c{1}$/i)) {
+                return ytInitialData.header.c4TabbedHeaderRenderer.subscribeButton ? ytInitialData.header.c4TabbedHeaderRenderer.subscribeButton.subscribeButtonRenderer.subscribed : false;
+            }
+            if(window.location.pathname.split("/")[1].match(/watch/i)) {
+                return ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer.owner.videoOwnerRenderer.subscriptionButton.subscribed;
+            }
         }
-        if(window.location.pathname.split("/")[1].match(/watch/i)) {
-            return ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer.owner.videoOwnerRenderer.subscriptionButton.subscribed;
-        }
-    }
 
         // Build Classic YouTube
         async function buildYouTube() {
@@ -795,7 +795,7 @@
                     xhr.open("GET", "https://returnyoutubedislikeapi.com/Votes?videoId=" + window.location.search.split("?v=")[1]);
                     xhr.send();
                     xhr.onload = (e) => {
-                        var result = JSON.parse(event.target.response);
+                        var result = JSON.parse(e.target.response);
                         var likes = result.likes;
                         var dislikes = result.dislikes;
                         var rating = likes + dislikes > 0 ? (likes / (likes + dislikes)) * 100 : 50;
