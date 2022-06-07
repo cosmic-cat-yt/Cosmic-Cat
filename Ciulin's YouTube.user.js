@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.30
+// @version      0.4.31
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -543,6 +543,7 @@
             if(ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.dateText.simpleText.split("Premiered")[1]) {
                 VALUE_VIDEODATE = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.dateText.simpleText.split("Premiered")[1] ? ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.dateText.simpleText.split("Premiered")[1] : ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.dateText.simpleText;
             }
+                BOOL_SUBSCRIBE = getSubscription();
             var VALUE_CHANNELNAME = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer.owner.videoOwnerRenderer.title.runs[0].text;
             var VALUE_CHANNELURL = "https://www.youtube.com" + ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer.owner.videoOwnerRenderer.navigationEndpoint.browseEndpoint.canonicalBaseUrl;
             var VALUE_VIDEOVIEWS = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.viewCount.videoViewCountRenderer.viewCount.simpleText.split(" ")[0];
@@ -793,7 +794,7 @@
                     var xhr = new XMLHttpRequest();
                     xhr.open("GET", "https://returnyoutubedislikeapi.com/Votes?videoId=" + window.location.search.split("?v=")[1]);
                     xhr.send();
-                    xhr.addEventListener('load', event => {
+                    xhr.onload = (e) => {
                         var result = JSON.parse(event.target.response);
                         var likes = result.likes;
                         var dislikes = result.dislikes;
@@ -801,7 +802,7 @@
                         document.querySelector(".watch-sparkbar-likes").style.width = rating + "%"
                         document.querySelector(".likes").innerText = likes.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                         document.querySelector(".dislikes").innerText = dislikes.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                    });
+                    };
                 });
             })();
         }
@@ -813,7 +814,7 @@
                 const channelData = await new Promise(resolve => {
                 var xhr = new XMLHttpRequest();
                 xhr.open("GET", `https://www.youtube.com/${window.location.pathname}/about`)
-                xhr.onload = function(e) {
+                xhr.onload = (e) => {
                     try {
                         var a = JSON.parse(xhr.response.split("var ytInitialData = ")[1].split(";</script>")[0]).contents.twoColumnBrowseResultsRenderer.tabs;
                         var i;
@@ -836,7 +837,7 @@
                         resolve(undefined);
                     };
                 };
-                xhr.onerror = function () {
+                xhr.onerror = () => {
                     resolve(undefined);
                     console.error("** An error occurred during the XMLHttpRequest");
                 };
@@ -1160,7 +1161,7 @@
 
         // Search Results
         if(window.location.pathname.split("/")[1].match(/results/i)) {
-            (function(){
+            (() => {
             var searchpar = (new URL(document.location)).searchParams.get("search_query");
             var i;
             var results = ytInitialData.contents.twoColumnSearchResultsRenderer.primaryContents.sectionListRenderer.contents[0].itemSectionRenderer.contents;
