@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.26
+// @version      0.4.27
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -83,6 +83,7 @@
                 var xhr = new XMLHttpRequest();
                 xhr.open("GET", `https://www.youtube.com/${window.location.pathname}/community`);
                 xhr.onload = function(e) {
+                    try {
                     let a = JSON.parse(xhr.response.split("var ytInitialData = ")[1].split(";</script>")[0]).contents.twoColumnBrowseResultsRenderer.tabs;
 
                     try {
@@ -114,6 +115,9 @@
                             };
                         };
                         resolve(data);
+                    }
+                    } catch(err) {
+                        resolve(undefined);
                     }
                 };
                 xhr.onerror = function () {
@@ -181,6 +185,7 @@
                 var xhr = new XMLHttpRequest();
                 xhr.open("GET", `https://www.youtube.com/${window.location.pathname}/videos`);
                 xhr.onload = function(e) {
+                    try {
                     let a = JSON.parse(xhr.response.split("var ytInitialData = ")[1].split(";</script>")[0]).contents.twoColumnBrowseResultsRenderer.tabs;
 
                     try {
@@ -209,6 +214,9 @@
                         };
                         resolve(data);
                     }
+                    } catch(err) {
+                        resolve(undefined);
+                    };
                 }
                 xhr.onerror = function () {
                     console.error("** An error occurred during the XMLHttpRequest");
@@ -794,6 +802,7 @@
                 var xhr = new XMLHttpRequest();
                 xhr.open("GET", `https://www.youtube.com/${window.location.pathname}/about`)
                 xhr.onload = function(e) {
+                    try {
                     var a = JSON.parse(xhr.response.split("var ytInitialData = ")[1].split(";</script>")[0]).contents.twoColumnBrowseResultsRenderer.tabs;
                     var i;
                     for (i = 0; i < a.length; i++) {
@@ -808,6 +817,9 @@
                             resolve(data);
                         }
                     }
+                    } catch(err) {
+                        resolve(undefined);
+                    };
                 };
                 xhr.onerror = function () {
                     resolve(undefined);
@@ -816,8 +828,8 @@
                 xhr.send();
             })
 
-            var VALUE_CHANNELNAME = ytInitialData.metadata.channelMetadataRenderer.title;
-            var VALUE_CHANNELICON = ytInitialData.metadata.channelMetadataRenderer.avatar.thumbnails[0].url;
+            var VALUE_CHANNELNAME = ytInitialData.metadata ? ytInitialData.metadata.channelMetadataRenderer.title : ytInitialData.header.interactiveTabbedHeaderRenderer.title.simpleText;
+            var VALUE_CHANNELICON = ytInitialData.metadata ? ytInitialData.metadata.channelMetadataRenderer.avatar.thumbnails[0].url : ytInitialData.header.interactiveTabbedHeaderRenderer.boxArt.thumbnails[0].url;
             var VALUE_CHANNELURL = window.location.href;
             var VALUE_SUBSCRIBE;
             var VALUE_DESCRIPTION;
@@ -834,7 +846,9 @@
             DOMHEAD.innerHTML += '<link rel="stylesheet" href="//s.ytimg.com/yt/cssbin/www-channel_new-vflrWkVe_.css">';
 
             // Modify title
-            o_DOMBODY.querySelector("title").parentNode.removeChild(o_DOMBODY.querySelector("title"));
+            if(o_DOMBODY.querySelector("title")) {
+                o_DOMBODY.querySelector("title").parentNode.removeChild(o_DOMBODY.querySelector("title"));
+            };
             DOMHEAD.appendChild(document.createElement("title"));
             setInterval(function(){document.head.querySelector("title").innerText = `${VALUE_CHANNELNAME}'s Channel - YouTube`}, 100);
 
@@ -842,13 +856,7 @@
                 OBJ_SUBSCRIBE = getSubscription() ? "Subscribed" : "Subscribe";
             //}
 
-            document.ciulinYT.data.subcount = "0";
-
-            try {
-                var VALUE_SUBSCRIB = await waitForElm("#subscriber-count").then((elm) => {document.ciulinYT.data.subcount = elm.innerText.split(" ")[0]});
-            } catch(err) {
-                console.debug("A");
-            };
+            document.ciulinYT.data.subcount = ytInitialData.header.c4TabbedHeaderRenderer ? ytInitialData.header.c4TabbedHeaderRenderer.subscriberCountText.simpleText.split(" ")[0] : "None";
             VALUE_SUBSCRIBE = document.ciulinYT.data.subcount;
             if(VALUE_SUBSCRIBE.match(/K/)) {
                 if(VALUE_SUBSCRIBE.match(/\./)) {
@@ -867,7 +875,7 @@
                 }
             }
 
-            VALUE_DESCRIPTION = ytInitialData.metadata.channelMetadataRenderer.description;
+            VALUE_DESCRIPTION = ytInitialData.metadata ? ytInitialData.metadata.channelMetadataRenderer.description : ytInitialData.header.interactiveTabbedHeaderRenderer.description.simpleText;
             VALUE_DESCRIPTION = VALUE_DESCRIPTION.replace(/\n/g, "<br />");
 
             // Check if /user/
@@ -1042,7 +1050,7 @@
   </div>
 
   <div id="playnav-curvideo-info-line">
-From: <span id="playnav-curvideo-channel-name"><a href="${window.location.href}">${ytInitialData.metadata.channelMetadataRenderer.title}</a></span>&nbsp;|
+From: <span id="playnav-curvideo-channel-name"><a href="${window.location.href}">${VALUE_CHANNELNAME}</a></span>&nbsp;|
     <span dir="ltr">${OBJ_HOMEVIDEO ? OBJ_HOMEVIDEO.publishedTimeText.runs[0].text : ""}</span>
       &nbsp;|
         <span id="playnav-curvideo-view-count">${OBJ_HOMEVIDEO ? OBJ_HOMEVIDEO.viewCountText.simpleText.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ""}</span>
