@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.25
+// @version      0.4.26
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -1255,7 +1255,8 @@ ${OBJ_VIDEOS}
                     let title = results[i].channelRenderer.title.simpleText;
                     let link = "http://www.youtube.com" + results[i].channelRenderer.shortBylineText.runs[0].navigationEndpoint.browseEndpoint.canonicalBaseUrl;
                     let thumbnail = results[i].channelRenderer.thumbnail.thumbnails[0].url;
-                    let videos = results[i].channelRenderer.videoCountText.runs[1] ? results[i].channelRenderer.videoCountText.runs[0].text + results[i].channelRenderer.videoCountText.runs[1].text : results[i].channelRenderer.videoCountText.runs[0].text // + results[i].channelRenderer.videoCountText.runs[1].text;
+                    let video = results[i].channelRenderer.videoCountText ? results[i].channelRenderer.videoCountText.runs : [];
+                    let videos = video[1] ? video[0].text + video[1].text : video.text // + results[i].channelRenderer.videoCountText.runs[1].text;
                     let subs = results[i].channelRenderer.subscriberCountText ? results[i].channelRenderer.subscriberCountText.simpleText : "No subscribers";
 
                     let main = `<div class="result-item yt-uix-tile yt-tile-default *sr channel">
@@ -1289,6 +1290,12 @@ ${OBJ_VIDEOS}
                     </div>`;
 
                     parse += main;
+                };
+
+                // Handle Playlists
+                if(results[i].playlistRenderer) {
+                    // Oh, if ever YouTube would restore playlists on the search engine.
+                    // If only the Right-Wing corruption and ignorance would fuck off.
                 };
             };
 
