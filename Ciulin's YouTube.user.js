@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.27
+// @version      0.4.28
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -35,8 +35,8 @@
     document.ciulinYT = {};
     const ciulinYT = {};
     ciulinYT.trackLength = function () {
-                var cminute = parseInt(document.ciulinYT.player.getCurrentTime() / 60, 10);
-                var csecond = Math.round(document.ciulinYT.player.getCurrentTime() % 60);
+                let cminute = parseInt(document.ciulinYT.player.getCurrentTime() / 60, 10);
+                let csecond = Math.round(document.ciulinYT.player.getCurrentTime() % 60);
                 if(csecond < 10) csecond = "0" + csecond;
                 document.querySelector("#playbar-progressbar").style.width = document.ciulinYT.player.getCurrentTime() / document.ciulinYT.player.getDuration() * 100 + "%";
                 document.querySelector("#playbar-timestamp-current").innerText = cminute + ":" + csecond;
@@ -80,25 +80,25 @@
     document.ciulinYT.load = async function(name) {
         if(name == "recent_feed") {
             document.ciulinYT.data.communityPosts = new Promise(async resolve => {
-                var xhr = new XMLHttpRequest();
+                let xhr = new XMLHttpRequest();
                 xhr.open("GET", `https://www.youtube.com/${window.location.pathname}/community`);
                 xhr.onload = function(e) {
                     try {
-                    let a = JSON.parse(xhr.response.split("var ytInitialData = ")[1].split(";</script>")[0]).contents.twoColumnBrowseResultsRenderer.tabs;
+                        let a = JSON.parse(xhr.response.split("var ytInitialData = ")[1].split(";</script>")[0]).contents.twoColumnBrowseResultsRenderer.tabs;
 
-                    try {
-                        a = a.find(a => a.tabRenderer.endpoint.commandMetadata.webCommandMetadata.url.split("/")[3] === 'community');
-                    } catch(err) {
-                        return resolve(
-                            [
-                                {text: "This YouTube channel does not have a community tab!", author: "System", timestamp: "Now", image: ""}
-                            ]
-                        );
-                    }
-                    if(a.tabRenderer) {
-                        var b = a.tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents;
-                        var j;
-                        var data = {};
+                        try {
+                            a = a.find(a => a.tabRenderer.endpoint.commandMetadata.webCommandMetadata.url.split("/")[3] === 'community');
+                        } catch(err) {
+                            return resolve(
+                                [
+                                    {text: "This YouTube channel does not have a community tab!", author: "System", timestamp: "Now", image: ""}
+                                ]
+                            );
+                        }
+                        if(!a.tabRenderer) return resolve(undefined);
+                        let b = a.tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents;
+                        let j;
+                        let data = {};
                         for (j = 0; j < b.length; j++) {
                             if(!b[j].continuationItemRenderer && !b[j].messageRenderer) {
                                 data[j] = {};
@@ -115,7 +115,6 @@
                             };
                         };
                         resolve(data);
-                    }
                     } catch(err) {
                         resolve(undefined);
                     }
@@ -127,11 +126,11 @@
             })
 
             var posts = await document.ciulinYT.data.communityPosts;
-            var string = "";
-            var i;
+            let string = "";
+            let i;
 
             Object.entries(posts).forEach((entry) => {
-                var [key, object] = entry;
+                let [key, object] = entry;
                 i = parseInt(key) + 1
                 var u = `<tr id="feed_divider"><td colspan="3" class="outer-box-bg-as-border divider">&nbsp;</td>`
                 if((i) == (Object.keys(posts).length)){
@@ -161,7 +160,7 @@
                 ${u}</tr>`;
                 string += a;
             });
-            var DOM = `<div class="inner-box" id="user_recent_activity">
+            let DOM = `<div class="inner-box" id="user_recent_activity">
             <div style="zoom:1">
             <div class="box-title title-text-color">Recent Activity</div>
             <div class="cb"></div>
@@ -182,26 +181,27 @@
 
         if(name == "channel_videos") {
             document.ciulinYT.data.channelVideos = new Promise(async resolve => {
-                var xhr = new XMLHttpRequest();
+                let xhr = new XMLHttpRequest();
                 xhr.open("GET", `https://www.youtube.com/${window.location.pathname}/videos`);
                 xhr.onload = function(e) {
                     try {
-                    let a = JSON.parse(xhr.response.split("var ytInitialData = ")[1].split(";</script>")[0]).contents.twoColumnBrowseResultsRenderer.tabs;
+                        let a = JSON.parse(xhr.response.split("var ytInitialData = ")[1].split(";</script>")[0]).contents.twoColumnBrowseResultsRenderer.tabs;
 
-                    try {
-                        a = a.find(a => a.tabRenderer.endpoint.commandMetadata.webCommandMetadata.url.split("/")[3] === 'videos');
-                    } catch(err) {
-                        return resolve(
-                            [
-                                {text: "This YouTube channel does not have a community tab!", author: "System", timestamp: "Now", image: ""}
-                            ]
-                        );
-                    }
+                        try {
+                            a = a.find(a => a.tabRenderer.endpoint.commandMetadata.webCommandMetadata.url.split("/")[3] === 'videos');
+                        } catch(err) {
+                            return resolve(
+                                [
+                                    {text: "This YouTube channel does not have a community tab!", author: "System", timestamp: "Now", image: ""}
+                                ]
+                            );
+                        }
 
-                    if(a.tabRenderer) {
-                        var b = a.tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].gridRenderer.items;
-                        var j;
-                        var data = {};
+                        if(!a.tabRenderer) return resolve(undefined);
+
+                        let b = a.tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].gridRenderer.items;
+                        let j;
+                        let data = {};
                         for (j = 0; j < b.length; j++) {
                             if(!b[j].continuationItemRenderer) {
                                 data[j] = {};
@@ -213,7 +213,6 @@
                             }
                         };
                         resolve(data);
-                    }
                     } catch(err) {
                         resolve(undefined);
                     };
@@ -225,13 +224,13 @@
             });
 
             var videos = await document.ciulinYT.data.channelVideos;
-            var string = "";
-            var i;
+            let string = "";
+            let i;
 
             Object.entries(videos).forEach((entry) => {
-                var [key, object] = entry;
+                let [key, object] = entry;
                 i = parseInt(key) + 1
-                var a = `
+                let a = `
                 <div id="playnav-video-play-uploads-12-${object.videoId}" class="playnav-item playnav-video">
                 <div style="display:none" class="encryptedVideoId">${object.videoId}</div>
                 <div id="playnav-video-play-uploads-12-${object.videoId}-selector" class="selector"></div>
@@ -280,7 +279,7 @@
         var name = cname + "=";
         var decodedCookie = decodeURIComponent(document.cookie);
         var ca = decodedCookie.split(';');
-        for(var i = 0; i <ca.length; i++) {
+        for(let i = 0; i <ca.length; i++) {
             var c = ca[i];
             while (c.charAt(0) == ' ') {
                 c = c.substring(1);
@@ -296,12 +295,10 @@
     // Get Subscription Data
     function getSubscription() {
         if(window.location.pathname.split("/")[1].match(/channel|user|^c{1}$/i)) {
-            var a = document.querySelector(".ytd-subscribe-button-renderer");
-            if(!a) return true;
-            return a.hasAttribute("subscribed") ? true : false;
+            return ytInitialData.header.c4TabbedHeaderRenderer.subscribeButton.subscribeButtonRenderer.subscribed;
         }
         if(window.location.pathname.split("/")[1].match(/watch/i)) {
-            return ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer.owner.videoOwnerRenderer.subscriptionButton.subscribed ? true : false;
+            return ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer.owner.videoOwnerRenderer.subscriptionButton.subscribed;
         }
     }
 
@@ -807,13 +804,16 @@
                     var i;
                     for (i = 0; i < a.length; i++) {
                         if(!a[i].expandableTabRenderer && a[i].tabRenderer.endpoint.commandMetadata.webCommandMetadata.url.split("/")[3] == "about") {
-                            var longmf = a[i].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelAboutFullMetadataRenderer.joinedDateText;
-                            var bitchmf = a[i].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelAboutFullMetadataRenderer.viewCountText;
-                            var smh = a[i].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelAboutFullMetadataRenderer.country;
-                            var data = {};
+                            let longmf = a[i].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelAboutFullMetadataRenderer.joinedDateText;
+                            let bitchmf = a[i].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelAboutFullMetadataRenderer.viewCountText;
+                            let smh = a[i].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelAboutFullMetadataRenderer.country;
+                            let artist = a[i].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelAboutFullMetadataRenderer.artistBio;
+                            let artistb = artist ? artist.simpleText.replace(/(?:\r\n|\r|\n)/g, "<br/>") : "";
+                            let data = {};
                             data.viewers = bitchmf ? bitchmf.simpleText.split(" ")[0] : "None";
                             data.creationdate = longmf ? longmf.runs[1].text : "Unknown";
                             data.country = smh ? smh.simpleText : "None";
+                            data.bio = '</br></br>' + artistb;
                             resolve(data);
                         }
                     }
@@ -915,7 +915,7 @@
             <div class="profile-info-value" id="profile_show_subscriber_count">${channelData.country}</div>
             <div class="cb"></div>
             </div>
-            <div class="show_info outer-box-bg-as-border" style="border-bottom-width:1px;margin-bottom:4px;line-height:140%" dir="ltr">${VALUE_DESCRIPTION}</div>
+            <div class="show_info outer-box-bg-as-border" style="border-bottom-width:1px;margin-bottom:4px;line-height:140%" dir="ltr">${VALUE_DESCRIPTION}${channelData.bio}</div>
             </div>
             </div>
             <div class="cb"></div>
