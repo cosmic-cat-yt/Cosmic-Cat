@@ -1,8 +1,8 @@
 # Ciulin's YouTube UserScript
-#### This userscript aims to recreate YouTube's old layout from 2012.
-#### Completely replaces Polymer!
+This userscript aims to recreate YouTube's old layout from 2012.
+Completely replaces Polymer!
 
-#### I made this to challenge YouTube Redux and be one of the first scripts to truly bring back the original 2012 layout.
+I made this to challenge YouTube Redux and be one of the first scripts to truly bring back the original 2012 layout.
 
 ## Features
 2012 YT Layout!<br/>
