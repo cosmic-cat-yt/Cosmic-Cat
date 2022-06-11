@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.32
+// @version      0.4.34
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -26,20 +26,20 @@
 // @run-at document-load
 // ==/UserScript==
 
-(function() {
+(() => {
     'use strict';
     function debug(a) {
         return console.debug(`[Ciulin's YouTube] ${a}`);
     }
+    function error(a) {
+        return console.error(`[Ciulin's YouTube] ${a}`);
+    }
     debug("Starting script...")
     document.ciulinYT = {};
     const ciulinYT = {};
-    ciulinYT.trackLength = function () {
-        var cminute = parseInt(document.ciulinYT.player.getCurrentTime() / 60, 10);
-        var csecond = Math.round(document.ciulinYT.player.getCurrentTime() % 60);
-        if(csecond < 10) csecond = "0" + csecond;
+    ciulinYT.trackLength = () => {
         document.querySelector("#playbar-progressbar").style.width = document.ciulinYT.player.getCurrentTime() / document.ciulinYT.player.getDuration() * 100 + "%";
-        document.querySelector("#playbar-timestamp-current").innerText = cminute + ":" + csecond;
+        document.querySelector("#playbar-timestamp-current").innerText = document.ciulinYT.func.calculateLength(parseInt(document.ciulinYT.player.getCurrentTime()));
     }
 
     document.ciulinYT.data = {};
@@ -82,7 +82,7 @@
             document.ciulinYT.data.communityPosts = new Promise(async resolve => {
                 var xhr = new XMLHttpRequest();
                 xhr.open("GET", `https://www.youtube.com/${window.location.pathname}/community`);
-                xhr.onload = function(e) {
+                xhr.onload = (e) => {
                     try {
                         var a = JSON.parse(xhr.response.split("var ytInitialData = ")[1].split(";</script>")[0]).contents.twoColumnBrowseResultsRenderer.tabs;
 
@@ -119,7 +119,7 @@
                         resolve(undefined);
                     }
                 };
-                xhr.onerror = function () {
+                xhr.onerror = () => {
                     console.error("** An error occurred during the XMLHttpRequest");
                 };
                 xhr.send();
@@ -182,7 +182,7 @@
             document.ciulinYT.data.channelVideos = new Promise(async resolve => {
                 var xhr = new XMLHttpRequest();
                 xhr.open("GET", `https://www.youtube.com/${window.location.pathname}/videos`);
-                xhr.onload = function(e) {
+                xhr.onload = (e) => {
                     try {
                         let a = JSON.parse(xhr.response.split("var ytInitialData = ")[1].split(";</script>")[0]).contents.twoColumnBrowseResultsRenderer.tabs;
 
@@ -216,7 +216,7 @@
                         resolve(undefined);
                     };
                 }
-                xhr.onerror = function () {
+                xhr.onerror = () => {
                     console.error("** An error occurred during the XMLHttpRequest");
                 };
                 xhr.send();
@@ -288,7 +288,7 @@
         }
         return "";
     }
-        //setTimeout(function(){document.querySelectorAll("ytd-topbar-menu-button-renderer.ytd-masthead")[2].click()}, 2s0
+        //setTimeout(() =>{document.querySelectorAll("ytd-topbar-menu-button-renderer.ytd-masthead")[2].click()}, 2s0
 
         // Get Subscription Data
         function getSubscription() {
@@ -296,7 +296,7 @@
                 return ytInitialData.header.c4TabbedHeaderRenderer.subscribeButton ? ytInitialData.header.c4TabbedHeaderRenderer.subscribeButton.subscribeButtonRenderer.subscribed : false;
             }
             if(window.location.pathname.split("/")[1].match(/watch/i)) {
-                return ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer.owner.videoOwnerRenderer.subscriptionButton.subscribed;
+                return ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer.subscribeButton.subscribeButtonRenderer.subscribed;
             }
         }
 
@@ -359,7 +359,7 @@
         // Userbar
 
         // SET USERNAME
-        var OBJ_LOGIN = (async function(){
+        var OBJ_LOGIN = (async () =>{
             debug("Cookie Check: Searching for APISID")
             if(!getCookie("APISID")) {
                 debug("Cookie Check: Didn't find APISID. User is logged out.");
@@ -369,8 +369,8 @@
             }
 
             debug("Cookie Check: Found APISID")
-            var T_OPENAVTAR = await waitForElm("#avatar-btn").then((elm) => {debug("waitForElm: #avatar-btn");document.querySelectorAll("ytd-topbar-menu-button-renderer")[2].click()});
-            var T_GETNAME = await waitForElm("#account-name").then((elm) => {debug("waitForElm: #account-name");document.ciulinYT.data.name = elm.innerText;document.ciulinYT.data.link = document.querySelector("ytd-compact-link-renderer #endpoint").href});
+            await waitForElm("#avatar-btn").then((elm) => {debug("waitForElm: #avatar-btn");document.querySelectorAll("ytd-topbar-menu-button-renderer")[2].click()});
+            await waitForElm("#account-name").then((elm) => {debug("waitForElm: #account-name");document.ciulinYT.data.name = elm.innerText;document.ciulinYT.data.link = document.querySelector("ytd-compact-link-renderer #endpoint").href});
 
             debug(`User Info: [Username: ${document.ciulinYT.data.name}] [Link: ${document.ciulinYT.data.link}]`);
 
@@ -387,7 +387,7 @@
         // Home Page (WIP)
         if(window.location.pathname == "/") {
             debug("Renderer: Rendering Home Page");
-            (function(){
+            (() =>{
             DOMHEAD.innerHTML += '<link rel="stylesheet" href="//s.ytimg.com/yt/cssbin/www-guide-vflOh_ROh.css">';
             var list_of_videos = ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.richGridRenderer.contents;
             var OBJ_VIDEOS = "";
@@ -534,7 +534,7 @@
 
         // Watch (WIP)
         if(window.location.pathname.split("/")[1].match(/watch/i)) {
-            (async function(){
+            (async () =>{
             var VALUE_VIDEOTITLE = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.title.runs[0].text;
             var VALUE_VIDEODATE = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.dateText.simpleText;
             if(ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.dateText.simpleText.split("streaming on")[1]) {
@@ -582,7 +582,6 @@
             var OBJ_SUGGESTEDVIDEOS = "";
             for (i = 0; i < VALUE_SUGGESTEDVIDEO.length; i++) {
                 if(!VALUE_SUGGESTEDVIDEO[i].continuationItemRenderer && VALUE_SUGGESTEDVIDEO[i].compactVideoRenderer) {
-                    console.debug(VALUE_SUGGESTEDVIDEO[i])
                 OBJ_SUGGESTEDVIDEOS += `<li class="video-list-item">
             <a href="https://www.youtube.com/watch?v=${VALUE_SUGGESTEDVIDEO[i].compactVideoRenderer.videoId}" class="video-list-item-link">
             <span class="ux-thumb-wrap contains-addto">
@@ -809,7 +808,7 @@
 
         // Channel (WIP)
         if(window.location.pathname.split("/")[1].match(/channel|user|^c{1}$/i)) {
-            var FUNC = (async function(){
+            var FUNC = (async () =>{
                 if (/community|videos|about|channels|playlists|membership|store/.test(window.location.pathname.split("/")[3])) window.location.href = window.location.pathname.split("/").slice(0,3).join("/")
                 const channelData = await new Promise(resolve => {
                 var xhr = new XMLHttpRequest();
@@ -1138,7 +1137,7 @@
                 };
 
                 DOMHEAD.appendChild(document.createElement("title"));
-                setInterval(function(){document.head.querySelector("title").innerText = `${VALUE_CHANNELNAME}'s Channel - YouTube`}, 100);
+                setInterval(() =>{document.head.querySelector("title").innerText = `${VALUE_CHANNELNAME}'s Channel - YouTube`}, 100);
 
                 // Build player
 
@@ -1177,7 +1176,6 @@
                     if(results[i].videoRenderer.viewCountText) {
                         views = results[i].videoRenderer.viewCountText.simpleText ? results[i].videoRenderer.viewCountText.simpleText : results[i].videoRenderer.viewCountText.runs[0].text + results[i].videoRenderer.viewCountText.runs[1].text;
                     }
-                    console.debug(results[i].videoRenderer)
 
                     let pub = results[i].videoRenderer.publishedTimeText ? results[i].videoRenderer.publishedTimeText.simpleText: "";
                     let main = `<div class="result-item yt-uix-tile yt-tile-default *sr">
@@ -1626,7 +1624,7 @@
             if(getCookie("CONSENT").indexOf("YES") !== 0) {
                 debug("CONSENT screen: Pending request from Consent Screen");
                 await waitForElm("#dialog");
-                await waitForElm(".ytd-consent-bump-v2-lightbox").then((elm) => {debug("Add refresh function to the accept button.");document.querySelector("#dialog").querySelectorAll("ytd-button-renderer")[3].querySelector("#button").addEventListener("click", function(){location = '';})})
+                await waitForElm(".ytd-consent-bump-v2-lightbox").then((elm) => {debug("Add refresh function to the accept button.");document.querySelector("#dialog").querySelectorAll("ytd-button-renderer")[3].querySelector("#button").addEventListener("click", () =>{location = '';})})
                 return;
             }
             debug("CONSENT screen: Passed");
@@ -1652,13 +1650,8 @@
                 // DOM_embedVideo
                 (() => {
                     var DOM_embedVideo = document.createElement("div");
-                    var DOM_embedVideoA = document.createElement("div");
-                    var DOM_embedVideoB = document.createElement("div");
                     DOM_embedVideo.setAttribute("class", "video-container");
-                    DOM_embedVideoA.setAttribute("id", "video-main-content");
-                    DOM_embedVideoB.setAttribute("class", "video-blank fitwidth fitheight");
-                    DOM_embedVideo.appendChild(DOM_embedVideoA);
-                    DOM_embedVideo.appendChild(DOM_embedVideoB);
+                    DOM_embedVideo.innerHTML = `<div id="video-main-content"><div class="video-blank fitwidth fitheight"></div></div>`;
                     DOM.appendChild(DOM_embedVideo);
                 })();
 
@@ -1795,10 +1788,8 @@
 
             function onPlayerReady() {
             /* total */
-                var tminute = parseInt(document.ciulinYT.player.getDuration() / 60, 10);
-                var tsecond = document.ciulinYT.player.getDuration() % 60;
-                if(tsecond < 10) tsecond = "0" + tsecond;
-                document.querySelector("#playbar-timestamp-total").innerText = tminute + ":" + tsecond;
+            console.log(document.ciulinYT.player.getDuration());
+                document.querySelector("#playbar-timestamp-total").innerText = document.ciulinYT.func.calculateLength(document.ciulinYT.player.getDuration());
             };
             function onStateChange(e) {
                 if (e.data == 0) {
@@ -1856,6 +1847,17 @@
                     });
                 })();
             },
+            calculateLength: (length) => {
+                if(typeof(length) !== 'number') return error(`calculateLength: '${length}' is not a valid number.`);
+                var hours = "";
+                var thours = Math.floor(length / 3600);
+                var tminute = Math.floor(length % 3600 / 60);
+                var tsecond = Math.floor(length % 3600 % 60);
+                tsecond = tsecond <= 10 ? ("0" + tsecond) : (tsecond);
+                tminute = length >= 3600 ? ("0" + tminute) : (tminute);
+                hours = length >= 3600 ? (thours + ":") : "";
+                return hours + "" + tminute + ":" + tsecond;
+            },
             Modal: (DOM) => {
                 DOM = document.querySelector(DOM);
                 if (!DOM.classList.contains("hid")) {
@@ -1867,14 +1869,23 @@
                 DOM.style = "display:block";
             },
             mutePlayer: (state) => {
-                if(state == 0) {
-                    document.querySelector("button.playbar-volume").setAttribute("data-state", "3");
-                    document.querySelector("#playbar-seek").value = 100;
-                    return document.ciulinYT.player.unMute();
+                state = Number(state);
+                let seek = 0;
+                let data = 0;
+
+                switch (state) {
+                    case 0:
+                        seek = 100;
+                        data = 3;
+                        document.ciulinYT.player.unMute();
+                        break;
+                    default:
+                        document.ciulinYT.player.mute();
+                        break;
                 }
-                document.querySelector("#playbar-seek").value = 0;
-                document.querySelector("button.playbar-volume").setAttribute("data-state", "0");
-                document.ciulinYT.player.mute();
+
+                document.querySelector("#playbar-seek").value = seek;
+                document.querySelector("button.playbar-volume").setAttribute("data-state", data);
             },
             fullscreen: () => {
                 var $ = document.querySelector("#video-player");
@@ -1896,33 +1907,35 @@
                 return document.exitFullscreen();
             },
             setVolume: (vol) => {
-                vol = Number(vol);
+                let volume = 0;
 
-                // Don't know how to make this IF statement pile more efficent.
+                switch (true) {
+                    case (vol == 0):
+                        document.ciulinYT.func.mutePlayer();
+                        break;
+                    case (vol < 20):
+                        volume = 1;
+                        break;
+                    case (vol < 80):
+                        volume = 2;
+                        break;
+                    case (vol < 100):
+                        volume = 3;
+                        break;
+                    default:
+                        volume = 3;
+                        break;
+                }
 
-                if(vol == 0) {
-                    document.ciulinYT.func.mutePlayer();
-                };
-                if(vol > 0 && vol < 20) {
-                    document.querySelector("button.playbar-volume").setAttribute("data-state", "1");
-                };
-                if(vol > 20 && vol < 80) {
-                    document.querySelector("button.playbar-volume").setAttribute("data-state", "2");
-                };
-                if(vol > 80 && vol < 100) {
-                    document.querySelector("button.playbar-volume").setAttribute("data-state", "3");
-                };
+                document.querySelector("button.playbar-volume").setAttribute("data-state", volume);
                 if(document.ciulinYT.player.isMuted() == true) {document.ciulinYT.player.unMute()};
                 document.ciulinYT.player.setVolume(vol);
             },
             likeThis: () => {
-                // Check if user is logged in. if not, prevent function from running.
-                if(BOOL_LOGIN == false) return;
+                if(BOOL_LOGIN !== true) return;
 
-                // Click the like button from the saved <old-body> element.
                 document.querySelectorAll("#top-level-buttons-computed ytd-toggle-button-renderer")[0].click();
 
-                // Update Like Count
                 var update = (math) => {
                     var equ = parseInt(document.querySelector("span.likes").innerText.replace(/,/g, ""));
                     var equ2 = parseInt(document.querySelector("span.dislikes").innerText.replace(/,/g, ""));
@@ -1942,27 +1955,20 @@
                     };
                 }
 
-                // Check whatever state the like button is. <liked/unliked>
-
-                // Remove Like
                 if(document.querySelector("#watch-like").classList.contains("liked")) {
                     update(0);
                     return document.querySelector("#watch-like").classList.remove("liked");
                 };
 
-                // Add Like
                 update(1);
                 document.querySelector("#watch-like").classList.add("liked");
                 document.querySelector("#watch-unlike").classList.remove("unliked");
             },
             dislikeThis: () => {
-                // Check if user is logged in. if not, prevent function from running.
-                if(BOOL_LOGIN == false) return;
+                if(BOOL_LOGIN !== true) return;
 
-                // Click the like button from the saved <old-body> element.
                 document.querySelectorAll("#top-level-buttons-computed ytd-toggle-button-renderer")[1].click();
 
-                // Update Like Count
                 var update = (math) => {
                     var equ = parseInt(document.querySelector("span.dislikes").innerText.replace(/,/g, ""));
                     var equ2 = parseInt(document.querySelector("span.likes").innerText.replace(/,/g, ""));
@@ -1982,29 +1988,25 @@
                     }
                 }
 
-                // Check whatever state the like button is. <liked/unliked>
-
-                // Remove Dislike
                 if(document.querySelector("#watch-unlike").classList.contains("unliked")) {
                     update(0);
                     return document.querySelector("#watch-unlike").classList.remove("unliked");
                 };
 
-                // Add Dislike
                 update(1);
                 document.querySelector("#watch-unlike").classList.add("unliked");
                 document.querySelector("#watch-like").classList.remove("liked");
             },
             loadPlaynavVideo: (id) => {
-                if(!id) return console.error("No ID was specified");
-                var description = new Promise(async resolve => {
+                if(!id) return error("loadPlaynavVideo: No ID was specified");
+                var data = new Promise(async resolve => {
                     let xhr = new XMLHttpRequest();
                     xhr.open("GET", "https://www.youtube.com/watch?v=" + id);
 
-                    xhr.onload = (e) => {
+                    xhr.onload = () => {
                         let a = JSON.parse(xhr.response.split("var ytInitialPlayerResponse = ")[1].split(";var")[0]).videoDetails;
                         if(!a) return resolve(undefined);
-                        return resolve(a.shortDescription);
+                        return resolve({description: a.shortDescription, timestamp: a.lengthSeconds});
                     };
 
                     xhr.send();
@@ -2017,7 +2019,9 @@
 
                     try {
                         a = a.find(a => a.tabRenderer.endpoint.commandMetadata.webCommandMetadata.url.split("/")[3] === 'videos');
-                    } catch(err) {};
+                    } catch(err) {
+                        return error("loadPlaynavVideo: Can't find video tab");
+                    };
 
                     if(!a.tabRenderer) return;
                     var b = a.tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].gridRenderer.items;
@@ -2025,64 +2029,53 @@
                         b = b.find(a => a.gridVideoRenderer.videoId === id);
                         b = b.gridVideoRenderer;
                     } catch(err) {
-                        return console.error("Video does not exist or can't be found");
+                        return error("loadPlaynavVideo: Video does not exist or can't be found");
                     };
+
+                    let d = await data;
 
                     document.querySelector("#playnav-curvideo-title a").removeAttribute("onclick");
                     document.querySelector("#playnav-curvideo-title a").setAttribute("href", "/watch?v=" + b.videoId);
                     document.querySelector("#playnav-curvideo-title a").innerText = b.title.runs[0].text;
                     document.querySelector("#playnav-curvideo-info-line span[dir='ltr']").innerText = b.publishedTimeText.simpleText;
-                    document.querySelector("#playnav-curvideo-description").innerText = await description;
+                    document.querySelector("#playnav-curvideo-description").innerText = d.description;
                     document.querySelector("#playnav-curvideo-view-count").innerText = b.viewCountText.simpleText.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    document.querySelector("#playbar-timestamp-total").innerText = document.ciulinYT.func.calculateLength(parseInt(d.timestamp));
                     document.querySelector("#playnav-watch-link").href = "https://www.youtube.com/watch?v=" + b.videoId;
                     document.ciulinYT.player.loadVideoById(b.videoId, 1);
                 };
 
-                xhr.onerror = function () {
+                xhr.onerror = () => {
                     console.error("** An error occurred during the XMLHttpRequest");
                 };
 
                 xhr.send();
             },
             subscribe: async() => {
-                if(BOOL_LOGIN == false) return;
+                if(BOOL_LOGIN !== true) return;
+                if((ytInitialData.metadata ? ytInitialData.metadata.channelMetadataRenderer.title : "") == document.ciulinYT.data.name) return document.ciulinYT.func.showModal("No need to subscribe to yourself!");
 
-                // 0 = Subscribe
-                // 1 = Unsubscribe
+                var sub = getSubscription();
 
-                let str = ytInitialData.metadata ? ytInitialData.metadata.channelMetadataRenderer.title : "";
-                if(str == document.ciulinYT.data.name) {
-                    return document.ciulinYT.func.showModal("No need to subscribe to yourself!");
+                document.querySelector("ytd-subscribe-button-renderer tp-yt-paper-button").click();
+                var button = document.querySelector(".yt-subscription-button") ? ".yt-subscription-button" : ".subscribe-button";
+                var text = "";
+
+                switch(sub) {
+                    case false:
+                        text = "Subscribed";
+                        document.querySelector(button).classList.add("subscribed");
+                        BOOL_SUBSCRIBE = true;
+                        break;
+                    default:
+                        await waitForElm("#confirm-button").then((elm) => {elm.click()});
+                        text = "Subscribe";
+                        document.querySelector(button).classList.remove("subscribed");
+                        BOOL_SUBSCRIBE = false;
+                        break;
                 };
 
-                var click = async (inp) => {
-                    document.querySelector("ytd-subscribe-button-renderer tp-yt-paper-button").click();
-                    var button = document.querySelector(".yt-subscription-button") ? document.querySelector(".yt-subscription-button") : document.querySelector(".subscribe-button");
-                    var button_ = document.querySelector(".yt-subscription-button") ? ".yt-subscription-button" : ".subscribe-button";
-                    var text = "";
-
-                    switch(inp) {
-                        case 0:
-                            text = "Subscribed";
-                            button.classList.add("subscribed");
-                            BOOL_SUBSCRIBE = true;
-                            break;
-                        case 1:
-                            await waitForElm("#confirm-button").then((elm) => {elm.click()});
-                            text = "Subscribe";
-                            button.classList.remove("subscribed");
-                            BOOL_SUBSCRIBE = false;
-                            break;
-                    };
-
-                    document.querySelectorAll(`${button_} .yt-uix-button-content`).forEach((a) => { a.innerText = text});
-                };
-
-                if(BOOL_SUBSCRIBE == true) {
-                    return click(1);
-                };
-
-                click(0);
+                document.querySelectorAll(`${button} .yt-uix-button-content`).forEach((a) => { a.innerText = text});
             }
         };
 
@@ -2095,16 +2088,14 @@
     function ProPosUp(e){
         var left = e.currentTarget.offsetLeft;
         var width = e.currentTarget.offsetWidth;
-        var position = (e.pageX - left) / width * 100;
-        return position;
+        return (e.pageX - left) / width * 100;
     };
 
-    document.ciulinYT.func.preProPos = function(e) {
-        var bar = e.currentTarget.querySelector("#playbar-progressbar");
-        bar.style.width = ProPosUp(e) + '%';
+    document.ciulinYT.func.preProPos = (e) => {
+        e.currentTarget.querySelector("#playbar-progressbar").style.width = ProPosUp(e) + '%';
     };
 
-    document.ciulinYT.func.setProPos = function(e) {
+    document.ciulinYT.func.setProPos = (e) => {
         document.ciulinYT.player.seekTo((e.pageX - e.currentTarget.offsetLeft) / 640 * document.ciulinYT.player.getDuration());
     };
 
@@ -2124,12 +2115,12 @@
             var xhr = new XMLHttpRequest();
             xhr.open("GET", `https://www.youtube.com/${url}`);
             xhr.timeout = 4000;
-            xhr.ontimeout = function () {
+            xhr.ontimeout = () => {
                 console.error("** An error occurred during the XMLHttpRequest");
                 document.querySelector("#feed-loading-template").classList.add("hid");
                 document.querySelector("#feed-error").classList.remove("hid");
             };
-            xhr.onload = function(e) {
+            xhr.onload = (e) => {
                 let b = JSON.parse(xhr.response.split("var ytInitialData = ")[1].split(";</script>")[0]).contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content;
                 let v = b.sectionListRenderer ? b.sectionListRenderer : b.richGridRenderer;
                 let x = v.contents[0].itemSectionRenderer ? v.contents[0].itemSectionRenderer.contents[0].shelfRenderer.content.expandedShelfContentsRenderer.items : v.contents;
