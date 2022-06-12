@@ -32,5 +32,5 @@ Easy!
 If you find any issues with my script, feel free to report it on the GitHub issues page, or contribute!<br/>
 
 ## Contributors
-[@ciulinuwu]<br/>
-[@HastagGuigui]<br/>
+[@ciulinuwu](https://github.com/ciulinuwu)<br/>
+[@HastagGuigui](https://github.com/HastagGuigui)<br/>
