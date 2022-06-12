@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.34
+// @version      0.4.35
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -1651,7 +1651,7 @@
                 (() => {
                     var DOM_embedVideo = document.createElement("div");
                     DOM_embedVideo.setAttribute("class", "video-container");
-                    DOM_embedVideo.innerHTML = `<div id="video-main-content"><div class="video-blank fitwidth fitheight"></div></div>`;
+                    DOM_embedVideo.innerHTML = `<div id="video-main-content"></div><div class="video-blank fitwidth fitheight"></div>`;
                     DOM.appendChild(DOM_embedVideo);
                 })();
 
