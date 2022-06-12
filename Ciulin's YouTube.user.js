@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.39
+// @version      0.4.40
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -205,7 +205,7 @@
                         collection.BIO = b.artistBio ? "<br/><br/>" + b.artistBio.simpleText.replace(/(?:\r\n|\r|\n)/g, "<br/>") : "";
                         collection.COUNTRY = b.country ? b.country.simpleText : "";
                         collection.JOIN = b.joinedDateText.runs[1].text;
-                        collection.VIEWS = b.viewCountText.simpleText;
+                        collection.VIEWS = b.viewCountText.simpleText.split(" ")[0];
 
                         resolve(collection);
                     }
@@ -1626,7 +1626,7 @@
 
 
 
-                    var OBJ_USERPROFILE = `<div id="user_profile" class="inner-box">
+                    var OBJ_USERPROFILE = `<div id="user_profile" class="inner-box" style="background-color: rgb(238, 238, 255); color: rgb(51, 51, 51);">
             <div class="box-title title-text-color">Profile</div>
             <div class="cb"></div>
             <div id="user_profile-body">
@@ -1818,7 +1818,7 @@
             </div>`;
                     var OBJ_RECENTACT;
                     var OBJ_LEFTCOLL = `<div class="left-column" id="main-channel-left">
-            <div class="inner-box">
+            <div class="inner-box" style="background-color: rgb(238, 238, 255); color: rgb(51, 51, 51);">
             <div style="float:left;padding:0 4px 4px 0" class="link-as-border-color">
             <div class="user-thumb-xlarge">
             <div>
@@ -1846,7 +1846,7 @@
             ${OBJ_USERPROFILE}
             </div>`;
                     var OBJ_RIGHTCOLL = `<div class="right-column" id="main-channel-right">
-            <div class="inner-box" id="user_recent_activity">
+            <div class="inner-box" id="user_recent_activity" style="background-color: rgb(238, 238, 255); color: rgb(51, 51, 51);">
             <div style="zoom:1">
             <div class="box-title title-text-color">Recent Activity</div>
             <div class="cb"></div>
@@ -1863,7 +1863,7 @@
             </div>
             <div class="clear"></div>
             </div>`;
-                    var OBJ_CHANCON = `<div class="outer-box" id="main-channel-content" style="z-index: 0">
+                    var OBJ_CHANCON = `<div class="outer-box" id="main-channel-content" style="z-index: 0;background-color: rgb(153, 153, 153); color: rgb(0, 0, 0);">
             ${OBJ_LEFTCOLL}${OBJ_RIGHTCOLL}
             <div class="cb"></div>
             </div>`;
