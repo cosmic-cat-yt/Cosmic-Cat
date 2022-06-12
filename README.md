@@ -4,6 +4,11 @@ Completely replaces Polymer!
 
 I made this to challenge YouTube Redux and be one of the first scripts to truly bring back the original 2012 layout.
 
+
+## Note
+This is still all Work-In-Progress - So there are things missing.</br>
+If you know JavaScript/CSS/HTML, feel free to contribute!
+
 ## Features
 2012 YT Layout!<br/>
 Channel 2.0!<br/>
@@ -24,8 +29,8 @@ Download the script: [Ciulin's YouTube.user.js](https://github.com/ciulinuwu/ciu
 Easy!
 
 ## ISSUES
-If you find any issues with my script, feel free to report it on the GitHub issues page!<br/>
+If you find any issues with my script, feel free to report it on the GitHub issues page, or contribute!<br/>
 
-## Note
-This is still all Work-In-Progress - So there are things missing.</br>
-If you know JavaScript/CSS/HTML, feel free to contribute!
+## Contributors
+@ciulinuwu
+@HastagGuigui
