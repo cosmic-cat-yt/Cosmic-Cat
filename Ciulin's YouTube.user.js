@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.36
+// @version      0.4.37
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -206,9 +206,9 @@
                                 data[j] = {};
                                 data[j].title = b[j].gridVideoRenderer.title.runs[0].text;
                                 data[j].videoId = b[j].gridVideoRenderer.videoId;
-                                data[j].views = b[j].gridVideoRenderer.viewCountText.simpleText;
-                                data[j].date = b[j].gridVideoRenderer.publishedTimeText.simpleText;
-                                data[j].duration = b[j].gridVideoRenderer.thumbnailOverlays.find(a => a.thumbnailOverlayTimeStatusRenderer).thumbnailOverlayTimeStatusRenderer.text.simpleText;
+                                data[j].views = b[j].gridVideoRenderer.viewCountText.simpleText ? b[j].gridVideoRenderer.viewCountText.simpleText : b[j].gridVideoRenderer.viewCountText.runs[0].text + " " + b[j].gridVideoRenderer.viewCountText.runs[1].text;
+                                data[j].date = b[j].gridVideoRenderer.publishedTimeText ? b[j].gridVideoRenderer.publishedTimeText.simpleText : "";
+                                data[j].duration = b[j].gridVideoRenderer.thumbnailOverlays.find(a => a.thumbnailOverlayTimeStatusRenderer).thumbnailOverlayTimeStatusRenderer.text.simpleText ? b[j].gridVideoRenderer.thumbnailOverlays.find(a => a.thumbnailOverlayTimeStatusRenderer).thumbnailOverlayTimeStatusRenderer.text.simpleText : b[j].gridVideoRenderer.thumbnailOverlays.find(a => a.thumbnailOverlayTimeStatusRenderer).thumbnailOverlayTimeStatusRenderer.text.runs[0].text;
                             }
                         };
                         resolve(data);
