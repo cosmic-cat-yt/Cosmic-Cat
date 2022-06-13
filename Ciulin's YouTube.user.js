@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.45
+// @version      0.4.46
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -225,7 +225,7 @@
                         let z = x[i].richItemRenderer ? x[i].richItemRenderer.content : x[i].videoRenderer;
                         if(!x[i].richSectionRenderer && !x[i].continuationItemRenderer && !z.displayAdRenderer && !z.radioRenderer) {
                             let a = x[i].videoRenderer ? x[i].videoRenderer : x[i].richItemRenderer.content.videoRenderer;
-                            let views = a.viewCountText;
+                            let views = a.viewCountText ? a.viewCountText : {simpleText: "0"};
                             OBJ_VIDEOS += `<li class="feed-item-container">
             <div class="feed-item upload">
             <div class="feed-item-content">
