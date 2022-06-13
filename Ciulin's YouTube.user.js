@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.41
+// @version      0.4.42
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -95,50 +95,54 @@
                                 data[j] = {};
                                 data[j].text = b[j].backstagePostThreadRenderer.post.backstagePostRenderer.contentText.runs ? b[j].backstagePostThreadRenderer.post.backstagePostRenderer.contentText.runs[0].text : "";
 
-                                let filter = async (j) => {
-                                    let img = b[j].backstagePostThreadRenderer.post.backstagePostRenderer;
-                                    if(img.backstageAttachment) {
-                                        let stor = "";
-                                        console.debug(img.backstageAttachment)
-                                        // Images
-                                        if(img.backstageAttachment.postMultiImageRenderer) {
-                                            for (let i = 0; i < img.backstageAttachment.postMultiImageRenderer.images.length; i++) {
-                                                stor += `<img src="${img.backstageAttachment.postMultiImageRenderer.images[i].backstageImageRenderer.image.thumbnails[0].url}"/>`
-                                            }
-                                            return stor;
-                                        }
-                                        if(img.backstageAttachment.backstageImageRenderer) {
-                                            stor = '<img src="' + img.backstageAttachment.backstageImageRenderer.image.thumbnails[0].url + '">';
-                                            return stor;
-                                        }
+                                let sortImages = async (img) => {
+                                    let stor = ""
+                                    for (let i = 0; i < img.images.length; i++) {
+                                        stor += `<img src="${img.images[i].backstageImageRenderer.image.thumbnails[0].url}"/>`
+                                    }
+                                    return stor;
+                                }
 
-                                        // Videos
-                                        if(img.backstageAttachment.videoRenderer) {
-                                            stor = `<div class="playnav-item playnav-video">
-                <div style="display:none" class="encryptedVideoId">${img.backstageAttachment.videoRenderer.videoId}</div>
+                                let filter = async (j) => {
+                                    let img = b[j].backstagePostThreadRenderer.post.backstagePostRenderer.backstageAttachment;
+                                    if(!img) return '';
+                                    let stor = "";
+                                    for (const obj in img) {
+                                        switch (obj) {
+                                            case 'postMultiImageRenderer':
+                                                stor = await sortImages(img.postMultiImageRenderer);
+                                                break;
+                                            case 'backstageImageRenderer':
+                                                stor = '<img src="' + img.backstageImageRenderer.image.thumbnails[0].url + '">';
+                                                break;
+                                            case 'videoRenderer':
+                                                stor = `<div class="playnav-item playnav-video">
+                <div style="display:none" class="encryptedVideoId">${img.videoRenderer.videoId}</div>
                 <div class="selector"></div>
                 <div class="content">
                 <div class="playnav-video-thumb">
-                <a href="http://www.youtube.com/watch?v=${img.backstageAttachment.videoRenderer.videoId}" onclick="document.ciulinYT.func.loadPlaynavVideo('${img.backstageAttachment.videoRenderer.videoId}');return false;" class="ux-thumb-wrap">
+                <a href="http://www.youtube.com/watch?v=${img.videoRenderer.videoId}" onclick="document.ciulinYT.func.loadPlaynavVideo('${img.videoRenderer.videoId}');return false;" class="ux-thumb-wrap">
                 <span class="video-thumb ux-thumb-96 ">
                 <span class="clip">
-                <img src="//i1.ytimg.com/vi/${img.backstageAttachment.videoRenderer.videoId}/default.jpg" alt="Thumbnail" class="" onclick="document.ciulinYT.func.loadPlaynavVideo('${img.backstageAttachment.videoRenderer.videoId}');return false;" title="Game of Survival『14』">
+                <img src="//i1.ytimg.com/vi/${img.videoRenderer.videoId}/default.jpg" alt="Thumbnail" class="" onclick="document.ciulinYT.func.loadPlaynavVideo('${img.videoRenderer.videoId}');return false;" title="Game of Survival『14』">
                 </span>
                 </span>
                 <span class="video-time">0:30</span>
                 </a>
                 </div>
                 <div class="playnav-video-info">
-                <a href="http://www.youtube.com/watch?v=${img.backstageAttachment.videoRenderer.videoId}" class="playnav-item-title ellipsis" onclick="document.ciulinYT.func.loadPlaynavVideo('${img.backstageAttachment.videoRenderer.videoId}');return false;">
-                <span dir="ltr">${img.backstageAttachment.videoRenderer.title.runs[0].text}</span>
+                <a href="http://www.youtube.com/watch?v=${img.videoRenderer.videoId}" class="playnav-item-title ellipsis" onclick="document.ciulinYT.func.loadPlaynavVideo('${img.videoRenderer.videoId}');return false;">
+                <span dir="ltr">${img.videoRenderer.title.runs[0].text}</span>
                 </a>
-                <div style="display:none" id="playnav-video-play-uploads-12">${img.backstageAttachment.videoRenderer.videoId}</div>
+                <div style="display:none" id="playnav-video-play-uploads-12">${img.videoRenderer.videoId}</div>
                 </div>
                 </div>
                 </div>`;
-                                            return stor;
+                                                break;
                                         }
                                     }
+
+                                    return stor;
                                 }
                                 data[j].images = await filter(j);
                                 data[j].author = b[j].backstagePostThreadRenderer.post.backstagePostRenderer.authorText.runs[0].text;
@@ -347,6 +351,7 @@
             for (i = 0; i < list_of_videos.length; i++) {
                 if(!list_of_videos[i].richSectionRenderer && !list_of_videos[i].continuationItemRenderer && !list_of_videos[i].richItemRenderer.content.displayAdRenderer && !list_of_videos[i].richItemRenderer.content.radioRenderer) {
                     var a = list_of_videos[i].richItemRenderer.content.videoRenderer;
+                    let views = a.viewCountText;
                     OBJ_VIDEOS += `<li class="feed-item-container">
             <div class="feed-item upload">
             <div class="feed-item-content">
@@ -399,7 +404,7 @@
             </div>
             <p class="metadata">
             <a href="http://www.youtube.com${a.ownerText.runs[0].navigationEndpoint.browseEndpoint.canonicalBaseUrl}" class="yt-user-name" dir="ltr">${a.ownerText.runs[0].text}</a>
-            <span class="view-count">${a.viewCountText.simpleText ? a.viewCountText.simpleText : a.viewCountText.runs[0].text + a.viewCountText.runs[1].text}</span>
+            <span class="view-count">${(views.simpleText) ? views.simpleText : (views.runs) ? views.runs[0].text + views.runs[1].text : "0 views"}</span>
             </p>
             </div>
             </div>
