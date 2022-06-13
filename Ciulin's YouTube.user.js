@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.43
+// @version      0.4.44
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -1154,18 +1154,14 @@
         elm.parentNode.removeChild(elm);
     })
 
-
-        // Build Classic YouTube
+    // Build Classic YouTube
     async function buildYouTube() {
-        debug("Execute buildYouTube");
         var DOMHTML = document.querySelector("html");
 
         // DATE
         var TIMEDATE = new Date();
-        var ARR_MONTH = TIMEDATE.getMonth();
-        if(ARR_MONTH < 10) ARR_MONTH = "0" + ARR_MONTH;
-        var ARR_DATE = TIMEDATE.getDate();
-        if(ARR_DATE < 10) ARR_DATE = "0" + ARR_DATE;
+        var ARR_MONTH = (TIMEDATE.getMonth() < 10) ? "0" + TIMEDATE.getMonth() : TIMEDATE.getMonth();
+        var ARR_DATE = (TIMEDATE.getDate() < 10) ? "0" + TIMEDATE.getDate() : TIMEDATE.getDate();
         var VALUE_DATE = TIMEDATE.getFullYear() + "" + ARR_MONTH + "" + ARR_DATE;
 
         // LANG
@@ -1185,8 +1181,7 @@
         var DOMHEAD = document.createElement("head");
         DOMHTML.appendChild(DOMHEAD);
 
-        document.title = VALUE_TITLE
-        //DOMHEAD.appendChild(document.querySelector("link[rel='search']"))
+        document.title = VALUE_TITLE;
         DOMHEAD.innerHTML += '<link rel="icon" href="https://s.ytimg.com/yt/favicon-refresh-vfldLzJxy.ico">';
         DOMHEAD.innerHTML += '<link rel="shortcut icon" href="https://s.ytimg.com/yt/favicon-refresh-vfldLzJxy.ico">';
         DOMHEAD.innerHTML += '<link rel="stylesheet" href="//s.ytimg.com/yt/cssbin/www-refresh-vflzVUPsm.css">';
@@ -1211,27 +1206,22 @@
         DOMBODY.setAttribute("dir", "ltr");
         DOMHTML.appendChild(DOMBODY);
 
-            if(o_DOMBODY.querySelector("title")) {
-                o_DOMBODY.querySelector("title").parentNode.removeChild(o_DOMBODY.querySelector("title"));
-            };
+        if(o_DOMBODY.querySelector("title")) {
+            o_DOMBODY.querySelector("title").parentNode.removeChild(o_DOMBODY.querySelector("title"));
+        };
 
         // Userbar
 
         // SET USERNAME
-        var OBJ_LOGIN = (async () =>{
-            debug("Cookie Check: Searching for APISID")
+        var OBJ_LOGIN = (async () => {
             if(!document.ciulinYT.func.getCookie("APISID")) {
-                debug("Cookie Check: Didn't find APISID. User is logged out.");
                 var login_url = "https://accounts.google.com/ServiceLogin?service=youtube&uilel=3&passive=true&continue=https%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26app%3Ddesktop%26hl%3Den%26next%3Dhttps%253A%252F%252Fwww.youtube.com%252F&hl=en&ec=65620";
                 BOOL_LOGIN = false;
                 return `<div id="masthead-user-bar-container"><div id="masthead-user-bar"><div id="masthead-user"><a class="start" href="https://www.youtube.com/signup">Create Account</a><span class="masthead-link-separator">|</span><a class="end" href="${login_url}">Sign In</a></div></div></div>`;
             }
 
-            debug("Cookie Check: Found APISID")
-            await document.ciulinYT.func.waitForElm("#avatar-btn").then((elm) => {debug("document.ciulinYT.func.waitForElm: #avatar-btn");document.querySelectorAll("ytd-topbar-menu-button-renderer")[2].click()});
-            await document.ciulinYT.func.waitForElm("#account-name").then((elm) => {debug("document.ciulinYT.func.waitForElm: #account-name");document.ciulinYT.data.name = elm.innerText;document.ciulinYT.data.link = document.querySelector("ytd-compact-link-renderer #endpoint").href});
-
-            debug(`User Info: [Username: ${document.ciulinYT.data.name}] [Link: ${document.ciulinYT.data.link}]`);
+            await document.ciulinYT.func.waitForElm("#avatar-btn").then((elm) => document.querySelectorAll("ytd-topbar-menu-button-renderer")[2].click());
+            await document.ciulinYT.func.waitForElm("#account-name").then((elm) => {document.ciulinYT.data.name = elm.innerText;document.ciulinYT.data.link = document.querySelector("ytd-compact-link-renderer #endpoint").href});
 
             BOOL_LOGIN = true;
             return `<div id="masthead-user-bar-container"><div id="masthead-user-bar"><div id="masthead-user"><a href="${document.ciulinYT.data.link}">${document.ciulinYT.data.name}</a></div></div></div>`;
@@ -1268,7 +1258,7 @@
             <div class="guide">
             <div class="guide-section yt-uix-expander first ">
             <h3 class="guide-item-container selected-child">
-            <a class="guide-item selected" data-feed-name="youtube" data-feed-url="" onclick="document.ciulinYT.func.loadHomeCategory(this)">
+            <a class="guide-item selected" data-feed-name="youtube" data-feed-url="" onclick="document.ciulinYT.load.home_category(this)">
             <span class="thumb">
             <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="" class="system-icon category">
             </span>
@@ -1277,7 +1267,7 @@
             </h3>
             <ul>
             <li class="guide-item-container ">
-            <a class="guide-item" data-feed-name="trending" data-feed-url="feed/trending" onclick="document.ciulinYT.func.loadHomeCategory(this)">
+            <a class="guide-item" data-feed-name="trending" data-feed-url="feed/trending" onclick="document.ciulinYT.load.home_category(this)">
             <span class="thumb">
             <img class="system-icon system trending" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
             </span>
@@ -2111,19 +2101,15 @@
         </div>`;
     };
     (async () => {
-            debug("Cookie Check: Searching for CONSENT");
-            if(document.ciulinYT.func.getCookie("APISID")) {
-                debug("CONSENT screen: Passed");
-                return buildYouTube();
-            };
-            if(!document.ciulinYT.func.getCookie("CONSENT")) return debug("Cookie Check: CONSENT does not exist.");
-            if(document.ciulinYT.func.getCookie("CONSENT").indexOf("YES") !== 0) {
-                debug("CONSENT screen: Pending request from Consent Screen");
-                await document.ciulinYT.func.waitForElm("#dialog");
-                await document.ciulinYT.func.waitForElm(".ytd-consent-bump-v2-lightbox").then((elm) => {debug("Add refresh function to the accept button.");document.querySelector("#dialog").querySelectorAll("ytd-button-renderer")[3].querySelector("#button").addEventListener("click", () =>{location = '';})})
-                return;
-            }
-            debug("CONSENT screen: Passed");
-            buildYouTube();
-        })();
+        if(document.ciulinYT.func.getCookie("APISID")) {
+            return buildYouTube();
+        };
+        if(!document.ciulinYT.func.getCookie("CONSENT")) return;
+        if(document.ciulinYT.func.getCookie("CONSENT").indexOf("YES") !== 0) {
+            await document.ciulinYT.func.waitForElm("#dialog");
+            await document.ciulinYT.func.waitForElm(".ytd-consent-bump-v2-lightbox").then((elm) => document.querySelector("#dialog").querySelectorAll("ytd-button-renderer")[3].querySelector("#button").addEventListener("click", () => {location = '';}))
+            return;
+        }
+        buildYouTube();
+    })();
 })();
