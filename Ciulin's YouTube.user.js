@@ -921,7 +921,7 @@
                 if (!document.fullscreenElement) {
                     document.querySelector("#video-main-content").style = `width: ${window.outerWidth}px; height: ${window.outerHeight - 30}px;`;
                     document.querySelector(".video-playbar").style = `width: ${window.outerWidth}px; `;
-                    document.querySelector(".playbar-bottom-container").style = `width: ${window.outerWidth}px; max-width: none;`;
+                    document.querySelector(".playbar-bottom-container").style = `width: ${window.outerWidth}px; max-width: none;bottom: 0;`;
                     document.querySelector(".video-container").style = `height: ${window.outerHeight - 30}px;`;
                     document.querySelector("left").style = `width: ${window.outerWidth - 78}px;`;
                     return requestFullScreen.bind($)();
