@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.47
+// @version      0.4.48
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -58,6 +58,14 @@
                         let a = JSON.parse(xhr.response.split("var ytInitialData = ")[1].split(";</script>")[0]).contents.twoColumnBrowseResultsRenderer.tabs.find(b => b.tabRenderer ? b.tabRenderer.endpoint.commandMetadata.webCommandMetadata.url.split("/")[3] === 'community' : {});
                         if(!a.tabRenderer) return resolve({});
 
+                        let sortImages = async (img) => {
+                            let stor = "";
+                            for (let i = 0; i < img.images.length; i++) {
+                                stor += `<img src="${img.images[i].backstageImageRenderer.image.thumbnails[0].url}"/>`;
+                            }
+                            return stor;
+                        };
+
                         let filter = async (j) => {
                             let img = b[j].backstagePostThreadRenderer.post.backstagePostRenderer.backstageAttachment;
                             if(!img) return '';
@@ -107,14 +115,6 @@
                             if(!b[j].continuationItemRenderer && !b[j].messageRenderer) {
                                 data[j] = {};
                                 data[j].text = b[j].backstagePostThreadRenderer.post.backstagePostRenderer.contentText.runs ? b[j].backstagePostThreadRenderer.post.backstagePostRenderer.contentText.runs[0].text : "";
-
-                                let sortImages = async (img) => {
-                                    let stor = "";
-                                    for (let i = 0; i < img.images.length; i++) {
-                                        stor += `<img src="${img.images[i].backstageImageRenderer.image.thumbnails[0].url}"/>`;
-                                    }
-                                    return stor;
-                                };
 
                                 data[j].images = await filter(j);
                                 data[j].author = b[j].backstagePostThreadRenderer.post.backstagePostRenderer.authorText.runs[0].text;
