@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.48
+// @version      0.4.49
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -920,9 +920,9 @@
                 if(!requestFullScreen) return;
                 if (!document.fullscreenElement) {
                     document.querySelector("#video-main-content").style = `width: ${window.outerWidth}px; height: ${window.outerHeight - 30}px;`;
-                    document.querySelector(".video-playbar").style.width = window.outerWidth + "px";
+                    document.querySelector(".video-playbar").style = `width: ${window.outerWidth}px; `;
                     document.querySelector(".playbar-bottom-container").style = `width: ${window.outerWidth}px; max-width: none;`;
-                    document.querySelector(".video-container").style = `height: ${window.outerHeight - 30}px;";`;
+                    document.querySelector(".video-container").style = `height: ${window.outerHeight - 30}px;`;
                     document.querySelector("left").style = `width: ${window.outerWidth - 78}px;`;
                     return requestFullScreen.bind($)();
                 }
