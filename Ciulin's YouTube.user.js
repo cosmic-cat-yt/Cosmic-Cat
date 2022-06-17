@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.51
+// @version      0.4.52
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -26,6 +26,8 @@
 // @grant GM_getMetadata
 // @run-at document-load
 // ==/UserScript==
+
+var interval;
 
 (() => {
     'use strict';
@@ -657,6 +659,7 @@
 
                 var a = document.createElement("script");
                 var script = `
+                var progress;
             var onYouTubeIframeAPIReady = () => {
                 document.ciulinYT.player = new YT.Player('video-main-content', {
                     height: '360',
@@ -676,16 +679,16 @@
 
             var playVideo = () => {
             document.querySelector(".video-blank").style = "display:none;";
-            setInterval(document.ciulinYT.func.preProPos);
-            setInterval(document.ciulinYT.func.trackCurrent);
             };
 
             var onPlayerReady = () => {
             document.querySelector("#timestamp_total").innerText = document.ciulinYT.func.calculateLength(parseInt(document.ciulinYT.player.getDuration()));
+              document.querySelector(".video-scrubbar").setAttribute("data-interval", setInterval(document.ciulinYT.func.preProPos));
+            setInterval(document.ciulinYT.func.trackCurrent);
               };
               var onStateChange = (e) => {
               switch (e.data) {
-              case 3:
+              case 1:
               playVideo();
               break;
               case 0:
@@ -700,6 +703,9 @@
             // DOM EVENT
 
             (() => {
+                let canMouse = false;
+                let x = 0;
+                let a = 0;
                 document.querySelector(".playbar-controls_play").addEventListener("click", () => {
                     document.ciulinYT.func.playPause(document.querySelector(".playbar-controls_play").getAttribute("data-state"));
                 });
@@ -711,6 +717,23 @@
                 });
                 document.querySelector("#playbar-seek").addEventListener("input", (e) => {
                     document.ciulinYT.func.setVolume(e.target.value);
+                });
+                document.querySelector(".video-scrubbar").addEventListener('mousedown', e => {
+                    let uwuimgoinginsane = Number(document.querySelector(".video-scrubbar").getAttribute("data-interval"));
+                    clearInterval(uwuimgoinginsane);
+                    canMouse = true;
+                });
+                document.querySelector(".video-scrubbar").addEventListener('mouseup', e => {
+                    document.ciulinYT.player.seekTo(a);
+                    canMouse = false;
+                });
+                document.querySelector(".video-scrubbar").addEventListener("mousemove", e => {
+                    if(canMouse !== true) return;
+                    x = ((e.pageX - e.currentTarget.offsetLeft) / e.currentTarget.offsetWidth * 100);
+                    a = ((e.pageX - e.currentTarget.offsetLeft) / 640 * document.ciulinYT.player.getDuration());
+                    document.querySelector(".scrubbar_track_played").style.width = x + "%";
+                    document.querySelector(".scrubbar_track_handle").style.left = x + "%";
+                    console.debug(x);
                 });
             })();
         },
@@ -1600,6 +1623,7 @@
                 VALUE_VIDEODESCRIPTION = VALUE_VIDEODESCRIPTION.replace(/(?:\r\n|\r|\n)/g, '<br>');
                 for (i = 0; i < VALUE_SUGGESTEDVIDEO.length; i++) {
                     if(VALUE_SUGGESTEDVIDEO[i].compactVideoRenderer) {
+                        var view = VALUE_SUGGESTEDVIDEO[i].compactVideoRenderer.viewCountText ? VALUE_SUGGESTEDVIDEO[i].compactVideoRenderer.viewCountText.simpleText : {simpleText: ""};
                         OBJ_SUGGESTEDVIDEOS += `<li class="video-list-item">
             <a href="https://www.youtube.com/watch?v=${VALUE_SUGGESTEDVIDEO[i].compactVideoRenderer.videoId}" class="video-list-item-link">
             <span class="ux-thumb-wrap contains-addto">
@@ -1619,7 +1643,7 @@
             </span>
             <span dir="ltr" class="title" title="${VALUE_SUGGESTEDVIDEO[i].compactVideoRenderer.title.simpleText}">${VALUE_SUGGESTEDVIDEO[i].compactVideoRenderer.title.simpleText}</span>
             <span class="stat">by ${VALUE_SUGGESTEDVIDEO[i].compactVideoRenderer.shortBylineText.runs[0].text}</span>
-            <span class="stat view-count">${VALUE_SUGGESTEDVIDEO[i].compactVideoRenderer.viewCountText.simpleText ? VALUE_SUGGESTEDVIDEO[i].compactVideoRenderer.viewCountText.simpleText : VALUE_SUGGESTEDVIDEO[i].compactVideoRenderer.viewCountText.runs[0].text + VALUE_SUGGESTEDVIDEO[i].compactVideoRenderer.viewCountText.runs[1].text}</span>
+            <span class="stat view-count">${view}</span>
             </a>
             </li>`;
                     }
