@@ -37,17 +37,13 @@
     }
     debug("Starting script...");
     document.ciulinYT = {};
-    const ciulinYT = {};
-    ciulinYT.trackLength = () => {
-        document.querySelector("#playbar-progressbar").style.width = document.ciulinYT.player.getCurrentTime() / document.ciulinYT.player.getDuration() * 100 + "%";
-        document.querySelector("#playbar-timestamp-current").innerText = document.ciulinYT.func.calculateLength(parseInt(document.ciulinYT.player.getCurrentTime()));
-    };
 
     document.ciulinYT.data = {
-        playerSheet: "data:image/png;base64,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",
+        playerSheet: "data:image/png;base64,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",
         playbarSheet: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAZCAIAAAB/8tMoAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAhSURBVBhXY7h69SoTCDAzMxNNMzAwgNmMjIyEMMP///8BIN0GJrVyhfoAAAAASUVORK5CYII=",
         playbarShadow: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAZCAIAAACZ2xhsAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAA6SURBVChTY1y2bJm4uLiAgAA3NzcTAxgwggGIA2UBwWCRgQAMZXCA0AMECBkEB8gCkthkIIB0AxgZAbxaA1A95vt3AAAAAElFTkSuQmCC",
-        playbarSeeker: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAaCAYAAAB2BDbRAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABQSURBVBhXbYqxDYAwEANP7kkmyDBZiDYTsUK2oosUpTK8oEK4OFu22UsxB1gJ0HaDs3eHQ2vNqrWinDNKKU6htZZlmy9ifNIYA8053+4fcAGeySL/5lJgnAAAAABJRU5ErkJggg=="
+        playbarSeeker: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAaCAYAAAB2BDbRAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABQSURBVBhXbYqxDYAwEANP7kkmyDBZiDYTsUK2oosUpTK8oEK4OFu22UsxB1gJ0HaDs3eHQ2vNqrWinDNKKU6htZZlmy9ifNIYA8053+4fcAGeySL/5lJgnAAAAABJRU5ErkJggg==",
+        playbarSeek: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAECAIAAADAusJtAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAZSURBVBhXYzhy5AiToKAgw5s3bxi+f/8OADiwCCtHhAKiAAAAAElFTkSuQmCC"
     };
     document.ciulinYT.load = {
         recent_feed: async () => {
@@ -297,131 +293,368 @@
     };
     document.ciulinYT.func = {
         buildPlayer: (videoId, time) => {
-                var DOM = document.querySelector("#video-player");
-                DOM.player = {};
+            var ELEMENT = document.querySelector("#video-player");
+            var TEMP = document.createElement("div");
+            TEMP.setAttribute("class", "player");
+            ELEMENT.append(TEMP);
+            var DOM = ELEMENT.querySelector(".player");
 
-                // DOM_embedVideo
-                (() => {
-                    var DOM_embedVideo = document.createElement("div");
-                    DOM_embedVideo.setAttribute("class", "video-container");
-                    DOM_embedVideo.innerHTML = `<div id="video-main-content"></div><div class="video-blank fitwidth fitheight"></div>`;
-                    DOM.appendChild(DOM_embedVideo);
-                })();
+            // DOM_embedVideo
+            (() => {
+                var DOM_embedVideo = document.createElement("div");
+                DOM_embedVideo.setAttribute("class", "video-container");
+                DOM_embedVideo.innerHTML = `<div id="video-main-content"></div><div class="video-blank"></div>`;
+                DOM.appendChild(DOM_embedVideo);
+            })();
 
-                // DOM_playBar
-                (() => {
-                    var DOM_playBar = document.createElement("div");
-                    DOM_playBar.setAttribute("class", "video-playbar");
-                    DOM_playBar.innerHTML = `<div class="playbar-progressbar-container" onmousemove="document.ciulinYT.func.preProPos(event)" onclick="document.ciulinYT.func.setProPos(event)">
-            <span id="playbar-progressbar" value="0" max="100"></span>
-            </div>
-            <div class="playbar-a hid"></div>
-            <div class="playbar-bottom-container">
-            <left>
-            <div class="playbar-buttons-container left">
-            <button class="playbar-button playbar-play" onclick="document.ciulinYT.player.playVideo();">
-            <i class="playbar-play"></i>
-            </button>
-            <div class="playbar-volume-container">
-            <button class="playbar-button playbar-volume" data-state="3" onclick="document.ciulinYT.func.mutePlayer(this.getAttribute('data-state'))">
-            <i class="playbar-volume"></i>
-            </button>
-            <div class="playbar-volume-slider-container">
-            <div class="playbar-shadow"></div>
-            <div class="playbar-volume-slider">
-            <input type="range" id="playbar-seek" max="100" value="100" oninput="document.ciulinYT.func.setVolume(this.value);">
-            </div>
-            </div>
-            </div>
-            </div>
-            <div class="playbar-shadow"></div>
-            <div class="playbar-timestamp-container">
-            <span class="playbar-timestamp"><a id="playbar-timestamp-current">0:00</a> / <a id="playbar-timestamp-total">0:00</a></span>
-            </div>
-            </left>
-            <div class="playbar-buttons-container right">
-            <button class="playbar-button">
-            <i class="playbar"></i>
-            </button>
-            <button class="playbar-button playbar-fullscreen" onclick="document.ciulinYT.func.fullscreen();">
-            <i class="playbar-fullscreen"></i>
-            </button>
-            </div>
-            </div>`;
-                    DOM.appendChild(DOM_playBar);
-                })();
+            // DOM_scrubBar
+            (() => {
+                var DOM_scrubBar = document.createElement("div");
+                DOM_scrubBar.setAttribute("class", "video-scrubbar");
+                DOM_scrubBar.setAttribute("role", "progressbar");
+                DOM_scrubBar.innerHTML = `
+                <span class="scrubbar_track_played"></span><span class="scrubbar_track_handle"></span><div class="video-playbar_a"></div>
+                `;
+                DOM.appendChild(DOM_scrubBar);
+            })();
 
-                // DOM CSS
-                (() => {
-                    var a = document.createElement("style");
-                    a.setAttribute("class", "player-style");
-                    var script = `
-            #video-player {width:640px;height:390px;}
-            .fitwidth {width:100%;}
-            .fitheight {height:100%;}
-            .video-container {height: 360px;position:relative;z-index:-1;}
-            #video-main-content {position:relative;z-index:-2;}
-            .video-blank {background-color: black;position: absolute;z-index: -1;top: 0;}
-            .video-playbar {width:640px;height:30px;}
-            .playbar-bottom-container {background: url(${document.ciulinYT.data.playbarSheet});width: 640px; height: 24.6px;display:inline-flex;user-select: none;max-width:638px;border: 1px solid #ccc; border-left-color: #bfbfbf; border-right-color: #bfbfbf;}
-            .playbar-buttons-container {height: 24.6px; display:inline-flex;}
-            .playbar-buttom-container div {display: inline-block;}
-            left {display: inline-flex;width: 600px;}
-            .playbar-button {background: no-repeat url(${document.ciulinYT.data.playerSheet}) 0px 0px;width: 30px;height: 24.6px;}
-            .playbar-progressbar-container {height: 4px;position: relative; background-color:#c2c2c2;}
-            #playbar-progressbar {height: 4px;position: absolute;top: 0;width: 100%;border:0;background-color:#b03434;max-width:100%;}
-            .playbar-a {height:3px;}
-            .playbar-button:hover {background: no-repeat url(${document.ciulinYT.data.playerSheet}) -30px 0px;}
-            .playbar-timestamp {padding-left: 9px;font-size: 10px; line-height:25px;}
-            .playbar-timestamp a {color:black;cursor:default;}
-            .playbar-timestamp a:hover {text-decoration:none;}
-            button.playbar-volume {border-left: 1px solid #bfbfbf;}
-            .playbar-volume-slider-container {display: none;width:64px;}
-            .playbar-volume-container {display: inline-flex;}
-            .playbar-volume-container:hover .playbar-volume-slider-container {display: inline-flex;}
-            .playbar-volume-slider {line-height: 22px;}
-            #playbar-seek {-webkit-appearance: none;width: 53px;height: 4px;outline: none;}
-            #playbar-seek::-moz-range-progress {background: url(${document.ciulinYT.data.playbarSeeker}) 0px 0px;height: 5px;}
-            #playbar-seek::-moz-range-track, #playbar-seek::-webkit-slider-runnable-track {-webkit-appearance: none;background: url(${document.ciulinYT.data.playbarSeeker}) 0px -6px;height: 5px;}
-            #playbar-seek::-moz-range-thumb, #playbar-seek::-webkit-slider-thumb {-webkit-appearance: none;width: 4px;height: 15px;background: url(${document.ciulinYT.data.playbarSeeker}) 0px -11px;cursor: pointer;border-radius:0;}
-            i {display:block;}
-            .playbar-shadow {background: url(${document.ciulinYT.data.playbarShadow});width: 4px;}
-            i.playbar-play {background: no-repeat url(${document.ciulinYT.data.playerSheet}) 0px -40px;height: 14px; width: 11px;margin-left: auto;margin-right: auto;}
-            button.playbar-play:hover i.playbar-play {background: no-repeat url(${document.ciulinYT.data.playerSheet}) -12px -40px;height: 14px; width: 11px;margin-left: auto;margin-right: auto;}
-            i.playbar-pause {background: no-repeat url(${document.ciulinYT.data.playerSheet}) 0px -25px;height: 14px; width: 11px;margin-left: auto;margin-right: auto;}
-            button.playbar-play:hover i.playbar-pause {background: no-repeat url(${document.ciulinYT.data.playerSheet}) -11px -25px;height: 14px; width: 11px;margin-left: auto;margin-right: auto;}
-            button.playbar-volume[data-state^="3"] i.playbar-volume {background: no-repeat url(${document.ciulinYT.data.playerSheet}) 0px -55px;height: 23px; width: 25px;margin-left: auto;}
-            .playbar-volume-container:hover button.playbar-volume[data-state^="3"] i.playbar-volume {background: no-repeat url(${document.ciulinYT.data.playerSheet}) -27px -55px;height: 23px; width: 25px;margin-left: auto;}
-            button.playbar-volume[data-state^="2"] i.playbar-volume {background: no-repeat url(${document.ciulinYT.data.playerSheet}) 0px -76px;height: 23px; width: 25px;margin-left: auto;}
-            .playbar-volume-container:hover button.playbar-volume[data-state^="2"] i.playbar-volume {background: no-repeat url(${document.ciulinYT.data.playerSheet}) -27px -76px;height: 23px; width: 25px;margin-left: auto;}
-            button.playbar-volume[data-state^="1"] i.playbar-volume {background: no-repeat url(${document.ciulinYT.data.playerSheet}) 0px -97px;height: 23px; width: 25px;margin-left: auto;}
-            .playbar-volume-container:hover button.playbar-volume[data-state^="1"] i.playbar-volume {background: no-repeat url(${document.ciulinYT.data.playerSheet}) -27px -97px;height: 23px; width: 25px;margin-left: auto;}
-            button.playbar-volume[data-state^="0"] i.playbar-volume {background: no-repeat url(${document.ciulinYT.data.playerSheet}) 0px -118px;height: 23px; width: 25px;margin-left: auto;}
-            .playbar-volume-container:hover button.playbar-volume[data-state^="0"] i.playbar-volume {background: no-repeat url(${document.ciulinYT.data.playerSheet}) -27px -118px;height: 23px; width: 25px;margin-left: auto;}
-            button.playbar-fullscreen i.playbar-fullscreen {background: no-repeat url(${document.ciulinYT.data.playerSheet}) 0px -144px;height: 15px;width: 16px;margin-left: auto;margin-right: auto;}
-            button.playbar-fullscreen:hover i.playbar-fullscreen {background: no-repeat url(${document.ciulinYT.data.playerSheet}) -18px -144px;height: 15px;width: 16px;margin-left: auto;margin-right: auto;}
-            `;
-                    script = script.replace(/(?:\r\n|\r|\n)/g, "");
-                    a.innerText = script;
-                    DOM.appendChild(a);
-                })();
+            // DOM_playBar
+            (() => {
+                var DOM_playBar = document.createElement("div");
+                DOM_playBar.setAttribute("class", "video-playbar");
+                DOM_playBar.innerHTML = `
+                <ul class="playbar-controls left">
+                <li class="playbar-controls_icon playbar-controls_play" data-state="0">
+                <i class="playbar-icon playbar-icon_play"></i>
+                </li><div class="playbar-volume_container">
+                <li class="playbar-controls_icon playbar-controls_volume" data-state="3">
+                <i class="playbar-icon playbar-icon_volume"></i>
+                </li>
+                <div class="playbar-volume_slider-container">
+                <div class="playbar-shadow"></div>
+                <div class="playbar-volume_slider">
+                <input type="range" id="playbar-seek" max="100" value="100" oninput="document.ciulinYT.func.setVolume(this.value);">
+                </div>
+                </div>
+                </div>
+                <div class="playbar-shadow"></div>
+                </ul>
+                <div class="playbar-timestamp_container">
+                <span class="playbar-timestamp">
+                <a id="timestamp_current">0:00</a> / <a id="timestamp_total">99:99</a>
+                </span>
+                </div>
+                <ul class="playbar-controls right">
+                <li class="playbar-controls_icon playbar-controls_resize" data-state="0">
+                <i class="playbar-icon playbar-icon_resize"></i>
+                </li><li class="playbar-controls_icon playbar-controls_fullscreen" data-state="0">
+                <i class="playbar-icon playbar-icon_fullscreen"></i>
+                </li>
+                </ul>
+                `;
+                DOM.appendChild(DOM_playBar);
+            })();
 
-                // DOM JS
-                (() => {
-                    function insertAfter(newNode, existingNode) {
-                        existingNode.parentNode.insertBefore(newNode, existingNode.nextSibling);
-                    }
+            // DOM CSS
+            (() => {
+                var a = document.createElement("style");
+                a.setAttribute("class", "player-style");
 
-                    var tag = document.createElement('script');
-                    tag.src = "https://www.youtube.com/iframe_api";
-                    var firstScriptTag = document.querySelector("#video-player");
-                    insertAfter(tag, firstScriptTag);
+                let script = `
+                #video-player {
+                display: block;
+                width: 640px;
+                height: 390px;
+                }
+                .player {
+                width: inherit;
+                height: inherit;
+                }
+                .player * {
+                box-sizing: inherit;
+                }
+                .video-container {
+                height: 360px;
+                width: inherit;
+                position: relative;
+                }
+                #video-player:fullscreen .video-container {
+                height: 97%;
+                }
+                #video-main-content {
+                position: relative;
+                z-index: -1;
+                width: inherit;
+                }
+                #video-player:fullscreen #video-main-content {
+                height: 100%;
+                }
+                .video-blank {
+                width: 100%;
+                height: 100%;
+                background-color: black;
+                position: absolute;
+                top: 0;
+                z-index: -1;
+                }
+                .video-scrubbar {
+                background-color: darkgray;
+                position: relative;
+                cursor: pointer;
+                height: 3px;
+                }
+                #video-player:hover .video-scrubbar {
+                height: 15px;
+                margin-top: -12px;
+                position: relative;
+                transition: 0.1s;
+                }
+                .scrubbar_track_played {
+                height: 12px;
+                background-color: crimson;
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                }
+                .scrubbar_track_handle {
+                background-color: gray;
+                display: block;
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                width: 12px;
+                height: 12px;
+                margin: -1px -9px;
+                border-radius: 9px;
+                border: 1px solid white;
+                opacity: 0;
+                transition: transform 0.1s, opacity 0.2s;
+                transform: scale(0.3);
+                z-index: 100;
+                }
+                #video-player:hover .scrubbar_track_handle {
+                transform: scale(1);
+                opacity: 1;
+                }
+                .video-playbar_a {
+                background: url(${document.ciulinYT.data.playbarSeek});
+                transition: height 0.1s;
+                z-index: 2;
+                position: absolute;
+                bottom: 0;
+                width: 100%;
+                }
+                #video-player:hover .video-playbar_a {
+                height: 4px;
+                }
+                .video-playbar {
+                display: flex;
+                background: url(${document.ciulinYT.data.playbarSheet});
+                height: 24.6px;
+                line-height: 24.6px;
+                overflow: hidden;
+                position: relative;
+                border: 1px solid #ccc;
+                border-left-color: #bfbfbf;
+                border-right-color: #bfbfbf;
+                }
+                .playbar-controls {
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+                height: inherit;
+                line-height: inherit;
+                display: flex;
+                }
+                .playbar-timestamp a {
+                color: #000;
+                cursor: default;
+                text-decoration: none;
+                }
+                .right {
+                position: absolute;
+                right: 0;
+                }
+                .playbar-controls_icon {
+                cursor: pointer;
+                display: inline-block;
+                text-align: center;
+                font-size: 1.5em;
+                height: 24.6px;
+                width: 30px;
+                background: no-repeat url(${document.ciulinYT.data.playerSheet}) 0px 0px;
+                }
+                .playbar-volume_container {
+                display: flex;
+                width: inherit;
+                }
+                .playbar-volume_slider {
+                width: inherit;
+                }
+                .playbar-volume_slider-container {
+                display: none;
+                width: 0px;
+                }
+                .playbar-volume_container:hover .playbar-volume_slider-container {
+                display: flex;
+                animation: slide-right 0.5s;
+                animation-fill-mode: both;
+                }
+                #playbar-seek {
+                -webkit-appearance: none;
+                width: inherit;
+                height: 4px;
+                outline: none;
+                max-width: 53px;
+                }
+                .playbar-shadow {
+                background: url(${document.ciulinYT.data.playbarShadow});
+                height: 24.6px;
+                width: 4px;
+                }
+                #playbar-seek::-moz-range-progress, #playbar-seek::-webkit-progress-value {
+                background: url(${document.ciulinYT.data.playbarSeeker}) 0px 0px;
+                height: 5px;
+                }
+                #playbar-seek::-moz-range-track, #playbar-seek::-webkit-slider-runnable-track {
+                -webkit-appearance: none;
+                background: url(${document.ciulinYT.data.playbarSeeker}) 0px -6px;
+                height: 5px;
+                }
+                #playbar-seek::-moz-range-thumb, #playbar-seek::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                width: 4px;
+                height: 15px;
+                background: url(${document.ciulinYT.data.playbarSeeker}) 0px -11px;
+                cursor: pointer;
+                border-radius: 0;
+                }
+                .playbar-controls_volume {
+                border-left: 1px solid #bfbfbf;
+                }
+                .playbar-controls_icon:hover {
+                background: no-repeat url(${document.ciulinYT.data.playerSheet}) -30px 0px;
+                }
+                .playbar-icon {
+                display: inline-block;
+                margin-left: auto;
+                }
+                .playbar-icon_play {
+                background: no-repeat url(${document.ciulinYT.data.playerSheet}) 0px -40px;
+                height: 14px;
+                width: 11px;
+                margin-right: auto;
+                }
+                .playbar-controls_play:hover .playbar-icon_play {
+                background: no-repeat url(${document.ciulinYT.data.playerSheet}) -12px -40px;
+                height: 14px;
+                width: 11px;
+                margin-right: auto;
+                }
+                .playbar-controls_play[data-state^="1"] .playbar-icon_play {
+                background: no-repeat url(${document.ciulinYT.data.playerSheet}) 0px -25px;
+                height: 14px;
+                width: 11px;
+                margin-right: auto;
+                }
+                .playbar-controls_play[data-state^="1"]:hover .playbar-icon_play {
+                background: no-repeat url(${document.ciulinYT.data.playerSheet}) -11px -25px;
+                height: 14px;
+                width: 11px;
+                margin-right: auto;
+                }
+                .playbar-icon_volume {
+                float: right;
+                }
+                .playbar-controls_volume[data-state^="0"] .playbar-icon_volume {
+                background: no-repeat url(${document.ciulinYT.data.playerSheet}) 0px -118px;
+                height: 23px;
+                width: 25px;
+                }
+                .playbar-controls_volume[data-state^="1"] .playbar-icon_volume {
+                background: no-repeat url(${document.ciulinYT.data.playerSheet}) 0px -97px;
+                height: 23px;
+                width: 25px;
+                }
+                .playbar-controls_volume[data-state^="2"] .playbar-icon_volume {
+                background: no-repeat url(${document.ciulinYT.data.playerSheet}) 0px -76px;
+                height: 23px;
+                width: 25px;
+                }
+                .playbar-controls_volume[data-state^="3"] .playbar-icon_volume {
+                background: no-repeat url(${document.ciulinYT.data.playerSheet}) 0px -55px;
+                height: 23px;
+                width: 25px;
+                }
+                .playbar-controls_volume[data-state^="0"]:hover .playbar-icon_volume {
+                background: no-repeat url(${document.ciulinYT.data.playerSheet}) -27px -118px;
+                height: 23px;
+                width: 25px;
+                }
+                .playbar-controls_volume[data-state^="1"]:hover .playbar-icon_volume {
+                background: no-repeat url(${document.ciulinYT.data.playerSheet}) -27px -97px;
+                height: 23px;
+                width: 25px;
+                }
+                .playbar-controls_volume[data-state^="2"]:hover .playbar-icon_volume {
+                background: no-repeat url(${document.ciulinYT.data.playerSheet}) -27px -76px;
+                height: 23px;
+                width: 25px;
+                }
+                .playbar-controls_volume[data-state^="3"]:hover .playbar-icon_volume {
+                background: no-repeat url(${document.ciulinYT.data.playerSheet}) -27px -55px;
+                height: 23px;
+                width: 25px;
+                }
+                .playbar-controls_fullscreen {
+                border-left: 1px solid #bfbfbf;
+                }
+                .playbar-controls_fullscreen .playbar-icon_fullscreen {
+                background: no-repeat url(${document.ciulinYT.data.playerSheet}) 0px -144px;
+                position: relative;
+                bottom: -1px;
+                height: 15px;
+                width: 16px;
+                }
+                .playbar-controls_fullscreen:hover .playbar-icon_fullscreen {
+                background: no-repeat url(${document.ciulinYT.data.playerSheet}) -18px -144px;
+                position: relative;
+                bottom: -1px;
+                height: 15px;
+                width: 16px;
+                }
 
-                    var timm = time ? `'time':` + time + "," : ``;
+                .playbar-timestamp {
+                padding-left: 9px;
+                font-size: 10px;
+                line-height: 25px;
+                }
 
-                    var a = document.createElement("script");
-                    var script = `
-            function onYouTubeIframeAPIReady(){
+                @keyframes slide-right {
+                0% {
+                width: 0px;
+                }
+                100% {
+                width: 64px;
+                }
+                }`;
+                script = script.replace(/(?:\r\n|\r|\n)/g, "");
+                a.innerText = script;
+                ELEMENT.appendChild(a);
+            })();
+
+            // DOM JS
+            (() => {
+                var tag = document.createElement('script');
+                tag.src = "https://www.youtube.com/iframe_api";
+                DOM.append(tag);
+
+                var timm = time ? `'time':` + time + "," : ``;
+
+                var a = document.createElement("script");
+                var script = `
+            var onYouTubeIframeAPIReady = () => {
                 document.ciulinYT.player = new YT.Player('video-main-content', {
                     height: '360',
                     width: '640',
@@ -429,7 +662,6 @@
                     playerVars: {
                         'enablejsapi': 1,
                         'rel': 0,
-                        ${timm}
                         'controls': '0'
                     },
                     events: {
@@ -439,67 +671,83 @@
                 });
             };
 
-            function onPlayerReady() {
-            /* total */
-            console.log(document.ciulinYT.player.getDuration());
-                document.querySelector("#playbar-timestamp-total").innerText = document.ciulinYT.func.calculateLength(document.ciulinYT.player.getDuration());
+            var playVideo = () => {
+            document.querySelector(".video-blank").style = "display:none;";
+            setInterval(document.ciulinYT.func.preProPos);
             };
-            function onStateChange(e) {
-                if (e.data == 0) {
-                    clearInterval(ciulinYT.progress);
-                    document.querySelector("button.playbar-play").setAttribute("onclick", "document.ciulinYT.player.playVideo();");
-                    document.querySelector("i.playbar-pause").setAttribute("class", "playbar-play");
-                    document.querySelector("#video-player").player.state = "ENDED";
-                };
-                if (e.data == 1) {
-                    if(document.querySelector("#video-player").player.state === "ENDED") {
-                       document.querySelector("#video-player").player.state = "PLAYING";
-                    };
-                    document.querySelector(".video-blank").style = "background: rgba(0, 0, 0, 0);";
-                    document.querySelector("button.playbar-play").setAttribute("onclick", "document.ciulinYT.player.pauseVideo();");
-                    document.querySelector("i.playbar-play").setAttribute("class", "playbar-pause");
-                    ciulinYT.progress = setInterval(${ciulinYT.trackLength});
-                };
-                if (e.data == 2) {
-                    document.querySelector("button.playbar-play").setAttribute("onclick", "document.ciulinYT.player.playVideo();");
-                    document.querySelector("i.playbar-pause").setAttribute("class", "playbar-play");
-                };
-            };
-            //`;
+
+            var onPlayerReady = () => {
+              };
+              var onStateChange = (e) => {
+              switch (e.data) {
+              case 3:
+              playVideo();
+              break;
+              }
+              }`;
                     script = script.replace(/(?:\r\n|\r|\n)/g, "");
                     a.innerText = script;
-                    insertAfter(a, tag);
+                    DOM.append(a);
                 })();
 
                 // DOM EVENT
-                (() => {
-                    document.querySelector("#video-player").addEventListener("fullscreenchange", (e) => {
-                        if(!document.fullscreenElement) {
-                            document.querySelector("#video-main-content").removeAttribute("style");
-                            document.querySelector(".video-playbar").removeAttribute("style");
-                            document.querySelector(".playbar-bottom-container").removeAttribute("style");
-                            document.querySelector(".video-container").removeAttribute("style");
-                            document.querySelector("left").removeAttribute("style");
-                        }
-                    });
-                    document.querySelector("#video-player").addEventListener("mouseenter", (e) => {
-                        document.querySelector(".video-container").style.height = "349px";
-                        document.querySelector(".video-playbar").style.height = "40px";
-                        document.querySelector(".playbar-progressbar-container").style.height = "12px";
-                        document.querySelector("#playbar-progressbar").style.height = "12px";
-                        document.querySelector(".playbar-a").classList.remove("hid");
-                        clearInterval(ciulinYT.progress);
-                    });
-                    document.querySelector("#video-player").addEventListener("mouseleave", (e) => {
-                        document.querySelector(".video-container").removeAttribute("style");
-                        document.querySelector(".video-playbar").removeAttribute("style");
-                        document.querySelector(".playbar-progressbar-container").removeAttribute("style");
-                        document.querySelector("#playbar-progressbar").removeAttribute("style");
-                        document.querySelector(".playbar-a").classList.add("hid");
-                        ciulinYT.progress = setInterval(ciulinYT.trackLength);
-                    });
-                })();
-            },
+
+            (() => {
+                document.querySelector(".playbar-controls_play").addEventListener("click", () => {
+                    document.ciulinYT.func.playPause(document.querySelector(".playbar-controls_play").getAttribute("data-state"));
+                });
+                document.querySelector(".playbar-controls_volume").addEventListener("click", () => {
+                    document.ciulinYT.func.mutePlayer(document.querySelector(".playbar-controls_volume").getAttribute("data-state"));
+                });
+                document.querySelector(".playbar-controls_fullscreen").addEventListener("click", () => {
+                    document.ciulinYT.func.fullscreenPlayer(document.querySelector(".playbar-controls_fullscreen").getAttribute("data-state"));
+                });
+            })();
+        },
+        fullscreenPlayer: (e) => {
+            let target = Number(e);
+            let $ = document.querySelector("#video-player");
+            let requestFullScreen = $.requestFullScreen || $.mozRequestFullScreen || $.webkitRequestFullScreen;
+            if(!requestFullScreen) return;
+
+            let makeFullscreen = () => {
+                document.querySelector(".playbar-controls_fullscreen").setAttribute("data-state", "1");
+                requestFullScreen.bind($)();
+            };
+
+            let unmakeFullscreen = () => {
+                document.querySelector(".playbar-controls_fullscreen").setAttribute("data-state", "0");
+                document.exitFullscreen();
+            };
+
+            switch (target) {
+                case 0:
+                    makeFullscreen();
+                    break;
+                case 1:
+                    unmakeFullscreen();
+                    break;
+            }
+        },
+        trackLength: () => {
+            document.querySelector("#playbar-progressbar").style.width = document.ciulinYT.player.getCurrentTime() / document.ciulinYT.player.getDuration() * 100 + "%";
+        },
+        trackCurrent: () => {
+            document.querySelector("#playbar-timestamp-current").innerText = document.ciulinYT.func.calculateLength(parseInt(document.ciulinYT.player.getCurrentTime()));
+        },
+        playPause: (e) => {
+            let target = Number(e);
+            switch (target) {
+                case 0:
+                    document.ciulinYT.player.playVideo();
+                    document.querySelector(".playbar-controls_play").setAttribute("data-state", 1);
+                    break;
+                case 1:
+                    document.ciulinYT.player.pauseVideo();
+                    document.querySelector(".playbar-controls_play").setAttribute("data-state", 0);
+                    break;
+            }
+        },
         calculateLength: (length) => {
                 if(typeof(length) !== 'number') return error(`calculateLength: '${length}' is not a valid number.`);
                 var hours = "";
@@ -522,64 +770,64 @@
                 DOM.style = "display:block";
             },
         mutePlayer: (state) => {
-                state = Number(state);
-                let seek = 0;
-                let data = 0;
+            state = Number(state);
+            let seek = 0;
+            let data = 0;
 
-                switch (state) {
-                    case 0:
-                        seek = 100;
-                        data = 3;
-                        document.ciulinYT.player.unMute();
-                        break;
-                    default:
-                        document.ciulinYT.player.mute();
-                        break;
-                }
+            switch (state) {
+                case 0:
+                    seek = 100;
+                    data = 3;
+                    document.ciulinYT.player.unMute();
+                    break;
+                default:
+                    document.ciulinYT.player.mute();
+                    break;
+            }
 
-                document.querySelector("#playbar-seek").value = seek;
-                document.querySelector("button.playbar-volume").setAttribute("data-state", data);
-            },
+            document.querySelector("#playbar-seek").value = seek;
+            document.querySelector("#video-player").querySelector(".playbar-controls_volume").setAttribute("data-state", data);
+        },
         getCookie: (cname) => {
-                var name = cname + "=";
-                var decodedCookie = decodeURIComponent(document.cookie);
-                var ca = decodedCookie.split(';');
-                for(let i = 0; i <ca.length; i++) {
-                    var c = ca[i];
-                    while (c.charAt(0) == ' ') {
-                        c = c.substring(1);
-                    }
-                    if (c.indexOf(name) == 0) {
-                        return c.substring(name.length, c.length);
-                    }
+            var name = cname + "=";
+            var decodedCookie = decodeURIComponent(document.cookie);
+            var ca = decodedCookie.split(';');
+            for(let i = 0; i <ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
                 }
-                return "";
-            },
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        },
         getSubscription() {
-                if(window.location.pathname.split("/")[1].match(/channel|user|^c{1}$/i)) {
-                    return ytInitialData.header.c4TabbedHeaderRenderer.subscribeButton ? ytInitialData.header.c4TabbedHeaderRenderer.subscribeButton.subscribeButtonRenderer.subscribed : false;
-                }
-                if(window.location.pathname.split("/")[1].match(/watch/i)) {
-                    return ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer.subscribeButton.subscribeButtonRenderer ? ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer.subscribeButton.subscribeButtonRenderer.subscribed : false;
-                }
-            },
+            if(window.location.pathname.split("/")[1].match(/channel|user|^c{1}$/i)) {
+                return ytInitialData.header.c4TabbedHeaderRenderer.subscribeButton ? ytInitialData.header.c4TabbedHeaderRenderer.subscribeButton.subscribeButtonRenderer.subscribed : false;
+            }
+            if(window.location.pathname.split("/")[1].match(/watch/i)) {
+                return ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer.subscribeButton.subscribeButtonRenderer ? ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer.subscribeButton.subscribeButtonRenderer.subscribed : false;
+            }
+        },
         buildChannelTheme: async (arg, data) => {
-                if(typeof(arg) !== "number") return error("buildChannelTheme: Supply valid number between 0-2");
+            if(typeof(arg) !== "number") return error("buildChannelTheme: Supply valid number between 0-2");
 
-                let channel1 = () => {
+            let channel1 = () => {
 
-                };
+            };
 
-                let channel2 = async() => {
-                    // Default channel generator
+            let channel2 = async() => {
+                // Default channel generator
 
-                    // Channel 2.0 CSS
-                    document.head.innerHTML += '<link rel="stylesheet" href="//s.ytimg.com/yt/cssbin/www-channel_new-vflrWkVe_.css">';
+                // Channel 2.0 CSS
+                document.head.innerHTML += '<link rel="stylesheet" href="//s.ytimg.com/yt/cssbin/www-channel_new-vflrWkVe_.css">';
 
-                    // List videos
-                    let videos = "";
-                    for (let i = 0; i < data.VIDEOS.length; i++) {
-                        videos += `<div id="playnav-video-play-uploads-12-${data.VIDEOS[i].videoId}" class="playnav-item playnav-video">
+                // List videos
+                let videos = "";
+                for (let i = 0; i < data.VIDEOS.length; i++) {
+                    videos += `<div id="playnav-video-play-uploads-12-${data.VIDEOS[i].videoId}" class="playnav-item playnav-video">
                 <div style="display:none" class="encryptedVideoId">${data.VIDEOS[i].videoId}</div>
                 <div id="playnav-video-play-uploads-12-${data.VIDEOS[i].videoId}-selector" class="selector"></div>
                 <div class="content">
@@ -615,13 +863,13 @@
                 </div>
                 </div>
                 </div>`;
-                    }
+                }
 
-                    // List recent feed
-                    let recentfeed = "";
-                    for (let i = 0; i < data.RECENTFEED.length; i++) {
-                        let u = '<tr id="feed_divider"><td colspan="3" class="outer-box-bg-as-border divider">&nbsp;</td>';
-                        recentfeed += `
+                // List recent feed
+                let recentfeed = "";
+                for (let i = 0; i < data.RECENTFEED.length; i++) {
+                    let u = '<tr id="feed_divider"><td colspan="3" class="outer-box-bg-as-border divider">&nbsp;</td>';
+                    recentfeed += `
                 <tr id="feed_item" valign="top">
                 <td class="feed_icon">
                 <img class="master-sprite icon-BUL" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
@@ -643,11 +891,11 @@
                 </td>
                 </tr>
                 ${u}</tr>`;
-                    }
+                }
 
 
 
-                    var OBJ_USERPROFILE = `<div id="user_profile" class="inner-box" style="background-color: rgb(238, 238, 255); color: rgb(51, 51, 51);">
+                var OBJ_USERPROFILE = `<div id="user_profile" class="inner-box" style="background-color: rgb(238, 238, 255); color: rgb(51, 51, 51);">
             <div class="box-title title-text-color">Profile</div>
             <div class="cb"></div>
             <div id="user_profile-body">
@@ -677,7 +925,7 @@
             </div>
             <div class="cb"></div>
             </div>`;
-                    var OBJ_PLAYNAVA = `<div id="playnav-body">
+                var OBJ_PLAYNAVA = `<div id="playnav-body">
             <div id="playnav-player" class="playnav-player-container" style="visibility: visible; left: 0px;">
             <div id="video-player"></div>
             </div>
@@ -786,7 +1034,7 @@
             </div>
             </div>
             </div>`;
-                    var OBJ_PLAYNAV = `<div id="user_playlist_navigator" style="background-color: rgb(153, 153, 153); color: rgb(0, 0, 0);" class="outer-box yt-rounded">
+                var OBJ_PLAYNAV = `<div id="user_playlist_navigator" style="background-color: rgb(153, 153, 153); color: rgb(0, 0, 0);" class="outer-box yt-rounded">
             <div id="playnav-channel-header" class="inner-box-bg-color" style="background-color: rgb(238, 238, 255); color: rgb(51, 51, 51);">
             <div id="playnav-title-bar">
             <div id="playnav-channel-name" style="background-color: rgb(153, 153, 153); color: rgb(0, 0, 0);" class="outer-box-bg-color">
@@ -837,8 +1085,8 @@
             </div>
             ${OBJ_PLAYNAVA}
             </div>`;
-                    var OBJ_RECENTACT;
-                    var OBJ_LEFTCOLL = `<div class="left-column" id="main-channel-left">
+                var OBJ_RECENTACT;
+                var OBJ_LEFTCOLL = `<div class="left-column" id="main-channel-left">
             <div class="inner-box" style="background-color: rgb(238, 238, 255); color: rgb(51, 51, 51);">
             <div style="float:left;padding:0 4px 4px 0" class="link-as-border-color">
             <div class="user-thumb-xlarge">
@@ -866,7 +1114,7 @@
             </div>
             ${OBJ_USERPROFILE}
             </div>`;
-                    var OBJ_RIGHTCOLL = `<div class="right-column" id="main-channel-right">
+                var OBJ_RIGHTCOLL = `<div class="right-column" id="main-channel-right">
             <div class="inner-box" id="user_recent_activity" style="background-color: rgb(238, 238, 255); color: rgb(51, 51, 51);">
             <div style="zoom:1">
             <div class="box-title title-text-color">Recent Activity</div>
@@ -884,11 +1132,11 @@
             </div>
             <div class="clear"></div>
             </div>`;
-                    var OBJ_CHANCON = `<div class="outer-box" id="main-channel-content" style="z-index: 0;background-color: rgb(153, 153, 153); color: rgb(0, 0, 0);">
+                var OBJ_CHANCON = `<div class="outer-box" id="main-channel-content" style="z-index: 0;background-color: rgb(153, 153, 153); color: rgb(0, 0, 0);">
             ${OBJ_LEFTCOLL}${OBJ_RIGHTCOLL}
             <div class="cb"></div>
             </div>`;
-                    return `<div id="channel-body" style="background-color: rgb(204, 204, 204)" class="jsloaded">
+                return `<div id="channel-body" style="background-color: rgb(204, 204, 204)" class="jsloaded">
             <div id="channel-base-div">
             ${OBJ_PLAYNAV}
             ${OBJ_CHANCON}
@@ -897,67 +1145,48 @@
             <div class="cb">
             <div class="clear"></div>
             </div>`;
-                };
+            };
 
-                let channel3 = () => {
+            let channel3 = () => {
 
-                };
+            };
 
-                switch (arg) {
-                    case 0:
-                        return channel1();
-                    case 1:
-                        return channel2();
-                    case 2:
-                        return channel3();
-                    default:
-                        return error("buildChannelTheme: Supply valid number between 0-2");
-                }
-            },
-        fullscreen: () => {
-                var $ = document.querySelector("#video-player");
-                var requestFullScreen = $.requestFullScreen || $.mozRequestFullScreen || $.webkitRequestFullScreen;
-                if(!requestFullScreen) return;
-                if (!document.fullscreenElement) {
-                    document.querySelector("#video-main-content").style = `width: ${window.outerWidth}px; height: ${window.outerHeight - 30}px;`;
-                    document.querySelector(".video-playbar").style = `width: ${window.outerWidth}px; `;
-                    document.querySelector(".playbar-bottom-container").style = `width: ${window.outerWidth}px; max-width: none;bottom: 0;`;
-                    document.querySelector(".video-container").style = `height: ${window.outerHeight - 30}px;`;
-                    document.querySelector("left").style = `width: ${window.outerWidth - 78}px;`;
-                    return requestFullScreen.bind($)();
-                }
-                document.querySelector("#video-main-content").removeAttribute("style");
-                document.querySelector(".video-playbar").removeAttribute("style");
-                document.querySelector(".playbar-bottom-container").removeAttribute("style");
-                document.querySelector(".video-container").removeAttribute("style");
-                document.querySelector("left").removeAttribute("style");
-                return document.exitFullscreen();
-            },
+            switch (arg) {
+                case 0:
+                    return channel1();
+                case 1:
+                    return channel2();
+                case 2:
+                    return channel3();
+                default:
+                    return error("buildChannelTheme: Supply valid number between 0-2");
+            }
+        },
         setVolume: (vol) => {
-                let volume = 0;
+            let volume = 0;
 
-                switch (true) {
-                    case (vol == 0):
-                        document.ciulinYT.func.mutePlayer();
-                        break;
-                    case (vol < 20):
-                        volume = 1;
-                        break;
-                    case (vol < 80):
-                        volume = 2;
-                        break;
-                    case (vol < 100):
-                        volume = 3;
-                        break;
-                    default:
-                        volume = 3;
-                        break;
-                }
+            switch (true) {
+                case (vol == 0):
+                    document.ciulinYT.func.mutePlayer();
+                    break;
+                case (vol < 20):
+                    volume = 1;
+                    break;
+                case (vol < 80):
+                    volume = 2;
+                    break;
+                case (vol < 100):
+                    volume = 3;
+                    break;
+                default:
+                    volume = 3;
+                    break;
+            }
 
-                document.querySelector("button.playbar-volume").setAttribute("data-state", volume);
-                if(document.ciulinYT.player.isMuted() == true) {document.ciulinYT.player.unMute();}
-                document.ciulinYT.player.setVolume(vol);
-            },
+            document.querySelector("#video-player").querySelector(".playbar-controls_volume").setAttribute("data-state", volume);
+            if(document.ciulinYT.player.isMuted() == true) {document.ciulinYT.player.unMute();}
+            document.ciulinYT.player.setVolume(vol);
+        },
         waitForElm: (selector) => {
                 return new Promise((resolve, reject) => {
                     var el = document.querySelector(selector);
@@ -1043,59 +1272,59 @@
                 document.querySelector("#watch-like").classList.remove("liked");
             },
         loadPlaynavVideo: (id) => {
-                if(!id) return error("loadPlaynavVideo: No ID was specified");
-                var data = new Promise(async resolve => {
-                    let xhr = new XMLHttpRequest();
-                    xhr.open("GET", "https://www.youtube.com/watch?v=" + id);
-
-                    xhr.onload = () => {
-                        let a = JSON.parse(xhr.response.split("var ytInitialPlayerResponse = ")[1].split(";var")[0]).videoDetails;
-                        if(!a) return resolve(undefined);
-                        return resolve({description: a.shortDescription, timestamp: a.lengthSeconds});
-                    };
-
-                    xhr.send();
-                });
-
+            if(!id) return error("loadPlaynavVideo: No ID was specified");
+            var data = new Promise(async resolve => {
                 let xhr = new XMLHttpRequest();
-                xhr.open("GET", `https://www.youtube.com/${window.location.pathname}/videos`);
-                xhr.onload = async(e) => {
-                    var a = JSON.parse(xhr.response.split("var ytInitialData = ")[1].split(";</script>")[0]).contents.twoColumnBrowseResultsRenderer.tabs;
+                xhr.open("GET", "https://www.youtube.com/watch?v=" + id);
 
-                    try {
-                        a = a.find(a => a.tabRenderer.endpoint.commandMetadata.webCommandMetadata.url.split("/")[3] === 'videos');
-                    } catch(err) {
-                        return error("loadPlaynavVideo: Can't find video tab");
-                    }
-
-                    if(!a.tabRenderer) return;
-                    var b = a.tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].gridRenderer.items;
-                    try {
-                        b = b.find(a => a.gridVideoRenderer.videoId === id);
-                        b = b.gridVideoRenderer;
-                    } catch(err) {
-                        return error("loadPlaynavVideo: Video does not exist or can't be found");
-                    }
-
-                    let d = await data;
-
-                    document.querySelector("#playnav-curvideo-title a").removeAttribute("onclick");
-                    document.querySelector("#playnav-curvideo-title a").setAttribute("href", "/watch?v=" + b.videoId);
-                    document.querySelector("#playnav-curvideo-title a").innerText = b.title.runs[0].text;
-                    document.querySelector("#playnav-curvideo-info-line span[dir='ltr']").innerText = b.publishedTimeText.simpleText;
-                    document.querySelector("#playnav-curvideo-description").innerText = d.description;
-                    document.querySelector("#playnav-curvideo-view-count").innerText = b.viewCountText.simpleText.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                    document.querySelector("#playbar-timestamp-total").innerText = document.ciulinYT.func.calculateLength(parseInt(d.timestamp));
-                    document.querySelector("#playnav-watch-link").href = "https://www.youtube.com/watch?v=" + b.videoId;
-                    document.ciulinYT.player.loadVideoById(b.videoId, 1);
-                };
-
-                xhr.onerror = () => {
-                    console.error("** An error occurred during the XMLHttpRequest");
+                xhr.onload = () => {
+                    let a = JSON.parse(xhr.response.split("var ytInitialPlayerResponse = ")[1].split(";var")[0]).videoDetails;
+                    if(!a) return resolve(undefined);
+                    return resolve({description: a.shortDescription, timestamp: a.lengthSeconds});
                 };
 
                 xhr.send();
-            },
+            });
+
+            let xhr = new XMLHttpRequest();
+            xhr.open("GET", `https://www.youtube.com/${window.location.pathname}/videos`);
+            xhr.onload = async(e) => {
+                var a = JSON.parse(xhr.response.split("var ytInitialData = ")[1].split(";</script>")[0]).contents.twoColumnBrowseResultsRenderer.tabs;
+
+                try {
+                    a = a.find(a => a.tabRenderer.endpoint.commandMetadata.webCommandMetadata.url.split("/")[3] === 'videos');
+                } catch(err) {
+                    return error("loadPlaynavVideo: Can't find video tab");
+                }
+
+                if(!a.tabRenderer) return;
+                var b = a.tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].gridRenderer.items;
+                try {
+                    b = b.find(a => a.gridVideoRenderer.videoId === id);
+                    b = b.gridVideoRenderer;
+                } catch(err) {
+                    return error("loadPlaynavVideo: Video does not exist or can't be found");
+                }
+
+                let d = await data;
+
+                document.querySelector("#playnav-curvideo-title a").removeAttribute("onclick");
+                document.querySelector("#playnav-curvideo-title a").setAttribute("href", "/watch?v=" + b.videoId);
+                document.querySelector("#playnav-curvideo-title a").innerText = b.title.runs[0].text;
+                document.querySelector("#playnav-curvideo-info-line span[dir='ltr']").innerText = b.publishedTimeText.simpleText;
+                document.querySelector("#playnav-curvideo-description").innerText = d.description;
+                document.querySelector("#playnav-curvideo-view-count").innerText = b.viewCountText.simpleText.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                //document.querySelector("#playbar-timestamp-total").innerText = document.ciulinYT.func.calculateLength(parseInt(d.timestamp));
+                document.querySelector("#playnav-watch-link").href = "https://www.youtube.com/watch?v=" + b.videoId;
+                document.ciulinYT.player.loadVideoById(b.videoId, 1);
+            };
+
+            xhr.onerror = () => {
+                console.error("** An error occurred during the XMLHttpRequest");
+            };
+
+            xhr.send();
+        },
         subscribe: async() => {
                 if(BOOL_LOGIN !== true) return;
                 if((ytInitialData.metadata ? ytInitialData.metadata.channelMetadataRenderer.title : "") == document.ciulinYT.data.name) return document.ciulinYT.func.showModal("No need to subscribe to yourself!");
@@ -1123,8 +1352,10 @@
 
                 document.querySelectorAll(`${button} .yt-uix-button-content`).forEach((a) => { a.innerText = text;});
             },
-        preProPos: (e) => {
-            e.currentTarget.querySelector("#playbar-progressbar").style.width = ((e.pageX - e.currentTarget.offsetLeft) / e.currentTarget.offsetWidth * 100) + '%';
+        preProPos: () => {
+            let track = document.ciulinYT.player.getCurrentTime() / document.ciulinYT.player.getDuration() * 100 + "%";
+            document.querySelector(".scrubbar_track_played").style.width = track;
+            document.querySelector(".scrubbar_track_handle").style.left = track;
         },
         setProPos: (e) => {
             document.ciulinYT.player.seekTo((e.pageX - e.currentTarget.offsetLeft) / 640 * document.ciulinYT.player.getDuration());
@@ -1393,8 +1624,7 @@
             <span class="yt-uix-button-group">
             <button href="${VALUE_CHANNELURL}?feature=watch" type="button" class="start yt-uix-button" onclick=";window.location.href=this.getAttribute('href');return false;" role="button">
             <span class="yt-uix-button-content">${VALUE_CHANNELNAME}</span>
-            </button>
-            <div class="yt-subscription-button-hovercard yt-uix-hovercard">
+            </button><div class="yt-subscription-button-hovercard yt-uix-hovercard">
             <button href="" type="button" class="yt-subscription-button yt-subscription-button-js-default end yt-uix-button ${VALUE_SUBBUTTON}" onclick="document.ciulinYT.func.subscribe();return false;" role="button">
             <img class="yt-uix-button-icon yt-uix-button-icon-subscribe" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
             <span class="yt-uix-button-content">
@@ -1421,7 +1651,7 @@
             </div>
             <div id="watch-video-container">
             <div id="watch-video" style="position:inherit">
-            <div id="video-player"></div>
+            <movie-player id="video-player" data-text="hmm"></movie-player>
             </div>
             </div>
             <div id="watch-main-container">
@@ -1440,8 +1670,7 @@
             <button onclick="document.ciulinYT.func.likeThis();return false;" title="I like this" type="button" class="start yt-uix-tooltip-reverse yt-uix-button yt-uix-tooltip ${isLiked}" id="watch-like" role="button">
             <img class="yt-uix-button-icon yt-uix-button-icon-watch-like" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="I like this">
             <span class="yt-uix-button-content">Like</span>
-            </button>
-            <button onclick="document.ciulinYT.func.dislikeThis();return false;" title="I dislike this" type="button" class="end yt-uix-tooltip-reverse yt-uix-button yt-uix-tooltip yt-uix-button-empty ${isDisliked}" id="watch-unlike" role="button">
+            </button><button onclick="document.ciulinYT.func.dislikeThis();return false;" title="I dislike this" type="button" class="end yt-uix-tooltip-reverse yt-uix-button yt-uix-tooltip yt-uix-button-empty ${isDisliked}" id="watch-unlike" role="button">
             <img class="yt-uix-button-icon yt-uix-button-icon-watch-unlike" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="I dislike this">
             </button>
             </span>
