@@ -47,35 +47,35 @@
     };
     document.ciulinYT.load = {
         recent_feed: async () => {
-                var test = new Promise(async resolve => {
-                    var xhr = new XMLHttpRequest();
-                    xhr.open("GET", `https://www.youtube.com/${window.location.pathname}/community`);
-                    xhr.onload = async () => {
-                        let a = JSON.parse(xhr.response.split("var ytInitialData = ")[1].split(";</script>")[0]).contents.twoColumnBrowseResultsRenderer.tabs.find(b => b.tabRenderer ? b.tabRenderer.endpoint.commandMetadata.webCommandMetadata.url.split("/")[3] === 'community' : {});
-                        if(!a.tabRenderer) return resolve({});
+            var test = new Promise(async resolve => {
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", `https://www.youtube.com/${window.location.pathname}/community`);
+                xhr.onload = async () => {
+                    let a = JSON.parse(xhr.response.split("var ytInitialData = ")[1].split(";</script>")[0]).contents.twoColumnBrowseResultsRenderer.tabs.find(b => b.tabRenderer ? b.tabRenderer.endpoint.commandMetadata.webCommandMetadata.url.split("/")[3] === 'community' : {});
+                    if(!a.tabRenderer) return resolve({});
 
-                        let sortImages = async (img) => {
-                            let stor = "";
-                            for (let i = 0; i < img.images.length; i++) {
-                                stor += `<img src="${img.images[i].backstageImageRenderer.image.thumbnails[0].url}"/>`;
-                            }
-                            return stor;
-                        };
+                    let sortImages = async (img) => {
+                        let stor = "";
+                        for (let i = 0; i < img.images.length; i++) {
+                            stor += `<img src="${img.images[i].backstageImageRenderer.image.thumbnails[0].url}"/>`;
+                        }
+                        return stor;
+                    };
 
-                        let filter = async (j) => {
-                            let img = b[j].backstagePostThreadRenderer.post.backstagePostRenderer.backstageAttachment;
-                            if(!img) return '';
-                            let stor = "";
-                            for (const obj in img) {
-                                switch (obj) {
-                                    case 'postMultiImageRenderer':
-                                        stor = await sortImages(img.postMultiImageRenderer);
-                                        break;
-                                    case 'backstageImageRenderer':
-                                        stor = '<img src="' + img.backstageImageRenderer.image.thumbnails[0].url + '">';
-                                        break;
-                                    case 'videoRenderer':
-                                        stor = `<div class="playnav-item playnav-video">
+                    let filter = async (j) => {
+                        let img = b[j].backstagePostThreadRenderer.post.backstagePostRenderer.backstageAttachment;
+                        if(!img) return '';
+                        let stor = "";
+                        for (const obj in img) {
+                            switch (obj) {
+                                case 'postMultiImageRenderer':
+                                    stor = await sortImages(img.postMultiImageRenderer);
+                                    break;
+                                case 'backstageImageRenderer':
+                                    stor = '<img src="' + img.backstageImageRenderer.image.thumbnails[0].url + '">';
+                                    break;
+                                case 'videoRenderer':
+                                    stor = `<div class="playnav-item playnav-video">
         <div style="display:none" class="encryptedVideoId">${img.videoRenderer.videoId}</div>
         <div class="selector"></div>
         <div class="content">
@@ -97,133 +97,133 @@
         </div>
         </div>
         </div>`;
-                                        break;
-                                }
-                            }
-
-                            return stor;
-                        };
-
-                        let b = a.tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents;
-                        let j;
-                        let data = [];
-                        for (j = 0; j < b.length; j++) {
-                            if(!b[j].continuationItemRenderer && !b[j].messageRenderer) {
-                                data[j] = {};
-                                data[j].text = b[j].backstagePostThreadRenderer.post.backstagePostRenderer.contentText.runs ? b[j].backstagePostThreadRenderer.post.backstagePostRenderer.contentText.runs[0].text : "";
-
-                                data[j].images = await filter(j);
-                                data[j].author = b[j].backstagePostThreadRenderer.post.backstagePostRenderer.authorText.runs[0].text;
-                                data[j].timestamp = b[j].backstagePostThreadRenderer.post.backstagePostRenderer.publishedTimeText.runs[0].text;
+                                    break;
                             }
                         }
-                        resolve(data);
-                    };
-                    xhr.onerror = () => {
-                        console.error("** An error occurred during the XMLHttpRequest");
-                    };
-                    xhr.send();
-                });
 
-                let a = await test;
+                        return stor;
+                    };
 
-                return a;
+                    let b = a.tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents;
+                    let j;
+                    let data = [];
+                    for (j = 0; j < b.length; j++) {
+                        if(!b[j].continuationItemRenderer && !b[j].messageRenderer) {
+                            data[j] = {};
+                            data[j].text = b[j].backstagePostThreadRenderer.post.backstagePostRenderer.contentText.runs ? b[j].backstagePostThreadRenderer.post.backstagePostRenderer.contentText.runs[0].text : "";
+
+                            data[j].images = await filter(j);
+                            data[j].author = b[j].backstagePostThreadRenderer.post.backstagePostRenderer.authorText.runs[0].text;
+                            data[j].timestamp = b[j].backstagePostThreadRenderer.post.backstagePostRenderer.publishedTimeText.runs[0].text;
+                        }
+                    }
+                    resolve(data);
+                };
+                xhr.onerror = () => {
+                    console.error("** An error occurred during the XMLHttpRequest");
+                };
+                xhr.send();
+            });
+
+            let a = await test;
+
+            return a;
         },
         channel_videos: async () => {
-                var test = new Promise(async resolve => {
-                    var xhr = new XMLHttpRequest();
-                    xhr.open("GET", `https://www.youtube.com/${window.location.pathname}/videos`);
-                    xhr.onload = async () => {
-                        let a = JSON.parse(xhr.response.split("var ytInitialData = ")[1].split(";</script>")[0]).contents.twoColumnBrowseResultsRenderer.tabs.find(b => b.tabRenderer.endpoint.commandMetadata.webCommandMetadata.url.split("/")[3] === 'videos');
+            var test = new Promise(async resolve => {
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", `https://www.youtube.com/${window.location.pathname}/videos`);
+                xhr.onload = async () => {
+                    let a = JSON.parse(xhr.response.split("var ytInitialData = ")[1].split(";</script>")[0]).contents.twoColumnBrowseResultsRenderer.tabs.find(b => b.tabRenderer.endpoint.commandMetadata.webCommandMetadata.url.split("/")[3] === 'videos');
 
-                        if(!a.tabRenderer) return error(undefined);
+                    if(!a.tabRenderer) return error(undefined);
 
-                        let b = a.tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].gridRenderer.items;
-                        let j;
-                        let data = [];
-                        for (j = 0; j < b.length; j++) {
-                            if(!b[j].continuationItemRenderer) {
+                    let b = a.tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].gridRenderer.items;
+                    let j;
+                    let data = [];
+                    for (j = 0; j < b.length; j++) {
+                        if(!b[j].continuationItemRenderer) {
                             data[j] = {};
                             data[j].title = b[j].gridVideoRenderer.title.runs[0].text;
                             data[j].videoId = b[j].gridVideoRenderer.videoId;
                             data[j].views = b[j].gridVideoRenderer.viewCountText.simpleText ? b[j].gridVideoRenderer.viewCountText.simpleText : b[j].gridVideoRenderer.viewCountText.runs[0].text + " " + b[j].gridVideoRenderer.viewCountText.runs[1].text;
                             data[j].date = b[j].gridVideoRenderer.publishedTimeText ? b[j].gridVideoRenderer.publishedTimeText.simpleText : "";
                             data[j].duration = b[j].gridVideoRenderer.thumbnailOverlays.find(c => c.thumbnailOverlayTimeStatusRenderer).thumbnailOverlayTimeStatusRenderer.text.simpleText ? b[j].gridVideoRenderer.thumbnailOverlays.find(d => d.thumbnailOverlayTimeStatusRenderer).thumbnailOverlayTimeStatusRenderer.text.simpleText : b[j].gridVideoRenderer.thumbnailOverlays.find(e => e.thumbnailOverlayTimeStatusRenderer).thumbnailOverlayTimeStatusRenderer.text.runs[0].text;
-                            }
                         }
-                        resolve(data);
-                    };
-                    xhr.onerror = () => {
-                        console.error("** An error occurred during the XMLHttpRequest");
-                    };
-                    xhr.send();
-                });
-
-                let a = await test;
-
-                return a;
-            },
-        channel_info: async () => {
-                var test = new Promise(async resolve => {
-                    var xhr = new XMLHttpRequest();
-                    xhr.open("GET", `https://www.youtube.com/${window.location.pathname}/about`);
-                    xhr.onload = async () => {
-                        let a = JSON.parse(xhr.response.split("var ytInitialData = ")[1].split(";</script>")[0]).contents.twoColumnBrowseResultsRenderer.tabs.find(b => b.tabRenderer ? b.tabRenderer.endpoint.commandMetadata.webCommandMetadata.url.split("/")[3] === 'about' : {});
-                        if(!a.tabRenderer) return resolve({});
-
-                        let b = a.tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelAboutFullMetadataRenderer;
-                        let collection = {};
-
-                        collection.BIO = b.artistBio ? "<br/><br/>" + b.artistBio.simpleText.replace(/(?:\r\n|\r|\n)/g, "<br/>") : "";
-                        collection.COUNTRY = b.country ? b.country.simpleText : "";
-                        collection.JOIN = b.joinedDateText.runs[1].text;
-                        collection.VIEWS = b.viewCountText.simpleText.split(" ")[0];
-
-                        resolve(collection);
-                    };
-                    xhr.onerror = () => {
-                        console.error("** An error occurred during the XMLHttpRequest");
-                    };
-                    xhr.send();
-                });
-
-                let a = await test;
-
-                return a;
-            },
-        home_category: async(category) => {
-                var guide = document.querySelector("#guide");
-                if(guide.getAttribute("data-last-clicked-item") == category.getAttribute("data-feed-name")) return;
-                guide.setAttribute("data-last-clicked-item", category.getAttribute("data-feed-name"));
-                document.querySelector(".selected-child").classList.remove("selected-child");
-                document.querySelector(".selected").classList.remove("selected");
-                category.parentNode.classList.add("selected-child");
-                category.classList.add("selected");
-                document.querySelector("#feed-loading-template").classList.remove("hid");
-                document.querySelector("#feed-main-youtube").classList.add("hid");
-                document.querySelector("#feed-error").classList.add("hid");
-                var url = category.getAttribute("data-feed-url");
-                var xhr = new XMLHttpRequest();
-                xhr.open("GET", `https://www.youtube.com/${url}`);
-                xhr.timeout = 4000;
-                xhr.ontimeout = () => {
-                    console.error("** An error occurred during the XMLHttpRequest");
-                    document.querySelector("#feed-loading-template").classList.add("hid");
-                    document.querySelector("#feed-error").classList.remove("hid");
+                    }
+                    resolve(data);
                 };
-                xhr.onload = (e) => {
-                    let b = JSON.parse(xhr.response.split("var ytInitialData = ")[1].split(";</script>")[0]).contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content;
-                    let v = b.sectionListRenderer ? b.sectionListRenderer : b.richGridRenderer;
-                    let x = v.contents[0].itemSectionRenderer ? v.contents[0].itemSectionRenderer.contents[0].shelfRenderer.content.expandedShelfContentsRenderer.items : v.contents;
-                    let i;
-                    var OBJ_VIDEOS = "";
-                    document.querySelector(".feed-header-info").innerText = category.querySelector(".display-name").innerText;
-                    for (i = 0; i < x.length; i++) {
-                        let z = x[i].richItemRenderer ? x[i].richItemRenderer.content : x[i].videoRenderer;
-                        if(!x[i].richSectionRenderer && !x[i].continuationItemRenderer && !z.displayAdRenderer && !z.radioRenderer) {
-                            let a = x[i].videoRenderer ? x[i].videoRenderer : x[i].richItemRenderer.content.videoRenderer;
-                            let views = a.viewCountText ? a.viewCountText : {simpleText: "0"};
-                            OBJ_VIDEOS += `<li class="feed-item-container">
+                xhr.onerror = () => {
+                    console.error("** An error occurred during the XMLHttpRequest");
+                };
+                xhr.send();
+            });
+
+            let a = await test;
+
+            return a;
+        },
+        channel_info: async () => {
+            var test = new Promise(async resolve => {
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", `https://www.youtube.com/${window.location.pathname}/about`);
+                xhr.onload = async () => {
+                    let a = JSON.parse(xhr.response.split("var ytInitialData = ")[1].split(";</script>")[0]).contents.twoColumnBrowseResultsRenderer.tabs.find(b => b.tabRenderer ? b.tabRenderer.endpoint.commandMetadata.webCommandMetadata.url.split("/")[3] === 'about' : {});
+                    if(!a.tabRenderer) return resolve({});
+
+                    let b = a.tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelAboutFullMetadataRenderer;
+                    let collection = {};
+
+                    collection.BIO = b.artistBio ? "<br/><br/>" + b.artistBio.simpleText.replace(/(?:\r\n|\r|\n)/g, "<br/>") : "";
+                    collection.COUNTRY = b.country ? b.country.simpleText : "";
+                    collection.JOIN = b.joinedDateText.runs[1].text;
+                    collection.VIEWS = b.viewCountText.simpleText.split(" ")[0];
+
+                    resolve(collection);
+                };
+                xhr.onerror = () => {
+                    console.error("** An error occurred during the XMLHttpRequest");
+                };
+                xhr.send();
+            });
+
+            let a = await test;
+
+            return a;
+        },
+        home_category: async(category) => {
+            var guide = document.querySelector("#guide");
+            if(guide.getAttribute("data-last-clicked-item") == category.getAttribute("data-feed-name")) return;
+            guide.setAttribute("data-last-clicked-item", category.getAttribute("data-feed-name"));
+            document.querySelector(".selected-child").classList.remove("selected-child");
+            document.querySelector(".selected").classList.remove("selected");
+            category.parentNode.classList.add("selected-child");
+            category.classList.add("selected");
+            document.querySelector("#feed-loading-template").classList.remove("hid");
+            document.querySelector("#feed-main-youtube").classList.add("hid");
+            document.querySelector("#feed-error").classList.add("hid");
+            var url = category.getAttribute("data-feed-url");
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", `https://www.youtube.com/${url}`);
+            xhr.timeout = 4000;
+            xhr.ontimeout = () => {
+                console.error("** An error occurred during the XMLHttpRequest");
+                document.querySelector("#feed-loading-template").classList.add("hid");
+                document.querySelector("#feed-error").classList.remove("hid");
+            };
+            xhr.onload = (e) => {
+                let b = JSON.parse(xhr.response.split("var ytInitialData = ")[1].split(";</script>")[0]).contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content;
+                let v = b.sectionListRenderer ? b.sectionListRenderer : b.richGridRenderer;
+                let x = v.contents[0].itemSectionRenderer ? v.contents[0].itemSectionRenderer.contents[0].shelfRenderer.content.expandedShelfContentsRenderer.items : v.contents;
+                let i;
+                var OBJ_VIDEOS = "";
+                document.querySelector(".feed-header-info").innerText = category.querySelector(".display-name").innerText;
+                for (i = 0; i < x.length; i++) {
+                    let z = x[i].richItemRenderer ? x[i].richItemRenderer.content : x[i].videoRenderer;
+                    if(!x[i].richSectionRenderer && !x[i].continuationItemRenderer && !z.displayAdRenderer && !z.radioRenderer) {
+                        let a = x[i].videoRenderer ? x[i].videoRenderer : x[i].richItemRenderer.content.videoRenderer;
+                        let views = a.viewCountText ? a.viewCountText : {simpleText: "0"};
+                        OBJ_VIDEOS += `<li class="feed-item-container">
             <div class="feed-item upload">
             <div class="feed-item-content">
             <h3 class="feed-item-title">
@@ -282,14 +282,14 @@
             </div>
             </div>
             </li>`;
-                        }
                     }
-                    document.querySelector(".feed-list").innerHTML = OBJ_VIDEOS;
-                    document.querySelector("#feed-loading-template").classList.add("hid");
-                    document.querySelector("#feed-main-youtube").classList.remove("hid");
-                };
-                xhr.send();
-            }
+                }
+                document.querySelector(".feed-list").innerHTML = OBJ_VIDEOS;
+                document.querySelector("#feed-loading-template").classList.add("hid");
+                document.querySelector("#feed-main-youtube").classList.remove("hid");
+            };
+            xhr.send();
+        }
     };
     document.ciulinYT.func = {
         buildPlayer: (videoId, time) => {
@@ -333,7 +333,7 @@
                 <div class="playbar-volume_slider-container">
                 <div class="playbar-shadow"></div>
                 <div class="playbar-volume_slider">
-                <input type="range" id="playbar-seek" max="100" value="100" oninput="document.ciulinYT.func.setVolume(this.value);">
+                <input type="range" id="playbar-seek" max="100" value="100">
                 </div>
                 </div>
                 </div>
@@ -674,9 +674,11 @@
             var playVideo = () => {
             document.querySelector(".video-blank").style = "display:none;";
             setInterval(document.ciulinYT.func.preProPos);
+            setInterval(document.ciulinYT.func.trackCurrent);
             };
 
             var onPlayerReady = () => {
+            document.querySelector("#timestamp_total").innerText = document.ciulinYT.func.calculateLength(parseInt(document.ciulinYT.player.getDuration()));
               };
               var onStateChange = (e) => {
               switch (e.data) {
@@ -685,12 +687,12 @@
               break;
               }
               }`;
-                    script = script.replace(/(?:\r\n|\r|\n)/g, "");
-                    a.innerText = script;
-                    DOM.append(a);
-                })();
+                script = script.replace(/(?:\r\n|\r|\n)/g, "");
+                a.innerText = script;
+                DOM.append(a);
+            })();
 
-                // DOM EVENT
+            // DOM EVENT
 
             (() => {
                 document.querySelector(".playbar-controls_play").addEventListener("click", () => {
@@ -701,6 +703,9 @@
                 });
                 document.querySelector(".playbar-controls_fullscreen").addEventListener("click", () => {
                     document.ciulinYT.func.fullscreenPlayer(document.querySelector(".playbar-controls_fullscreen").getAttribute("data-state"));
+                });
+                document.querySelector("#playbar-seek").addEventListener("input", (e) => {
+                    document.ciulinYT.func.setVolume(e.target.value);
                 });
             })();
         },
@@ -733,7 +738,7 @@
             document.querySelector("#playbar-progressbar").style.width = document.ciulinYT.player.getCurrentTime() / document.ciulinYT.player.getDuration() * 100 + "%";
         },
         trackCurrent: () => {
-            document.querySelector("#playbar-timestamp-current").innerText = document.ciulinYT.func.calculateLength(parseInt(document.ciulinYT.player.getCurrentTime()));
+            document.querySelector("#timestamp_current").innerText = document.ciulinYT.func.calculateLength(parseInt(document.ciulinYT.player.getCurrentTime()));
         },
         playPause: (e) => {
             let target = Number(e);
@@ -749,26 +754,26 @@
             }
         },
         calculateLength: (length) => {
-                if(typeof(length) !== 'number') return error(`calculateLength: '${length}' is not a valid number.`);
-                var hours = "";
-                var thours = Math.floor(length / 3600);
-                var tminute = Math.floor(length % 3600 / 60);
-                var tsecond = Math.floor(length % 3600 % 60);
-                tsecond = tsecond <= 10 ? ("0" + tsecond) : (tsecond);
-                tminute = length >= 3600 ? ("0" + tminute) : (tminute);
-                hours = length >= 3600 ? (thours + ":") : "";
-                return hours + "" + tminute + ":" + tsecond;
-            },
+            if(typeof(length) !== 'number') return error(`calculateLength: '${length}' is not a valid number.`);
+            var hours = "";
+            var thours = Math.floor(length / 3600);
+            var tminute = Math.floor(length % 3600 / 60);
+            var tsecond = Math.floor(length % 3600 % 60);
+            tsecond = tsecond <= 9 ? ("0" + tsecond) : (tsecond);
+            tminute = length >= 3600 ? ("0" + tminute) : (tminute);
+            hours = length >= 3600 ? (thours + ":") : "";
+            return hours + "" + tminute + ":" + tsecond;
+        },
         Modal: (DOM) => {
-                DOM = document.querySelector(DOM);
-                if (!DOM.classList.contains("hid")) {
-                    DOM.classList.add("hid");
-                    DOM.style = "display:none;";
-                    return;
-                }
-                DOM.classList.remove("hid");
-                DOM.style = "display:block";
-            },
+            DOM = document.querySelector(DOM);
+            if (!DOM.classList.contains("hid")) {
+                DOM.classList.add("hid");
+                DOM.style = "display:none;";
+                return;
+            }
+            DOM.classList.remove("hid");
+            DOM.style = "display:block";
+        },
         mutePlayer: (state) => {
             state = Number(state);
             let seek = 0;
@@ -1188,89 +1193,89 @@
             document.ciulinYT.player.setVolume(vol);
         },
         waitForElm: (selector) => {
-                return new Promise((resolve, reject) => {
-                    var el = document.querySelector(selector);
-                    if (el) {
-                        return resolve(el);
-                    }
-                    new MutationObserver((mutationRecords, observer) => {
-                        Array.from(document.querySelectorAll(selector)).forEach((element) => {
-                            resolve(element);
-                            observer.disconnect();
-                        });
-                    })
-                        .observe(document.documentElement, {
-                        childList: true,
-                        subtree: true
+            return new Promise((resolve, reject) => {
+                var el = document.querySelector(selector);
+                if (el) {
+                    return resolve(el);
+                }
+                new MutationObserver((mutationRecords, observer) => {
+                    Array.from(document.querySelectorAll(selector)).forEach((element) => {
+                        resolve(element);
+                        observer.disconnect();
                     });
+                })
+                    .observe(document.documentElement, {
+                    childList: true,
+                    subtree: true
                 });
-            },
+            });
+        },
         likeThis: () => {
-                if(BOOL_LOGIN !== true) return;
+            if(BOOL_LOGIN !== true) return;
 
-                document.querySelectorAll("#top-level-buttons-computed ytd-toggle-button-renderer")[0].click();
+            document.querySelectorAll("#top-level-buttons-computed ytd-toggle-button-renderer")[0].click();
 
-                var update = (math) => {
-                    var equ = parseInt(document.querySelector("span.likes").innerText.replace(/,/g, ""));
-                    var equ2 = parseInt(document.querySelector("span.dislikes").innerText.replace(/,/g, ""));
-                    switch (math) {
-                        case 0:
-                            equ -= 1;
-                            equ2 += 1;
-                            break;
-                        case 1:
-                            equ += 1;
-                            equ2 -= 1;
-                            break;
-                    }
-                    document.querySelector("span.likes").innerText = equ.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                    if(document.querySelector("#watch-unlike").classList.contains("unliked")) {
-                        document.querySelector("span.dislikes").innerText = equ2.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                    }
-                };
-
-                if(document.querySelector("#watch-like").classList.contains("liked")) {
-                    update(0);
-                    return document.querySelector("#watch-like").classList.remove("liked");
+            var update = (math) => {
+                var equ = parseInt(document.querySelector("span.likes").innerText.replace(/,/g, ""));
+                var equ2 = parseInt(document.querySelector("span.dislikes").innerText.replace(/,/g, ""));
+                switch (math) {
+                    case 0:
+                        equ -= 1;
+                        equ2 += 1;
+                        break;
+                    case 1:
+                        equ += 1;
+                        equ2 -= 1;
+                        break;
                 }
-
-                update(1);
-                document.querySelector("#watch-like").classList.add("liked");
-                document.querySelector("#watch-unlike").classList.remove("unliked");
-            },
-        dislikeThis: () => {
-                if(BOOL_LOGIN !== true) return;
-
-                document.querySelectorAll("#top-level-buttons-computed ytd-toggle-button-renderer")[1].click();
-
-                var update = (math) => {
-                    var equ = parseInt(document.querySelector("span.dislikes").innerText.replace(/,/g, ""));
-                    var equ2 = parseInt(document.querySelector("span.likes").innerText.replace(/,/g, ""));
-                    switch (math) {
-                        case 0:
-                            equ -= 1;
-                            equ2 += 1;
-                            break;
-                        case 1:
-                            equ += 1;
-                            equ2 -= 1;
-                            break;
-                    }
-                    document.querySelector("span.dislikes").innerText = equ.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                    if(document.querySelector("#watch-like").classList.contains("liked")) {
-                        document.querySelector("span.likes").innerText = equ2.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                    }
-                };
-
+                document.querySelector("span.likes").innerText = equ.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 if(document.querySelector("#watch-unlike").classList.contains("unliked")) {
-                    update(0);
-                    return document.querySelector("#watch-unlike").classList.remove("unliked");
+                    document.querySelector("span.dislikes").innerText = equ2.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }
+            };
 
-                update(1);
-                document.querySelector("#watch-unlike").classList.add("unliked");
-                document.querySelector("#watch-like").classList.remove("liked");
-            },
+            if(document.querySelector("#watch-like").classList.contains("liked")) {
+                update(0);
+                return document.querySelector("#watch-like").classList.remove("liked");
+            }
+
+            update(1);
+            document.querySelector("#watch-like").classList.add("liked");
+            document.querySelector("#watch-unlike").classList.remove("unliked");
+        },
+        dislikeThis: () => {
+            if(BOOL_LOGIN !== true) return;
+
+            document.querySelectorAll("#top-level-buttons-computed ytd-toggle-button-renderer")[1].click();
+
+            var update = (math) => {
+                var equ = parseInt(document.querySelector("span.dislikes").innerText.replace(/,/g, ""));
+                var equ2 = parseInt(document.querySelector("span.likes").innerText.replace(/,/g, ""));
+                switch (math) {
+                    case 0:
+                        equ -= 1;
+                        equ2 += 1;
+                        break;
+                    case 1:
+                        equ += 1;
+                        equ2 -= 1;
+                        break;
+                }
+                document.querySelector("span.dislikes").innerText = equ.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                if(document.querySelector("#watch-like").classList.contains("liked")) {
+                    document.querySelector("span.likes").innerText = equ2.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
+            };
+
+            if(document.querySelector("#watch-unlike").classList.contains("unliked")) {
+                update(0);
+                return document.querySelector("#watch-unlike").classList.remove("unliked");
+            }
+
+            update(1);
+            document.querySelector("#watch-unlike").classList.add("unliked");
+            document.querySelector("#watch-like").classList.remove("liked");
+        },
         loadPlaynavVideo: (id) => {
             if(!id) return error("loadPlaynavVideo: No ID was specified");
             var data = new Promise(async resolve => {
@@ -1326,32 +1331,32 @@
             xhr.send();
         },
         subscribe: async() => {
-                if(BOOL_LOGIN !== true) return;
-                if((ytInitialData.metadata ? ytInitialData.metadata.channelMetadataRenderer.title : "") == document.ciulinYT.data.name) return document.ciulinYT.func.showModal("No need to subscribe to yourself!");
-                if((ytInitialPlayerResponse ? ytInitialPlayerResponse.videoDetails.author : "") == document.ciulinYT.data.name) return document.ciulinYT.func.showModal("No need to subscribe to yourself!");
+            if(BOOL_LOGIN !== true) return;
+            if((ytInitialData.metadata ? ytInitialData.metadata.channelMetadataRenderer.title : "") == document.ciulinYT.data.name) return document.ciulinYT.func.showModal("No need to subscribe to yourself!");
+            if((ytInitialPlayerResponse ? ytInitialPlayerResponse.videoDetails.author : "") == document.ciulinYT.data.name) return document.ciulinYT.func.showModal("No need to subscribe to yourself!");
 
-                var sub = document.ciulinYT.func.getSubscription();
+            var sub = document.ciulinYT.func.getSubscription();
 
-                document.querySelector("ytd-subscribe-button-renderer tp-yt-paper-button").click();
-                var button = document.querySelector(".yt-subscription-button") ? ".yt-subscription-button" : ".subscribe-button";
-                var text = "";
+            document.querySelector("ytd-subscribe-button-renderer tp-yt-paper-button").click();
+            var button = document.querySelector(".yt-subscription-button") ? ".yt-subscription-button" : ".subscribe-button";
+            var text = "";
 
-                switch(sub) {
-                    case false:
-                        text = "Subscribed";
-                        document.querySelector(button).classList.add("subscribed");
-                        BOOL_SUBSCRIBE = true;
-                        break;
-                    default:
-                        await document.ciulinYT.func.waitForElm("#confirm-button").then((elm) => {elm.click();});
-                        text = "Subscribe";
-                        document.querySelector(button).classList.remove("subscribed");
-                        BOOL_SUBSCRIBE = false;
-                        break;
-                }
+            switch(sub) {
+                case false:
+                    text = "Subscribed";
+                    document.querySelector(button).classList.add("subscribed");
+                    BOOL_SUBSCRIBE = true;
+                    break;
+                default:
+                    await document.ciulinYT.func.waitForElm("#confirm-button").then((elm) => {elm.click();});
+                    text = "Subscribe";
+                    document.querySelector(button).classList.remove("subscribed");
+                    BOOL_SUBSCRIBE = false;
+                    break;
+            }
 
-                document.querySelectorAll(`${button} .yt-uix-button-content`).forEach((a) => { a.innerText = text;});
-            },
+            document.querySelectorAll(`${button} .yt-uix-button-content`).forEach((a) => { a.innerText = text;});
+        },
         preProPos: () => {
             let track = document.ciulinYT.player.getCurrentTime() / document.ciulinYT.player.getDuration() * 100 + "%";
             document.querySelector(".scrubbar_track_played").style.width = track;
@@ -1586,7 +1591,7 @@
                 VALUE_VIDEODESCRIPTION = VALUE_VIDEODESCRIPTION.replace(/(?:\r\n|\r|\n)/g, '<br>');
                 for (i = 0; i < VALUE_SUGGESTEDVIDEO.length; i++) {
                     if(VALUE_SUGGESTEDVIDEO[i].compactVideoRenderer) {
-                    OBJ_SUGGESTEDVIDEOS += `<li class="video-list-item">
+                        OBJ_SUGGESTEDVIDEOS += `<li class="video-list-item">
             <a href="https://www.youtube.com/watch?v=${VALUE_SUGGESTEDVIDEO[i].compactVideoRenderer.videoId}" class="video-list-item-link">
             <span class="ux-thumb-wrap contains-addto">
             <span class="video-thumb ux-thumb ux-thumb-110">
@@ -1858,24 +1863,24 @@
         // Search Results
         if(window.location.pathname.split("/")[1].match(/results/i)) {
             (() => {
-            var searchpar = (new URL(document.location)).searchParams.get("search_query");
-            var i;
-            var results = ytInitialData.contents.twoColumnSearchResultsRenderer.primaryContents.sectionListRenderer.contents[0].itemSectionRenderer.contents;
-            var parse = "";
-            DOMHEAD.innerHTML += '<link rel="stylesheet" href="//s.ytimg.com/yt/cssbin/www-refresh-vflj_nHFo.css">';
+                var searchpar = (new URL(document.location)).searchParams.get("search_query");
+                var i;
+                var results = ytInitialData.contents.twoColumnSearchResultsRenderer.primaryContents.sectionListRenderer.contents[0].itemSectionRenderer.contents;
+                var parse = "";
+                DOMHEAD.innerHTML += '<link rel="stylesheet" href="//s.ytimg.com/yt/cssbin/www-refresh-vflj_nHFo.css">';
 
-            for(i = 0; i < results.length; i++) {
-                // Handle Videos
-                if(results[i].videoRenderer) {
-                    let description = results[i].videoRenderer.detailedMetadataSnippets ? results[i].videoRenderer.detailedMetadataSnippets[0].snippetText.runs[0].text : "";
-                    let time = results[i].videoRenderer.lengthText ? results[i].videoRenderer.lengthText.simpleText : "LIVE";
-                    let views = "";
-                    if(results[i].videoRenderer.viewCountText) {
-                        views = results[i].videoRenderer.viewCountText.simpleText ? results[i].videoRenderer.viewCountText.simpleText : results[i].videoRenderer.viewCountText.runs[0].text + results[i].videoRenderer.viewCountText.runs[1].text;
-                    }
+                for(i = 0; i < results.length; i++) {
+                    // Handle Videos
+                    if(results[i].videoRenderer) {
+                        let description = results[i].videoRenderer.detailedMetadataSnippets ? results[i].videoRenderer.detailedMetadataSnippets[0].snippetText.runs[0].text : "";
+                        let time = results[i].videoRenderer.lengthText ? results[i].videoRenderer.lengthText.simpleText : "LIVE";
+                        let views = "";
+                        if(results[i].videoRenderer.viewCountText) {
+                            views = results[i].videoRenderer.viewCountText.simpleText ? results[i].videoRenderer.viewCountText.simpleText : results[i].videoRenderer.viewCountText.runs[0].text + results[i].videoRenderer.viewCountText.runs[1].text;
+                        }
 
-                    let pub = results[i].videoRenderer.publishedTimeText ? results[i].videoRenderer.publishedTimeText.simpleText: "";
-                    let main = `<div class="result-item yt-uix-tile yt-tile-default *sr">
+                        let pub = results[i].videoRenderer.publishedTimeText ? results[i].videoRenderer.publishedTimeText.simpleText: "";
+                        let main = `<div class="result-item yt-uix-tile yt-tile-default *sr">
             <div class="thumb-container">
             <a href="http://www.youtube.com/watch?v=${results[i].videoRenderer.videoId}" class="ux-thumb-wrap contains-addto result-item-thumb">
             <span class="video-thumb ux-thumb ux-thumb-128">
@@ -1911,20 +1916,20 @@
             </p>
             </div>
             </div>`;
-                    parse += main;
-                }
+                        parse += main;
+                    }
 
-                // Handle Channels
-                if(results[i].channelRenderer) {
-                    let description = results[i].channelRenderer.descriptionSnippet ? results[i].channelRenderer.descriptionSnippet.runs[0].text : "";
-                    let title = results[i].channelRenderer.title.simpleText;
-                    let link = "http://www.youtube.com" + results[i].channelRenderer.shortBylineText.runs[0].navigationEndpoint.browseEndpoint.canonicalBaseUrl;
-                    let thumbnail = results[i].channelRenderer.thumbnail.thumbnails[0].url;
-                    let video = results[i].channelRenderer.videoCountText ? results[i].channelRenderer.videoCountText.runs : [];
-                    let videos = video[1] ? video[0].text + video[1].text : video.text;
-                    let subs = results[i].channelRenderer.subscriberCountText ? results[i].channelRenderer.subscriberCountText.simpleText : "No subscribers";
+                    // Handle Channels
+                    if(results[i].channelRenderer) {
+                        let description = results[i].channelRenderer.descriptionSnippet ? results[i].channelRenderer.descriptionSnippet.runs[0].text : "";
+                        let title = results[i].channelRenderer.title.simpleText;
+                        let link = "http://www.youtube.com" + results[i].channelRenderer.shortBylineText.runs[0].navigationEndpoint.browseEndpoint.canonicalBaseUrl;
+                        let thumbnail = results[i].channelRenderer.thumbnail.thumbnails[0].url;
+                        let video = results[i].channelRenderer.videoCountText ? results[i].channelRenderer.videoCountText.runs : [];
+                        let videos = video[1] ? video[0].text + video[1].text : video.text;
+                        let subs = results[i].channelRenderer.subscriberCountText ? results[i].channelRenderer.subscriberCountText.simpleText : "No subscribers";
 
-                    let main = `<div class="result-item yt-uix-tile yt-tile-default *sr channel">
+                        let main = `<div class="result-item yt-uix-tile yt-tile-default *sr channel">
                     <div class="thumb-container">
                     <a href="${link}" class="ux-thumb-wrap result-item-thumb">
                     <span class="video-thumb ux-thumb ux-thumb-profile-77">
@@ -1954,19 +1959,19 @@
                     </div>
                     </div>`;
 
-                    parse += main;
+                        parse += main;
+                    }
+
+                    // Handle Playlists
+                    if(results[i].playlistRenderer) {
+                        // Oh, if ever YouTube would restore playlists on the search engine.
+                        // If only the Right-Wing corruption and ignorance would fuck off.
+                    }
                 }
 
-                // Handle Playlists
-                if(results[i].playlistRenderer) {
-                    // Oh, if ever YouTube would restore playlists on the search engine.
-                    // If only the Right-Wing corruption and ignorance would fuck off.
-                }
-            }
 
 
-
-            OBJ_CHANNEL = `<div id="content">
+                OBJ_CHANNEL = `<div id="content">
             <div id="search-header">
             <div id="search-header-inner">
             <p class="num-results">About <strong>${ytInitialData.estimatedResults.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</strong> results</p>
