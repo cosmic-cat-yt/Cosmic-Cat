@@ -361,6 +361,9 @@
                 a.setAttribute("class", "player-style");
 
                 let script = `
+                #eow-tags {
+                word-break: break-all;
+                }
                 #video-player {
                 display: block;
                 width: 640px;
@@ -1812,7 +1815,12 @@
             })();
         }
 
-        // Channel (WIP)
+        // Shorts
+        if(window.location.pathname.split("/")[1].match(/shorts/i)) {
+            window.location.href = "https://www.youtube.com/watch?v=" + window.location.pathname.split("/")[2];
+        }
+
+        // Channel
         if(window.location.pathname.split("/")[1].match(/channel|user|^c{1}$/i)) {
             if (/community|videos|about|channels|playlists|membership|store/.test(window.location.pathname.split("/")[3])) window.location.href = window.location.pathname.split("/").slice(0,3).join("/");
             var FUNC = (async () => {
