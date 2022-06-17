@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.49
+// @version      0.4.50
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -688,6 +688,8 @@
               case 3:
               playVideo();
               break;
+              case 0:
+              document.querySelector(".playbar-controls_play").setAttribute("data-state", "0");
               }
               }`;
                 script = script.replace(/(?:\r\n|\r|\n)/g, "");
@@ -1322,8 +1324,9 @@
                 document.querySelector("#playnav-curvideo-info-line span[dir='ltr']").innerText = b.publishedTimeText.simpleText;
                 document.querySelector("#playnav-curvideo-description").innerText = d.description;
                 document.querySelector("#playnav-curvideo-view-count").innerText = b.viewCountText.simpleText.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                //document.querySelector("#playbar-timestamp-total").innerText = document.ciulinYT.func.calculateLength(parseInt(d.timestamp));
+                document.querySelector("#timestamp_total").innerText = document.ciulinYT.func.calculateLength(parseInt(d.timestamp));
                 document.querySelector("#playnav-watch-link").href = "https://www.youtube.com/watch?v=" + b.videoId;
+                document.querySelector(".playbar-controls_play").setAttribute("data-state", "1");
                 document.ciulinYT.player.loadVideoById(b.videoId, 1);
             };
 
