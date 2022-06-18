@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.55
+// @version      0.4.56
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -144,11 +144,12 @@ var interval;
                     let data = [];
                     for (j = 0; j < b.length; j++) {
                         if(!b[j].continuationItemRenderer) {
+                            let views = b[j].gridVideoRenderer.viewCountText ? b[j].gridVideoRenderer.viewCountText : {simpleText: "0"};
                             data[j] = {};
                             data[j].title = b[j].gridVideoRenderer.title.runs[0].text;
                             data[j].videoId = b[j].gridVideoRenderer.videoId;
-                            data[j].views = b[j].gridVideoRenderer.viewCountText.simpleText ? b[j].gridVideoRenderer.viewCountText.simpleText : b[j].gridVideoRenderer.viewCountText.runs[0].text + " " + b[j].gridVideoRenderer.viewCountText.runs[1].text;
-                            data[j].date = b[j].gridVideoRenderer.publishedTimeText ? b[j].gridVideoRenderer.publishedTimeText.simpleText : "";
+                            data[j].views = views ? views.simpleText : views.runs[0].text + " " + views.runs[1].text;
+                            data[j].date = b[j].gridVideoRenderer.publishedTimeText ? b[j].gridVideoRenderer.publishedTimeText.simpleText : "waiting";
                             data[j].duration = b[j].gridVideoRenderer.thumbnailOverlays.find(c => c.thumbnailOverlayTimeStatusRenderer).thumbnailOverlayTimeStatusRenderer.text.simpleText ? b[j].gridVideoRenderer.thumbnailOverlays.find(d => d.thumbnailOverlayTimeStatusRenderer).thumbnailOverlayTimeStatusRenderer.text.simpleText : b[j].gridVideoRenderer.thumbnailOverlays.find(e => e.thumbnailOverlayTimeStatusRenderer).thumbnailOverlayTimeStatusRenderer.text.runs[0].text;
                         }
                     }
@@ -1359,9 +1360,9 @@ var interval;
                 document.querySelector("#playnav-curvideo-title a").removeAttribute("onclick");
                 document.querySelector("#playnav-curvideo-title a").setAttribute("href", "/watch?v=" + b.videoId);
                 document.querySelector("#playnav-curvideo-title a").innerText = b.title.runs[0].text;
-                document.querySelector("#playnav-curvideo-info-line span[dir='ltr']").innerText = b.publishedTimeText.simpleText;
+                document.querySelector("#playnav-curvideo-info-line span[dir='ltr']").innerText = b.publishedTimeText ? b.publishedTimeText.simpleText : "waiting";
                 document.querySelector("#playnav-curvideo-description").innerText = d.description;
-                document.querySelector("#playnav-curvideo-view-count").innerText = b.viewCountText.simpleText.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                document.querySelector("#playnav-curvideo-view-count").innerText = b.viewCountText ? b.viewCountText.simpleText.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : "0";
                 document.querySelector("#timestamp_total").innerText = document.ciulinYT.func.calculateLength(parseInt(d.timestamp));
                 document.querySelector("#playnav-watch-link").href = "https://www.youtube.com/watch?v=" + b.videoId;
                 document.querySelector(".playbar-controls_play").setAttribute("data-state", "1");
