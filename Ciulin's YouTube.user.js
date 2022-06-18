@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.53
+// @version      0.4.54
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -721,7 +721,7 @@ var interval;
                 dur = ((e.pageX - e.currentTarget.offsetLeft) / document.querySelector("#video-player").clientWidth * document.ciulinYT.player.getDuration());
                 const rect = document.querySelector("#video-player").getBoundingClientRect();
                 document.querySelector("#seek-tooltip").style.left = (e.pageX - rect.left) - 16 + "px";
-                document.querySelector("#seek-tooltip").innerText = document.ciulinYT.func.calculateLength(a);
+                document.querySelector("#seek-tooltip").innerText = document.ciulinYT.func.calculateLength(dur);
                     if(canMouse !== true) return;
                     document.querySelector(".scrubbar_track_played").style.width = ((e.pageX - e.currentTarget.offsetLeft) / e.currentTarget.offsetWidth * 100) + "%";
                     document.querySelector(".scrubbar_track_handle").style.left = ((e.pageX - e.currentTarget.offsetLeft) / e.currentTarget.offsetWidth * 100) + "%";
