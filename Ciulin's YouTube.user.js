@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.52
+// @version      0.4.53
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -23,7 +23,6 @@
 // @grant GM_openInTab
 // @grant GM_setClipboard
 // @grant GM_info
-// @grant GM_getMetadata
 // @run-at document-load
 // ==/UserScript==
 
@@ -315,7 +314,7 @@ var interval;
                 DOM_scrubBar.setAttribute("class", "video-scrubbar");
                 DOM_scrubBar.setAttribute("role", "progressbar");
                 DOM_scrubBar.innerHTML = `
-                <span class="scrubbar_track_played"></span><span class="scrubbar_track_handle"></span><div class="video-playbar_a"></div>
+                <div class="seek-tooltip" id="seek-tooltip">0:00</div><span class="scrubbar_track_played"></span><span class="scrubbar_track_handle"></span><div class="video-playbar_a"></div>
                 `;
                 DOM.appendChild(DOM_scrubBar);
             })();
@@ -407,12 +406,24 @@ var interval;
                 position: relative;
                 cursor: pointer;
                 height: 3px;
+                user-select: none;
                 }
                 #video-player:hover .video-scrubbar {
                 height: 15px;
                 margin-top: -12px;
                 position: relative;
                 transition: 0.1s;
+                }
+                #seek-tooltip {
+                position: absolute;
+                top: -20px;
+                z-index: 1000;
+                color: white;
+                background: black;
+                width: 35px;
+                text-align: center;
+                border: 1px solid white;
+                border-radius: 4px;
                 }
                 .scrubbar_track_played {
                 height: 12px;
@@ -463,6 +474,7 @@ var interval;
                 border: 1px solid #ccc;
                 border-left-color: #bfbfbf;
                 border-right-color: #bfbfbf;
+                user-select: none;
                 }
                 .playbar-controls {
                 list-style-type: none;
@@ -660,6 +672,8 @@ var interval;
                 var a = document.createElement("script");
                 var script = `
                 var progress;
+                let canMouse = false;
+                let dur = 0;
             var onYouTubeIframeAPIReady = () => {
                 document.ciulinYT.player = new YT.Player('video-main-content', {
                     height: '360',
@@ -676,36 +690,6 @@ var interval;
                     }
                 });
             };
-
-            var playVideo = () => {
-            document.querySelector(".video-blank").style = "display:none;";
-            };
-
-            var onPlayerReady = () => {
-            document.querySelector("#timestamp_total").innerText = document.ciulinYT.func.calculateLength(parseInt(document.ciulinYT.player.getDuration()));
-              document.querySelector(".video-scrubbar").setAttribute("data-interval", setInterval(document.ciulinYT.func.preProPos));
-            setInterval(document.ciulinYT.func.trackCurrent);
-              };
-              var onStateChange = (e) => {
-              switch (e.data) {
-              case 1:
-              playVideo();
-              break;
-              case 0:
-              document.querySelector(".playbar-controls_play").setAttribute("data-state", "0");
-              }
-              }`;
-                script = script.replace(/(?:\r\n|\r|\n)/g, "");
-                a.innerText = script;
-                DOM.append(a);
-            })();
-
-            // DOM EVENT
-
-            (() => {
-                let canMouse = false;
-                let x = 0;
-                let a = 0;
                 document.querySelector(".playbar-controls_play").addEventListener("click", () => {
                     document.ciulinYT.func.playPause(document.querySelector(".playbar-controls_play").getAttribute("data-state"));
                 });
@@ -718,23 +702,53 @@ var interval;
                 document.querySelector("#playbar-seek").addEventListener("input", (e) => {
                     document.ciulinYT.func.setVolume(e.target.value);
                 });
+                document.querySelector(".video-scrubbar").addEventListener("mouseenter", e => {
+                document.querySelector("#seek-tooltip").classList.remove("hid");
+                });
+                document.querySelector(".video-scrubbar").addEventListener("mouseleave", e => {
+                document.querySelector("#seek-tooltip").classList.add("hid");
+                });
                 document.querySelector(".video-scrubbar").addEventListener('mousedown', e => {
-                    let uwuimgoinginsane = Number(document.querySelector(".video-scrubbar").getAttribute("data-interval"));
-                    clearInterval(uwuimgoinginsane);
+                    clearInterval(progress);
                     canMouse = true;
                 });
                 document.querySelector(".video-scrubbar").addEventListener('mouseup', e => {
-                    document.ciulinYT.player.seekTo(a);
+                    document.ciulinYT.player.seekTo(dur);
+                    progress = setInterval(document.ciulinYT.func.preProPos);
                     canMouse = false;
                 });
                 document.querySelector(".video-scrubbar").addEventListener("mousemove", e => {
+                dur = ((e.pageX - e.currentTarget.offsetLeft) / document.querySelector("#video-player").clientWidth * document.ciulinYT.player.getDuration());
+                const rect = document.querySelector("#video-player").getBoundingClientRect();
+                document.querySelector("#seek-tooltip").style.left = (e.pageX - rect.left) - 16 + "px";
+                document.querySelector("#seek-tooltip").innerText = document.ciulinYT.func.calculateLength(a);
                     if(canMouse !== true) return;
-                    x = ((e.pageX - e.currentTarget.offsetLeft) / e.currentTarget.offsetWidth * 100);
-                    a = ((e.pageX - e.currentTarget.offsetLeft) / 640 * document.ciulinYT.player.getDuration());
-                    document.querySelector(".scrubbar_track_played").style.width = x + "%";
-                    document.querySelector(".scrubbar_track_handle").style.left = x + "%";
-                    console.debug(x);
+                    document.querySelector(".scrubbar_track_played").style.width = ((e.pageX - e.currentTarget.offsetLeft) / e.currentTarget.offsetWidth * 100) + "%";
+                    document.querySelector(".scrubbar_track_handle").style.left = ((e.pageX - e.currentTarget.offsetLeft) / e.currentTarget.offsetWidth * 100) + "%";
                 });
+
+            var playVideo = () => {
+            document.querySelector(".video-blank").style = "display:none;";
+             document.querySelector(".playbar-controls_play").setAttribute("data-state", "1");
+            };
+
+            var onPlayerReady = () => {
+            document.querySelector("#timestamp_total").innerText = document.ciulinYT.func.calculateLength(parseInt(document.ciulinYT.player.getDuration()));
+              progress = setInterval(document.ciulinYT.func.preProPos);
+            setInterval(document.ciulinYT.func.trackCurrent);
+              };
+              var onStateChange = (e) => {
+              switch (e.data) {
+              case 1:
+              playVideo();
+              break;
+              case 0:
+              document.querySelector(".playbar-controls_play").setAttribute("data-state", "0");
+              }
+              };`;
+                script = script.replace(/(?:\r\n|\r|\n)/g, "");
+                a.innerText = script;
+                DOM.append(a);
             })();
         },
         fullscreenPlayer: (e) => {
@@ -766,6 +780,7 @@ var interval;
             document.querySelector("#playbar-progressbar").style.width = document.ciulinYT.player.getCurrentTime() / document.ciulinYT.player.getDuration() * 100 + "%";
         },
         trackCurrent: () => {
+           // document.querySelector(".video-scrubbar").setAttribute("title", document.ciulinYT.func.calculateLength(parseInt(document.ciulinYT.player.getCurrentTime())));
             document.querySelector("#timestamp_current").innerText = document.ciulinYT.func.calculateLength(parseInt(document.ciulinYT.player.getCurrentTime()));
         },
         playPause: (e) => {
