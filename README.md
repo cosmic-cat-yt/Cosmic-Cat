@@ -1,36 +1,20 @@
 # Ciulin's YouTube UserScript
-This userscript aims to recreate YouTube's old layout from 2012.
-Completely replaces Polymer!
 
-I made this to challenge YouTube Redux and be one of the first scripts to truly bring back the original 2012 layout.
+This UserScript aims to recreate the 2012 layout of YouTube completely. Including look and functionality.<br/>
 
+## Important
+Please note that this is still heavily Work-In-Progress - So things might not work correctly.<br/>
+If you spot anything that's broken, please open up a new report on the [**Issues**](https://github.com/ciulinuwu/ciulin-s-youtube/issues/new/choose) tab.</br></br>
+YouTube is a trademark of Google LLC.
 
-## Note
-This is still all Work-In-Progress - So there are things missing.</br>
-If you know JavaScript/CSS/HTML, feel free to contribute!
+## Install
+Get **Tampermonkey** for your Browser: https://www.tampermonkey.net<br/>
+Click here to open up the install prompt (requires **Tampermonkey**): [Ciulin's YouTube.user.js](https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js)
 
-## Features
-2012 YT Layout!<br/>
-Channel 2.0!<br/>
-Redesigned Player!<br/>
-Play videos directly on someone's channel page!<br/>
-See community posts as recent activity!<br/>
-Dislike videos!<br/>
-And many more!<br/>
+## Things supported so far
+- Homepage (Categories, Video List)<br/>
+- Channel Page (Uses Channel 2.0, User Info, Recent Activity)</br>
+- Watch Page (Like and Dislike Button, Likes to Dislikes ratio, Suggested Videos)</br>
+- Video Player (Play/Pause Videos, Adjust the volume, Fullscreen, Display Time, Progress Bar)</br>
+- Search (Show amount of results, Videos and Channels results, Filter and Sort by)
 
-## Compatiability
-Works best on Firefox!<br/>
-Minor things are broken on Chromium/Webkit-based browsers.
-
-## SETUP
-
-Install Tampermonkey for your Browser: https://www.tampermonkey.net<br/>
-Download the script: [Ciulin's YouTube.user.js](https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js)<br/>
-Easy!
-
-## ISSUES
-If you find any issues with my script, feel free to report it on the GitHub issues page, or contribute!<br/>
-
-## Contributors
-[@ciulinuwu](https://github.com/ciulinuwu)<br/>
-[@HastagGuigui](https://github.com/HastagGuigui)<br/>
