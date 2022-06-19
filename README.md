@@ -5,7 +5,7 @@ This UserScript aims to recreate the 2012 layout of YouTube completely. Includin
 ## Important
 Please note that this is still heavily Work-In-Progress - So things might not work correctly.<br/>
 If you spot anything that's broken, please open up a new report on the [**Issues**](https://github.com/ciulinuwu/ciulin-s-youtube/issues/new/choose) tab.</br></br>
-YouTube is a trademark of Google LLC.
+**YouTube is a trademark of Google LLC.**</br>
 
 ## Install
 Get **Tampermonkey** for your Browser: https://www.tampermonkey.net<br/>
