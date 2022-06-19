@@ -8,8 +8,8 @@ If you experience any issues with the script, please open up a new report on the
 **YouTube is a trademark of Google LLC.**</br>
 
 ## Install
-Get **Tampermonkey** for your Browser: https://www.tampermonkey.net<br/>
-Click here to open up the install prompt (requires **Tampermonkey**): [Ciulin's YouTube.user.js](https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js)
+- Get **Tampermonkey** for your Browser: https://www.tampermonkey.net<br/>
+- Click here to open up the install prompt (requires **Tampermonkey**): [Ciulin's YouTube.user.js](https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js)
 
 ## Things supported so far
 - Homepage (Categories, Video List)<br/>
