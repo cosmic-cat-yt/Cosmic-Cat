@@ -13,7 +13,7 @@ Click here to open up the install prompt (requires **Tampermonkey**): [Ciulin's 
 
 ## Things supported so far
 - Homepage (Categories, Video List)<br/>
-- Channel Page (Uses Channel 2.0, User Info, Recent Activity)</br>
+- Channel Page (Uses Channel 2.0, Play Videos directly on the page, User Info, Recent Activity)</br>
 - Watch Page (Like and Dislike Button, Likes to Dislikes ratio, Suggested Videos)</br>
 - Video Player (Play/Pause Videos, Adjust the volume, Fullscreen, Display Time, Progress Bar)</br>
 - Search (Show amount of results, Videos and Channels results, Filter and Sort by)
