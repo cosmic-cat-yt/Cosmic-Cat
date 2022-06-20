@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.59
+// @version      0.4.60
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -294,10 +294,99 @@ var interval;
             };
             xhr.send();
         },
-        settings_tab: async(e) => {
-            if (!e) return;
+        settings_tab: async(dataName) => {
+            if (!dataName) return;
+            let DOM = document.querySelector("video-settings");
+            let CON = DOM.querySelector(".playmenu-content");
+            CON.innerHTML = "";
             document.querySelector(".playmenu-button.selected").classList.remove("selected");
-            e.srcElement.classList.add("selected");
+            document.querySelector(`[data-name="${dataName}"]`).classList.add("selected");
+
+            let loadSubtitles = async () => {
+                let HTML = [];
+                let subtitlesSTORAGE = await document.ciulinYT.func.getFromStorage("subtitles");
+                let posiShort = ytInitialPlayerResponse.captions.playerCaptionsTracklistRenderer.captionTracks;
+                let posiSubtitles = ``;
+                let value = subtitlesSTORAGE.value;
+
+                for (let i = 0; i < posiShort.length; i++) {
+                    let _value = (posiShort[i].languageCode == subtitlesSTORAGE.value) ? 'selected=""' : "";
+                    console.debug(posiShort[i]);
+                    posiSubtitles += `<option value="${posiShort[i].languageCode}" ${_value}>${posiShort[i].name.simpleText}</option>`;
+                }
+
+                let chck_toggle = subtitlesSTORAGE.toggle ? "" : 'disabled=""';
+                let btn_toggle = subtitlesSTORAGE.toggle ? 'checked=""' : "";
+
+                let _toggle = `<span class="playmenu-text">Subtitles</span><div class="settings-toggle"><input type="checkbox" class="settings-toggle" id="settings-subtitles" ${btn_toggle}><label for="settings-subtitles" class="playmenu-text">Enable Subtitles</label></div><div class="settings-selecter"><select class="settings-selecter" id="settings-subtitles" ${chck_toggle}>${posiSubtitles}</select></div>`;
+
+                HTML.push(_toggle);
+
+                for (let i = 0; i < HTML.length; i++) {
+                    CON.innerHTML += HTML[i];
+                }
+
+                document.querySelector(".settings-toggle#settings-subtitles").addEventListener("click", e => {
+                    if(e.srcElement.checked == true) {
+                        document.ciulinYT.func.addToStorage("subtitles", "toggle", true);
+                        document.querySelector(".settings-selecter#settings-subtitles").removeAttribute("disabled");
+                    } else {
+                        document.ciulinYT.func.addToStorage("subtitles", "toggle", false);
+                        document.querySelector(".settings-selecter#settings-subtitles").setAttribute("disabled", "");
+                    }
+
+                    document.ciulinYT.player.toggleSubtitles();
+                })
+
+                document.querySelector(".settings-selecter#settings-subtitles").addEventListener("change", e => {
+                    document.ciulinYT.func.addToStorage("subtitles", "value", e.srcElement.value);
+                    document.ciulinYT.player.setOption("captions", "track", {"languageCode": e.srcElement.value})
+                })
+            }
+
+            let loadQuality = async () => {
+                let HTML = [];
+                let qualitySTORAGE = await document.ciulinYT.func.getFromStorage("quality");
+                let qualShort = document.ciulinYT.player.getAvailableQualityLevels();
+                let qualShorter = document.ciulinYT.player.getPlaybackQuality();
+                let qualQuality = ``;
+                let value = qualitySTORAGE.value;
+
+                for (let i = 0; i < qualShort.length; i++) {
+                    let _value = (qualShort[i] == qualShorter) ? 'selected=""' : (qualShort[i] == qualitySTORAGE.value) ? 'selected=""' : "";
+                    qualQuality += `<option value="${qualShort[i]}" ${_value}>${qualShort[i]}</option>`;
+                }
+
+                let _select = `<span class="playmenu-text">Video Quality</span><div class="settings-selecter"><select class="settings-selecter" id="settings-quality">${qualQuality}</select></div>`;
+
+                HTML.push(_select);
+
+                for (let i = 0; i < HTML.length; i++) {
+                    CON.innerHTML += HTML[i];
+                }
+
+                document.querySelector(".settings-selecter#settings-quality").addEventListener("change", e => {
+                    document.ciulinYT.func.addToStorage("quality", "value", e.srcElement.value);
+                    document.ciulinYT.player.setPlaybackQuality(e.srcElement.value);
+                })
+            }
+
+            let loadPlayback = () => {
+
+            }
+
+            switch (dataName) {
+                case "subtitles":
+                    loadSubtitles();
+                    break;
+                case "quality":
+                    loadQuality();
+                    break;
+                case "playback":
+                    loadPlayback();
+                    break;
+            }
+            console.debug(dataName);
         }
     };
     document.ciulinYT.func = {
@@ -313,8 +402,9 @@ var interval;
                 var DOM_menu = document.createElement("video-settings");
                 DOM_menu.setAttribute("class", "hid");
                 DOM_menu.setAttribute("data-state", "0");
-                DOM_menu.innerHTML = `<div class="playmenu-container"><a class="playmenu-text">YouTube Settings</a><div class="playmenu-content"><div class="settings-subtitles"><input type="checkbox" id="settings-subtitles"><label for="settings-subtitles" class="playmenu-text" style="">Enable Subtitles</label></div></div><ul class="playmenu-buttons"><li class="playmenu-button selected"></li><li class="playmenu-button"></li><li class="playmenu-button"></li><li class="playmenu-button"></li><li class="playmenu-button"></li><div class="playmenu-button_exit"><span>Close</span></div></ul></div>`;
+                DOM_menu.innerHTML = `<div class="playmenu-container"><a class="playmenu-text">YouTube Settings</a><div class="playmenu-content"></div><ul class="playmenu-buttons"><li class="playmenu-button selected" data-name="subtitles"></li><li class="playmenu-button" data-name="quality"></li><li class="playmenu-button" data-name="playback"></li><li class="playmenu-button"></li><li class="playmenu-button"></li><div class="playmenu-button_exit"><span>Close</span></div></ul></div>`;
                 DOM.appendChild(DOM_menu);
+                document.ciulinYT.load.settings_tab("subtitles");
             })();
 
             // DOM_embedVideo
@@ -687,7 +777,7 @@ var interval;
                 }
 
                 video-settings {
-                height: 360px;
+                height: inherit;
                 display: block;
                 position: absolute;
                 width: inherit;
@@ -716,8 +806,15 @@ var interval;
                 cursor: default;
                 font-size: 10px;
                 }
+                .settings-text {
+                margin-top: 10px;
+                }
                 a.playmenu-text {
                 margin-left: 3px;
+                }
+                span.playmenu-text {
+                padding: 4px 4px;
+                display: block;
                 }
 
                 .playmenu-text:hover {
@@ -769,11 +866,26 @@ var interval;
                 font-size: 10px;
                 }
 
-                .settings-subtitles {
-                width: 97px;
+                div.settings-toggle {
+                display: flex;
+                align-items: center;
                 }
-                #settings-subtitles {
+
+                input.settings-toggle {
                 width: 8px;
+                }
+
+                div.settings-selecter {
+                height: 14px;
+                width: 190px;
+                margin: auto;
+                }
+
+                select.settings-selecter {
+                width: inherit;
+                height: inherit;
+                border: 1px solid #8c8c8c;
+                background: white;
                 }
 
                 @keyframes slide-right {
@@ -819,11 +931,13 @@ var interval;
                     playerVars: {
                         'enablejsapi': 1,
                         'rel': 0,
-                        'controls': '0'
+                        'controls': '0',
+                        'cc_load_policy': '3'
                     },
                     events: {
                         'onReady': onPlayerReady,
-                        'onStateChange': onStateChange
+                        'onStateChange': onStateChange,
+                        'onPlaybackQualityChange': onPlayerPlaybackQualityChange
                     }
                 });
             };
@@ -839,7 +953,7 @@ var interval;
             });
             document.querySelectorAll(".playmenu-button").forEach(a => {
             a.addEventListener("click", e => {
-            document.ciulinYT.load.settings_tab(e);
+            document.ciulinYT.load.settings_tab(e.srcElement.getAttribute("data-name"));
             })});
             document.querySelector("#video-player").addEventListener("contextmenu", (e) => {
             e.preventDefault();
@@ -897,6 +1011,10 @@ var interval;
               progress = setInterval(document.ciulinYT.func.preProPos);
             setInterval(document.ciulinYT.func.trackCurrent);
               };
+              function onPlayerPlaybackQualityChange(event) {
+              var playbackQuality = event.target.getPlaybackQuality();
+              event.target.setPlaybackQuality(playbackQuality);
+              }
               var onStateChange = (e) => {
               switch (e.data) {
               case 1:
@@ -923,6 +1041,29 @@ var interval;
                     document.querySelector("video-settings").setAttribute("data-state", "1");
                     break;
             }
+        },
+        createStorage: async (a) => {
+            if(a !== "SUPERSECRETROOTKEY") return error("Permission denied to this function. Reason: Tempering with this can break the script.");
+            let _STORAGE = {helloworld: "Hello World", subtitles: {"toggle": false}, quality: {}, playback: {}};
+            localStorage.setItem("ciu.FlashSettings", JSON.stringify(_STORAGE));
+        },
+        prepareStorage: async() => {
+            try {
+                JSON.parse(localStorage.getItem("ciu.FlashSettings")).helloworld;
+            } catch {
+                document.ciulinYT.func.createStorage("SUPERSECRETROOTKEY");
+            }
+        },
+        addToStorage: (a, b, c) => {
+            if(!a && !b && !c) return error();
+            let STORAGE = JSON.parse(localStorage.getItem("ciu.FlashSettings"));
+            STORAGE[a][b] = c;
+            localStorage.setItem("ciu.FlashSettings", JSON.stringify(STORAGE));
+        },
+        getFromStorage: async (a) => {
+            let STORAGE = JSON.parse(localStorage.getItem("ciu.FlashSettings"));
+            if(!STORAGE[a]) return error(`Storage: ${a} does not exist in storage`);
+            return STORAGE[a];
         },
         exitPlayerSettings: () => {
             let DOM = document.querySelector("video-settings");
