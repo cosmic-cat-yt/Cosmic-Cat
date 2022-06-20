@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.60
+// @version      0.4.61
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -305,20 +305,18 @@ var interval;
             let loadSubtitles = async () => {
                 let HTML = [];
                 let subtitlesSTORAGE = await document.ciulinYT.func.getFromStorage("subtitles");
-                let posiShort = ytInitialPlayerResponse.captions.playerCaptionsTracklistRenderer.captionTracks;
+                let posiShort = (ytInitialPlayerResponse.captions) ? ytInitialPlayerResponse.captions.playerCaptionsTracklistRenderer.captionTracks : [{disabled: "", languageCode: "", name: {simpleText: "No subtitles"}}];
                 let posiSubtitles = ``;
                 let value = subtitlesSTORAGE.value;
 
                 for (let i = 0; i < posiShort.length; i++) {
                     let _value = (posiShort[i].languageCode == subtitlesSTORAGE.value) ? 'selected=""' : "";
-                    console.debug(posiShort[i]);
                     posiSubtitles += `<option value="${posiShort[i].languageCode}" ${_value}>${posiShort[i].name.simpleText}</option>`;
                 }
 
-                let chck_toggle = subtitlesSTORAGE.toggle ? "" : 'disabled=""';
-                let btn_toggle = subtitlesSTORAGE.toggle ? 'checked=""' : "";
+                let chck_toggle = (posiShort[0].disabled == "") ? 'disabled=""' : '';
 
-                let _toggle = `<span class="playmenu-text">Subtitles</span><div class="settings-toggle"><input type="checkbox" class="settings-toggle" id="settings-subtitles" ${btn_toggle}><label for="settings-subtitles" class="playmenu-text">Enable Subtitles</label></div><div class="settings-selecter"><select class="settings-selecter" id="settings-subtitles" ${chck_toggle}>${posiSubtitles}</select></div>`;
+                let _toggle = `<span class="playmenu-text">Subtitles</span><div class="settings-toggle"><input type="checkbox" class="settings-toggle" id="settings-subtitles" ${chck_toggle}><label for="settings-subtitles" class="playmenu-text">Enable Subtitles</label></div><div class="settings-selecter"><select class="settings-selecter" id="settings-subtitles" disabled="">${posiSubtitles}</select></div>`;
 
                 HTML.push(_toggle);
 
@@ -328,10 +326,8 @@ var interval;
 
                 document.querySelector(".settings-toggle#settings-subtitles").addEventListener("click", e => {
                     if(e.srcElement.checked == true) {
-                        document.ciulinYT.func.addToStorage("subtitles", "toggle", true);
                         document.querySelector(".settings-selecter#settings-subtitles").removeAttribute("disabled");
                     } else {
-                        document.ciulinYT.func.addToStorage("subtitles", "toggle", false);
                         document.querySelector(".settings-selecter#settings-subtitles").setAttribute("disabled", "");
                     }
 
@@ -1044,7 +1040,7 @@ var interval;
         },
         createStorage: async (a) => {
             if(a !== "SUPERSECRETROOTKEY") return error("Permission denied to this function. Reason: Tempering with this can break the script.");
-            let _STORAGE = {helloworld: "Hello World", subtitles: {"toggle": false}, quality: {}, playback: {}};
+            let _STORAGE = {helloworld: "Hello World", subtitles: {"value": ""}, quality: {"value": ""}, playback: {}};
             localStorage.setItem("ciu.FlashSettings", JSON.stringify(_STORAGE));
         },
         prepareStorage: async() => {
