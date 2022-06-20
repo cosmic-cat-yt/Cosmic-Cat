@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.61
+// @version      0.4.62
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -367,8 +367,31 @@ var interval;
                 })
             }
 
-            let loadPlayback = () => {
+            let loadPlayback = async () => {
+                let HTML = [];
+                let playbackSTORAGE = await document.ciulinYT.func.getFromStorage("playback");
+                let playShort = document.ciulinYT.player.getAvailablePlaybackRates();
+                let playShorter = document.ciulinYT.player.getPlaybackRate();
+                let playRate = ``;
+                let value = playbackSTORAGE.value;
 
+                for (let i = 0; i < playShort.length; i++) {
+                    let _value = (playShort[i] == playShorter) ? 'selected=""' : (playShort[i] == playbackSTORAGE.value) ? 'selected=""' : "";
+                    playRate += `<option value="${playShort[i]}" ${_value}>${playShort[i]}</option>`;
+                }
+
+                let _select = `<span class="playmenu-text">Playback Rate</span><div class="settings-selecter"><select class="settings-selecter" id="settings-play">${playRate}</select></div>`;
+
+                HTML.push(_select);
+
+                for (let i = 0; i < HTML.length; i++) {
+                    CON.innerHTML += HTML[i];
+                }
+
+                document.querySelector(".settings-selecter#settings-play").addEventListener("change", e => {
+                    document.ciulinYT.func.addToStorage("playback", "value", e.srcElement.value);
+                    document.ciulinYT.player.setPlaybackRate(Number(e.srcElement.value));
+                })
             }
 
             switch (dataName) {
