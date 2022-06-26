@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.5.0
+// @version      0.5.1
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -412,10 +412,12 @@ var interval;
             var string = "";
 
             let template = async(current) => {
-                let owner = current.ownerText ? current.ownerText.runs[0].text : current.bylineText.runs[0].text;
-                let views = current.viewCountText ? [current.viewCountText.simpleText, current.publishedTimeText.simpleText] : current.metadataText.simpleText.split(" · ");
+                let owner = current.ownerText ? current.ownerText.runs[0] : current.bylineText.runs[0];
+                let time = current.publishedTimeText ? current.publishedTimeText.simpleText : "";
+                let view = current.viewCountText.simpleText ? current.viewCountText.simpleText : current.viewCountText.runs[0].text + current.viewCountText.runs[1].text;
+                let views = current.viewCountText ? [view, time] : current.metadataText.simpleText.split(" · ");
                 let a = `<div class="browse-item yt-tile-default">
-<a href="http://www.youtube.com/watch?v=${current.videoId}" class="ux-thumb-wrap">
+<a href="https://www.youtube.com/watch?v=${current.videoId}" class="ux-thumb-wrap">
 <span class="video-thumb ux-thumb ux-thumb-184">
 <span class="clip">
 <span class="clip-inner">
@@ -425,11 +427,11 @@ var interval;
 </span>
 </span>
 </span>
-<span class="video-time">${current.lengthText.simpleText}</span>
+<span class="video-time">${current.lengthText ? current.lengthText.simpleText : "LIVE"}</span>
 </a>
 <div class="browse-item-content">
 <h3 dir="ltr">
-<a href="" title="${current.title.runs[0].text}">${current.title.runs[0].text}</a>
+<a href="https://www.youtube.com/watch?v=${current.videoId}" title="${current.title.runs[0].text}">${current.title.runs[0].text}</a>
 </h3>
 <div class="browse-item-info">
 <div class="metadata-line">
@@ -437,7 +439,7 @@ var interval;
 <span class="metadata-separator">|</span>
 <span class="video-date-added">${views[1]}</span>
 </div>
-<a class="yt-user-name" dir="ltr" href="">${owner}</a>
+<a class="yt-user-name" dir="ltr" href="https://www.youtube.com${owner.navigationEndpoint.browseEndpoint.canonicalBaseUrl}">${owner.text}</a>
 </div>
 </div>
 </div>`;
@@ -1913,9 +1915,9 @@ var interval;
         DOMHTML.appendChild(DOMHEAD);
 
         document.title = VALUE_TITLE;
-        DOMHEAD.innerHTML += '<link rel="icon" href="https://s.ytimg.com/yt/favicon-refresh-vfldLzJxy.ico">';
-        DOMHEAD.innerHTML += '<link rel="shortcut icon" href="https://s.ytimg.com/yt/favicon-refresh-vfldLzJxy.ico">';
-        DOMHEAD.innerHTML += '<link rel="stylesheet" href="//s.ytimg.com/yt/cssbin/www-refresh-vflzVUPsm.css">';
+        DOMHEAD.innerHTML += '<link rel="icon" href="//s.ytimg.com/yt/favicon-refresh-vfldLzJxy.ico">';
+        DOMHEAD.innerHTML += '<link rel="shortcut icon" href="//s.ytimg.com/yt/favicon-refresh-vfldLzJxy.ico">';
+        DOMHEAD.innerHTML += '<link rel="stylesheet" class="refresh" href="//s.ytimg.com/yt/cssbin/www-refresh-vflzVUPsm.css">';
         DOMHEAD.innerHTML += '<link rel="stylesheet" href="//s.ytimg.com/yt/cssbin/www-the-rest-vflNb6rAI.css">';
 
         // BODY
@@ -2741,8 +2743,9 @@ var interval;
         // Browse
         if(window.location.pathname.match(/\/feed\/explore/i)) {
             let FUNC = (async () => {
-                let CSS1 = `<link rel="stylesheet" href="https://s.ytimg.com/yt/cssbin/www-videos-nav-vfl8KBBHC.css"/>`;
-                let CSS2 = `<link rel="stylesheet" href="https://s.ytimg.com/yt/cssbin/www-refresh-browse-vflPUlXqz.css"/>`;
+                let CSS1 = `<link rel="stylesheet" href="//s.ytimg.com/yt/cssbin/www-videos-nav-vfl8KBBHC.css"/>`;
+                let CSS2 = `<link rel="stylesheet" href="//s.ytimg.com/yt/cssbin/www-refresh-browse-vflPUlXqz.css"/>`;
+                document.querySelector(".refresh").href = "//s.ytimg.com/yt/cssbin/www-refresh-vflAbAPqe.css";
                 document.head.innerHTML += CSS1 + CSS2;
                 document.title = "Videos - YouTube";
                 document.ciulinYT.func.waitForElm("#page").then(elm => {elm.setAttribute("class", "browse-base browse-videos");});
