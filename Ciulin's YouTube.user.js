@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.5.1
+// @version      0.5.2
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -66,7 +66,7 @@ var interval;
                     };
 
                     let filter = async (j) => {
-                        let img = b[j].backstagePostThreadRenderer.post.backstagePostRenderer.backstageAttachment;
+                        let img = j.backstageAttachment;
                         if(!img) return '';
                         let stor = "";
                         for (const obj in img) {
@@ -113,11 +113,13 @@ var interval;
                     for (j = 0; j < b.length; j++) {
                         if(!b[j].continuationItemRenderer && !b[j].messageRenderer) {
                             data[j] = {};
-                            data[j].text = b[j].backstagePostThreadRenderer.post.backstagePostRenderer.contentText.runs ? b[j].backstagePostThreadRenderer.post.backstagePostRenderer.contentText.runs[0].text : "";
+                            let post = b[j].backstagePostThreadRenderer.post.sharedPostRenderer ? b[j].backstagePostThreadRenderer.post.sharedPostRenderer.originalPost.backstagePostRenderer : b[j].backstagePostThreadRenderer.post.backstagePostRenderer;
+                            console.debug(post);
+                            data[j].text = post.contentText.runs ? post.contentText.runs[0].text : "";
 
-                            data[j].images = await filter(j);
-                            data[j].author = b[j].backstagePostThreadRenderer.post.backstagePostRenderer.authorText.runs[0].text;
-                            data[j].timestamp = b[j].backstagePostThreadRenderer.post.backstagePostRenderer.publishedTimeText.runs[0].text;
+                            data[j].images = await filter(post);
+                            data[j].author = post.authorText.runs[0].text;
+                            data[j].timestamp = post.publishedTimeText.runs[0].text;
                         }
                     }
                     resolve(data);
