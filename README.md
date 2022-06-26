@@ -16,5 +16,6 @@ If you experience any issues with the script, please open up a new report on the
 - Channel Page (Uses Channel 2.0, Play Videos directly on the page, User Info, Recent Activity)</br>
 - Watch Page (Like and Dislike Button, Likes to Dislikes ratio, Suggested Videos)</br>
 - Video Player (Play/Pause Videos, Adjust the volume, Fullscreen, Display Time, Progress Bar)</br>
-- Search (Show amount of results, Videos and Channels results, Filter and Sort by)
+- Search (Show amount of results, Videos and Channels results, Filter and Sort by)</br>
+- Browse (List videos from Most Viewed Today and Recommended for You)
 
