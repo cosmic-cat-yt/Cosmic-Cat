@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.4.62
+// @version      0.5.0
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -332,13 +332,13 @@ var interval;
                     }
 
                     document.ciulinYT.player.toggleSubtitles();
-                })
+                });
 
                 document.querySelector(".settings-selecter#settings-subtitles").addEventListener("change", e => {
                     document.ciulinYT.func.addToStorage("subtitles", "value", e.srcElement.value);
-                    document.ciulinYT.player.setOption("captions", "track", {"languageCode": e.srcElement.value})
-                })
-            }
+                    document.ciulinYT.player.setOption("captions", "track", {"languageCode": e.srcElement.value});
+                });
+            };
 
             let loadQuality = async () => {
                 let HTML = [];
@@ -364,8 +364,8 @@ var interval;
                 document.querySelector(".settings-selecter#settings-quality").addEventListener("change", e => {
                     document.ciulinYT.func.addToStorage("quality", "value", e.srcElement.value);
                     document.ciulinYT.player.setPlaybackQuality(e.srcElement.value);
-                })
-            }
+                });
+            };
 
             let loadPlayback = async () => {
                 let HTML = [];
@@ -391,8 +391,8 @@ var interval;
                 document.querySelector(".settings-selecter#settings-play").addEventListener("change", e => {
                     document.ciulinYT.func.addToStorage("playback", "value", e.srcElement.value);
                     document.ciulinYT.player.setPlaybackRate(Number(e.srcElement.value));
-                })
-            }
+                });
+            };
 
             switch (dataName) {
                 case "subtitles":
@@ -406,6 +406,123 @@ var interval;
                     break;
             }
             console.debug(dataName);
+        },
+        browseCategory: async (category) => {
+            if(!category) return;
+            var string = "";
+
+            let template = async(current) => {
+                let owner = current.ownerText ? current.ownerText.runs[0].text : current.bylineText.runs[0].text;
+                let views = current.viewCountText ? [current.viewCountText.simpleText, current.publishedTimeText.simpleText] : current.metadataText.simpleText.split(" · ");
+                let a = `<div class="browse-item yt-tile-default">
+<a href="http://www.youtube.com/watch?v=${current.videoId}" class="ux-thumb-wrap">
+<span class="video-thumb ux-thumb ux-thumb-184">
+<span class="clip">
+<span class="clip-inner">
+<img alt="Thumbnail" src="//i2.ytimg.com/vi/${current.videoId}/hqdefault.jpg" data-group-key="thumb-group-0">
+<span class="vertical-align">
+</span>
+</span>
+</span>
+</span>
+<span class="video-time">${current.lengthText.simpleText}</span>
+</a>
+<div class="browse-item-content">
+<h3 dir="ltr">
+<a href="" title="${current.title.runs[0].text}">${current.title.runs[0].text}</a>
+</h3>
+<div class="browse-item-info">
+<div class="metadata-line">
+<span class="viewcount">${views[0]}</span>
+<span class="metadata-separator">|</span>
+<span class="video-date-added">${views[1]}</span>
+</div>
+<a class="yt-user-name" dir="ltr" href="">${owner}</a>
+</div>
+</div>
+</div>`;
+                return a;
+            };
+
+            let trending = async (superFix) => {
+                var CONTENTS = "";
+                var TAB = [];
+                let p = superFix.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content;
+                let b = p.sectionListRenderer ? p.sectionListRenderer.contents : p.richGridRenderer.contents;
+                for (let i = 0; i < b.length; i++) {
+                    let b_a = b[i].itemSectionRenderer ? b[i].itemSectionRenderer.contents[0] : b[i].richItemRenderer;
+                    b_a = b_a ? b_a : {};
+                    if(b_a.shelfRenderer && b_a.shelfRenderer.content.expandedShelfContentsRenderer) {
+                        let b_b = b_a.shelfRenderer.content.expandedShelfContentsRenderer.items;
+                        TAB.push(b_b);
+                    }
+                    if(b_a.content && b_a.content.videoRenderer) {
+                        TAB.push(b_a.content);
+                    }
+                }
+
+                var anal = TAB;
+
+                var work = [];
+
+                if(TAB[1][0]) {
+                    anal = [].concat(TAB[0], TAB[1]);
+                }
+
+                for (let i = 0; i < anal.length; i++) {
+                    if(i < 8) {
+                        work.push(anal[i]);
+                    }
+                }
+
+                let outArray = [ [], [] ];
+
+                for (let i = 0; i < work.length; i++) {
+                    outArray[Math.floor(i/4)].push(work[i]);
+                }
+
+                for (let i = 0; i < outArray.length; i++) {
+                    let bitch = "";
+                    for (let I = 0; I < outArray[i].length; I++) {
+                        console.debug(outArray[i][I]);
+                        bitch += await template(outArray[i][I].videoRenderer);
+                    }
+                    CONTENTS += `<div class="browse-item-row ytg-box">${bitch}</div>`;
+                }
+
+
+                return CONTENTS;
+            };
+
+            switch (category) {
+                case "mostViewedVideos":
+                    return trending(ytInitialData);
+                case "recommendedVideos":
+                    string = "/";
+                    break;
+            }
+
+            var test = new Promise(async resolve => {
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", `https://www.youtube.com${string}`);
+                xhr.onload = async () => {
+                    let json = JSON.parse(xhr.response.split("var ytInitialData = ")[1].split(";</script>")[0]);
+                    if(string === "/") {
+                        let _a = await trending(json);
+                        return resolve(_a);
+                    }
+                    var CONTENTS = "a";
+                    resolve(CONTENTS);
+                };
+                xhr.onerror = () => {
+                    console.error("** An error occurred during the XMLHttpRequest");
+                };
+                xhr.send();
+            });
+
+            let a = await test;
+
+            return a;
         }
     };
     document.ciulinYT.func = {
@@ -421,7 +538,7 @@ var interval;
                 var DOM_menu = document.createElement("video-settings");
                 DOM_menu.setAttribute("class", "hid");
                 DOM_menu.setAttribute("data-state", "0");
-                DOM_menu.innerHTML = `<div class="playmenu-container"><a class="playmenu-text">YouTube Settings</a><div class="playmenu-content"></div><ul class="playmenu-buttons"><li class="playmenu-button selected" data-name="subtitles"></li><li class="playmenu-button" data-name="quality"></li><li class="playmenu-button" data-name="playback"></li><li class="playmenu-button"></li><li class="playmenu-button"></li><div class="playmenu-button_exit"><span>Close</span></div></ul></div>`;
+                DOM_menu.innerHTML = `<div class="playmenu-container"><a class="playmenu-text">YouTube Player Settings</a><div class="playmenu-content"></div><ul class="playmenu-buttons"><li class="playmenu-button selected" data-name="subtitles"></li><li class="playmenu-button" data-name="quality"></li><li class="playmenu-button" data-name="playback"></li><div class="playmenu-button_exit"><span>Close</span></div></ul></div>`;
                 DOM.appendChild(DOM_menu);
                 document.ciulinYT.load.settings_tab("subtitles");
             })();
@@ -881,7 +998,7 @@ var interval;
                 border-radius: 2px;
                 text-align: center;
                 margin-top: 7px;
-                margin-left: 4px;
+                margin-left: 58px;
                 font-size: 10px;
                 }
 
@@ -2206,7 +2323,7 @@ var interval;
         // Channel
         if(window.location.pathname.split("/")[1].match(/channel|user|^c{1}$/i)) {
             if (/community|videos|about|channels|playlists|membership|store/.test(window.location.pathname.split("/")[3])) window.location.href = window.location.pathname.split("/").slice(0,3).join("/");
-            var FUNC = (async () => {
+            let FUNC = (async () => {
                 let collection = {};
 
                 // Values
@@ -2622,10 +2739,105 @@ var interval;
         }
 
         // Browse
-        if(window.location.pathname.match(/\/feed\/trending/i)) {
-            (async () => {
-                OBJ_CHANNEL = `TEST`;
+        if(window.location.pathname.match(/\/feed\/explore/i)) {
+            let FUNC = (async () => {
+                let CSS1 = `<link rel="stylesheet" href="https://s.ytimg.com/yt/cssbin/www-videos-nav-vfl8KBBHC.css"/>`;
+                let CSS2 = `<link rel="stylesheet" href="https://s.ytimg.com/yt/cssbin/www-refresh-browse-vflPUlXqz.css"/>`;
+                document.head.innerHTML += CSS1 + CSS2;
+                document.title = "Videos - YouTube";
+                document.ciulinYT.func.waitForElm("#page").then(elm => {elm.setAttribute("class", "browse-base browse-videos");});
+
+                var mostViewedVideos = await document.ciulinYT.load.browseCategory("mostViewedVideos");
+                var recommendedVideos = await document.ciulinYT.load.browseCategory("recommendedVideos");
+
+                return `<div id="baseDiv" class="date-20120215 video-info">
+<div id="masthead-subnav">
+<ul>
+<li class="selected">
+<a href="">Videos</a>
+</li>
+<li>
+<a href="">Music</a>
+</li>
+<li>
+<a href="">Movies</a>
+</li>
+<li>
+<a href="">Shows</a>
+</li>
+<li>
+<a href="">Trailers</a>
+</li>
+<li>
+<a href="">Live</a>
+</li>
+<li>
+<a href="">Sports</a>
+</li>
+<li>
+<a href="">Education</a>
+</li>
+<li class="last">
+<a href="">News</a>
+</li>
+</ul>
+</div>
+<div class="ytg-fl browse-header">
+</div>
+<div class="browse-container ytg-box no-stage browse-bg-gradient">
+<div class="ytg-fl browse-content">
+<div id="browse-side-column" class="ytg-2col ytg-last">
+<ol class="navigation-menu">
+<li class="menu-item">
+<a class="selected" href="https://www.youtube.com/feed/explore">All Categories</a>
+</li>
+<li class="menu-item">
+<a class="" href="">Recommended for You</a>
+</li>
+</ol>
+</div>
+<div id="browse-main-column" class="ytg-4col">
+<div class="load-more-pagination">
+<div class="load-more-content">
+<div class="browse-collection">
+<div class="ytg-box collection-header with-icon">
+<a class="heading ytg-box" href="">
+<img class="header-icon most-viewed" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
+<div class="header-container">
+<h2>Most Viewed Today »</h2>
+</div>
+</a>
+<a class="yt-playall-link" href="">
+<img class="small-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
+Play all
+</a>
+</div>
+${mostViewedVideos}
+</div>
+<div class="browse-collection">
+<div class="ytg-box collection-header with-icon">
+<a class="heading ytg-box" href="">
+<img class="header-icon recommended" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
+<div class="header-container">
+<h2>Recommended for You »</h2>
+</div>
+</a>
+<a class="yt-playall-link" href="">
+<img class="small-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
+Play all
+</a>
+</div>
+${recommendedVideos}
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="clear"></div>
+</div>`;
             })();
+            OBJ_CHANNEL = await FUNC;
         }
 
         // Mastheat
@@ -2637,7 +2849,7 @@ var interval;
         <div id="masthead-search-bar-container">
         <div id="masthead-search-bar">
         <div id="masthead-nav">
-        <a href="https://www.youtube.com/videos?feature=mh">Browse</a>
+        <a href="https://www.youtube.com/feed/explore">Browse</a>
         <span class="masthead-link-separator">|</span>
         <a href="https://youtube.com/upload">Upload</a>
         </div>
