@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.5.4
+// @version      0.5.5
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -65,6 +65,32 @@ var interval;
                         return stor;
                     };
 
+                    let video = async (vid) => {
+                        let {id, title, time} = await document.ciulinYT.func.organizeVideoData(vid);
+                        return `<div class="playnav-item playnav-video">
+        <div style="display:none" class="encryptedVideoId">${id}</div>
+        <div class="selector"></div>
+        <div class="content">
+        <div class="playnav-video-thumb">
+        <a href="https://www.youtube.com/watch?v=${id}" onclick="document.ciulinYT.func.loadPlaynavVideo('${id}');return false;" class="ux-thumb-wrap">
+        <span class="video-thumb ux-thumb-96 ">
+        <span class="clip">
+        <img src="//i1.ytimg.com/vi/${id}/default.jpg" alt="Thumbnail" class="" onclick="document.ciulinYT.func.loadPlaynavVideo('${id}');return false;" title="${title}">
+        </span>
+        </span>
+        <span class="video-time">${time}</span>
+        </a>
+        </div>
+        <div class="playnav-video-info">
+        <a href="https://www.youtube.com/watch?v=${id}" class="playnav-item-title ellipsis" onclick="document.ciulinYT.func.loadPlaynavVideo('${id}');return false;">
+        <span dir="ltr">${title}</span>
+        </a>
+        <div style="display:none" id="playnav-video-play-uploads-12">${id}</div>
+        </div>
+        </div>
+        </div>`;
+                    };
+
                     let filter = async (j) => {
                         let img = j.backstageAttachment;
                         if(!img) return '';
@@ -78,28 +104,7 @@ var interval;
                                     stor = '<img src="' + img.backstageImageRenderer.image.thumbnails[0].url + '">';
                                     break;
                                 case 'videoRenderer':
-                                    stor = `<div class="playnav-item playnav-video">
-        <div style="display:none" class="encryptedVideoId">${img.videoRenderer.videoId}</div>
-        <div class="selector"></div>
-        <div class="content">
-        <div class="playnav-video-thumb">
-        <a href="http://www.youtube.com/watch?v=${img.videoRenderer.videoId}" onclick="document.ciulinYT.func.loadPlaynavVideo('${img.videoRenderer.videoId}');return false;" class="ux-thumb-wrap">
-        <span class="video-thumb ux-thumb-96 ">
-        <span class="clip">
-        <img src="//i1.ytimg.com/vi/${img.videoRenderer.videoId}/default.jpg" alt="Thumbnail" class="" onclick="document.ciulinYT.func.loadPlaynavVideo('${img.videoRenderer.videoId}');return false;" title="Game of Survival『14』">
-        </span>
-        </span>
-        <span class="video-time">0:30</span>
-        </a>
-        </div>
-        <div class="playnav-video-info">
-        <a href="http://www.youtube.com/watch?v=${img.videoRenderer.videoId}" class="playnav-item-title ellipsis" onclick="document.ciulinYT.func.loadPlaynavVideo('${img.videoRenderer.videoId}');return false;">
-        <span dir="ltr">${img.videoRenderer.title.runs[0].text}</span>
-        </a>
-        <div style="display:none" id="playnav-video-play-uploads-12">${img.videoRenderer.videoId}</div>
-        </div>
-        </div>
-        </div>`;
+                                    stor = await video(img.videoRenderer);
                                     break;
                             }
                         }
@@ -114,9 +119,7 @@ var interval;
                         if(!b[j].continuationItemRenderer && !b[j].messageRenderer) {
                             data[j] = {};
                             let post = b[j].backstagePostThreadRenderer.post.sharedPostRenderer ? b[j].backstagePostThreadRenderer.post.sharedPostRenderer.originalPost.backstagePostRenderer : b[j].backstagePostThreadRenderer.post.backstagePostRenderer;
-                            console.debug(post);
                             data[j].text = post.contentText.runs ? post.contentText.runs[0].text : "";
-
                             data[j].images = await filter(post);
                             data[j].author = post.authorText.runs[0].text;
                             data[j].timestamp = post.publishedTimeText.runs[0].text;
@@ -439,28 +442,49 @@ var interval;
                 return a;
             };
 
-            let trending = async (superFix) => {
+            let filter = async (yt) => {
                 var CONTENTS = "";
-                var TAB = [];
-                let p = superFix.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content;
+                let TAB = [];
+                let p = yt.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content;
                 let b = p.sectionListRenderer ? p.sectionListRenderer.contents : p.richGridRenderer.contents;
                 for (let i = 0; i < b.length; i++) {
                     let b_a = b[i].itemSectionRenderer ? b[i].itemSectionRenderer.contents[0] : b[i].richItemRenderer;
                     b_a = b_a ? b_a : {};
                     if(b_a.shelfRenderer && b_a.shelfRenderer.content.expandedShelfContentsRenderer) {
                         let b_b = b_a.shelfRenderer.content.expandedShelfContentsRenderer.items;
-                        TAB.push(b_b);
+                        for (let i_ = 0; i_ < b_b.length; i_++) {
+                            TAB.push(b_b[i_].videoRenderer);
+                        }
                     }
                     if(b_a.content && b_a.content.videoRenderer) {
-                        TAB.push(b_a.content);
+                        TAB.push(b_a.content.videoRenderer);
+                    }
+                    if(b_a.shelfRenderer && b_a.shelfRenderer.content.horizontalListRenderer && b_a.shelfRenderer.content.horizontalListRenderer.items) {
+                        let b_c = b_a.shelfRenderer.content.horizontalListRenderer.items;
+                        for (let e = 0; e < b_c.length; e++) {
+                            if(b_c[e].gridVideoRenderer){
+                                let b_b = b_c[e].gridVideoRenderer;
+                                if((b_b.thumbnailOverlays ? b_b.thumbnailOverlays.find(c => c.thumbnailOverlayTimeStatusRenderer).thumbnailOverlayTimeStatusRenderer.text.simpleText : undefined) !== "SHORTS") {
+                                    TAB.push(b_b);
+                                }
+                            }
+                        }
+                    }
+                    if(b_a.horizontalCardListRenderer && b_a.horizontalCardListRenderer.cards) {
+                        let b_c = b_a.horizontalCardListRenderer.cards;
+                        for (let e = 0; e < b_c.length; e++) {
+                            if(b_c[e].videoCardRenderer){
+                                let b_b = b_c[e].videoCardRenderer;
+                                TAB.push(b_b);
+                            }
+                        }
                     }
                 }
-
                 var anal = TAB;
 
                 var work = [];
 
-                if(TAB[0][0]) {
+                if(TAB[0] && TAB[0][0]) {
                     anal = [].concat(TAB[0], TAB[1]);
                 }
 
@@ -479,18 +503,17 @@ var interval;
                 for (let i = 0; i < outArray.length; i++) {
                     let bitch = "";
                     for (let I = 0; I < outArray[i].length; I++) {
-                        bitch += await template(outArray[i][I].videoRenderer);
+                        bitch += await template(outArray[i][I]);
                     }
                     CONTENTS += `<div class="browse-item-row ytg-box">${bitch}</div>`;
                 }
-
 
                 return CONTENTS;
             };
 
             switch (category) {
                 case "mostViewedVideos":
-                    return trending(ytInitialData);
+                    return await filter(ytInitialData);
                 case "recommendedVideos":
                     string = "/";
                     break;
@@ -506,63 +529,8 @@ var interval;
                 var xhr = new XMLHttpRequest();
                 xhr.open("GET", `https://www.youtube.com${string}`);
                 xhr.onload = async () => {
-                    var CONTENTS = "";
-                    let TAB = [];
                     let json = JSON.parse(xhr.response.split("var ytInitialData = ")[1].split(";</script>")[0]);
-                    if(string === "/") {
-                        let _a = await trending(json);
-                        return resolve(_a);
-                    }
-                    let p = json.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content;
-                    let b = p.sectionListRenderer ? p.sectionListRenderer.contents : p.richGridRenderer.contents;
-                    for (let i = 0; i < b.length; i++) {
-                        let b_a = b[i].itemSectionRenderer ? b[i].itemSectionRenderer.contents[0] : b[i].richItemRenderer;
-                        b_a = b_a ? b_a : {};
-                        if(b_a.shelfRenderer && b_a.shelfRenderer.content.horizontalListRenderer && b_a.shelfRenderer.content.horizontalListRenderer.items) {
-                            let b_c = b_a.shelfRenderer.content.horizontalListRenderer.items;
-                            for (let e = 0; e < b_c.length; e++) {
-                                if(b_c[e].gridVideoRenderer){
-                                    let b_b = b_c[e].gridVideoRenderer;
-                                    TAB.push(b_b);
-                                }
-                            }
-                        }
-                        if(b_a.horizontalCardListRenderer && b_a.horizontalCardListRenderer.cards) {
-                            let b_c = b_a.horizontalCardListRenderer.cards;
-                            for (let e = 0; e < b_c.length; e++) {
-                                if(b_c[e].videoCardRenderer){
-                                    let b_b = b_c[e].videoCardRenderer;
-                                    TAB.push(b_b);
-                                }
-                            }
-                        }
-
-                    }
-
-                    var anal = TAB;
-
-                    var work = [];
-
-                    for (let i = 0; i < anal.length; i++) {
-                        if(i < 8) {
-                            work.push(anal[i]);
-                        }
-                    }
-
-                    let outArray = [ [], [] ];
-
-                    for (let i = 0; i < work.length; i++) {
-                        outArray[Math.floor(i/4)].push(work[i]);
-                    }
-
-                    for (let i = 0; i < outArray.length; i++) {
-                        let bitch = "";
-                        for (let I = 0; I < outArray[i].length; I++) {
-                            bitch += await template(outArray[i][I]);
-                        }
-                        CONTENTS += `<div class="browse-item-row ytg-box">${bitch}</div>`;
-                    }
-
+                    let CONTENTS = await filter(json);
                     resolve(CONTENTS);
                 };
                 xhr.onerror = () => {
@@ -1313,7 +1281,6 @@ var interval;
             document.querySelector("#playbar-progressbar").style.width = document.ciulinYT.player.getCurrentTime() / document.ciulinYT.player.getDuration() * 100 + "%";
         },
         trackCurrent: () => {
-           // document.querySelector(".video-scrubbar").setAttribute("title", document.ciulinYT.func.calculateLength(parseInt(document.ciulinYT.player.getCurrentTime())));
             document.querySelector("#timestamp_current").innerText = document.ciulinYT.func.calculateLength(parseInt(document.ciulinYT.player.getCurrentTime()));
         },
         playPause: (e) => {
@@ -1414,7 +1381,7 @@ var interval;
                 <div id="playnav-video-play-uploads-12-${id}-selector" class="selector"></div>
                 <div class="content">
                 <div class="playnav-video-thumb">
-                <a href="http://www.youtube.com/watch?v=${id}" onclick="document.ciulinYT.func.loadPlaynavVideo('${id}');return false;" class="ux-thumb-wrap contains-addto">
+                <a href="https://www.youtube.com/watch?v=${id}" onclick="document.ciulinYT.func.loadPlaynavVideo('${id}');return false;" class="ux-thumb-wrap contains-addto">
                 <span class="video-thumb ux-thumb-96 ">
                 <span class="clip">
                 <img src="//i1.ytimg.com/vi/${id}/default.jpg" alt="Thumbnail" class="" onclick="document.ciulinYT.func.loadPlaynavVideo('${id}');return false;" title="${title}">
@@ -1435,7 +1402,7 @@ var interval;
                 </a>
                 </div>
                 <div class="playnav-video-info">
-                <a href="http://www.youtube.com/watch?v=${id}" class="playnav-item-title ellipsis" onclick="document.ciulinYT.func.loadPlaynavVideo('${id}');return false;" id="playnav-video-title-play-uploads-12-${id}">
+                <a href="https://www.youtube.com/watch?v=${id}" class="playnav-item-title ellipsis" onclick="document.ciulinYT.func.loadPlaynavVideo('${id}');return false;" id="playnav-video-title-play-uploads-12-${id}">
                 <span dir="ltr">${title}</span>
                 </a>
                 <div class="metadata">
@@ -1580,7 +1547,7 @@ var interval;
             <div id="playnav-curvideo-description" dir="ltr">${data.HOMEVIDEO ? data.HOMEVIDEO.dec : ""}
             </div>
             </div>
-            <a href="http://www.youtube.com/watch?v=${data.HOMEVIDEO ? data.HOMEVIDEO.videoId : ""}" id="playnav-watch-link" onclick="playnav.goToWatchPage()">View comments, related videos, and more</a>
+            <a href="https://www.youtube.com/watch?v=${data.HOMEVIDEO ? data.HOMEVIDEO.videoId : ""}" id="playnav-watch-link" onclick="playnav.goToWatchPage()">View comments, related videos, and more</a>
             <div id="playnav-curvideo-controls"></div>
             <div class="cb"></div>
             </div>
@@ -1940,9 +1907,6 @@ var interval;
             document.querySelector(".scrubbar_track_played").style.width = track;
             document.querySelector(".scrubbar_track_handle").style.left = track;
         },
-        setProPos: (e) => {
-            document.ciulinYT.player.seekTo((e.pageX - e.currentTarget.offsetLeft) / 640 * document.ciulinYT.player.getDuration());
-        },
         showModal: (text) => {
             alert(text);
         }
@@ -1989,7 +1953,7 @@ var interval;
         DOMHTML.removeAttribute("style");
         DOMHTML.removeAttribute("standardized-themed-scrollbar");
         DOMHTML.setAttribute("dir", "ltr");
-        DOMHTML.setAttribute("xmlns:og", "http://opengraphprotocol.org/schema/");
+        DOMHTML.setAttribute("xmlns:og", "https://opengraphprotocol.org/schema/");
 
         // HEAD
         document.querySelector("head").parentNode.removeChild(document.querySelector("head"));
@@ -2156,7 +2120,7 @@ var interval;
                     if(VALUE_VIDEODESCRIPTIO[i].text.split("#")[1]) {
                         VALUE_VIDEODESCRIPTION += `<a href="https://www.youtube.com/tags/${VALUE_VIDEODESCRIPTIO[i].text.split("#")[1]}" target="_blank" title="#${VALUE_VIDEODESCRIPTIO[i].text.split("#")[1]}" rel="nofollow" dir="ltr" class="yt-uix-redirect-link">#${VALUE_VIDEODESCRIPTIO[i].text.split("#")[1]}</a>`;
                     }
-                    if(VALUE_VIDEODESCRIPTIO[i].loggingDirectives && VALUE_VIDEODESCRIPTIO[i].text.split("@")[1]) {
+                    if(VALUE_VIDEODESCRIPTIO[i].loggingDirectives && VALUE_VIDEODESCRIPTIO[i].text.split("@")[1] && VALUE_VIDEODESCRIPTIO[i].navigationEndpoint) {
                         VALUE_VIDEODESCRIPTION += `<a href="https://www.youtube.com${VALUE_VIDEODESCRIPTIO[i].navigationEndpoint.browseEndpoint.canonicalBaseUrl}" target="_blank" title="${VALUE_VIDEODESCRIPTIO[i].text}" rel="nofollow" dir"ltr" class="yt-utx-redirect-link">${VALUE_VIDEODESCRIPTIO[i].text}</a>`;
                     }
                     if(!VALUE_VIDEODESCRIPTIO[i].navigationEndpoint && !VALUE_VIDEODESCRIPTIO[i].loggingDirectives) {
@@ -2219,7 +2183,7 @@ var interval;
                 });
 
                 return `<div id="content" class="">
-            <div id="watch-container" itemscope="" itemtype="http://schema.org/VideoObject">
+            <div id="watch-container" itemscope="" itemtype="https://schema.org/VideoObject">
             <div id="watch-headline-container">
             <div id="watch-headline" class="watch-headline">
             <h1 id="watch-headline-title">
@@ -2466,7 +2430,7 @@ var interval;
                         let {owner, time, views, title, id, url, description} = await document.ciulinYT.func.organizeVideoData(results[i].videoRenderer);
                         let main = `<div class="result-item yt-uix-tile yt-tile-default *sr">
             <div class="thumb-container">
-            <a href="http://www.youtube.com/watch?v=${id}" class="ux-thumb-wrap contains-addto result-item-thumb">
+            <a href="https://www.youtube.com/watch?v=${id}" class="ux-thumb-wrap contains-addto result-item-thumb">
             <span class="video-thumb ux-thumb ux-thumb-128">
             <span class="clip" style="height: auto;width: auto;">
             <span class="clip-inner">
@@ -2488,15 +2452,15 @@ var interval;
             </div>
             <div class="result-item-main-content">
             <h3>
-            <a href="http://www.youtube.com/watch?v=${id}" class="yt-uix-tile-link" dir="ltr" title="${title}">${title}</a>
+            <a href="https://www.youtube.com/watch?v=${id}" class="yt-uix-tile-link" dir="ltr" title="${title}">${title}</a>
             </h3>
             <p id="video-description-${id}" class="description" dir="ltr">${description}</p>
-            <ul class="single-line-lego-list"><li><a href="http://www.youtube.com/results?search_query=${searchpar}%2C+hd" class="yt-badge-std">hd</a>
+            <ul class="single-line-lego-list"><li><a href="https://www.youtube.com/results?search_query=${searchpar}%2C+hd" class="yt-badge-std">hd</a>
             </li>
             </ul>
             <p class="facets">
             <span class="username-prepend">by</span>
-            <a href="http://www.youtube.com${url}" class="yt-user-name" dir="ltr">${owner.text}</a> <span class="metadata-separator">|</span>  <span class="date-added">${views[1]}</span> <span class="metadata-separator">|</span>  <span class="viewcount">${views[0]}</span>
+            <a href="https://www.youtube.com${url}" class="yt-user-name" dir="ltr">${owner.text}</a> <span class="metadata-separator">|</span>  <span class="date-added">${views[1]}</span> <span class="metadata-separator">|</span>  <span class="viewcount">${views[0]}</span>
             </p>
             </div>
             </div>`;
@@ -2507,7 +2471,7 @@ var interval;
                     if(results[i].channelRenderer) {
                         let description = results[i].channelRenderer.descriptionSnippet ? results[i].channelRenderer.descriptionSnippet.runs[0].text : "";
                         let title = results[i].channelRenderer.title.simpleText;
-                        let link = "http://www.youtube.com" + results[i].channelRenderer.shortBylineText.runs[0].navigationEndpoint.browseEndpoint.canonicalBaseUrl;
+                        let link = "https://www.youtube.com" + results[i].channelRenderer.shortBylineText.runs[0].navigationEndpoint.browseEndpoint.canonicalBaseUrl;
                         let thumbnail = results[i].channelRenderer.thumbnail.thumbnails[0].url;
                         let video = results[i].channelRenderer.videoCountText ? results[i].channelRenderer.videoCountText.runs : [];
                         let videos = video[1] ? video[0].text + video[1].text : video.text;
@@ -2534,7 +2498,7 @@ var interval;
                     <p id="video-description-" class="description" dir="ltr">${description}</p>
                     <ul class="single-line-lego-list">
                     <li>
-                    <a href="http://www.youtube.com/results?search_type=search_users" class="yt-badge-std">CHANNEL</a>
+                    <a href="https://www.youtube.com/results?search_type=search_users" class="yt-badge-std">CHANNEL</a>
                     </li>
                     </ul>
                     <p class="facets">
@@ -2573,13 +2537,13 @@ var interval;
             <img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
             <ul class="yt-uix-button-menu yt-uix-button-menu-text hid" role="menu" aria-haspopup="true" style="min-width: 92px; left: 902.467px; top: 210px; display: none;">
             <li role="menuitem" id="aria-id-68537613644">
-            <span href="http://www.youtube.com/results?search_query=${searchpar}&amp;sp=CAI%253D" class=" yt-uix-button-menu-item" onclick=";window.location.href=this.getAttribute('href');return false;">Upload date</span>
+            <span href="https://www.youtube.com/results?search_query=${searchpar}&amp;sp=CAI%253D" class=" yt-uix-button-menu-item" onclick=";window.location.href=this.getAttribute('href');return false;">Upload date</span>
             </li>
             <li role="menuitem" id="aria-id-52246167700">
-            <span href="http://www.youtube.com/results?search_query=${searchpar}&amp;sp=CAMSAhAB" class=" yt-uix-button-menu-item" onclick=";window.location.href=this.getAttribute('href');return false;">View count</span>
+            <span href="https://www.youtube.com/results?search_query=${searchpar}&amp;sp=CAMSAhAB" class=" yt-uix-button-menu-item" onclick=";window.location.href=this.getAttribute('href');return false;">View count</span>
             </li>
             <li role="menuitem" id="aria-id-43856570253">
-            <span href="http://www.youtube.com/results?search_query=${searchpar}&amp;sp=CAESAhAB" class=" yt-uix-button-menu-item" onclick=";window.location.href=this.getAttribute('href');return false;">Rating</span>
+            <span href="https://www.youtube.com/results?search_query=${searchpar}&amp;sp=CAESAhAB" class=" yt-uix-button-menu-item" onclick=";window.location.href=this.getAttribute('href');return false;">Rating</span>
             </li>
             </ul>
             </button>
@@ -2593,16 +2557,16 @@ var interval;
             <div class="search-refinements-block-title">Sort by</div>
             <ul>
             <li>
-            <a href="http://www.youtube.com/results?search_query=${searchpar}&amp;sp=CAASBAgCEAE%253D">Relevance</a>
+            <a href="https://www.youtube.com/results?search_query=${searchpar}&amp;sp=CAASBAgCEAE%253D">Relevance</a>
             </li>
             <li>
-            <a href="http://www.youtube.com/results?search_query=${searchpar}&amp;sp=CAI%253D">Upload date</a>
+            <a href="https://www.youtube.com/results?search_query=${searchpar}&amp;sp=CAI%253D">Upload date</a>
             </li>
             <li>
-            <a href="http://www.youtube.com/results?search_query=${searchpar}&amp;sp=CAMSAhAB">View count</a>
+            <a href="https://www.youtube.com/results?search_query=${searchpar}&amp;sp=CAMSAhAB">View count</a>
             </li>
             <li>
-            <a href="http://www.youtube.com/results?search_query=${searchpar}&amp;sp=CAESAhAB">Rating</a>
+            <a href="https://www.youtube.com/results?search_query=${searchpar}&amp;sp=CAESAhAB">Rating</a>
             </li>
             </ul>
             </div>
@@ -2611,51 +2575,51 @@ var interval;
             <ul>
             <li>
             <span class="lego lego-property  append-lego" data-lego-name="last hour">
-            <a class="lego-action" title="Search for ${searchpar}, last hour" href="http://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgQIARAB">
+            <a class="lego-action" title="Search for ${searchpar}, last hour" href="https://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgQIARAB">
             <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif"></a>
-            <a class="lego-action-placeholder" title="Search for ${searchpar}, last hour" href="http://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgQIARAB">
+            <a class="lego-action-placeholder" title="Search for ${searchpar}, last hour" href="https://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgQIARAB">
             <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif"></a>
-            <a class="lego-content" title="Search for ${searchpar}, last hour" href="http://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgQIARAB">last hour</a>
+            <a class="lego-content" title="Search for ${searchpar}, last hour" href="https://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgQIARAB">last hour</a>
             </span>
             </li>
             <li>
             <span class="lego lego-property  append-lego" data-lego-name="today">
-            <a class="lego-action" title="Search for ${searchpar}, today" href="http://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgIIAg%253D%253D">
+            <a class="lego-action" title="Search for ${searchpar}, today" href="https://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgIIAg%253D%253D">
             <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif"></a>
-            <a class="lego-action-placeholder" title="Search for ${searchpar}, today" href="http://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgIIAg%253D%253D">
+            <a class="lego-action-placeholder" title="Search for ${searchpar}, today" href="https://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgIIAg%253D%253D">
             <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif"></a>
-            <a class="lego-content" title="Search for ${searchpar}, today" href="http://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgIIAg%253D%253D">uploaded today</a>
+            <a class="lego-content" title="Search for ${searchpar}, today" href="https://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgIIAg%253D%253D">uploaded today</a>
             </span>
             </li>
             <li>
             <span class="lego lego-property  append-lego" data-lego-name="this week">
-            <a class="lego-action" title="Search for ${searchpar}, this week" href="http://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgQIAxAB">
+            <a class="lego-action" title="Search for ${searchpar}, this week" href="https://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgQIAxAB">
             <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif"></a>
-            <a class="lego-action-placeholder" title="Search for ${searchpar}, this week" href="http://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgQIAxAB">
+            <a class="lego-action-placeholder" title="Search for ${searchpar}, this week" href="https://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgQIAxAB">
             <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif"></a>
-            <a class="lego-content" title="Search for ${searchpar}, this week" href="http://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgQIAxAB">uploaded this week</a>
+            <a class="lego-content" title="Search for ${searchpar}, this week" href="https://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgQIAxAB">uploaded this week</a>
             </span>
             </li>
             <li>
             <span class="lego lego-property  append-lego" data-lego-name="this month">
-            <a class="lego-action" title="Search for ${searchpar}, this month" href="http://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgQIBBAB">
+            <a class="lego-action" title="Search for ${searchpar}, this month" href="https://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgQIBBAB">
             <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
             </a>
-            <a class="lego-action-placeholder" title="Search for ${searchpar}, this month" href="http://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgQIBBAB">
+            <a class="lego-action-placeholder" title="Search for ${searchpar}, this month" href="https://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgQIBBAB">
             <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
             </a>
-            <a class="lego-content" title="Search for ${searchpar}, this month" href="http://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgQIBBAB">uploaded this month</a>
+            <a class="lego-content" title="Search for ${searchpar}, this month" href="https://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgQIBBAB">uploaded this month</a>
             </span>
             </li>
             <li>
             <span class="lego lego-property  append-lego" data-lego-name="this year">
-            <a class="lego-action" title="Search for ${searchpar}, this year" href="http://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgQIBRAB">
+            <a class="lego-action" title="Search for ${searchpar}, this year" href="https://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgQIBRAB">
             <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
             </a>
-            <a class="lego-action-placeholder" title="Search for ${searchpar}, this year" href="http://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgQIBRAB">
+            <a class="lego-action-placeholder" title="Search for ${searchpar}, this year" href="https://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgQIBRAB">
             <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
             </a>
-            <a class="lego-content" title="Search for ${searchpar}, this year" href="http://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgQIBRAB">uploaded this year</a>
+            <a class="lego-content" title="Search for ${searchpar}, this year" href="https://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgQIBRAB">uploaded this year</a>
             </span>
             </li>
             </ul>
@@ -2665,57 +2629,57 @@ var interval;
             <ul>
             <li>
             <span class="lego lego-property  append-lego" data-lego-name="channel">
-            <a class="lego-action" title="Search for ${searchpar}, channel" href="http://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgIQAg%253D%253D">
+            <a class="lego-action" title="Search for ${searchpar}, channel" href="https://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgIQAg%253D%253D">
             <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
             </a>
-            <a class="lego-action-placeholder" title="Search for ${searchpar}, channel" href="http://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgIQAg%253D%253D">
+            <a class="lego-action-placeholder" title="Search for ${searchpar}, channel" href="https://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgIQAg%253D%253D">
             <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
             </a>
-            <a class="lego-content" title="Search for ${searchpar}, channel" href="http://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgIQAg%253D%253D">channel</a>
+            <a class="lego-content" title="Search for ${searchpar}, channel" href="https://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgIQAg%253D%253D">channel</a>
             </span>
             </li>
             <li>
             <span class="lego lego-property  append-lego" data-lego-name="playlist">
-            <a class="lego-action" title="Search for ${searchpar}, playlist" href="http://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgIQAw%253D%253D">
+            <a class="lego-action" title="Search for ${searchpar}, playlist" href="https://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgIQAw%253D%253D">
             <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
             </a>
-            <a class="lego-action-placeholder" title="Search for ${searchpar}, playlist" href="http://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgIQAw%253D%253D">
+            <a class="lego-action-placeholder" title="Search for ${searchpar}, playlist" href="https://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgIQAw%253D%253D">
             <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
             </a>
-            <a class="lego-content" title="Search for ${searchpar}, playlist" href="http://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgIQAw%253D%253D">playlist</a>
+            <a class="lego-content" title="Search for ${searchpar}, playlist" href="https://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgIQAw%253D%253D">playlist</a>
             </span>
             </li>
             <li>
             <span class="lego lego-property  append-lego" data-lego-name="movie">
-            <a class="lego-action" title="Search for ${searchpar}, movie" href="http://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgIQBA%253D%253D">
+            <a class="lego-action" title="Search for ${searchpar}, movie" href="https://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgIQBA%253D%253D">
             <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
             </a>
-            <a class="lego-action-placeholder" title="Search for ${searchpar}, movie" href="http://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgIQBA%253D%253D">
+            <a class="lego-action-placeholder" title="Search for ${searchpar}, movie" href="https://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgIQBA%253D%253D">
             <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
             </a>
-            <a class="lego-content" title="Search for ${searchpar}, movie" href="http://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgIQBA%253D%253D">movie</a>
+            <a class="lego-content" title="Search for ${searchpar}, movie" href="https://www.youtube.com/results?search_query=${searchpar}&amp;sp=EgIQBA%253D%253D">movie</a>
             </span>
             </li>
             <li>
             <span class="lego lego-property  append-lego" data-lego-name="show">
-            <a class="lego-action" title="Search for ${searchpar}, show" href="http://www.youtube.com/results?search_query=${searchpar}%2C+show">
+            <a class="lego-action" title="Search for ${searchpar}, show" href="https://www.youtube.com/results?search_query=${searchpar}%2C+show">
             <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
             </a>
-            <a class="lego-action-placeholder" title="Search for ${searchpar}, show" href="http://www.youtube.com/results?search_query=${searchpar}%2C+show">
+            <a class="lego-action-placeholder" title="Search for ${searchpar}, show" href="https://www.youtube.com/results?search_query=${searchpar}%2C+show">
             <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
             </a>
-            <a class="lego-content" title="Search for ${searchpar}, show" href="http://www.youtube.com/results?search_query=${searchpar}%2C+show">show</a>
+            <a class="lego-content" title="Search for ${searchpar}, show" href="https://www.youtube.com/results?search_query=${searchpar}%2C+show">show</a>
             </span>
             </li>
             <li>
             <span class="lego lego-property  append-lego" data-lego-name="3d">
-            <a class="lego-action" title="Search for ${searchpar}, 3d" href="http://www.youtube.com/results?search_query=${searchpar}%2C+3d">
+            <a class="lego-action" title="Search for ${searchpar}, 3d" href="https://www.youtube.com/results?search_query=${searchpar}%2C+3d">
             <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
             </a>
-            <a class="lego-action-placeholder" title="Search for ${searchpar}, 3d" href="http://www.youtube.com/results?search_query=${searchpar}%2C+3d">
+            <a class="lego-action-placeholder" title="Search for ${searchpar}, 3d" href="https://www.youtube.com/results?search_query=${searchpar}%2C+3d">
             <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
             </a>
-            <a class="lego-content" title="Search for ${searchpar}, 3d" href="http://www.youtube.com/results?search_query=${searchpar}%2C+3d">3D</a>
+            <a class="lego-content" title="Search for ${searchpar}, 3d" href="https://www.youtube.com/results?search_query=${searchpar}%2C+3d">3D</a>
             </span>
             </li>
             </ul>
@@ -2725,68 +2689,68 @@ var interval;
             <ul>
             <li>
             <span class="lego lego-property  append-lego" data-lego-name="hd">
-            <a class="lego-action" title="Search for ${searchpar}, hd" href="http://www.youtube.com/results?search_query=${searchpar}%2C+hd">
+            <a class="lego-action" title="Search for ${searchpar}, hd" href="https://www.youtube.com/results?search_query=${searchpar}%2C+hd">
             <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
             </a>
-            <a class="lego-action-placeholder" title="Search for ${searchpar}, hd" href="http://www.youtube.com/results?search_query=${searchpar}%2C+hd">
+            <a class="lego-action-placeholder" title="Search for ${searchpar}, hd" href="https://www.youtube.com/results?search_query=${searchpar}%2C+hd">
             <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
             </a>
-            <a class="lego-content" title="Search for ${searchpar}, hd" href="http://www.youtube.com/results?search_query=${searchpar}%2C+hd">HD (high definition)</a>
+            <a class="lego-content" title="Search for ${searchpar}, hd" href="https://www.youtube.com/results?search_query=${searchpar}%2C+hd">HD (high definition)</a>
             </span>
             </li>
             <li>
             <span class="lego lego-property  append-lego" data-lego-name="cc">
-            <a class="lego-action" title="Search for ${searchpar}, cc" href="http://www.youtube.com/results?search_query=${searchpar}%2C+cc">
+            <a class="lego-action" title="Search for ${searchpar}, cc" href="https://www.youtube.com/results?search_query=${searchpar}%2C+cc">
             <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif"></a>
-            <a class="lego-action-placeholder" title="Search for ${searchpar}, cc" href="http://www.youtube.com/results?search_query=${searchpar}%2C+cc">
+            <a class="lego-action-placeholder" title="Search for ${searchpar}, cc" href="https://www.youtube.com/results?search_query=${searchpar}%2C+cc">
             <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
             </a>
-            <a class="lego-content" title="Search for ${searchpar}, cc" href="http://www.youtube.com/results?search_query=${searchpar}%2C+cc">CC (closed caption)</a>
+            <a class="lego-content" title="Search for ${searchpar}, cc" href="https://www.youtube.com/results?search_query=${searchpar}%2C+cc">CC (closed caption)</a>
             </span>
             </li>
             <li>
             <span class="lego lego-property  append-lego" data-lego-name="long">
-            <a class="lego-action" title="Search for ${searchpar}, long" href="http://www.youtube.com/results?search_query=${searchpar}%2C+long">
+            <a class="lego-action" title="Search for ${searchpar}, long" href="https://www.youtube.com/results?search_query=${searchpar}%2C+long">
             <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
             </a>
-            <a class="lego-action-placeholder" title="Search for ${searchpar}, long" href="http://www.youtube.com/results?search_query=${searchpar}%2C+long">
+            <a class="lego-action-placeholder" title="Search for ${searchpar}, long" href="https://www.youtube.com/results?search_query=${searchpar}%2C+long">
             <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
             </a>
-            <a class="lego-content" title="Search for ${searchpar}, long" href="http://www.youtube.com/results?search_query=${searchpar}%2C+long">longer than 20 min</a>
+            <a class="lego-content" title="Search for ${searchpar}, long" href="https://www.youtube.com/results?search_query=${searchpar}%2C+long">longer than 20 min</a>
             </span>
             </li>
             <li>
             <span class="lego lego-property  append-lego" data-lego-name="partner">
-            <a class="lego-action" title="Search for ${searchpar}, partner" href="http://www.youtube.com/results?search_query=${searchpar}%2C+partner">
+            <a class="lego-action" title="Search for ${searchpar}, partner" href="https://www.youtube.com/results?search_query=${searchpar}%2C+partner">
             <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
             </a>
-            <a class="lego-action-placeholder" title="Search for ${searchpar}, partner" href="http://www.youtube.com/results?search_query=${searchpar}%2C+partner">
+            <a class="lego-action-placeholder" title="Search for ${searchpar}, partner" href="https://www.youtube.com/results?search_query=${searchpar}%2C+partner">
             <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
             </a>
-            <a class="lego-content" title="Search for ${searchpar}, partner" href="http://www.youtube.com/results?search_query=${searchpar}%2C+partner">partner video</a>
+            <a class="lego-content" title="Search for ${searchpar}, partner" href="https://www.youtube.com/results?search_query=${searchpar}%2C+partner">partner video</a>
             </span>
             </li>
             <li>
             <span class="lego lego-property  append-lego" data-lego-name="creativecommons">
-            <a class="lego-action" title="Search for ${searchpar}, creativecommons" href="http://www.youtube.com/results?search_query=${searchpar}%2C+creativecommons">
+            <a class="lego-action" title="Search for ${searchpar}, creativecommons" href="https://www.youtube.com/results?search_query=${searchpar}%2C+creativecommons">
             <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
             </a>
-            <a class="lego-action-placeholder" title="Search for ${searchpar}, creativecommons" href="http://www.youtube.com/results?search_query=${searchpar}%2C+creativecommons">
+            <a class="lego-action-placeholder" title="Search for ${searchpar}, creativecommons" href="https://www.youtube.com/results?search_query=${searchpar}%2C+creativecommons">
             <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
             </a>
-            <a class="lego-content" title="Search for ${searchpar}, creativecommons" href="http://www.youtube.com/results?search_query=${searchpar}%2C+creativecommons">creative commons</a>
+            <a class="lego-content" title="Search for ${searchpar}, creativecommons" href="https://www.youtube.com/results?search_query=${searchpar}%2C+creativecommons">creative commons</a>
             </span>
             </li>
             <li>
             <li>
             <span class="lego lego-property  append-lego" data-lego-name="live">
-            <a class="lego-action" title="Search for ${searchpar}, live" href="http://www.youtube.com/results?search_query=${searchpar}%2C+live">
+            <a class="lego-action" title="Search for ${searchpar}, live" href="https://www.youtube.com/results?search_query=${searchpar}%2C+live">
             <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
             </a>
-            <a class="lego-action-placeholder" title="Search for ${searchpar}, live" href="http://www.youtube.com/results?search_query=${searchpar}%2C+live">
+            <a class="lego-action-placeholder" title="Search for ${searchpar}, live" href="https://www.youtube.com/results?search_query=${searchpar}%2C+live">
             <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
             </a>
-            <a class="lego-content" title="Search for ${searchpar}, live" href="http://www.youtube.com/results?search_query=${searchpar}%2C+live">live</a>
+            <a class="lego-content" title="Search for ${searchpar}, live" href="https://www.youtube.com/results?search_query=${searchpar}%2C+live">live</a>
             </span>
             </li>
             </li>
