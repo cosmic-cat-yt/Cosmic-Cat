@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.5.3
+// @version      0.5.4
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -460,7 +460,7 @@ var interval;
 
                 var work = [];
 
-                if(TAB[1][0]) {
+                if(TAB[0][0]) {
                     anal = [].concat(TAB[0], TAB[1]);
                 }
 
@@ -1254,7 +1254,7 @@ var interval;
                 description: description,
                 upload: upload,
                 icon: icon
-            }
+            };
         },
         createStorage: async (a) => {
             if(a !== "SUPERSECRETROOTKEY") return error("Permission denied to this function. Reason: Tempering with this can break the script.");
@@ -1263,7 +1263,7 @@ var interval;
         },
         prepareStorage: async() => {
             try {
-                JSON.parse(localStorage.getItem("ciu.FlashSettings")).helloworld;
+                var a = JSON.parse(localStorage.getItem("ciu.FlashSettings")).helloworld;
             } catch {
                 document.ciulinYT.func.createStorage("SUPERSECRETROOTKEY");
             }
