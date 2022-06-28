@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.5.5
+// @version      0.5.6
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -176,12 +176,15 @@ var interval;
                     if(!a.tabRenderer) return resolve({});
 
                     let b = a.tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelAboutFullMetadataRenderer;
-                    let collection = {};
+                    let collection = {name: {}, string: {}};
 
-                    collection.BIO = b.artistBio ? "<br/><br/>" + b.artistBio.simpleText.replace(/(?:\r\n|\r|\n)/g, "<br/>") : "";
-                    collection.COUNTRY = b.country ? b.country.simpleText : "";
-                    collection.JOIN = b.joinedDateText.runs[1].text;
-                    collection.VIEWS = b.viewCountText.simpleText.split(" ")[0];
+                    collection.string.BIO = b.artistBio ? "<br/><br/>" + b.artistBio.simpleText.replace(/(?:\r\n|\r|\n)/g, "<br/>") : "";
+                    collection.name.COUNTRY = b.countryLabel ? b.countryLabel.runs[0].text.replace(/(?:\r\n|\r|\n)|( )|:/g, "") : undefined;
+                    collection.string.COUNTRY = b.country ? b.country.simpleText : undefined;
+                    collection.name.JOIN = b.joinedDateText.runs[0].text.split(" ")[0];
+                    collection.string.JOIN = b.joinedDateText.runs[1].text;
+                    collection.name.VIEWS = b.viewCountText.simpleText.split(" ")[1].charAt(0).toUpperCase() + b.viewCountText.simpleText.split(" ")[1].slice(1);
+                    collection.string.VIEWS = b.viewCountText.simpleText.split(" ")[0];
 
                     resolve(collection);
                 };
@@ -216,22 +219,17 @@ var interval;
                 document.querySelector("#feed-error").classList.remove("hid");
             };
             xhr.onload = async (e) => {
-                let b = JSON.parse(xhr.response.split("var ytInitialData = ")[1].split(";</script>")[0]).contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content;
-                let v = b.sectionListRenderer ? b.sectionListRenderer : b.richGridRenderer;
-                let x = v.contents[0].itemSectionRenderer ? v.contents[0].itemSectionRenderer.contents[0].shelfRenderer.content.expandedShelfContentsRenderer.items : v.contents;
-                var OBJ_VIDEOS = "";
                 document.querySelector(".feed-header-info").innerText = category.querySelector(".display-name").innerText;
-                for (let i = 0; i < x.length; i++) {
-                    let z = x[i].richItemRenderer ? x[i].richItemRenderer.content : x[i].videoRenderer;
-                    if(!x[i].richSectionRenderer && !x[i].continuationItemRenderer && !z.displayAdRenderer && !z.radioRenderer) {
-                        let a = x[i].videoRenderer ? x[i].videoRenderer : x[i].richItemRenderer.content.videoRenderer;
-                        let {owner, time, views, title, id, url, description, upload, icon} = await document.ciulinYT.func.organizeVideoData(a);
-                        OBJ_VIDEOS += `<li class="feed-item-container">
+                let json = JSON.parse(xhr.response.split("var ytInitialData = ")[1].split(";</script>")[0]);
+
+                let template = async(a) => {
+                    let {owner, time, views, title, id, url, description, upload, icon} = await document.ciulinYT.func.organizeVideoData(a);
+                    let o = `<li class="feed-item-container">
             <div class="feed-item upload">
             <div class="feed-item-content">
             <h3 class="feed-item-title">
             <span class="feed-item-author">
-            <a href="https://www.youtube.com${url}" class="yt-user-photo">
+            <a href="https://www.youtube.com/${url}" class="yt-user-photo">
             <span class="video-thumb ux-thumb ux-thumb-profile-24">
             <span class="clip">
             <span class="clip-inner">
@@ -243,7 +241,7 @@ var interval;
             </a>
             </span>
             <span class="feed-item-owner">
-            <a href="https://www.youtube.com${url}" class="yt-user-name" dir="ltr">${owner.text}</a>
+            <a href="https://www.youtube.com/${url}" class="yt-user-name" dir="ltr">${owner.text}</a>
             </span> ${views[1] ? "uploaded" : "is LIVE"} <span class="time-created">${views[1]}</span>
             </h3>
             <div class="feed-item-visual">
@@ -277,7 +275,7 @@ var interval;
             </div>
             </div>
             <p class="metadata">
-            <a href="https://www.youtube.com${url}" class="yt-user-name" dir="ltr">${owner.text}</a>
+            <a href="https://www.youtube.com/${url}" class="yt-user-name" dir="ltr">${owner.text}</a>
             <span class="view-count">${views[0]}</span>
             </p>
             </div>
@@ -285,9 +283,13 @@ var interval;
             </div>
             </div>
             </li>`;
-                    }
-                }
-                document.querySelector(".feed-list").innerHTML = OBJ_VIDEOS;
+
+                    return o;
+                };
+
+                let fetch = await document.ciulinYT.func.handleCategory(json, "0", "22", template, [[], []]);
+
+                document.querySelector(".feed-list").innerHTML = fetch;
                 document.querySelector("#feed-loading-template").classList.add("hid");
                 document.querySelector("#feed-main-youtube").classList.remove("hid");
             };
@@ -404,11 +406,11 @@ var interval;
                     loadPlayback();
                     break;
             }
-            console.debug(dataName);
         },
         browseCategory: async (category) => {
             if(!category) return;
-            var string = "";
+            let obj = {class: category};
+            let string = "";
 
             let template = async(current) => {
                 let {owner, time, views, title, id, url} = await document.ciulinYT.func.organizeVideoData(current);
@@ -442,86 +444,46 @@ var interval;
                 return a;
             };
 
-            let filter = async (yt) => {
-                var CONTENTS = "";
-                let TAB = [];
-                let p = yt.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content;
-                let b = p.sectionListRenderer ? p.sectionListRenderer.contents : p.richGridRenderer.contents;
-                for (let i = 0; i < b.length; i++) {
-                    let b_a = b[i].itemSectionRenderer ? b[i].itemSectionRenderer.contents[0] : b[i].richItemRenderer;
-                    b_a = b_a ? b_a : {};
-                    if(b_a.shelfRenderer && b_a.shelfRenderer.content.expandedShelfContentsRenderer) {
-                        let b_b = b_a.shelfRenderer.content.expandedShelfContentsRenderer.items;
-                        for (let i_ = 0; i_ < b_b.length; i_++) {
-                            TAB.push(b_b[i_].videoRenderer);
-                        }
-                    }
-                    if(b_a.content && b_a.content.videoRenderer) {
-                        TAB.push(b_a.content.videoRenderer);
-                    }
-                    if(b_a.shelfRenderer && b_a.shelfRenderer.content.horizontalListRenderer && b_a.shelfRenderer.content.horizontalListRenderer.items) {
-                        let b_c = b_a.shelfRenderer.content.horizontalListRenderer.items;
-                        for (let e = 0; e < b_c.length; e++) {
-                            if(b_c[e].gridVideoRenderer){
-                                let b_b = b_c[e].gridVideoRenderer;
-                                if((b_b.thumbnailOverlays ? b_b.thumbnailOverlays.find(c => c.thumbnailOverlayTimeStatusRenderer).thumbnailOverlayTimeStatusRenderer.text.simpleText : undefined) !== "SHORTS") {
-                                    TAB.push(b_b);
-                                }
-                            }
-                        }
-                    }
-                    if(b_a.horizontalCardListRenderer && b_a.horizontalCardListRenderer.cards) {
-                        let b_c = b_a.horizontalCardListRenderer.cards;
-                        for (let e = 0; e < b_c.length; e++) {
-                            if(b_c[e].videoCardRenderer){
-                                let b_b = b_c[e].videoCardRenderer;
-                                TAB.push(b_b);
-                            }
-                        }
-                    }
-                }
-                var anal = TAB;
-
-                var work = [];
-
-                if(TAB[0] && TAB[0][0]) {
-                    anal = [].concat(TAB[0], TAB[1]);
-                }
-
-                for (let i = 0; i < anal.length; i++) {
-                    if(i < 8) {
-                        work.push(anal[i]);
-                    }
-                }
-
-                let outArray = [ [], [] ];
-
-                for (let i = 0; i < work.length; i++) {
-                    outArray[Math.floor(i/4)].push(work[i]);
-                }
-
-                for (let i = 0; i < outArray.length; i++) {
-                    let bitch = "";
-                    for (let I = 0; I < outArray[i].length; I++) {
-                        bitch += await template(outArray[i][I]);
-                    }
-                    CONTENTS += `<div class="browse-item-row ytg-box">${bitch}</div>`;
-                }
-
-                return CONTENTS;
-            };
-
             switch (category) {
-                case "mostViewedVideos":
-                    return await filter(ytInitialData);
-                case "recommendedVideos":
+                case "most-viewed":
+                    obj.name = "Most Viewed Today";
+                    obj.html = await document.ciulinYT.func.handleCategory(ytInitialData, 4, 8, template, ['<div class="browse-item-row ytg-box">', '</div>']);
+                    return obj;
+                case "recommended":
                     string = "/";
+                    obj.name = "Recommended for You";
                     break;
-                case "musicVideos":
+                case "music":
+                    obj.name = "Music";
                     string = "/channel/UC-9-kyTW8ZkZNDHQJ6FgpwQ";
                     break;
-                case "gamingVideos":
+                case "film":
+                    obj.name = "Film";
+                    string = "/feed/storefront";
+                    break;
+                case "live":
+                    obj.name = "Live";
+                    string = "/channel/UC4R8DWoMoI7CAwX8_LjQHig";
+                    break;
+                case "gaming":
+                    obj.name = "Gaming";
                     string = "/gaming";
+                    break;
+                case "news":
+                    obj.name = "News";
+                    string = "/channel/UCYfdidRxbB8Qhf0Nx7ioOYw";
+                    break;
+                case "sports":
+                    obj.name = "Sport";
+                    string = "/channel/UCEgdi0XIXXZ-qJOFPf4JSKw";
+                    break;
+                case "edu":
+                    obj.name = "Education";
+                    string = "/channel/UCtFRv9O2AHqOZjjynzrv-xg";
+                    break;
+                case "howto":
+                    obj.name = "Howto & Style";
+                    string = "/channel/UCrpQ4p1Ql_hG8rKXIKM1MOQ";
                     break;
             }
 
@@ -530,7 +492,7 @@ var interval;
                 xhr.open("GET", `https://www.youtube.com${string}`);
                 xhr.onload = async () => {
                     let json = JSON.parse(xhr.response.split("var ytInitialData = ")[1].split(";</script>")[0]);
-                    let CONTENTS = await filter(json);
+                    let CONTENTS = await document.ciulinYT.func.handleCategory(json, 4, 8, template, ['<div class="browse-item-row ytg-box">', '</div>']);
                     resolve(CONTENTS);
                 };
                 xhr.onerror = () => {
@@ -539,9 +501,9 @@ var interval;
                 xhr.send();
             });
 
-            let a = await test;
+            obj.html = await test;
 
-            return a;
+            return obj;
         }
     };
     document.ciulinYT.func = {
@@ -1184,6 +1146,82 @@ var interval;
                 DOM.append(a);
             })();
         },
+        handleCategory: async (yt, divide, maxAmount, func, ex) => {
+            if(!yt || !divide || !maxAmount || !func || !ex) return;
+            divide = Number(divide);
+            maxAmount = Number(maxAmount);
+            var CONTENTS = "";
+            let TAB = [];
+            let p = yt.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content;
+            let b = p.sectionListRenderer ? p.sectionListRenderer.contents : p.richGridRenderer.contents;
+            for (let i = 0; i < b.length; i++) {
+                let b_a = b[i].itemSectionRenderer ? b[i].itemSectionRenderer.contents[0] : b[i].richItemRenderer;
+                b_a = b_a ? b_a : {};
+                if(b_a.shelfRenderer && b_a.shelfRenderer.content.expandedShelfContentsRenderer) {
+                    let b_b = b_a.shelfRenderer.content.expandedShelfContentsRenderer.items;
+                    for (let i_ = 0; i_ < b_b.length; i_++) {
+                        TAB.push(b_b[i_].videoRenderer);
+                    }
+                }
+                if(b_a.content && b_a.content.videoRenderer) {
+                    TAB.push(b_a.content.videoRenderer);
+                }
+                if(b_a.shelfRenderer && b_a.shelfRenderer.content.horizontalListRenderer && b_a.shelfRenderer.content.horizontalListRenderer.items) {
+                    let b_c = b_a.shelfRenderer.content.horizontalListRenderer.items;
+                    for (let e = 0; e < b_c.length; e++) {
+                        if(b_c[e].gridVideoRenderer){
+                            let b_b = b_c[e].gridVideoRenderer;
+                            if((b_b.thumbnailOverlays ? b_b.thumbnailOverlays.find(c => c.thumbnailOverlayTimeStatusRenderer).thumbnailOverlayTimeStatusRenderer.text.simpleText : undefined) !== "SHORTS") {
+                                TAB.push(b_b);
+                            }
+                        }
+                    }
+                }
+                if(b_a.horizontalCardListRenderer && b_a.horizontalCardListRenderer.cards) {
+                    let b_c = b_a.horizontalCardListRenderer.cards;
+                    for (let e = 0; e < b_c.length; e++) {
+                        if(b_c[e].videoCardRenderer){
+                            let b_b = b_c[e].videoCardRenderer;
+                            TAB.push(b_b);
+                        }
+                    }
+                }
+            }
+            var anal = TAB;
+
+            var work = [];
+            if(TAB[0] && TAB[0][0]) {
+                anal = [].concat(TAB[0], TAB[1]);
+            }
+
+            for (let i = 0; i < anal.length; i++) {
+                if(i < maxAmount) {
+                    work.push(anal[i]);
+                }
+            }
+
+            if(divide == 4) {
+                let outArray = [ [], [] ];
+                for (let i = 0; i < work.length; i++) {
+                    outArray[Math.floor(i/4)].push(work[i]);
+                }
+                work = outArray;
+            }
+
+            for (let i = 0; i < work.length; i++) {
+                let bitch = "";
+                if(divide == 4) {
+                    for (let I = 0; I < work[i].length; I++) {
+                        bitch += await func(work[i][I]);
+                    }
+                } else {
+                    bitch += await func(work[i]);
+                }
+                CONTENTS += `${ex[0]}${bitch}${ex[1]}`;
+            }
+
+            return CONTENTS;
+        },
         playerSettings: () => {
             let DOM = document.querySelector("video-settings");
             let state = Number(DOM.getAttribute("data-state"));
@@ -1200,10 +1238,10 @@ var interval;
         organizeVideoData: async (da) => {
             if(!da) return;
             let owner = (da.owner) ? da.owner.videoOwnerRenderer.title.runs[0] : da.bylineText ? da.bylineText.runs[0] : da.shortBylineText ? da.shortBylineText.runs[0] : da.ownerText ? da.ownerText.runs[0] : "";
-            let time = da.thumbnailOverlays ? da.thumbnailOverlays.find(c => c.thumbnailOverlayTimeStatusRenderer) ? da.thumbnailOverlays.find(c => c.thumbnailOverlayTimeStatusRenderer).thumbnailOverlayTimeStatusRenderer.text.simpleText : da.lengthText ? da.lengthText.simpleText : "" : "";
+            let time = da.thumbnailOverlays ? da.thumbnailOverlays.find(c => c.thumbnailOverlayTimeStatusRenderer) ? da.thumbnailOverlays.find(c => c.thumbnailOverlayTimeStatusRenderer).thumbnailOverlayTimeStatusRenderer.text.simpleText ? da.thumbnailOverlays.find(c => c.thumbnailOverlayTimeStatusRenderer).thumbnailOverlayTimeStatusRenderer.text.simpleText : da.thumbnailOverlays.find(c => c.thumbnailOverlayTimeStatusRenderer).thumbnailOverlayTimeStatusRenderer.text.runs[0].text : da.lengthText ? da.lengthText.simpleText : "" : "";
             let upload = (da.dateText) ? da.dateText.simpleText.replace(/(Premiere[ |s|d])|(in progress.)|Started|less than/g, "") : (da.publishedTimeText) ? da.publishedTimeText.simpleText.replace(/(Premiere[ |s|d])|(in progress.)|Started|less than/g, "") : "";
             let vi = da.viewCount ? da.viewCount.videoViewCountRenderer.viewCount : da.viewCountText ? da.viewCountText : "";
-            let view = (vi.simpleText) ? vi.simpleText : (vi.runs) ? vi.runs[0].text : false;
+            let view = (vi.simpleText) ? vi.simpleText : (vi.runs) ? vi.runs[0].text + vi.runs[1].text : false;
             let meta = da.metadataText ? da.metadataText.simpleText.split(" · ") : [[],[]];
             let views = view ? [view, upload] : meta;
             let title = da.title ? (da.title.simpleText) ? da.title.simpleText : (da.title.runs) ? da.title.runs[0].text : false : "";
@@ -1442,6 +1480,16 @@ var interval;
                 ${u}</tr>`;
                 }
 
+                let OBJ_subcount = "";
+                if(data.SUBCOUNT !== undefined) {
+                    OBJ_subcount = `<div class="show_info outer-box-bg-as-border"><div class="profile-info-label">${data.name.SUBCOUNT}:</div><div class="profile-info-value" id="profile_show_subscriber_count">${data.SUBCOUNT}</div><div class="cb"></div></div>`;
+                }
+
+                let OBJ_country = "";
+                if(data.INFO.string.COUNTRY !== undefined) {
+                    OBJ_country = `<div class="show_info outer-box-bg-as-border"><div class="profile-info-label">${data.INFO.name.COUNTRY}:</div><div class="profile-info-value" id="profile_show_country">${data.INFO.string.COUNTRY}</div><div class="cb"></div></div>`;
+                }
+
 
 
                 var OBJ_USERPROFILE = `<div id="user_profile" class="inner-box" style="background-color: rgb(238, 238, 255); color: rgb(51, 51, 51);">
@@ -1450,25 +1498,17 @@ var interval;
             <div id="user_profile-body">
             <div class="profile_info vcard">
             <div class="show_info outer-box-bg-as-border">
-            <div class="profile-info-label">Channel Views:</div>
-            <div class="profile-info-value" id="profile_show_viewed_count">${data.INFO.VIEWS}</div>
+            <div class="profile-info-label">${data.INFO.name.VIEWS}:</div>
+            <div class="profile-info-value" id="profile_show_viewed_count">${data.INFO.string.VIEWS}</div>
             <div class="cb"></div>
             </div>
             <div class="show_info outer-box-bg-as-border">
-            <div class="profile-info-label">Joined:</div>
-            <div class="profile-info-value" id="profile_show_member_since">${data.INFO.JOIN}</div>
+            <div class="profile-info-label">${data.INFO.name.JOIN}:</div>
+            <div class="profile-info-value" id="profile_show_member_since">${data.INFO.string.JOIN}</div>
             <div class="cb"></div>
             </div>
-            <div class="show_info outer-box-bg-as-border">
-            <div class="profile-info-label">Subscribers:</div>
-            <div class="profile-info-value" id="profile_show_subscriber_count">${data.SUBCOUNT}</div>
-            <div class="cb"></div>
-            </div>
-            <div class="show_info outer-box-bg-as-border">
-            <div class="profile-info-label">Country:</div>
-            <div class="profile-info-value" id="profile_show_subscriber_count">${data.INFO.COUNTRY}</div>
-            <div class="cb"></div>
-            </div>
+            ${OBJ_subcount}
+            ${OBJ_country}
             <div class="show_info outer-box-bg-as-border" style="border-bottom-width:1px;margin-bottom:4px;line-height:140%" dir="ltr">${data.DESCRIPTION}${data.INFO.BIO}</div>
             </div>
             </div>
@@ -2371,7 +2411,7 @@ var interval;
         if(window.location.pathname.split("/")[1].match(/channel|user|^c{1}$/i)) {
             if (/community|videos|about|channels|playlists|membership|store/.test(window.location.pathname.split("/")[3])) window.location.href = window.location.pathname.split("/").slice(0,3).join("/");
             let FUNC = (async () => {
-                let collection = {};
+                let collection = {name: {}};
 
                 // Values
 
@@ -2379,7 +2419,8 @@ var interval;
                 collection.CHANNELICON = ytInitialData.metadata ? ytInitialData.metadata.channelMetadataRenderer.avatar.thumbnails[0].url : ytInitialData.header.interactiveTabbedHeaderRenderer.boxArt.thumbnails[0].url;
                 collection.CHANNELURL = window.location.href;
                 collection.DESCRIPTION = ytInitialData.metadata ? ytInitialData.metadata.channelMetadataRenderer.description.replace(/\n/g, "<br />") : ytInitialData.header.interactiveTabbedHeaderRenderer.description.simpleText.replace(/\n/g, "<br />");
-                collection.SUBCOUNT = ytInitialData.header.c4TabbedHeaderRenderer ? ytInitialData.header.c4TabbedHeaderRenderer.subscriberCountText.simpleText.split(" ")[0] : "0";
+                collection.SUBCOUNT = ytInitialData.header.c4TabbedHeaderRenderer ? ytInitialData.header.c4TabbedHeaderRenderer.subscriberCountText ? ytInitialData.header.c4TabbedHeaderRenderer.subscriberCountText.simpleText.split(" ")[0] : undefined : undefined;
+                collection.name.SUBCOUNT = ytInitialData.header.c4TabbedHeaderRenderer ? ytInitialData.header.c4TabbedHeaderRenderer.subscriberCountText ? ytInitialData.header.c4TabbedHeaderRenderer.subscriberCountText.simpleText.split(" ")[1].charAt(0).toUpperCase() + ytInitialData.header.c4TabbedHeaderRenderer.subscriberCountText.simpleText.split(" ")[1].slice(1) : undefined : undefined;
                 switch (true) {
                     case /K/.test(collection.SUBCOUNT):
                         collection.SUBCOUNT = collection.SUBCOUNT.replace(/\./, "").replace(/K/, "000").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -2788,11 +2829,30 @@ var interval;
                 document.head.innerHTML += CSS1 + CSS2;
                 document.title = "Videos - YouTube";
                 document.ciulinYT.func.waitForElm("#page").then(elm => {elm.setAttribute("class", "browse-base browse-videos");});
+                var c = "";
 
-                var mostViewedVideos = await document.ciulinYT.load.browseCategory("mostViewedVideos");
-                var recommendedVideos = await document.ciulinYT.load.browseCategory("recommendedVideos");
-                var musicVideos = await document.ciulinYT.load.browseCategory("musicVideos");
-                var gamingVideos = await document.ciulinYT.load.browseCategory("gamingVideos");
+                let categories = ["most-viewed", "recommended", "music", "live", "gaming", "news", "sports", "edu", "howto"];
+
+                for (let i = 0; i < categories.length; i++) {
+                    let videos = await document.ciulinYT.load.browseCategory(categories[i]);
+
+                    let html = `<div class="browse-collection">
+<div class="ytg-box collection-header with-icon">
+<a class="heading ytg-box" href="">
+<img class="header-icon ${videos.class}" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
+<div class="header-container">
+<h2>${videos.name} »</h2>
+</div>
+</a>
+<a class="yt-playall-link" href="">
+<img class="small-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
+Play all
+</a>
+</div>
+${videos.html}
+</div>`;
+                    c += html;
+                }
 
                 return `<div id="baseDiv" class="date-20120215 video-info">
 <div id="masthead-subnav">
@@ -2843,66 +2903,7 @@ var interval;
 <div id="browse-main-column" class="ytg-4col">
 <div class="load-more-pagination">
 <div class="load-more-content">
-<div class="browse-collection">
-<div class="ytg-box collection-header with-icon">
-<a class="heading ytg-box" href="">
-<img class="header-icon most-viewed" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
-<div class="header-container">
-<h2>Most Viewed Today »</h2>
-</div>
-</a>
-<a class="yt-playall-link" href="">
-<img class="small-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
-Play all
-</a>
-</div>
-${mostViewedVideos}
-</div>
-<div class="browse-collection">
-<div class="ytg-box collection-header with-icon">
-<a class="heading ytg-box" href="">
-<img class="header-icon recommended" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
-<div class="header-container">
-<h2>Recommended for You »</h2>
-</div>
-</a>
-<a class="yt-playall-link" href="">
-<img class="small-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
-Play all
-</a>
-</div>
-${recommendedVideos}
-</div>
-<div class="browse-collection">
-<div class="ytg-box collection-header with-icon">
-<a class="heading ytg-box" href="">
-<img class="header-icon music" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
-<div class="header-container">
-<h2>Music »</h2>
-</div>
-</a>
-<a class="yt-playall-link" href="">
-<img class="small-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
-Play all
-</a>
-</div>
-${musicVideos}
-</div>
-<div class="browse-collection">
-<div class="ytg-box collection-header with-icon">
-<a class="heading ytg-box" href="">
-<img class="header-icon gaming" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
-<div class="header-container">
-<h2>Gaming »</h2>
-</div>
-</a>
-<a class="yt-playall-link" href="">
-<img class="small-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
-Play all
-</a>
-</div>
-${gamingVideos}
-</div>
+${c}
 </div>
 </div>
 </div>
