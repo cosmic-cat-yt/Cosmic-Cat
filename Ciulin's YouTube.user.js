@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.5.10
+// @version      0.5.11
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -175,10 +175,10 @@
                     collection.string.BIO = b.artistBio ? "<br/><br/>" + b.artistBio.simpleText.replace(/(?:\r\n|\r|\n)/g, "<br/>") : "";
                     collection.name.COUNTRY = b.countryLabel ? b.countryLabel.runs[0].text.replace(/(?:\r\n|\r|\n)|( )|:/g, "") : undefined;
                     collection.string.COUNTRY = b.country ? b.country.simpleText : undefined;
-                    collection.name.JOIN = b.joinedDateText.runs[0].text.split(" ")[0];
-                    collection.string.JOIN = b.joinedDateText.runs[1].text;
-                    collection.name.VIEWS = b.viewCountText.simpleText.split(" ")[1].charAt(0).toUpperCase() + b.viewCountText.simpleText.split(" ")[1].slice(1);
-                    collection.string.VIEWS = b.viewCountText.simpleText.split(" ")[0];
+                    collection.name.JOIN = b.joinedDateText ? b.joinedDateText.runs[0].text.split(" ")[0] : undefined;
+                    collection.string.JOIN = b.joinedDateText ? b.joinedDateText.runs[1].text : undefined;
+                    collection.name.VIEWS = b.viewCountText ? b.viewCountText.simpleText.split(" ")[1].charAt(0).toUpperCase() + b.viewCountText.simpleText.split(" ")[1].slice(1) : undefined;
+                    collection.string.VIEWS = b.viewCountText ? b.viewCountText.simpleText.split(" ")[0] : undefined;
                     resolve(collection);
                 };
                 xhr.onerror = () => {
@@ -1463,6 +1463,14 @@ ${data.RECENTFEED[i].images}
 </tr>
 ${u}</tr>`;
                 }
+                let OBJ_views = "";
+                if(data.INFO.string.VIEWS !== undefined) {
+                    OBJ_views = `<div class="show_info outer-box-bg-as-border"><div class="profile-info-label">${data.INFO.name.VIEWS}:</div><div class="profile-info-value" id="profile_show_viewed_count">${data.INFO.string.VIEWS}</div><div class="cb"></div></div>`;
+                }
+                let OBJ_join = "";
+                if(data.INFO.string.JOIN !== undefined) {
+                    OBJ_join = `<div class="show_info outer-box-bg-as-border"><div class="profile-info-label">${data.INFO.name.JOIN}:</div><div class="profile-info-value" id="profile_show_member_since">${data.INFO.string.JOIN}</div><div class="cb"></div></div>`;
+                }
                 let OBJ_subcount = "";
                 if(data.SUBCOUNT !== undefined) {
                     OBJ_subcount = `<div class="show_info outer-box-bg-as-border"><div class="profile-info-label">${data.name.SUBCOUNT}:</div><div class="profile-info-value" id="profile_show_subscriber_count">${data.SUBCOUNT}</div><div class="cb"></div></div>`;
@@ -1476,16 +1484,8 @@ ${u}</tr>`;
 <div class="cb"></div>
 <div id="user_profile-body">
 <div class="profile_info vcard">
-<div class="show_info outer-box-bg-as-border">
-<div class="profile-info-label">${data.INFO.name.VIEWS}:</div>
-<div class="profile-info-value" id="profile_show_viewed_count">${data.INFO.string.VIEWS}</div>
-<div class="cb"></div>
-</div>
-<div class="show_info outer-box-bg-as-border">
-<div class="profile-info-label">${data.INFO.name.JOIN}:</div>
-<div class="profile-info-value" id="profile_show_member_since">${data.INFO.string.JOIN}</div>
-<div class="cb"></div>
-</div>
+${OBJ_views}
+${OBJ_join}
 ${OBJ_subcount}
 ${OBJ_country}
 <div class="show_info outer-box-bg-as-border" style="border-bottom-width:1px;margin-bottom:4px;line-height:140%" dir="ltr">${data.DESCRIPTION}${data.INFO.string.BIO}</div>
@@ -2174,11 +2174,14 @@ Loading...
                         if(VALUE_VIDEODESCRIPTIO[i].loggingDirectives && VALUE_VIDEODESCRIPTIO[i].text.split("@")[1] && VALUE_VIDEODESCRIPTIO[i].navigationEndpoint) {
                             VALUE_VIDEODESCRIPTION += `<a href="https://www.youtube.com${VALUE_VIDEODESCRIPTIO[i].navigationEndpoint.browseEndpoint.canonicalBaseUrl}" target="_blank" title="${VALUE_VIDEODESCRIPTIO[i].text}" rel="nofollow" dir"ltr" class="yt-utx-redirect-link">${VALUE_VIDEODESCRIPTIO[i].text}</a>`;
                         }
-                        if(!VALUE_VIDEODESCRIPTIO[i].navigationEndpoint && !VALUE_VIDEODESCRIPTIO[i].loggingDirectives) {
+                        if(!VALUE_VIDEODESCRIPTIO[i].navigationEndpoint && !VALUE_VIDEODESCRIPTIO[i].loggingDirective) {
                             VALUE_VIDEODESCRIPTION += VALUE_VIDEODESCRIPTIO[i].text;
                         }
-                        if(VALUE_VIDEODESCRIPTIO[i].navigationEndpoint && VALUE_VIDEODESCRIPTIO[i].navigationEndpoint.watchEndpoint) {
+                        if(VALUE_VIDEODESCRIPTIO[i].navigationEndpoint && VALUE_VIDEODESCRIPTIO[i].navigationEndpoint.watchEndpoint && !VALUE_VIDEODESCRIPTIO[i].navigationEndpoint.watchEndpoint.startTimeSeconds && VALUE_VIDEODESCRIPTIO[i].text !== "0:00") {
                             VALUE_VIDEODESCRIPTION += `<a href="https://youtu.be/${VALUE_VIDEODESCRIPTIO[i].navigationEndpoint.watchEndpoint.videoId}" target="_blank" title="https://youtu.be/${VALUE_VIDEODESCRIPTIO[i].navigationEndpoint.watchEndpoint.videoId}" rel="nofollow" dir="ltr" class="yt-uix-redirect-link">https://youtu.be/${VALUE_VIDEODESCRIPTIO[i].navigationEndpoint.watchEndpoint.videoId}</a>`;
+                        }
+                        if(VALUE_VIDEODESCRIPTIO[i].navigationEndpoint && VALUE_VIDEODESCRIPTIO[i].navigationEndpoint.watchEndpoint && VALUE_VIDEODESCRIPTIO[i].navigationEndpoint.watchEndpoint.startTimeSeconds || VALUE_VIDEODESCRIPTIO[i].navigationEndpoint && VALUE_VIDEODESCRIPTIO[i].navigationEndpoint.watchEndpoint && VALUE_VIDEODESCRIPTIO[i].text == "0:00") {
+                            VALUE_VIDEODESCRIPTION += `<a data-watchtime="${VALUE_VIDEODESCRIPTIO[i].navigationEndpoint.watchEndpoint.startTimeSeconds}" onclick="document.ciulinYT.player.seekTo(this.getAttribute('data-watchtime'))">${VALUE_VIDEODESCRIPTIO[i].text}</a>`;
                         }
                         if(VALUE_VIDEODESCRIPTIO[i].navigationEndpoint && VALUE_VIDEODESCRIPTIO[i].navigationEndpoint.browseEndpoint && !VALUE_VIDEODESCRIPTIO[i].text.split("@")[1] && !VALUE_VIDEODESCRIPTIO[i].text.split("#")[1]) {
                             VALUE_VIDEODESCRIPTION += `<a href="https://www.youtube.com${VALUE_VIDEODESCRIPTIO[i].navigationEndpoint.browseEndpoint.canonicalBaseUrl}" target="_blank" title="https://www.youtube.com${VALUE_VIDEODESCRIPTIO[i].navigationEndpoint.browseEndpoint.canonicalBaseUrl}" rel="nofollow" dir="ltr" class="yt-uix-redirect-link">https://www.youtube.com${VALUE_VIDEODESCRIPTIO[i].navigationEndpoint.browseEndpoint.canonicalBaseUrl}</a>`;
