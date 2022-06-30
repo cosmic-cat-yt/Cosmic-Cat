@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.5.9
+// @version      0.5.10
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -9,7 +9,7 @@
 // @match        https://www.youtube.com/*
 // @exclude      https://www.youtube.com/tv
 // @icon         https://www.google.com/s2/favicons?domain=youtube.com
-// @require      https://cdnjs.cloudflare.com/ajax/libs/platform/1.3.5/platform.min.js
+// @require https://code.jquery.com/jquery-3.6.0.min.js
 // @grant unsafeWindow
 // @grant GM_addStyle
 // @grant GM_getValue
@@ -292,7 +292,8 @@
             let loadSubtitles = async () => {
                 let HTML = [];
                 let subtitlesSTORAGE = await document.ciulinYT.func.getFromStorage("subtitles");
-                let posiShort = (ytInitialPlayerResponse.captions) ? ytInitialPlayerResponse.captions.playerCaptionsTracklistRenderer.captionTracks : [{disabled: "", languageCode: "", name: {simpleText: "No subtitles"}}];
+                let jSON = [{disabled: "", languageCode: "", name: {simpleText: "No subtitles"}}];
+                let posiShort = (ytInitialPlayerResponse) ? (ytInitialPlayerResponse.captions) ? ytInitialPlayerResponse.captions.playerCaptionsTracklistRenderer.captionTracks : jSON : jSON;
                 let posiSubtitles = ``;
                 let value = subtitlesSTORAGE.value;
 
@@ -1231,9 +1232,10 @@ document.querySelector(".playbar-controls_play").setAttribute("data-state", "0")
         },
         organizeVideoData: async (da) => {
             if(!da) return;
+            let regEx = /(Premiere[ |s|d])|(in progress.)|Started|less than/g;
             let owner = (da.owner) ? da.owner.videoOwnerRenderer.title.runs[0] : da.bylineText ? da.bylineText.runs[0] : da.shortBylineText ? da.shortBylineText.runs[0] : da.ownerText ? da.ownerText.runs[0] : "";
             let time = da.thumbnailOverlays ? da.thumbnailOverlays.find(c => c.thumbnailOverlayTimeStatusRenderer) ? da.thumbnailOverlays.find(c => c.thumbnailOverlayTimeStatusRenderer).thumbnailOverlayTimeStatusRenderer.text.simpleText ? da.thumbnailOverlays.find(c => c.thumbnailOverlayTimeStatusRenderer).thumbnailOverlayTimeStatusRenderer.text.simpleText : da.thumbnailOverlays.find(c => c.thumbnailOverlayTimeStatusRenderer).thumbnailOverlayTimeStatusRenderer.text.runs[0].text : da.lengthText ? da.lengthText.simpleText : "" : "";
-            let upload = (da.dateText) ? da.dateText.simpleText.replace(/(Premiere[ |s|d])|(in progress.)|Started|less than/g, "") : (da.publishedTimeText) ? da.publishedTimeText.simpleText.replace(/(Premiere[ |s|d])|(in progress.)|Started|less than/g, "") : "";
+            let upload = (da.dateText) ? da.dateText.simpleText.replace(regEx, "") : (da.publishedTimeText) ? (da.publishedTimeText.simpleText) ? da.publishedTimeText.simpleText.replace(regEx, "") : da.publishedTimeText.runs[0].text.replace(regEx, "") : "1";
             let vi = da.viewCount ? da.viewCount.videoViewCountRenderer.viewCount : da.viewCountText ? da.viewCountText : "";
             let view = (vi.simpleText) ? vi.simpleText : (vi.runs) ? vi.runs[0].text + vi.runs[1].text : false;
             let meta = da.metadataText ? da.metadataText.simpleText.split(" · ") : [[],[]];
@@ -1241,7 +1243,7 @@ document.querySelector(".playbar-controls_play").setAttribute("data-state", "0")
             let title = da.title ? (da.title.simpleText) ? da.title.simpleText : (da.title.runs) ? da.title.runs[0].text : false : "";
             let videoId = da.videoId;
             let url = owner.navigationEndpoint ? owner.navigationEndpoint.browseEndpoint.canonicalBaseUrl : "";
-            let description = da.detailedMetadataSnippets ? da.detailedMetadataSnippets[0].snippetText.runs[0].text : da.descriptionSnippet ? da.descriptionSnippet.runs[0].text: "";
+            let description = da.detailedMetadataSnippets ? da.detailedMetadataSnippets[0].snippetText.runs[0].text : da.descriptionSnippet ? da.descriptionSnippet.runs[0].text : da.description ? da.description.runs[0].text : "";
             let icon = da.channelThumbnailSupportedRenderers ? da.channelThumbnailSupportedRenderers.channelThumbnailWithLinkRenderer.thumbnail.thumbnails[0].url : "";
 
             return {
@@ -1381,6 +1383,7 @@ document.querySelector(".playbar-controls_play").setAttribute("data-state", "0")
             return "";
         },
         getSubscription: () => {
+            if(BOOL_LOGIN !== true) return false;
             if(window.location.pathname.split("/")[1].match(/channel|user|^c{1}$/i)) {
                 return ytInitialData.header.c4TabbedHeaderRenderer.subscribeButton ? ytInitialData.header.c4TabbedHeaderRenderer.subscribeButton.subscribeButtonRenderer.subscribed : false;
             }
@@ -1490,6 +1493,7 @@ ${OBJ_country}
 </div>
 <div class="cb"></div>
 </div>`;
+                let {owner, time, views, title, id, url, description} = await document.ciulinYT.func.organizeVideoData(data.HOMEVIDEO);
                 var OBJ_PLAYNAVA = `<div id="playnav-body">
 <div id="playnav-player" class="playnav-player-container" style="visibility: visible; left: 0px;">
 <movie-player id="video-player"></movie-player>
@@ -1532,26 +1536,31 @@ ${OBJ_country}
 <div id="playnav-panel-info" class="scrollable" style="display: block;">
 <div id="channel-like-action">
 <div id="channel-like-buttons">
-<button title="I like this" type="button" class="master-sprite yt-uix-button yt-uix-tooltip" onclick="window.location.href = 'https://www.youtube.com/watch?v=${data.HOMEVIDEO ? data.HOMEVIDEO.videoId : ""}';return false;" id="watch-like" role="button" aria-pressed="false">
+<button title="I like this" type="button" class="master-sprite yt-uix-button yt-uix-tooltip" data-watchid="${id}" onclick="document.ciulinYT.func.likeThis(this.getAttribute('data-watchid'));return false;" id="watch-like" role="button" aria-pressed="false">
 <img class="yt-uix-button-icon-watch-like" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
 <span class="yt-uix-button-content">Like</span>
 </button>
 &nbsp;
-<button title="I dislike this" type="button" class="master-sprite yt-uix-button yt-uix-tooltip" onclick="window.location.href = 'https://www.youtube.com/watch?v=${data.HOMEVIDEO ? data.HOMEVIDEO.videoId : ""}';return false;" id="watch-unlike" role="button" aria-pressed="false">
+<button title="I dislike this" type="button" class="master-sprite yt-uix-button yt-uix-tooltip" data-watchid="${id}" onclick="document.ciulinYT.func.dislikeThis(this.getAttribute('data-watchid'));return false;" id="watch-unlike" role="button" aria-pressed="false">
 <img class="yt-uix-button-icon-watch-unlike" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
 </button>
 </div>
+<div id="channel-like-logged-out" class="hid">
+<strong>
+<a href="${document.ciulinYT.data.loginUrl}">Sign in</a> or <a href="https://www.youtube.com/signup">sign up</a> now!
+</strong>
+</div>
 </div>
 <div id="playnav-curvideo-title" class="inner-box-link-color" dir="ltr">
-<a style="cursor:pointer;margin-right:7px" href="/watch?v=${data.HOMEVIDEO ? data.HOMEVIDEO.videoId : ""}" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">
-${data.HOMEVIDEO ? data.HOMEVIDEO.title.runs[0].text : ""}
+<a style="cursor:pointer;margin-right:7px" href="/watch?v=${id}" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">
+${title}
 </a>
 </div>
 <div id="playnav-curvideo-info-line">
 From: <span id="playnav-curvideo-channel-name"><a href="${window.location.href}">${data.CHANNELNAME}</a></span>&nbsp;|
-<span dir="ltr">${data.HOMEVIDEO ? data.HOMEVIDEO.publishedTimeText.runs[0].text : ""}</span>
+<span dir="ltr">${views[1]}</span>
 &nbsp;|
-<span id="playnav-curvideo-view-count">${data.HOMEVIDEO ? data.HOMEVIDEO.viewCountText.simpleText.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ""}</span>
+<span id="playnav-curvideo-view-count">${views[0]}</span>
 </div>
 <div class="cb"></div>
 <div id="channel-like-result" class="hid">
@@ -1560,10 +1569,9 @@ From: <span id="playnav-curvideo-channel-name"><a href="${window.location.href}"
 <div id="channel-like-loading" class="hid">Loading...</div>
 <div class="cb"></div>
 <div id="playnav-curvideo-description-container">
-<div id="playnav-curvideo-description" dir="ltr">${data.HOMEVIDEO ? data.HOMEVIDEO.dec : ""}
+<div id="playnav-curvideo-description" dir="ltr">${description}</div>
 </div>
-</div>
-<a href="https://www.youtube.com/watch?v=${data.HOMEVIDEO ? data.HOMEVIDEO.videoId : ""}" id="playnav-watch-link" onclick="playnav.goToWatchPage()">View comments, related videos, and more</a>
+<a href="https://www.youtube.com/watch?v=${id}" id="playnav-watch-link" onclick="playnav.goToWatchPage()">View comments, related videos, and more</a>
 <div id="playnav-curvideo-controls"></div>
 <div class="cb"></div>
 </div>
@@ -1647,6 +1655,13 @@ ${videos}
 </table>
 </div>
 <div class="cb"></div>
+</div>
+<div id="subscription-button-module-menu" class="hid subscription-menu-expandable subscription-menu">
+<div class="subscription-menu-not-logged-in">
+<strong>
+<a href="${document.ciulinYT.data.loginUrl}">Sign in</a> or <a href="https://www.youtube.com/signup">sign up</a> now!
+</strong>
+</div>
 </div>
 ${OBJ_PLAYNAVA}
 </div>`;
@@ -1764,65 +1779,77 @@ ${OBJ_CHANCON}
                 });
             });
         },
-        likeThis: () => {
-            if(BOOL_LOGIN !== true) return;
-            let ytapi = ytInitialData.metadata ? ytInitialData.metadata.channelMetadataRenderer.videoId : (ytInitialPlayerResponse) ? ytInitialPlayerResponse.videoDetails.videoId : "";
-            var update = (math) => {
-                var equ = parseInt(document.querySelector("span.likes").innerText.replace(/,/g, ""));
-                var equ2 = parseInt(document.querySelector("span.dislikes").innerText.replace(/,/g, ""));
-                switch (math) {
-                    case 0:
-                        equ -= 1;
-                        equ2 += 1;
-                        break;
-                    case 1:
-                        equ += 1;
-                        equ2 -= 1;
-                        break;
+        likeThis: (ml) => {
+            if(BOOL_LOGIN !== true) {
+                if (window.location.pathname.split("/")[1] !== "watch") {
+                    document.querySelector("#channel-like-logged-out").classList.remove("hid");
                 }
-                document.querySelector("span.likes").innerText = equ.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                if(document.querySelector("#watch-unlike").classList.contains("unliked")) {
-                    document.querySelector("span.dislikes").innerText = equ2.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                return;
+            }
+            var update = (math) => {
+                if (window.location.pathname.split("/")[1] == "watch") {
+                    var equ = parseInt(document.querySelector("span.likes").innerText.replace(/,/g, ""));
+                    var equ2 = parseInt(document.querySelector("span.dislikes").innerText.replace(/,/g, ""));
+                    switch (math) {
+                        case 0:
+                            equ -= 1;
+                            equ2 += 1;
+                            break;
+                        case 1:
+                            equ += 1;
+                            equ2 -= 1;
+                            break;
+                    }
+                    document.querySelector("span.likes").innerText = equ.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    if(document.querySelector("#watch-unlike").classList.contains("unliked")) {
+                        document.querySelector("span.dislikes").innerText = equ2.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
                 }
             };
             if(document.querySelector("#watch-like").classList.contains("liked")) {
                 update(0);
-                document.ciulinYT.func.getApi("/youtubei/v1/like/removelike", `target:{videoId: "${ytapi}"}`);
+                document.ciulinYT.func.getApi("/youtubei/v1/like/removelike", `target:{videoId: "${ml}"}`);
                 return document.querySelector("#watch-like").classList.remove("liked");
             }
             update(1);
-            document.ciulinYT.func.getApi("/youtubei/v1/like/like", `target:{videoId: "${ytapi}"}`);
+            document.ciulinYT.func.getApi("/youtubei/v1/like/like", `target:{videoId: "${ml}"}`);
             document.querySelector("#watch-like").classList.add("liked");
             document.querySelector("#watch-unlike").classList.remove("unliked");
         },
-        dislikeThis: () => {
-            if(BOOL_LOGIN !== true) return;
-            let ytapi = ytInitialData.metadata ? ytInitialData.metadata.channelMetadataRenderer.videoId : (ytInitialPlayerResponse) ? ytInitialPlayerResponse.videoDetails.videoId : "";
-            var update = (math) => {
-                var equ = parseInt(document.querySelector("span.dislikes").innerText.replace(/,/g, ""));
-                var equ2 = parseInt(document.querySelector("span.likes").innerText.replace(/,/g, ""));
-                switch (math) {
-                    case 0:
-                        equ -= 1;
-                        equ2 += 1;
-                        break;
-                    case 1:
-                        equ += 1;
-                        equ2 -= 1;
-                        break;
+        dislikeThis: (ml) => {
+            if(BOOL_LOGIN !== true) {
+                if (window.location.pathname.split("/")[1] !== "watch") {
+                    document.querySelector("#channel-like-logged-out").classList.remove("hid");
                 }
-                document.querySelector("span.dislikes").innerText = equ.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                if(document.querySelector("#watch-like").classList.contains("liked")) {
-                    document.querySelector("span.likes").innerText = equ2.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                return;
+            }
+            var update = (math) => {
+                if (window.location.pathname.split("/")[1] == "watch") {
+                    var equ = parseInt(document.querySelector("span.dislikes").innerText.replace(/,/g, ""));
+                    var equ2 = parseInt(document.querySelector("span.likes").innerText.replace(/,/g, ""));
+                    switch (math) {
+                        case 0:
+                            equ -= 1;
+                            equ2 += 1;
+                            break;
+                        case 1:
+                            equ += 1;
+                            equ2 -= 1;
+                            break;
+                    }
+                    document.querySelector("span.dislikes").innerText = equ.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    if(document.querySelector("#watch-like").classList.contains("liked")) {
+                        document.querySelector("span.likes").innerText = equ2.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
                 }
             };
             if(document.querySelector("#watch-unlike").classList.contains("unliked")) {
                 update(0);
-                document.ciulinYT.func.getApi("/youtubei/v1/like/removelike", `target:{videoId: "${ytapi}"}`);
+                document.ciulinYT.func.getApi("/youtubei/v1/like/removelike", `target:{videoId: "${ml}"}`);
                 return document.querySelector("#watch-unlike").classList.remove("unliked");
             }
             update(1);
-            document.ciulinYT.func.getApi("/youtubei/v1/like/dislike", `target:{videoId: "${ytapi}"}`);
+            document.ciulinYT.func.getApi("/youtubei/v1/like/dislike", `target:{videoId: "${ml}"}`);
             document.querySelector("#watch-unlike").classList.add("unliked");
             document.querySelector("#watch-like").classList.remove("liked");
         },
@@ -1862,6 +1889,8 @@ ${OBJ_CHANCON}
                 document.querySelector("#playnav-curvideo-info-line span[dir='ltr']").innerText = b.views[1];
                 document.querySelector("#playnav-curvideo-description").innerText = d.description;
                 document.querySelector("#playnav-curvideo-view-count").innerText = b.views[0];
+                document.querySelector("#watch-like").setAttribute("data-watchid", b.id);
+                document.querySelector("#watch-unlike").setAttribute("data-watchid", b.id);
                 document.querySelector("#timestamp_total").innerText = document.ciulinYT.func.calculateLength(parseInt(d.timestamp));
                 document.querySelector("#playnav-watch-link").href = "https://www.youtube.com/watch?v=" + b.id;
                 document.querySelector(".playbar-controls_play").setAttribute("data-state", "1");
@@ -1875,15 +1904,19 @@ ${OBJ_CHANCON}
             xhr.send();
         },
         subscribe: async() => {
+            if(BOOL_LOGIN !== true) {
+                if (window.location.pathname.split("/")[1] !== "watch") {
+                    document.querySelector("#subscription-button-module-menu").classList.remove("hid");
+                }
+                return;
+            }
             if((ytInitialData.metadata ? ytInitialData.metadata.channelMetadataRenderer.title : "") == document.ciulinYT.data.name) return document.ciulinYT.func.showModal("No need to subscribe to yourself!");
             if((ytInitialPlayerResponse ? ytInitialPlayerResponse.videoDetails.author : "") == document.ciulinYT.data.name) return document.ciulinYT.func.showModal("No need to subscribe to yourself!");
 
-            let ytapi = ytInitialData.metadata ? ytInitialData.metadata.channelMetadataRenderer.channelId : (ytInitialPlayerResponse) ? ytInitialPlayerResponse.videoDetails.channelId : "";
-            var sub = BOOL_SUBSCRIBE;
+            let ytapi = ytInitialData.metadata ? ytInitialData.metadata.channelMetadataRenderer.externalId : (ytInitialPlayerResponse) ? ytInitialPlayerResponse.videoDetails.channelId : "";
+            var sub = await BOOL_SUBSCRIBE;
             var button = document.querySelector(".yt-subscription-button") ? ".yt-subscription-button" : ".subscribe-button";
             var text = "";
-
-            console.debug(sub);
 
             switch(sub) {
                 case false:
@@ -1931,7 +1964,7 @@ ${OBJ_CHANCON}
                 xhr.setRequestHeader("X-Ciu-HelloWorld", "G'day Google. This request was sent from Ciulin's YouTube.user.js");
                 xhr.setRequestHeader("X-Goog-AuthUser", "0");
                 xhr.setRequestHeader("X-Goog-Visitor-Id", ytcfg.data_.INNERTUBE_CONTEXT.client.visitorData);
-                xhr.setRequestHeader("X-Youtube-Bootstrap-Logged-In", document.ciulinYT.data.loggedin);
+                xhr.setRequestHeader("X-Youtube-Bootstrap-Logged-In", "true");
                 xhr.setRequestHeader("X-Youtube-Client-Name", "1");
                 xhr.setRequestHeader("X-Youtube-Client-Version", ytcfg.data_.INNERTUBE_CONTEXT.client.clientVersion);
                 xhr.setRequestHeader("X-Origin", "https://www.youtube.com");
@@ -1943,7 +1976,7 @@ ${OBJ_CHANCON}
                 let click = JSON.stringify(ytcfg.data_.INNERTUBE_CONTEXT.clickTracking),
                     client = JSON.stringify(ytcfg.data_.INNERTUBE_CONTEXT.client),
                     request = JSON.stringify(ytcfg.data_.INNERTUBE_CONTEXT.request),
-                    user = JSON.stringify(ytcfg.data_.INNERTUBE_CONTEXT.user)
+                    user = JSON.stringify(ytcfg.data_.INNERTUBE_CONTEXT.user);
 
                 let jso = `{${json}context: {clickTracking: ${click}, client: ${client}, request: ${request}, user: ${user}}}`;
                 xhr.send(jso);
@@ -1975,7 +2008,6 @@ ${OBJ_CHANCON}
         return;
     }
     async function buildYouTube() {
-        document.ciulinYT.func.checkLogin().then(afs => {BOOL_LOGIN = afs;});
         var DOMHTML = document.querySelector("html");
         var TIMEDATE = new Date();
         var ARR_MONTH = (TIMEDATE.getMonth() < 10) ? "0" + TIMEDATE.getMonth() : TIMEDATE.getMonth();
@@ -1997,6 +2029,7 @@ ${OBJ_CHANCON}
         DOMHEAD.innerHTML += '<link rel="stylesheet" class="refresh" href="//s.ytimg.com/yt/cssbin/www-refresh-vflzVUPsm.css">';
         DOMHEAD.innerHTML += '<link rel="stylesheet" href="//s.ytimg.com/yt/cssbin/www-the-rest-vflNb6rAI.css">';
         await document.ciulinYT.func.waitForElm("script");
+        await document.ciulinYT.func.checkLogin().then(afs => {BOOL_LOGIN = afs;});
         let inject = async () => {
             var DOMBODY = document.body;
             var SUPERDOM = document.createElement("div");
@@ -2253,10 +2286,10 @@ Loading...
 </button>
 </div>
 <span id="watch-like-unlike" class="yt-uix-button-group">
-<button onclick="document.ciulinYT.func.likeThis();return false;" title="I like this" type="button" class="start yt-uix-tooltip-reverse yt-uix-button yt-uix-tooltip ${isLiked}" id="watch-like" role="button">
+<button data-videoid="${ytInitialPlayerResponse.videoDetails.videoId}" onclick="document.ciulinYT.func.likeThis(this.getAttribute('data-videoid'));return false;" title="I like this" type="button" class="start yt-uix-tooltip-reverse yt-uix-button yt-uix-tooltip ${isLiked}" id="watch-like" role="button">
 <img class="yt-uix-button-icon yt-uix-button-icon-watch-like" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="I like this">
 <span class="yt-uix-button-content">Like</span>
-</button><button onclick="document.ciulinYT.func.dislikeThis();return false;" title="I dislike this" type="button" class="end yt-uix-tooltip-reverse yt-uix-button yt-uix-tooltip yt-uix-button-empty ${isDisliked}" id="watch-unlike" role="button">
+</button><button data-videoid="${ytInitialPlayerResponse.videoDetails.videoId}" onclick="document.ciulinYT.func.dislikeThis(this.getAttribute('data-videoid'));return false;" title="I dislike this" type="button" class="end yt-uix-tooltip-reverse yt-uix-button yt-uix-tooltip yt-uix-button-empty ${isDisliked}" id="watch-unlike" role="button">
 <img class="yt-uix-button-icon yt-uix-button-icon-watch-unlike" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="I dislike this">
 </button>
 </span>
@@ -2407,7 +2440,7 @@ ${OBJ_SUGGESTEDVIDEOS}
                     collection.VIDEOS = await document.ciulinYT.load.channel_videos();
                     collection.RECENTFEED = await document.ciulinYT.load.recent_feed();
                     collection.INFO = await document.ciulinYT.load.channel_info();
-                    collection.HOMEVIDEO = ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer;
+                    collection.HOMEVIDEO = ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer ? ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer : {};
                     collection.SUBSCRIBE = document.ciulinYT.func.getSubscription();
                     setInterval(() => {document.head.querySelector("title").innerText = `${collection.CHANNELNAME}'s Channel - YouTube`;}, 100);
                     document.ciulinYT.func.waitForElm("#video-player").then(() => {
@@ -2939,18 +2972,17 @@ ${OBJ_CHANNEL}
 ${OBJ_FOOTER}`;
             SUPERDOM.innerHTML += final;
             document.body.appendChild(SUPERDOM);
-        }
+        };
         let doNext = async () => {
             let scripts = "";
             document.querySelectorAll("script").forEach(a => {
                 scripts += a.outerHTML;
             });
-
-            document.body.innerHTML = scripts;
-            setTimeout(async function() {
-                await inject();
-            }, 150);
-        }
+            document.body.innerHTML = scripts + '<i id="body_is_ready"></i>';
+            $(document).ready(function(){
+                inject();
+            });
+        };
         let superImportantSc = setInterval(function() {
             document.querySelectorAll("script").forEach(a => {
                 if(a.getAttribute("src")) {
