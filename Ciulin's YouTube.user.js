@@ -524,6 +524,10 @@
                     obj.name = "Howto & Style";
                     string = "/channel/UCrpQ4p1Ql_hG8rKXIKM1MOQ";
                     break;
+                case "technoblade":
+                    obj.name = "Technoblade";
+                    string = "/c/technoblade";
+                    break;
             }
             obj.url = string;
             return obj;
@@ -1398,8 +1402,8 @@ document.querySelector(".playbar-controls_play").setAttribute("data-state", "0")
             let channel2 = async() => {
                 document.head.innerHTML += '<link rel="stylesheet" href="//s.ytimg.com/yt/cssbin/www-channel_new-vflrWkVe_.css">';
                 let thelegend = "";
-                if (window.location.pathname.split("/")[2].match(/technoblade/g)) {
-                    thelegend = `<div id="the-blood-king">All hail the blood king🐷❤️</div>`;
+                if (window.location.pathname.split("/")[2].match(/technoblade/gi)) {
+                    thelegend = `<div id="the-blood-king">Long live the blood king🐷❤️</div>`;
                 }
                 let videos = "";
                 for (let i = 0; i < data.VIDEOS.length; i++) {
@@ -2080,7 +2084,7 @@ ${OBJ_CHANCON}
 </div>`;
                     }
                     document.ciulinYT.func.waitForElm("#page").then(async elm => {
-                        let categories = ["trending", "popular", "music", "live", "gadgets", "news", "sports", "education", "howto"];
+                        let categories = ["technoblade", "trending", "popular", "music", "live", "gadgets", "news", "sports", "education", "howto"];
                         for (let i = 0; i < categories.length; i++) {
                             let caties = await document.ciulinYT.load.homepage_list(categories[i]);
                             let html = `<li class="guide-item-container">
