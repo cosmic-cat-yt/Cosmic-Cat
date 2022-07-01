@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.5.11
+// @version      0.5.12
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -1397,6 +1397,10 @@ document.querySelector(".playbar-controls_play").setAttribute("data-state", "0")
             };
             let channel2 = async() => {
                 document.head.innerHTML += '<link rel="stylesheet" href="//s.ytimg.com/yt/cssbin/www-channel_new-vflrWkVe_.css">';
+                let thelegend = "";
+                if (window.location.pathname.split("/")[2].match(/technoblade/g)) {
+                    thelegend = `<div id="the-blood-king">All hail the blood king🐷❤️</div>`;
+                }
                 let videos = "";
                 for (let i = 0; i < data.VIDEOS.length; i++) {
                     let {owner, time, views, title, id, url} = data.VIDEOS[i];
@@ -1689,6 +1693,7 @@ ${OBJ_PLAYNAVA}
 </span>
 </div>
 </div>
+${thelegend}
 </div>
 <div class="cb"></div>
 </div>
