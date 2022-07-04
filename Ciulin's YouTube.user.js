@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.5.12
+// @version      0.5.13
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -164,7 +164,7 @@
             return a;
         },
         channel_info: async () => {
-            var test = new Promise(async resolve => {
+            let test = new Promise(async resolve => {
                 var xhr = new XMLHttpRequest();
                 xhr.open("GET", `https://www.youtube.com/${window.location.pathname}/about`);
                 xhr.onload = async () => {
@@ -192,7 +192,7 @@
             return a;
         },
         home_category: async(category) => {
-            var guide = document.querySelector(".guide");
+            var guide = document.querySelector("#guide");
             if(guide.getAttribute("data-last-clicked-item") == category.getAttribute("data-feed-name")) return;
             guide.setAttribute("data-last-clicked-item", category.getAttribute("data-feed-name"));
             document.querySelector(".selected-child").classList.remove("selected-child");
@@ -531,6 +531,16 @@
             }
             obj.url = string;
             return obj;
+        },
+        subscriptions: async () => {
+            let test = new Promise(async resolve => {
+                let subs = await document.ciulinYT.func.getApi("/youtubei/v1/guide");
+                let org = await document.ciulinYT.func.organizeSubscriptionsData(subs);
+                resolve(org);
+            });
+
+            let a = await test;
+            return a;
         }
     };
     document.ciulinYT.func = {
@@ -1162,6 +1172,12 @@ document.querySelector(".playbar-controls_play").setAttribute("data-state", "0")
             for (let i = 0; i < b.length; i++) {
                 let b_a = b[i].itemSectionRenderer ? b[i].itemSectionRenderer.contents[0] : b[i].richItemRenderer;
                 b_a = b_a ? b_a : {};
+                if(b_a.shelfRenderer && b_a.shelfRenderer.content.gridRenderer) {
+                    let b_b = b_a.shelfRenderer.content.gridRenderer.items;
+                    for (let i_ = 0; i_ < b_b.length; i_++) {
+                        TAB.push(b_b[i_].gridVideoRenderer);
+                    }
+                }
                 if(b_a.shelfRenderer && b_a.shelfRenderer.content.expandedShelfContentsRenderer) {
                     let b_b = b_a.shelfRenderer.content.expandedShelfContentsRenderer.items;
                     for (let i_ = 0; i_ < b_b.length; i_++) {
@@ -1261,6 +1277,23 @@ document.querySelector(".playbar-controls_play").setAttribute("data-state", "0")
                 upload: upload,
                 icon: icon
             };
+        },
+        organizeSubscriptionsData: async (da) => {
+            if(!da) return;
+            let a = da.items.find(b => b.guideSubscriptionsSectionRenderer).guideSubscriptionsSectionRenderer.items;
+            let TAB = [];
+            for (let i = 0; i < a.length; i++) {
+                if(a[i].guideEntryRenderer) {
+                    let de = a[i].guideEntryRenderer;
+                    TAB.push({
+                        title: de.formattedTitle.simpleText,
+                        id: de.entryData.guideEntryData.guideEntryId,
+                        icon: de.thumbnail.thumbnails[0].url
+                    });
+                }
+            }
+
+            return TAB;
         },
         createStorage: async (a) => {
             if(a !== "SUPERSECRETROOTKEY") return error("Permission denied to this function. Reason: Tempering with this can break the script.");
@@ -2059,8 +2092,35 @@ ${OBJ_CHANCON}
             if(window.location.pathname == "/") {
                 let FUNC = (async () => {
                     let guidebuilder = "";
-                    var c = "";
+                    let subsbuilder = "";
+                    let c = "";
                     if(BOOL_LOGIN === true) {
+                        let subsarr = await document.ciulinYT.load.subscriptions();
+                        let mhtml = ``;
+                        for (let i = 0; i < subsarr.length; i++) {
+                            let html = `<li class="guide-item-container">
+<a class="guide-item" data-feed-name="${subsarr[i].title}" href="/channel/${subsarr[i].id}">
+<span class="thumb">
+<img class="system-icon" src="${subsarr[i].icon}" alt="">
+</span><span class="display-name">${subsarr[i].title}</span>
+</a>
+</li>`;
+                            mhtml += html;
+                        }
+                        subsbuilder = `<div class="guide">
+<div class="guide-section yt-uix-expander first">
+<h3 class="guide-item-container selected-child">
+<a class="guide-item selected" data-feed-name="subscriptions" data-feed-url="/feed/subscriptions" onclick="document.ciulinYT.load.home_category(this)">
+<span class="thumb">
+<img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="" class="system-icon category">
+</span><span class="display-name">Subscriptions</span>
+</a>
+</h3>
+<ul>
+${mhtml}
+</ul>
+</div>
+</div>`;
                         guidebuilder = `<div id="guide-builder-promo">
 <div id="guide-builder-promo-buttons">
 <button type="button" class="yt-uix-button yt-uix-button-primary">
@@ -2098,13 +2158,14 @@ ${OBJ_CHANCON}
                         }
                         document.querySelector(".cockie").innerHTML = c;
                     });
-                    DOMHEAD.innerHTML += '<link rel="stylesheet" href="//s.ytimg.com/yt/cssbin/www-guide-vflOh_ROh.css">';
                     document.ciulinYT.func.waitForElm("#page").then(async () => document.ciulinYT.load.home_category(document.querySelector("[data-feed-name='youtube']")));
+                    DOMHEAD.innerHTML += '<link rel="stylesheet" href="//s.ytimg.com/yt/cssbin/www-guide-vflOh_ROh.css">';
                     return `<div id="content">
 <div class="guide-layout-container enable-fancy-subscribe-button">
 <div class="guide-container">
 ${guidebuilder}
-<div class="guide">
+${subsbuilder}
+<div class="guide" id="guide">
 <div class="guide-section yt-uix-expander first">
 <h3 class="guide-item-container selected-child">
 <a class="guide-item selected" data-feed-name="youtube" data-feed-url="" onclick="document.ciulinYT.load.home_category(this)">
