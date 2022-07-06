@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.5.13
+// @version      0.5.14
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -12,8 +12,8 @@
 // @require https://code.jquery.com/jquery-3.6.0.min.js
 // @grant unsafeWindow
 // @grant GM_addStyle
-// @grant GM_getValue
-// @grant GM_setValue
+// @grant GM.getValue
+// @grant GM.setValue
 // @grant GM_xmlhttpRequest
 // @grant GM_registerMenuCommand
 // @grant GM_deleteValue
@@ -1138,15 +1138,19 @@ var playVideo = () => {
 document.querySelector(".video-blank").style = "display:none;";
 document.querySelector(".playbar-controls_play").setAttribute("data-state", "1");
 };
-var onPlayerReady = () => {
+var onPlayerReady = async () => {
 document.querySelector("#timestamp_total").innerText = document.ciulinYT.func.calculateLength(parseInt(document.ciulinYT.player.getDuration()));
 progress = setInterval(document.ciulinYT.func.preProPos);
 setInterval(document.ciulinYT.func.trackCurrent);
+let qual = await document.ciulinYT.func.getFromStorage("quality");
+let speed = await document.ciulinYT.func.getFromStorage("playback");
+document.ciulinYT.player.setPlaybackQuality(qual.value);
+document.ciulinYT.player.setPlaybackRate(Number(speed.value));
 };
 function onPlayerPlaybackQualityChange(event) {
 var playbackQuality = event.target.getPlaybackQuality();
 event.target.setPlaybackQuality(playbackQuality);
-}
+};
 var onStateChange = (e) => {
 switch (e.data) {
 case 1:
@@ -1154,7 +1158,7 @@ playVideo();
 break;
 case 0:
 document.querySelector(".playbar-controls_play").setAttribute("data-state", "0");
-}
+};
 };`;
                 script = script.replace(/(?:\r\n|\r|\n)/g, "");
                 a.innerText = script;
@@ -1297,28 +1301,29 @@ document.querySelector(".playbar-controls_play").setAttribute("data-state", "0")
         },
         createStorage: async (a) => {
             if(a !== "SUPERSECRETROOTKEY") return error("Permission denied to this function. Reason: Tempering with this can break the script.");
-            let _STORAGE = {helloworld: "Hello World", subtitles: {"value": ""}, quality: {"value": ""}, playback: {}};
-            localStorage.setItem("ciu.FlashSettings", JSON.stringify(_STORAGE));
+            await GM.setValue("helloworld", "Hello World");
+            await GM.setValue("subtitles", {"value": ""});
+            await GM.setValue("quality", {"value": ""});
+            await GM.setValue("playback", {});
         },
-        prepareStorage: async() => {
-            try {
-                var a = JSON.parse(localStorage.getItem("ciu.FlashSettings")).helloworld;
-            } catch {
-                document.ciulinYT.func.createStorage("SUPERSECRETROOTKEY");
-            }
+        prepareStorage: async () => {
+            let STORAGE = await GM.getValue("helloworld");
+            if(!STORAGE) return document.ciulinYT.func.createStorage("SUPERSECRETROOTKEY");
         },
-        addToStorage: (a, b, c) => {
+        addToStorage: async (a, b, c) => {
             if(!a && !b && !c) return error();
-            document.ciulinYT.func.prepareStorage();
-            let STORAGE = JSON.parse(localStorage.getItem("ciu.FlashSettings"));
-            STORAGE[a][b] = c;
-            localStorage.setItem("ciu.FlashSettings", JSON.stringify(STORAGE));
+            await document.ciulinYT.func.prepareStorage();
+            let STORAGE = GM.getValue(a);
+            if(!STORAGE) return error(`Storage: ${a} does not exist in storage`);
+            STORAGE[b] = c;
+            await GM.setValue(a, STORAGE);
         },
         getFromStorage: async (a) => {
-            document.ciulinYT.func.prepareStorage();
-            let STORAGE = JSON.parse(localStorage.getItem("ciu.FlashSettings"));
-            if(!STORAGE[a]) return error(`Storage: ${a} does not exist in storage`);
-            return STORAGE[a];
+            if(!a) return error();
+            await document.ciulinYT.func.prepareStorage();
+            let STORAGE = await GM.getValue(a);
+            if(!STORAGE) return error(`Storage: ${a} does not exist in storage`);
+            return STORAGE;
         },
         exitPlayerSettings: () => {
             let DOM = document.querySelector("video-settings");
