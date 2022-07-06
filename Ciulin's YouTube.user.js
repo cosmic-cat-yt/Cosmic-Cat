@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.5.14
+// @version      0.5.15
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -26,6 +26,7 @@
 // @grant GM_info
 // @run-at document-start
 // ==/UserScript==
+/* jshint esversion: 10 */
 
 (async () => {
     'use strict';
@@ -341,18 +342,13 @@
                     qualQuality += `<option value="${qualShort[i]}" ${_value}>${qualShort[i]}</option>`;
                 }
 
-                let _select = `<span class="playmenu-text">Video Quality</span><div class="settings-selecter"><select class="settings-selecter" id="settings-quality">${qualQuality}</select></div>`;
+                let _select = `<span class="playmenu-text">Video Quality</span><div class="settings-selecter"><select class="settings-selecter" id="settings-quality">${qualQuality}</select><span class="playmenu-text">Technically doesn't do anything since YouTube deprecated <a href="https://developers.google.com/youtube/iframe_api_reference#october-24,-2019" target="_blank">setPlaybackQuality</a></span></div>`;
 
                 HTML.push(_select);
 
                 for (let i = 0; i < HTML.length; i++) {
                     CON.innerHTML += HTML[i];
                 }
-
-                document.querySelector(".settings-selecter#settings-quality").addEventListener("change", e => {
-                    document.ciulinYT.func.addToStorage("quality", "value", e.srcElement.value);
-                    document.ciulinYT.player.setPlaybackQuality(e.srcElement.value);
-                });
             };
 
             let loadPlayback = async () => {
@@ -377,8 +373,23 @@
                 }
 
                 document.querySelector(".settings-selecter#settings-play").addEventListener("change", e => {
-                    document.ciulinYT.func.addToStorage("playback", "value", e.srcElement.value);
+                    document.ciulinYT.func.addToStorage("playback", "value", Number(e.srcElement.value));
                     document.ciulinYT.player.setPlaybackRate(Number(e.srcElement.value));
+                });
+            };
+
+            let loadLoop = async () => {
+                let _select = `<span class="playmenu-text">Loop Video</span><div class="settings-toggle"><input type="checkbox" class="settings-toggle" id="settings-loop"><label for="settings-loop" class="playmenu-text">Enable Loop</label></div>`;
+                CON.innerHTML += _select;
+                document.querySelector(".settings-toggle#settings-loop").addEventListener("click", e => {
+                    let id = document.ciulinYT.player.getVideoUrl().split("v=")[1];
+                    let l = document.ciulinYT.player.getCurrentTime();
+                    if(e.srcElement.checked == true) {
+                        document.ciulinYT.player.loadPlaylist(id, 0, l);
+                        document.ciulinYT.player.setLoop(true);
+                    } else {
+                        document.ciulinYT.player.loadVideoById(id, l);
+                    }
                 });
             };
 
@@ -391,6 +402,9 @@
                     break;
                 case "playback":
                     loadPlayback();
+                    break;
+                case "loop":
+                    loadLoop();
                     break;
             }
         },
@@ -554,7 +568,7 @@
                 var DOM_menu = document.createElement("video-settings");
                 DOM_menu.setAttribute("class", "hid");
                 DOM_menu.setAttribute("data-state", "0");
-                DOM_menu.innerHTML = `<div class="playmenu-container"><a class="playmenu-text">YouTube Player Settings</a><div class="playmenu-content"></div><ul class="playmenu-buttons"><li class="playmenu-button selected" data-name="subtitles"></li><li class="playmenu-button" data-name="quality"></li><li class="playmenu-button" data-name="playback"></li><div class="playmenu-button_exit"><span>Close</span></div></ul></div>`;
+                DOM_menu.innerHTML = `<div class="playmenu-container"><a class="playmenu-text">YouTube Player Settings</a><div class="playmenu-content"></div><ul class="playmenu-buttons"><li class="playmenu-button selected" data-name="subtitles"></li><li class="playmenu-button" data-name="quality"></li><li class="playmenu-button" data-name="playback"></li><li class="playmenu-button" data-name="loop"></li><div class="playmenu-button_exit"><span>Close</span></div></ul></div>`;
                 DOM.appendChild(DOM_menu);
                 document.ciulinYT.load.settings_tab("subtitles");
             })();
@@ -951,6 +965,7 @@ a.playmenu-text {
 margin-left: 3px;
 }
 span.playmenu-text {
+margin-left: 2px;
 padding: 4px 4px;
 display: block;
 }
@@ -967,6 +982,7 @@ background: white;
 border: 1px solid #ccc;
 border-top-left-radius: 4px;
 border-top-right-radius: 4px;
+border-bottom-right-radius: 8px;
 }
 
 .playmenu-buttons {
@@ -1000,13 +1016,14 @@ border: 1px solid #666;
 border-radius: 2px;
 text-align: center;
 margin-top: 7px;
-margin-left: 58px;
+margin-left: 30px;
 font-size: 10px;
 }
 
 div.settings-toggle {
 display: flex;
 align-items: center;
+margin-left: 6px;
 }
 
 input.settings-toggle {
@@ -1066,12 +1083,11 @@ playerVars: {
 'enablejsapi': 1,
 'rel': 0,
 'controls': '0',
-'cc_load_policy': '3'
+'cc_load_policy': '0'
 },
 events: {
 'onReady': onPlayerReady,
-'onStateChange': onStateChange,
-'onPlaybackQualityChange': onPlayerPlaybackQualityChange
+'onStateChange': onStateChange
 }
 });
 };
@@ -1142,14 +1158,8 @@ var onPlayerReady = async () => {
 document.querySelector("#timestamp_total").innerText = document.ciulinYT.func.calculateLength(parseInt(document.ciulinYT.player.getDuration()));
 progress = setInterval(document.ciulinYT.func.preProPos);
 setInterval(document.ciulinYT.func.trackCurrent);
-let qual = await document.ciulinYT.func.getFromStorage("quality");
 let speed = await document.ciulinYT.func.getFromStorage("playback");
-document.ciulinYT.player.setPlaybackQuality(qual.value);
 document.ciulinYT.player.setPlaybackRate(Number(speed.value));
-};
-function onPlayerPlaybackQualityChange(event) {
-var playbackQuality = event.target.getPlaybackQuality();
-event.target.setPlaybackQuality(playbackQuality);
 };
 var onStateChange = (e) => {
 switch (e.data) {
@@ -1304,7 +1314,8 @@ document.querySelector(".playbar-controls_play").setAttribute("data-state", "0")
             await GM.setValue("helloworld", "Hello World");
             await GM.setValue("subtitles", {"value": ""});
             await GM.setValue("quality", {"value": ""});
-            await GM.setValue("playback", {});
+            await GM.setValue("playback", {"value": 1});
+            await GM.setValue("loop", {"value": false});
         },
         prepareStorage: async () => {
             let STORAGE = await GM.getValue("helloworld");
