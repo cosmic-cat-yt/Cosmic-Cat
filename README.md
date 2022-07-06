@@ -1,9 +1,9 @@
 # Ciulin's YouTube UserScript
 
-Ciulin's YouTube aims to recreate the 2012 layout of YouTube using the exact HTML code of the past - While keeping some modern features to avoid feeling like you're downgrading!
+This UserScript aims to recreate the 2012 layout of YouTube completely. Including look and functionality.
 
 ## Important
-Please note that Ciulin's YouTube is still heavily Work-In-Progress - So things might not work correctly.<br/>
+This is super WIP but it works!<br/>
 If you experience any issues with the script, please open up a ticket on the [**Issues**](https://github.com/ciulinuwu/ciulin-s-youtube/issues/new/choose) tab.</br></br>
 **YouTube is a trademark of Google LLC.**</br>
 
