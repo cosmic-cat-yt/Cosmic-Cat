@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.5.15
+// @version      0.5.16
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -555,6 +555,64 @@
 
             let a = await test;
             return a;
+        },
+        picker: async (pickie) => {
+            if(!pickie) return;
+            document.querySelector("#picker-loading").removeAttribute("style");
+            document.querySelector("#picker-container").innerHTML = `<div id="language-picker" style="display: none;" class="hid yt-tile-static"></div>`;
+            let api = await document.ciulinYT.func.getApi("/youtubei/v1/account/account_menu");
+            let sum = api.actions[0].openPopupAction.popup.multiPageMenuRenderer.sections[1].multiPageMenuSectionRenderer.items;
+            let ij, ik;
+            let fixArr = [];
+            for (let i = 0; i < sum.length; i++) {
+                if(sum[i].compactLinkRenderer) {
+                    fixArr.push(sum[i].compactLinkRenderer);
+                }
+            }
+
+            switch (pickie) {
+                case "LANGUAGE":
+                    sum = fixArr.find(a => a.icon.iconType == "TRANSLATE");
+                    ij = "selectLanguageCommand";
+                    ik = "hl";
+                    break;
+                case "COUNTRY":
+                    sum = fixArr.find(a => a.icon.iconType == "LANGUAGE");
+                    ij = "selectCountryCommand";
+                    ik = "gl";
+                    break;
+            }
+
+            let test = sum.serviceEndpoint.signalServiceEndpoint.actions[0].getMultiPageMenuAction.menu.multiPageMenuRenderer.sections[0].multiPageMenuSectionRenderer.items;
+            let result = "";
+
+            let outArray = [ [], [], [], [], [], [], [], [], [] ];
+            for (let i = 0; i < test.length; i++) {
+                outArray[Math.floor(i/12)].push({name: test[i].compactLinkRenderer.title.simpleText, lang: test[i].compactLinkRenderer.serviceEndpoint.signalServiceEndpoint.actions[0][ij][ik]});
+            }
+            for (let i = 0; i < outArray.length; i++) {
+                let aaa = ``;
+                for (let I = 0; I < outArray[i].length; I++) {
+                    aaa += `<div class="flag-div">
+<a href="#" onclick="document.ciulinYT.func.setPref('${outArray[i][I].lang}', '${ik}'); return false;">${outArray[i][I].name}</a>
+</div>`;
+                }
+                result += `<div class="flag-bucket">${aaa}</div>`;
+            }
+            let html = `<div id="language-picker" style="" class="yt-tile-static">
+<div class="picker-top">
+<div class="box-close-link">
+<img onclick="_hidediv('language-picker');" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Close">
+</div>
+<h2>Choose your language</h2>
+<p>Choose the language in which you want to view YouTube. This will only change the interface, not any text entered by other users.</p>
+<div class="clearR"></div>
+</div>
+<div>${result}<div class="spacer">&nbsp;</div></div>
+</div>`;
+
+            document.querySelector("#picker-container").innerHTML = html;
+            document.querySelector("#picker-loading").classList.add("hid");
         }
     };
     document.ciulinYT.func = {
@@ -1336,6 +1394,22 @@ document.querySelector(".playbar-controls_play").setAttribute("data-state", "0")
             if(!STORAGE) return error(`Storage: ${a} does not exist in storage`);
             return STORAGE;
         },
+        setPref: async (a, b) => {
+            if(!a || !b) return;
+            let parseCookie = str => str.split('&').map(v => v.split('=')).reduce((acc, v) => {acc[decodeURIComponent(v[0].trim())] = decodeURIComponent(v[1].trim());return acc;}, {});
+            let PREF = parseCookie(document.ciulinYT.func.getCookie("PREF"));
+            if(!PREF[b]) return error();
+            PREF[b] = a;
+            let hell = `tz=${PREF.tz}&f6=${PREF.f6}&gl=${PREF.gl}&f5=${PREF.f5}&hl=${PREF.hl}`;
+            await document.ciulinYT.func.setCookie("PREF", hell, 800);
+            window.location.reload();
+        },
+        getPref: (a) => {
+            if(!a) return;
+            let parseCookie = str => str.split('&').map(v => v.split('=')).reduce((acc, v) => {acc[decodeURIComponent(v[0].trim())] = decodeURIComponent(v[1].trim());return acc;}, {});
+            let PREF = parseCookie(document.ciulinYT.func.getCookie("PREF"));
+            return PREF[a];
+        },
         exitPlayerSettings: () => {
             let DOM = document.querySelector("video-settings");
             DOM.classList.add("hid");
@@ -1434,6 +1508,12 @@ document.querySelector(".playbar-controls_play").setAttribute("data-state", "0")
                 }
             }
             return "";
+        },
+        setCookie: (cname, cvalue, exdays) => {
+            const d = new Date();
+            d.setTime(d.getTime() + (exdays*24*60*60*1000));
+            let expires = "expires="+ d.toUTCString();
+            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
         },
         getSubscription: () => {
             if(BOOL_LOGIN !== true) return false;
@@ -2017,26 +2097,26 @@ ${OBJ_CHANCON}
         getApi: async(url, json) => {
             var test = new Promise(async resolve => {
                 let xhr = new XMLHttpRequest();
-                xhr.open("POST", "https://www.youtube.com" + url + "?key=" + ytcfg.data_.INNERTUBE_API_KEY);
+                xhr.open("POST", "https://www.youtube.com" + url + "?key=" + yt.config_.INNERTUBE_API_KEY);
                 xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
                 xhr.setRequestHeader("X-Ciu-HelloWorld", "G'day Google. This request was sent from Ciulin's YouTube.user.js");
                 xhr.setRequestHeader("X-Goog-AuthUser", "0");
-                xhr.setRequestHeader("X-Goog-Visitor-Id", ytcfg.data_.INNERTUBE_CONTEXT.client.visitorData);
+                xhr.setRequestHeader("X-Goog-Visitor-Id", yt.config_.INNERTUBE_CONTEXT.client.visitorData);
+                xhr.setRequestHeader("X-Youtube-Client-Version", yt.config_.INNERTUBE_CONTEXT.client.clientVersion);
                 xhr.setRequestHeader("X-Youtube-Bootstrap-Logged-In", "true");
                 xhr.setRequestHeader("X-Youtube-Client-Name", "1");
-                xhr.setRequestHeader("X-Youtube-Client-Version", ytcfg.data_.INNERTUBE_CONTEXT.client.clientVersion);
                 xhr.setRequestHeader("X-Origin", "https://www.youtube.com");
                 xhr.setRequestHeader("Authorization", await document.ciulinYT.func.getSApiSidHash());
                 xhr.onload = async () => {
                     resolve(xhr.response);
                 };
                 json = json ? json + "," : "";
-                let click = JSON.stringify(ytcfg.data_.INNERTUBE_CONTEXT.clickTracking),
-                    client = JSON.stringify(ytcfg.data_.INNERTUBE_CONTEXT.client),
-                    request = JSON.stringify(ytcfg.data_.INNERTUBE_CONTEXT.request),
-                    user = JSON.stringify(ytcfg.data_.INNERTUBE_CONTEXT.user);
-
+                let click = JSON.stringify(yt.config_.INNERTUBE_CONTEXT.clickTracking),
+                    client = JSON.stringify(yt.config_.INNERTUBE_CONTEXT.client),
+                    request = JSON.stringify(yt.config_.INNERTUBE_CONTEXT.request),
+                    user = JSON.stringify(yt.config_.INNERTUBE_CONTEXT.user);
                 let jso = `{${json}context: {clickTracking: ${click}, client: ${client}, request: ${request}, user: ${user}}}`;
+
                 xhr.send(jso);
             });
 
@@ -2045,11 +2125,20 @@ ${OBJ_CHANCON}
             return JSON.parse(a);
         },
         checkLogin: async() => {
-            if(!document.ciulinYT.func.getCookie("APISID")) return false;
             if(document.ciulinYT.data.name > 1) return true;
-
+            if(!document.ciulinYT.func.getCookie("APISID")) {
+                let msg = "It is highly recommended that you're logged in on YouTube to avoid specific bugs that has a chance to occur with this UserScript when logged out.\n\nMainly due to required JSON objects not being loaded or desktop_polymer.js (YouTube's polymer layout) breaking stuff.\n\nPlease disable Ciulin's YouTube.user.js if you do not wish to login.";
+                if(!sessionStorage.getItem("ciu.Warn")) {
+                    alert(msg + "\n\nThis message will not pop up again.");
+                    sessionStorage.setItem("ciu.Warn", true);
+                }
+                error("I'll say the same thing here.\n\n" + msg);
+                return false;
+            }
             let isLoggedIn = await document.ciulinYT.func.getApi("/youtubei/v1/account/account_menu");
             let r = isLoggedIn.responseContext.mainAppWebResponseContext.loggedOut ? false : true;
+            document.ciulinYT.data.lang = isLoggedIn.actions[0].openPopupAction.popup.multiPageMenuRenderer.sections[1].multiPageMenuSectionRenderer.items[1].compactLinkRenderer.subtitle.simpleText;
+            document.ciulinYT.data.country = isLoggedIn.actions[0].openPopupAction.popup.multiPageMenuRenderer.sections[1].multiPageMenuSectionRenderer.items[2].compactLinkRenderer.subtitle.simpleText;
             if(r == true) {
                 document.ciulinYT.data.loggedin = true;
                 document.ciulinYT.data.name = isLoggedIn.actions[0].openPopupAction.popup.multiPageMenuRenderer.header.activeAccountHeaderRenderer.accountName.simpleText;
@@ -3019,38 +3108,53 @@ ${OBJ_USER}
 </div>
 </div>`;
             OBJ_FOOTER = `<div id="footer-container">
-  <div id="footer">
-  <div class="horizontal-rule">
-  <span class="first"></span>
-  <span class="second"></span>
-  <span class="third"></span>
-  </div>
-  <div id="footer-logo">
-  <a href="https://www.youtube.com/" title="YouTube home">
-  <img id="logo" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="YouTube home">
-  </a>
-  <span id="footer-divider"></span>
-  </div>
-  <div id="footer-main">
-  <ul id="footer-links-primary">
-  <li>
-  <a href="https://support.google.com/youtube/#topic=9257498">Help</a>
-  </li>
-  <li>
-  <a href="https://www.youtube.com/about">About</a>
-  </li>
-  <li>
-  <a href="https://www.youtube.com/press/">Press &amp; Blogs</a>
-  </li>
-  <li>
-  <a href="https://www.youtube.com/copyright">Copyright</a>
-  </li>
-  <li>
-  <a href="https://www.youtube.com/creators">Creators &amp; Partners</a>
-  </li>
-  <li>
-  <a href="https://www.youtube.com/ads">Advertising</a>
-  </li>`;
+<div id="footer">
+<div class="horizontal-rule">
+<span class="first"></span>
+<span class="second"></span>
+<span class="third"></span>
+</div>
+<div id="footer-logo">
+<a href="https://www.youtube.com/" title="YouTube home">
+<img id="logo" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="YouTube home">
+</a>
+<span id="footer-divider"></span>
+</div>
+<div id="footer-main">
+<ul id="footer-links-primary">
+<li>
+<a href="https://support.google.com/youtube/#topic=9257498">Help</a>
+</li>
+<li>
+<a href="https://www.youtube.com/about">About</a>
+</li>
+<li>
+<a href="https://www.youtube.com/press/">Press &amp; Blogs</a>
+</li>
+<li>
+<a href="https://www.youtube.com/copyright">Copyright</a>
+</li>
+<li>
+<a href="https://www.youtube.com/creators">Creators &amp; Partners</a>
+</li>
+<li>
+<a href="https://www.youtube.com/ads">Advertising</a>
+</li>
+</ul>
+<ul class="pickers yt-uix-button-group" data-button-toggle-group="true">
+<li>
+<button type="button" class="yt-uix-button yt-uix-button-text" onclick="document.ciulinYT.load.picker('LANGUAGE');return false;" data-button-toggle="true" data-button-menu-id="arrow" role="button">
+<span class="yt-uix-button-content">${document.ciulinYT.data.lang} </span>
+<img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
+</button></li><li><button type="button" class="yt-uix-button yt-uix-button-text" onclick="document.ciulinYT.load.picker('COUNTRY');return false;" data-button-toggle="true" data-button-menu-id="arrow" role="button">
+<span class="yt-uix-button-content">${document.ciulinYT.data.country} </span>
+<img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
+</button></li><li><button type="button" class="yt-uix-button yt-uix-button-text" onclick="document.ciulinYT.load.picker('safetymode-picker');return false;" data-button-toggle="true" data-button-menu-id="arrow" role="button">
+<span class="yt-uix-button-content">Safety: <span class="yt-footer-safety-value">Off</span></span><img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""></button>
+</li>
+</ul>
+<div id="picker-container"></div>
+<div id="picker-loading" style="display: none">Loading...</div>`;
 
             let final = `<div id="masthead-container">
 ${OBJ_MASTHEAD}
