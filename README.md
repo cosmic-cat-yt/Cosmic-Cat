@@ -3,7 +3,10 @@
 This UserScript aims to recreate the 2012 layout of YouTube completely. Including look and functionality.
 
 ## Important
-This is super WIP but it works!<br/>
+This is super WIP but it works!<br/><br/>
+! It is highly recommended that you're logged in while using this to avoid certain bugs from occurring due to missing JSON objects and desktop_polymer.js screwing things up !
+</br></br>
+
 If you experience any issues with the script, please open up a ticket on the [**Issues**](https://github.com/ciulinuwu/ciulin-s-youtube/issues/new/choose) tab.</br></br>
 **YouTube is a trademark of Google LLC.** (don't sue me please)</br>
 
