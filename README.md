@@ -4,7 +4,8 @@ This UserScript aims to recreate the 2012 layout of YouTube completely. Includin
 
 ## Important
 This is super WIP but it works!<br/><br/>
-! It is highly recommended that you're logged in while using this to avoid certain bugs from occurring due to missing JSON objects and desktop_polymer.js screwing things up !
+⚠️ **It is highly recommended that you're logged in while using this UserScript** ⚠️<br/>
+Read about why: [/wiki/Warning-Message](https://github.com/ciulinuwu/ciulin-s-youtube/wiki/Warning-Message)
 </br></br>
 
 If you experience any issues with the script, please open up a ticket on the [**Issues**](https://github.com/ciulinuwu/ciulin-s-youtube/issues/new/choose) tab.</br></br>
@@ -15,4 +16,4 @@ If you experience any issues with the script, please open up a ticket on the [**
 - Click here to open up the install prompt (requires **Tampermonkey**): [Ciulin's YouTube.user.js](https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js)
 
 ## Things supported so far
-Check the [Wiki](https://github.com/ciulinuwu/ciulin-s-youtube/wiki/features) out for a list of features.
+Check the [Wiki](https://github.com/ciulinuwu/ciulin-s-youtube/wiki/) out for a list of features.
