@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.5.16
+// @version      0.5.17
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -559,10 +559,9 @@
         picker: async (pickie) => {
             if(!pickie) return;
             document.querySelector("#picker-loading").removeAttribute("style");
-            document.querySelector("#picker-container").innerHTML = `<div id="language-picker" style="display: none;" class="hid yt-tile-static"></div>`;
             let api = await document.ciulinYT.func.getApi("/youtubei/v1/account/account_menu");
             let sum = api.actions[0].openPopupAction.popup.multiPageMenuRenderer.sections[1].multiPageMenuSectionRenderer.items;
-            let ij, ik;
+            let ij, ik, ia, io, iu;
             let fixArr = [];
             for (let i = 0; i < sum.length; i++) {
                 if(sum[i].compactLinkRenderer) {
@@ -575,11 +574,17 @@
                     sum = fixArr.find(a => a.icon.iconType == "TRANSLATE");
                     ij = "selectLanguageCommand";
                     ik = "hl";
+                    ia = "language-picker";
+                    io = "Choose your language";
+                    iu = "Choose the language in which you want to view YouTube. This will only change the interface, not any text entered by other users.";
                     break;
                 case "COUNTRY":
                     sum = fixArr.find(a => a.icon.iconType == "LANGUAGE");
                     ij = "selectCountryCommand";
                     ik = "gl";
+                    ia = "region-picker";
+                    io = "Choose your content location";
+                    iu = "Choose which country or region's content (videos and channels) you would like to view. This will not change the language of the site.";
                     break;
             }
 
@@ -587,28 +592,31 @@
             let result = "";
 
             let outArray = [ [], [], [], [], [], [], [], [], [] ];
+            let bh = (ik == "gl") ? ['<div class="flag-list">', "</div>"] : ["", ""];
+            let bi = (ik == "gl") ? `<div class="flag-list first"><div class="flag-div"><img id="flag_en_US" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="flag_en_US" alt="" width="17" height="11"> <span class="selected">Worldwide (All)</span></div></div>` : ``;
             for (let i = 0; i < test.length; i++) {
                 outArray[Math.floor(i/12)].push({name: test[i].compactLinkRenderer.title.simpleText, lang: test[i].compactLinkRenderer.serviceEndpoint.signalServiceEndpoint.actions[0][ij][ik]});
             }
             for (let i = 0; i < outArray.length; i++) {
                 let aaa = ``;
                 for (let I = 0; I < outArray[i].length; I++) {
-                    aaa += `<div class="flag-div">
+                    let im = (ik == "gl") ? `<a href="#" onclick="document.ciulinYT.func.setPref('${outArray[i][I].lang}', '${ik}'); return false;"><img id="flag_${outArray[i][I].lang.toLowerCase()}_${outArray[i][I].lang}" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="flag_${outArray[i][I].lang.toLowerCase()}_${outArray[i][I].lang}" alt="" width="17" height="11"> </a>` : ``;
+                    aaa += `<div class="flag-div">${im}
 <a href="#" onclick="document.ciulinYT.func.setPref('${outArray[i][I].lang}', '${ik}'); return false;">${outArray[i][I].name}</a>
 </div>`;
                 }
                 result += `<div class="flag-bucket">${aaa}</div>`;
             }
-            let html = `<div id="language-picker" style="" class="yt-tile-static">
+            let html = `<div id="${ia}" style="" class="yt-tile-static">
 <div class="picker-top">
 <div class="box-close-link">
-<img onclick="_hidediv('language-picker');" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Close">
+<img onclick="_hidediv('${ia}');" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Close">
 </div>
-<h2>Choose your language</h2>
-<p>Choose the language in which you want to view YouTube. This will only change the interface, not any text entered by other users.</p>
+<h2>${io}</h2>
+<p>${iu}</p>
 <div class="clearR"></div>
 </div>
-<div>${result}<div class="spacer">&nbsp;</div></div>
+<div>${bi}${bh[0]}${result}${bh[1]}<div class="spacer">&nbsp;</div></div>
 </div>`;
 
             document.querySelector("#picker-container").innerHTML = html;
@@ -2129,7 +2137,7 @@ ${OBJ_CHANCON}
             if(!document.ciulinYT.func.getCookie("APISID")) {
                 let msg = "It is highly recommended that you're logged in on YouTube to avoid specific bugs that has a chance to occur with this UserScript when logged out.\n\nMainly due to required JSON objects not being loaded or desktop_polymer.js (YouTube's polymer layout) breaking stuff.\n\nPlease disable Ciulin's YouTube.user.js if you do not wish to login.";
                 if(!sessionStorage.getItem("ciu.Warn")) {
-                    alert(msg + "\n\nThis message will not pop up again.");
+                    alert(msg + "\n\nThis message will not pop up again until next session.");
                     sessionStorage.setItem("ciu.Warn", true);
                 }
                 error("I'll say the same thing here.\n\n" + msg);
