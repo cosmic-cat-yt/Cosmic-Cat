@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.5.19
+// @version      0.5.20
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -2641,7 +2641,7 @@ ${OBJ_SUGGESTEDVIDEOS}
                     }
                     collection.DEC = "";
                     collection.VIDEOS = await document.ciulinYT.load.channel_videos();
-                    collection.FEATURED = await document.ciulinYT.load.featured_channels();
+                    //collection.FEATURED = await document.ciulinYT.load.featured_channels();
                     collection.RECENTFEED = await document.ciulinYT.load.recent_feed();
                     collection.INFO = await document.ciulinYT.load.channel_info();
                     collection.HOMEVIDEO = ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer ? ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer : {};
