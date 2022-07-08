@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.5.17
+// @version      0.5.18
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -706,6 +706,7 @@ box-sizing: inherit;
 height: 360px;
 width: inherit;
 position: relative;
+z-index: 1;
 }
 #video-player:fullscreen .video-container {
 height: 97%;
@@ -748,6 +749,7 @@ transform: scale(2);
 background: no-repeat url(data:image/png;base64,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) 0px -25px;
 }
 .video-scrubbar {
+z-index: 2;
 background-color: darkgray;
 position: relative;
 cursor: pointer;
@@ -811,6 +813,7 @@ width: 100%;
 height: 4px;
 }
 .video-playbar {
+z-index: 3;
 display: flex;
 background: url(${document.ciulinYT.data.playbarSheet});
 height: 24.6px;
@@ -1639,13 +1642,12 @@ ${OBJ_country}
 <div class="cb"></div>
 </div>`;
                 let {owner, time, views, title, id, url, description} = await document.ciulinYT.func.organizeVideoData(data.HOMEVIDEO);
-                var OBJ_PLAYNAVA = `<div id="playnav-body">
-<div id="playnav-player" class="playnav-player-container" style="visibility: visible; left: 0px;">
+                var OBJ_PLAYNAVA = `<div id="playnav-body" style="position: inherit;">
+<div id="playnav-player" class="playnav-player-container" style="visibility: visible; left: 0px;position: inherit;">
 <movie-player id="video-player"></movie-player>
 </div>
-<div id="playnav-playview" class="" style="display: block;">
+<div id="playnav-playview" class="" style="display: block;position: absolute;">
 <div id="playnav-left-panel" style="display: block;">
-<div class="playnav-player-container"></div>
 <div id="playnav-video-details">
 <div id="playnav-bottom-links">
 <div id="playnav-bottom-links-clip" class="playnav-bottom-links-clip">
@@ -1730,7 +1732,7 @@ From: <span id="playnav-curvideo-channel-name"><a href="${window.location.href}"
 </div>
 </div>
 </div>
-<div id="playnav-play-panel">
+<div id="playnav-play-panel" style="margin-top: -400px;height: 0;">
 <div id="playnav-play-content" style="height: 601px;">
 <div class="playnav-playlist-holder" id="playnav-play-playlist-uploads-holder">
 <div id="playnav-play-uploads-scrollbox" style="background-color: rgb(238, 238, 255); color: rgb(51, 51, 51);" class="scrollbox-wrapper inner-box-colors">
@@ -1752,7 +1754,7 @@ ${videos}
 </div>
 </div>
 </div>`;
-                var OBJ_PLAYNAV = `<div id="user_playlist_navigator" style="background-color: rgb(153, 153, 153); color: rgb(0, 0, 0);" class="outer-box yt-rounded">
+                var OBJ_PLAYNAV = `<div id="user_playlist_navigator" style="background-color: rgb(153, 153, 153); color: rgb(0, 0, 0);position: inherit;" class="outer-box yt-rounded">
 <div id="playnav-channel-header" class="inner-box-bg-color" style="background-color: rgb(238, 238, 255); color: rgb(51, 51, 51);">
 <div id="playnav-title-bar">
 <div id="playnav-channel-name" style="background-color: rgb(153, 153, 153); color: rgb(0, 0, 0);" class="outer-box-bg-color">
