@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.5.18
+// @version      0.5.19
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -144,9 +144,8 @@
                     if(!a.tabRenderer) return error(undefined);
 
                     let b = a.tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].gridRenderer.items;
-                    let j;
                     let data = [];
-                    for (j = 0; j < b.length; j++) {
+                    for (let j = 0; j < b.length; j++) {
                         if(!b[j].continuationItemRenderer) {
                             let videoData = await document.ciulinYT.func.organizeVideoData(b[j].gridVideoRenderer);
                             data[j] = videoData;
@@ -163,6 +162,22 @@
             let a = await test;
 
             return a;
+        },
+        featured_channels: async () => {
+            let a = ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents;
+            let b = [];
+            let c = [];
+            for (let i = 0; i < a.length; i++) {
+                if(!a[i].itemSectionRenderer.contents[0].channelVideoPlayerRenderer) {
+                    b.push(a[i].itemSectionRenderer.contents[0].shelfRenderer);
+                }
+            }
+            for (let i = 0; i < b.length; i++) {
+                if (b[i].content.horizontalListRenderer.items[0].gridChannelRenderer) {
+                    c.push(b[i].content.horizontalListRenderer.items);
+                }
+            }
+            console.debug(c);
         },
         channel_info: async () => {
             let test = new Promise(async resolve => {
@@ -1220,7 +1235,7 @@ document.querySelector(".scrubbar_track_played").style.width = ((e.pageX - e.cur
 document.querySelector(".scrubbar_track_handle").style.left = ((e.pageX - e.currentTarget.offsetLeft) / e.currentTarget.offsetWidth * 100) + "%";
 });
 var playVideo = () => {
-document.querySelector(".video-blank").style = "display:none;";
+document.querySelector(".video-blank").style = "background: none;";
 document.querySelector(".playbar-controls_play").setAttribute("data-state", "1");
 };
 var onPlayerReady = async () => {
@@ -1646,7 +1661,7 @@ ${OBJ_country}
 <div id="playnav-player" class="playnav-player-container" style="visibility: visible; left: 0px;position: inherit;">
 <movie-player id="video-player"></movie-player>
 </div>
-<div id="playnav-playview" class="" style="display: block;position: absolute;">
+<div id="playnav-playview" class="" style="display: block;position: absolute;height: 0;">
 <div id="playnav-left-panel" style="display: block;">
 <div id="playnav-video-details">
 <div id="playnav-bottom-links">
@@ -2626,6 +2641,7 @@ ${OBJ_SUGGESTEDVIDEOS}
                     }
                     collection.DEC = "";
                     collection.VIDEOS = await document.ciulinYT.load.channel_videos();
+                    collection.FEATURED = await document.ciulinYT.load.featured_channels();
                     collection.RECENTFEED = await document.ciulinYT.load.recent_feed();
                     collection.INFO = await document.ciulinYT.load.channel_info();
                     collection.HOMEVIDEO = ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer ? ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer : {};
