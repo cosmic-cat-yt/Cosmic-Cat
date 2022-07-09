@@ -3,7 +3,7 @@
 This UserScript aims to recreate the 2012 layout of YouTube completely. Including look and functionality.
 
 ## Important
-This is super WIP but it works!<br/><br/>
+This is super WIP but it works... Only on 🔥Mozilla Firefox🦊!<br/><br/>
 ⚠️ **It is highly recommended that you're logged in while using this UserScript** ⚠️<br/>
 Read about why: [/wiki/Warning-Message](https://github.com/ciulinuwu/ciulin-s-youtube/wiki/Warning-Message)
 </br></br>
