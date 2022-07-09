@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.5.21
+// @version      0.5.22
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -9,7 +9,6 @@
 // @match        https://www.youtube.com/*
 // @exclude      https://www.youtube.com/tv
 // @icon         https://www.google.com/s2/favicons?domain=youtube.com
-// @require https://code.jquery.com/jquery-3.6.0.min.js
 // @grant unsafeWindow
 // @grant GM_addStyle
 // @grant GM.getValue
@@ -30,6 +29,7 @@
 
 (async () => {
     'use strict';
+    if(!navigator.userAgent.match(/Firefox/g)) return alert("Your browser is not supported by Ciulin's YouTube.user.js\n\nPlease use Firefox or disable this UserScript.");
     function debug(a) {
         return console.debug(`[Ciulin's YouTube] ${a}`);
     }
@@ -1381,7 +1381,7 @@ document.querySelector(".playbar-controls_play").setAttribute("data-state", "0")
             let time = da.thumbnailOverlays ? da.thumbnailOverlays.find(c => c.thumbnailOverlayTimeStatusRenderer) ? da.thumbnailOverlays.find(c => c.thumbnailOverlayTimeStatusRenderer).thumbnailOverlayTimeStatusRenderer.text.simpleText ? da.thumbnailOverlays.find(c => c.thumbnailOverlayTimeStatusRenderer).thumbnailOverlayTimeStatusRenderer.text.simpleText : da.thumbnailOverlays.find(c => c.thumbnailOverlayTimeStatusRenderer).thumbnailOverlayTimeStatusRenderer.text.runs[0].text : da.lengthText ? da.lengthText.simpleText : "" : "";
             let upload = (da.dateText) ? da.dateText.simpleText.replace(regEx, "") : (da.publishedTimeText) ? (da.publishedTimeText.simpleText) ? da.publishedTimeText.simpleText.replace(regEx, "") : da.publishedTimeText.runs[0].text.replace(regEx, "") : "1";
             let vi = da.viewCount ? da.viewCount.videoViewCountRenderer.viewCount : da.viewCountText ? da.viewCountText : "";
-            let view = (vi.simpleText) ? vi.simpleText : (vi.runs) ? vi.runs[0].text + vi.runs[1].text : false;
+            let view = (vi.simpleText) ? vi.simpleText : (vi.runs) ? (vi.runs[1]) ? vi.runs[0].text + vi.runs[1].text : vi.runs[0].text : false;
             let meta = da.metadataText ? da.metadataText.simpleText.split(" · ") : [[],[]];
             let views = view ? [view, upload] : meta;
             let title = da.title ? (da.title.simpleText) ? da.title.simpleText : (da.title.runs) ? da.title.runs[0].text : false : "";
@@ -1588,11 +1588,11 @@ document.querySelector(".playbar-controls_play").setAttribute("data-state", "0")
                 }
                 let {owner, time, views, title, id, url, description} = await document.ciulinYT.func.organizeVideoData(data.HOMEVIDEO);
                 let tags = {age: undefined};
-                let TAGS = data.DESCRIPTION.matchAll(/\[\+\w\+="\d+"]/g);
-                data.DESCRIPTION = data.DESCRIPTION.replace(/\[\+\w\+="\d+"]/g, "");
+                let TAGS = data.DESCRIPTION.matchAll(/\[\+\w\+="(\d+|\w+)"]/g);
+                data.DESCRIPTION = data.DESCRIPTION.replace(/\[\+\w\+="(\d+|\w+)"]/g, "");
                 for (const tag of TAGS) {
-                    if(tag[0].split(/\+/g)[1] == "a") {
-                        tags.age = tag[0].split(/\"/g)[1];
+                    if(tag[0].split(/\+/g)[1] == "a" && tag[0].match(/"\d+"/g) && tag[0].split(/"/g)[1] < 101) {
+                        tags.age = tag[0].split(/"/g)[1];
                     }
                 }
                 let OBJ_age = "";
@@ -1670,6 +1670,7 @@ ${u}</tr>`;
                     let peeps = "";
                     let pei = [[], []];
                     for (let i = 0; i < data.SUBSCRIPTIONS.array.length; i++) {
+                        let name = data.SUBSCRIPTIONS.array[i].title.simpleText.slice(0, 7) + "...";
                         let string = `<div class="user-peep" style="width:33%;">
 <center>
 <div class="user-thumb-large link-as-border-color">
@@ -1677,7 +1678,7 @@ ${u}</tr>`;
 <a href="https://www.youtube.com/channel/${data.SUBSCRIPTIONS.array[i].channelId}"><img src="${data.SUBSCRIPTIONS.array[i].thumbnail.thumbnails[0].url}"></a>
 </div>
 </div>
-<a href="https://www.youtube.com/channel/${data.SUBSCRIPTIONS.array[i].channelId}" title="${data.SUBSCRIPTIONS.array[i].title.simpleText}" rel="following">${data.SUBSCRIPTIONS.array[i].title.simpleText}</a>
+<a href="https://www.youtube.com/channel/${data.SUBSCRIPTIONS.array[i].channelId}" title="${data.SUBSCRIPTIONS.array[i].title.simpleText}" rel="following">${name}</a>
 </center>
 </div>`;
                         if(i < 6) {
@@ -3296,9 +3297,7 @@ ${OBJ_FOOTER}`;
                 scripts += a.outerHTML;
             });
             document.body.innerHTML = scripts + '<i id="body_is_ready"></i>';
-            $(document).ready(function(){
-                inject();
-            });
+            inject();
         };
         let superImportantSc = setInterval(function() {
             document.querySelectorAll("script").forEach(a => {
