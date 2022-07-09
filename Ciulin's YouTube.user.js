@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.5.20
+// @version      0.5.21
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -37,7 +37,7 @@
         return console.error(`[Ciulin's YouTube] ${a}`);
     }
     var BOOL_LOGIN;
-    var BOOL_SUBSCRIBE = false;
+    var BOOL_SUBSCRIBE;
     document.ciulinYT = {};
     document.ciulinYT.data = {
         loggedin: false,
@@ -163,21 +163,47 @@
 
             return a;
         },
-        featured_channels: async () => {
-            let a = ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents;
-            let b = [];
-            let c = [];
-            for (let i = 0; i < a.length; i++) {
-                if(!a[i].itemSectionRenderer.contents[0].channelVideoPlayerRenderer) {
-                    b.push(a[i].itemSectionRenderer.contents[0].shelfRenderer);
-                }
-            }
-            for (let i = 0; i < b.length; i++) {
-                if (b[i].content.horizontalListRenderer.items[0].gridChannelRenderer) {
-                    c.push(b[i].content.horizontalListRenderer.items);
-                }
-            }
-            console.debug(c);
+        channel_subscriptions: async () => {
+            var test = new Promise(async resolve => {
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", `https://www.youtube.com/${window.location.pathname}/channels?view=56&shelf_id=0`);
+                xhr.onload = async () => {
+                    let a = JSON.parse(xhr.response.split("var ytInitialData = ")[1].split(";</script>")[0]).contents.twoColumnBrowseResultsRenderer.tabs.find(b => b.tabRenderer.endpoint.commandMetadata.webCommandMetadata.url.split("/")[3] === 'channels');
+                    let master = {array: [], length: 0};
+                    if(!a.tabRenderer || !a.tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].gridRenderer) return resolve(master);
+                    let list = a.tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].gridRenderer.items;
+
+                    let fetch = async (url) => {
+                        let a = await document.ciulinYT.func.getApi("/youtubei/v1/browse", `continuation: "${url}"`);
+                        await loop(a.onResponseReceivedActions[0].appendContinuationItemsAction.continuationItems)
+                        return a;
+                    }
+
+                    let loop = async (obj) => {
+                        for (let i = 0; i < obj.length; i++) {
+                            if(obj[i].continuationItemRenderer) {
+                                let te = obj[i].continuationItemRenderer.continuationEndpoint.continuationCommand.token;
+                                let st = await fetch(te);
+                            }
+                            if(obj[i].gridChannelRenderer) {
+                                master.array.push(obj[i].gridChannelRenderer);
+                                master.length += 1;
+                            }
+                        };
+                    }
+
+                    await loop(list);
+                    resolve(master);
+                };
+                xhr.onerror = () => {
+                    console.error("** An error occurred during the XMLHttpRequest");
+                };
+                xhr.send();
+            });
+
+            let a = await test;
+
+            return a;
         },
         channel_info: async () => {
             let test = new Promise(async resolve => {
@@ -1560,6 +1586,19 @@ document.querySelector(".playbar-controls_play").setAttribute("data-state", "0")
                 if (window.location.pathname.split("/")[2].match(/technoblade/gi)) {
                     thelegend = `<div id="the-blood-king">Long live the blood king🐷❤️</div>`;
                 }
+                let {owner, time, views, title, id, url, description} = await document.ciulinYT.func.organizeVideoData(data.HOMEVIDEO);
+                let tags = {age: undefined};
+                let TAGS = data.DESCRIPTION.matchAll(/\[\+\w\+="\d+"]/g);
+                data.DESCRIPTION = data.DESCRIPTION.replace(/\[\+\w\+="\d+"]/g, "");
+                for (const tag of TAGS) {
+                    if(tag[0].split(/\+/g)[1] == "a") {
+                        tags.age = tag[0].split(/\"/g)[1];
+                    }
+                }
+                let OBJ_age = "";
+                if(tags.age !== undefined) {
+                    OBJ_age = `<div class="show_info outer-box-bg-as-border"><div class="profile-info-label">Age:</div><div class="profile-info-value" id="profile_show_age">${tags.age}</div><div class="cb"></div></div>`;
+                }
                 let videos = "";
                 for (let i = 0; i < data.VIDEOS.length; i++) {
                     let {owner, time, views, title, id, url} = data.VIDEOS[i];
@@ -1626,6 +1665,63 @@ ${data.RECENTFEED[i].images}
 </tr>
 ${u}</tr>`;
                 }
+                let OBJ_SUBS = ``;
+                if(data.SUBSCRIPTIONS.array.length > 1) {
+                    let peeps = "";
+                    let pei = [[], []];
+                    for (let i = 0; i < data.SUBSCRIPTIONS.array.length; i++) {
+                        let string = `<div class="user-peep" style="width:33%;">
+<center>
+<div class="user-thumb-large link-as-border-color">
+<div>
+<a href="https://www.youtube.com/channel/${data.SUBSCRIPTIONS.array[i].channelId}"><img src="${data.SUBSCRIPTIONS.array[i].thumbnail.thumbnails[0].url}"></a>
+</div>
+</div>
+<a href="https://www.youtube.com/channel/${data.SUBSCRIPTIONS.array[i].channelId}" title="${data.SUBSCRIPTIONS.array[i].title.simpleText}" rel="following">${data.SUBSCRIPTIONS.array[i].title.simpleText}</a>
+</center>
+</div>`;
+                        if(i < 6) {
+                            pei[0].push(string);
+                        } else {
+                            pei[1].push(string);
+                        }
+                    }
+                    let ueu = "";
+                    let uwu = "";
+                    for (let i = 0; i < pei[1].length; i++) {
+                        ueu += pei[1][i];
+                    }
+                    for (let i = 0; i < pei[0].length; i++) {
+                        uwu += pei[0][i];
+                    }
+
+                    let to = `<div class="hid">${ueu}</div>`;
+
+                    peeps = uwu + to;
+
+                    OBJ_SUBS = `<div class="inner-box" id="user_subscriptions" style="background-color: rgb(238, 238, 255); color: rgb(51, 51, 51);">
+<div style="zoom:1">
+<div class="box-title title-text-color">Subscriptions (<a href="?view=subscriptions" class="headersSmall" name="channel-box-item-count">${data.SUBSCRIPTIONS.length}</a>)</div>
+<div class="box-editor">
+<div style="float:right"></div>
+</div>
+<div class="cb"></div>
+</div>
+<div id="user_subscriptions-messages" class="hid"></div>
+<div id="user_subscriptions-body">
+<div style="zoom:1;margin: 0 -12px">
+${peeps}
+<div style="clear:both;font-height:1px"></div>
+</div>
+<div>
+<div style="font-size: 12px; text-align: right; margin-top: 7px;">
+<b><a name="channel-box-see-all" href="?view=subscriptions">see all</a></b>
+</div>
+</div>
+</div>
+<div class="clear"></div>
+</div>`;
+                }
                 let OBJ_views = "";
                 if(data.INFO.string.VIEWS !== undefined) {
                     OBJ_views = `<div class="show_info outer-box-bg-as-border"><div class="profile-info-label">${data.INFO.name.VIEWS}:</div><div class="profile-info-value" id="profile_show_viewed_count">${data.INFO.string.VIEWS}</div><div class="cb"></div></div>`;
@@ -1648,6 +1744,7 @@ ${u}</tr>`;
 <div id="user_profile-body">
 <div class="profile_info vcard">
 ${OBJ_views}
+${OBJ_age}
 ${OBJ_join}
 ${OBJ_subcount}
 ${OBJ_country}
@@ -1656,7 +1753,6 @@ ${OBJ_country}
 </div>
 <div class="cb"></div>
 </div>`;
-                let {owner, time, views, title, id, url, description} = await document.ciulinYT.func.organizeVideoData(data.HOMEVIDEO);
                 var OBJ_PLAYNAVA = `<div id="playnav-body" style="position: inherit;">
 <div id="playnav-player" class="playnav-player-container" style="visibility: visible; left: 0px;position: inherit;">
 <movie-player id="video-player"></movie-player>
@@ -1856,6 +1952,7 @@ ${thelegend}
 <div class="cb"></div>
 </div>
 ${OBJ_USERPROFILE}
+${OBJ_SUBS}
 </div>`;
                 var OBJ_RIGHTCOLL = `<div class="right-column" id="main-channel-right">
 <div class="inner-box" id="user_recent_activity" style="background-color: rgb(238, 238, 255); color: rgb(51, 51, 51);">
@@ -2075,9 +2172,10 @@ ${OBJ_CHANCON}
             }
             if((ytInitialData.metadata ? ytInitialData.metadata.channelMetadataRenderer.title : "") == document.ciulinYT.data.name) return document.ciulinYT.func.showModal("No need to subscribe to yourself!");
             if((ytInitialPlayerResponse ? ytInitialPlayerResponse.videoDetails.author : "") == document.ciulinYT.data.name) return document.ciulinYT.func.showModal("No need to subscribe to yourself!");
+            if(BOOL_SUBSCRIBE == null) BOOL_SUBSCRIBE = ytInitialData.header.c4TabbedHeaderRenderer.subscribeButton.subscribeButtonRenderer.subscribed;
 
             let ytapi = ytInitialData.metadata ? ytInitialData.metadata.channelMetadataRenderer.externalId : (ytInitialPlayerResponse) ? ytInitialPlayerResponse.videoDetails.channelId : "";
-            var sub = await BOOL_SUBSCRIBE;
+            var sub = BOOL_SUBSCRIBE;
             var button = document.querySelector(".yt-subscription-button") ? ".yt-subscription-button" : ".subscribe-button";
             var text = "";
 
@@ -2641,7 +2739,7 @@ ${OBJ_SUGGESTEDVIDEOS}
                     }
                     collection.DEC = "";
                     collection.VIDEOS = await document.ciulinYT.load.channel_videos();
-                    //collection.FEATURED = await document.ciulinYT.load.featured_channels();
+                    collection.SUBSCRIPTIONS = await document.ciulinYT.load.channel_subscriptions();
                     collection.RECENTFEED = await document.ciulinYT.load.recent_feed();
                     collection.INFO = await document.ciulinYT.load.channel_info();
                     collection.HOMEVIDEO = ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer ? ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer : {};
