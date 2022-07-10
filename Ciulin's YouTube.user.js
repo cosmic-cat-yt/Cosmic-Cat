@@ -2453,7 +2453,7 @@ Loading...
             }
             if(window.location.pathname.split("/")[1].match(/watch/i)) {
                 let FUNC = (async () => {
-                    //console.debug(ytInitialData.contents.twoColumnWatchNextResults.results.results);
+                    console.debug(ytInitialData.contents.twoColumnWatchNextResults.results.results);
                     let {views, title, upload} = await document.ciulinYT.func.organizeVideoData(ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer);
                     let {owner, url} = await document.ciulinYT.func.organizeVideoData(ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[1].videoSecondaryInfoRenderer);
                     var VALUE_VIDEODATE = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.dateText.simpleText.replace(/(Premiere[ |s|d])|(in progress.)|Started|less than/g, "");
