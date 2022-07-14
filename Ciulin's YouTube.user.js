@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.5.24
+// @version      0.5.25
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -1728,8 +1728,9 @@ document.querySelector(".playbar-controls_play").setAttribute("data-state", "0")
                     thelegend = `<div id="the-blood-king">Long live the blood king🐷❤️</div>`;
                 }
                 let {owner, time, views, title, id, url, description} = await document.ciulinYT.func.organizeVideoData(data.HOMEVIDEO);
-                let tags = {age: undefined};
+                let tags = {age: undefined, occupation: undefined};
                 let TAGS = data.DESCRIPTION.matchAll(/\[\+\w\+="(\d+|.+)"]/g);
+                data.DESCRIPTION = data.DESCRIPTION.replace(/\[\+\w\+="(\d+|.+)"]/g, "");
                 for (const tag of TAGS) {
                     if(tag[0].split(/\+/g)[1] == "a" && tag[0].match(/"\d+"/g) && tag[0].split(/"/g)[1] < 101) {
                         tags.age = tag[0].split(/"/g)[1];
@@ -1744,7 +1745,7 @@ document.querySelector(".playbar-controls_play").setAttribute("data-state", "0")
                 }
                 let OBJ_occu = "";
                 if(tags.occupation !== undefined) {
-
+                    OBJ_occu = `<div class="show_info outer-box-bg-as-border"><div class="profile-info-label">Occupation:</div><div class="profile-info-value" id="profile_show_age">${tags.occupation}</div><div class="cb"></div></div>`;
                 }
                 let videos = "";
                 for (let i = 0; i < data.VIDEOS.length; i++) {
@@ -1896,6 +1897,7 @@ ${OBJ_age}
 ${OBJ_join}
 ${OBJ_subcount}
 ${OBJ_country}
+${OBJ_occu}
 <div class="show_info outer-box-bg-as-border" style="border-bottom-width:1px;margin-bottom:4px;line-height:140%" dir="ltr">${data.DESCRIPTION}${data.INFO.string.BIO}</div>
 </div>
 </div>
