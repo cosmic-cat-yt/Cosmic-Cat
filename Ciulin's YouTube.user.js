@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.5.25
+// @version      0.5.26
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -1541,6 +1541,7 @@ document.querySelector(".playbar-controls_play").setAttribute("data-state", "0")
         },
         organizeSubscriptionsData: async (da) => {
             if(!da) return {};
+            if(!da.items.find(b => b.guideSubscriptionsSectionRenderer)) return [];
             let a = da.items.find(b => b.guideSubscriptionsSectionRenderer).guideSubscriptionsSectionRenderer.items;
             let TAB = [];
             for (let i = 0; i < a.length; i++) {
