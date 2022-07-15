@@ -16,7 +16,7 @@ Your ticket must be in this format to be considered a valid bug report:</br>
 `2. Screenshot of Developer Tools Console (Must have Logs, Warn, Error, Debug & Info enabled):`</br>
 `3. Page URL of where you encountered the issue:`</br></br>
 
-If a bug report has been left unanswered for 5 days by it's author it will be closed. If your bug report does not meet the bug report standard - You will be asked to open a new ticket and use the correct format. Bug reports before 07-15-2022 12:30PM (BST) won't be affected. You will be asked to send all these things.</br></br>
+If your ticket does not meet the standard - You will be asked for each item in the standard.</br></br>
 **YouTube is a trademark of Google LLC.** (don't sue me please)
 
 ## Install
