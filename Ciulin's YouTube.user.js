@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.5.27
+// @version      0.5.28
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -722,7 +722,7 @@
             document.querySelector("#comments-loading").classList.remove("hid");
             let api = await document.ciulinYT.func.getApi("/youtubei/v1/next", `continuation: "${continuation}"`);
             let collection = api.onResponseReceivedEndpoints[1] ? api.onResponseReceivedEndpoints[1].reloadContinuationItemsCommand.continuationItems : api.onResponseReceivedEndpoints[0].appendContinuationItemsAction.continuationItems;
-            document.querySelector("#session").value = api.onResponseReceivedEndpoints[0].reloadContinuationItemsCommand.continuationItems[0].commentsHeaderRenderer.createRenderer.commentSimpleboxRenderer.aadcGuidelinesStateEntityKey;
+            //document.querySelector("#session").value = api.onResponseReceivedEndpoints[0].reloadContinuationItemsCommand.continuationItems[0].commentsHeaderRenderer.createRenderer.commentSimpleboxRenderer.aadcGuidelinesStateEntityKey;
             let result = {result: "", con: ""};
             let ana = () => {
                 document.querySelector(".yt-uix-button-toggled").classList.remove("yt-uix-button-toggled");
