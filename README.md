@@ -5,8 +5,6 @@ This UserScript aims to recreate the 2012 layout of YouTube completely. Includin
 
 ## Important
 This is super WIP but it works!<br/><br/>
-⚠️ **It is highly recommended that you're logged in while using this UserScript** ⚠️<br/>
-Read about why: [/wiki/Warning-Message](https://github.com/ciulinuwu/ciulin-s-youtube/wiki/Warning-Message)
 
 ## Bug report & Standards
 If you experience any issues with the script, please open up a ticket on the [**Issues**](https://github.com/ciulinuwu/ciulin-s-youtube/issues/new/choose) tab.</br></br>
