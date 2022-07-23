@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.5.29
+// @version      0.5.30
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -9,8 +9,8 @@
 // @match        https://www.youtube.com/*
 // @exclude      https://www.youtube.com/tv
 // @icon         https://www.google.com/s2/favicons?domain=youtube.com
-// @require      https://raw.githubusercontent.com/YukisCoffee/7ktTube/main/modules/yabai_component.js
-// @require      https://raw.githubusercontent.com/YukisCoffee/7ktTube/main/modules/open_uix_components.js
+// @require      https://raw.githubusercontent.com/ciulinuwu/ciulin-s-youtube/main/yabai_component.js
+// @require      https://raw.githubusercontent.com/ciulinuwu/ciulin-s-youtube/main/open_uix_components.js
 // @grant unsafeWindow
 // @grant GM_addStyle
 // @grant GM.getValue
