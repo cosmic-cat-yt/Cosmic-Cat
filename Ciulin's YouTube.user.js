@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.5.30
+// @version      0.5.31
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -776,6 +776,7 @@
             var ELEMENT = document.querySelector("#video-player");
             var TEMP = document.createElement("div");
             TEMP.setAttribute("class", "player");
+            ELEMENT.setAttribute("tabindex", 0);
             ELEMENT.append(TEMP);
             var DOM = ELEMENT.querySelector(".player");
             (() => {
@@ -1208,7 +1209,7 @@ let list = {
 let text = e.target.getAttribute("data-tooltip");
 let tooltip = document.querySelector("#seek-tooltip");
 let pos = e.target.getAttribute("data-name");
-if(pos == "fullscreen") {tooltip.classList.add("deez")};
+if(pos == "fullscreen") {tooltip.classList.add("deez");};
 tooltip.classList.remove("hid");
 const rect = document.querySelector("#video-player").getBoundingClientRect();
 tooltip.style.left = list[pos][0] + "px";
@@ -1227,6 +1228,31 @@ for (let i = 0; i < doCU.length; i++) {
 doCU[i].addEventListener("mouseenter", toolTipOver);
 doCU[i].addEventListener("mouseleave", toolTipEnd);
 }
+document.querySelector("#video-player").addEventListener("keydown", (e) => {
+if (!e) return;
+e.preventDefault();
+switch (e.key) {
+case " ":
+document.querySelector(".playbar-controls_play").click();
+break;
+case "f":
+document.querySelector(".playbar-controls_fullscreen").click();
+break;
+case "ArrowRight":
+document.ciulinYT.player.seekBy(5);
+break;
+case "ArrowLeft":
+document.ciulinYT.player.seekBy(-5);
+break;
+case "ArrowUp":
+document.ciulinYT.func.setVolume(document.ciulinYT.player.getVolume() + 5);
+break;
+case "ArrowDown":
+document.ciulinYT.func.setVolume(document.ciulinYT.player.getVolume() - 5);
+break;
+};
+console.debug(e);
+});
 document.querySelector(".video-container").addEventListener("click", () => {
 document.ciulinYT.func.exitPlayerSettings();
 document.querySelector("#video-animation").classList.remove("hid");
@@ -1241,12 +1267,6 @@ document.querySelectorAll(".playmenu-button").forEach(a => {
 a.addEventListener("click", e => {
 document.ciulinYT.load.settings_tab(e.srcElement.getAttribute("data-name"));
 })});
-document.querySelector("#video-player").addEventListener("contextmenu", (e) => {
-e.preventDefault();
-document.ciulinYT.func.playerSettings();
-document.querySelector("video-settings").classList.remove("hid");
-return false;
-}, false);
 document.querySelector(".playmenu-button_exit").addEventListener("click", () => {
 document.ciulinYT.func.exitPlayerSettings();
 });
@@ -1417,6 +1437,7 @@ document.querySelector(".playbar-controls_play").setAttribute("data-state", "0")
             let description = da.detailedMetadataSnippets ? da.detailedMetadataSnippets[0].snippetText.runs[0].text : da.descriptionSnippet ? da.descriptionSnippet.runs[0].text : da.videoDetails ? da.videoDetails.shortDescription : "";
             let icon = da.channelThumbnailSupportedRenderers ? da.channelThumbnailSupportedRenderers.channelThumbnailWithLinkRenderer.thumbnail.thumbnails[0].url : "";
             let tags = da.videoDetails ? da.videoDetails.keywords ? da.videoDetails.keywords : false : [];
+            let category = ytInitialPlayerResponse.microformat.playerMicroformatRenderer.category;
 
             description = description.replace(/(?:\r\n|\r|\n)/g, '<br>');
             let up = upload.split("-");
@@ -1453,7 +1474,8 @@ document.querySelector(".playbar-controls_play").setAttribute("data-state", "0")
                 description: description,
                 upload: upload,
                 icon: icon,
-                tags: tags
+                tags: tags,
+                category: category
             };
         },
         escapeHtml: (unsafe) => {
@@ -2803,22 +2825,21 @@ Loading...
                 }
                 let {id, views, title, upload, url, tags, owner, description, category} = await document.ciulinYT.func.organizeVideoData(ytInitialPlayerResponse);
                 BOOL_SUBSCRIBE = document.ciulinYT.func.getSubscription();
-                var VALUE_VIDEOCATEGORY = ytInitialPlayerResponse.microformat.playerMicroformatRenderer.category;
-                var VALUE_VIDEOTAG = tags;
+                var VALUE_SUGGVIDLOG = (BOOL_LOGIN == true) ? "addto-watch-later-button": "addto-watch-later-button-sign-in";
                 var VALUE_VIDEOTAGS = "";
                 var OBJ_SUGGESTEDVIDEO = ytInitialData.contents.twoColumnWatchNextResults.secondaryResults.secondaryResults.results[1].itemSectionRenderer ? ytInitialData.contents.twoColumnWatchNextResults.secondaryResults.secondaryResults.results[1].itemSectionRenderer.contents : ytInitialData.contents.twoColumnWatchNextResults.secondaryResults.secondaryResults.results;
                 var OBJ_SUGGESTEDVIDEOS = "";
                 var VALUE_SUBBUTTON = document.ciulinYT.func.getSubscription() ? "subscribed" : "subscribe";
                 var isLiked = ytInitialData.contents.twoColumnWatchNextResults.results ? ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.find(a => a.videoPrimaryInfoRenderer).videoPrimaryInfoRenderer.videoActions.menuRenderer.topLevelButtons[0].toggleButtonRenderer.isToggled ? "liked" : false : "";
                 var isDisliked = ytInitialData.contents.twoColumnWatchNextResults.results? ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.find(a => a.videoPrimaryInfoRenderer).videoPrimaryInfoRenderer.videoActions.menuRenderer.topLevelButtons[1].toggleButtonRenderer.isToggled ? "unliked" : false : "";
-                for (let i = 0; i < VALUE_VIDEOTAG.length; i++) {
-                    VALUE_VIDEOTAGS += `<li><a href="https://www.youtube.com/results?search_query=${VALUE_VIDEOTAG[i]}&amp;search=tag">${VALUE_VIDEOTAG[i]}</a></li>`;
+                for (let i = 0; i < tags.length; i++) {
+                    VALUE_VIDEOTAGS += `<li><a href="https://www.youtube.com/results?search_query=${tags[i]}&amp;search=tag">${tags[i]}</a></li>`;
                 }
                 for (let i = 0; i < OBJ_SUGGESTEDVIDEO.length; i++) {
                     if(OBJ_SUGGESTEDVIDEO[i].compactVideoRenderer) {
                         let {owner, time, views, title, id, url} = await document.ciulinYT.func.organizeVideoData(OBJ_SUGGESTEDVIDEO[i].compactVideoRenderer);
                         OBJ_SUGGESTEDVIDEOS += `<li class="video-list-item">
-<a href="https://www.youtube.com/watch?v=${id}" class="video-list-item-link">
+<a href="https://www.youtube.com/watch?v=${id}" class="related-video yt-uix-contextlink yt-uix-sessionlink">
 <span class="ux-thumb-wrap contains-addto">
 <span class="video-thumb ux-thumb yt-thumb-default-120">
 <span class="yt-thumb-clip">
@@ -2828,16 +2849,15 @@ Loading...
 </span>
 </span>
 <span class="video-time">${time}</span>
-<button type="button" class="addto-button short video-actions yt-uix-button yt-uix-button-short" onclick=";return false;" role="button">
-<img class="yt-uix-button-icon yt-uix-button-icon-addto" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
+<button type="button" class="addto-button video-actions spf-nolink ${VALUE_SUGGVIDLOG} yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" onclick=";return false;" role="button">
 <span class="yt-uix-button-content">
-<span class="addto-label">Add to</span>
+<img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Watch Later">
 </span>
 <img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
 </button>
 </span>
 <span dir="ltr" class="title" title="${title}">${title}</span>
-<span class="stat">by ${owner.text}</span>
+<span class="stat attribution">by <span class="class="yt-user-name" dir="ltr">${owner.text}</span></span>
 <span class="stat view-count">${views[0]}</span>
 </a>
 </li>`;
@@ -3005,7 +3025,7 @@ Loading...
 </div>
 <div id="watch-description-extras">
 <h4>Category:</h4>
-<p id="eow-category"><a href="//www.youtube.com/videos">${VALUE_VIDEOCATEGORY}</a></p>
+<p id="eow-category"><a href="//www.youtube.com/videos">${category}</a></p>
 <h4>Tags:</h4>
 <ul id="eow-tags" class="watch-info-tag-list">
 ${VALUE_VIDEOTAGS}
@@ -3025,7 +3045,7 @@ ${VALUE_VIDEOTAGS}
 </span>
 </li>
 </ul>
-<div class="horizontal-rule ">
+<div class="horizontal-rule">
 <span class="first"></span>
 <span class="second"></span>
 <span class="third"></span>
@@ -3066,9 +3086,9 @@ ${commen}
 </div>
 </div>
 <div id="watch-sidebar">
-<div class="watch-sidebar-section ">
-<div id="watch-related-container" class="watch-sidebar-body">
-<ul id="watch-related" class="video-list">
+<div class="watch-sidebar-section">
+<div id="watch-related-container">
+<ul id="watch-related" class="video-list watch-sidebar-body">
 ${OBJ_SUGGESTEDVIDEOS}
 </ul>
 <p class="content"></p>
