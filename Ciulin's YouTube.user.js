@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.5.31
+// @version      0.5.32
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -1437,7 +1437,7 @@ document.querySelector(".playbar-controls_play").setAttribute("data-state", "0")
             let description = da.detailedMetadataSnippets ? da.detailedMetadataSnippets[0].snippetText.runs[0].text : da.descriptionSnippet ? da.descriptionSnippet.runs[0].text : da.videoDetails ? da.videoDetails.shortDescription : "";
             let icon = da.channelThumbnailSupportedRenderers ? da.channelThumbnailSupportedRenderers.channelThumbnailWithLinkRenderer.thumbnail.thumbnails[0].url : "";
             let tags = da.videoDetails ? da.videoDetails.keywords ? da.videoDetails.keywords : false : [];
-            let category = ytInitialPlayerResponse.microformat.playerMicroformatRenderer.category;
+            let category = ytInitialPlayerResponse ? ytInitialPlayerResponse.microformat.playerMicroformatRenderer.category : "";
 
             description = description.replace(/(?:\r\n|\r|\n)/g, '<br>');
             let up = upload.split("-");
