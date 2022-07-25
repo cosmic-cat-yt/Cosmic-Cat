@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.5.32
+// @version      0.5.33
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
 // @downloadURL  https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
 // @match        https://www.youtube.com/*
 // @exclude      https://www.youtube.com/tv
+// @exclude      https://www.youtube.com/signin_prompt*
 // @icon         https://www.google.com/s2/favicons?domain=youtube.com
 // @require      https://raw.githubusercontent.com/ciulinuwu/ciulin-s-youtube/main/yabai_component.js
 // @require      https://raw.githubusercontent.com/ciulinuwu/ciulin-s-youtube/main/open_uix_components.js
@@ -788,6 +789,12 @@
                 document.ciulinYT.load.settings_tab("subtitles");
             })();
             (() => {
+                var DOM_topBar = document.createElement("div");
+                DOM_topBar.setAttribute("class", "video-topbar");
+                DOM_topBar.innerHTML = `<div class="video-topbar-container"><div class="video-title"><span id="video-title-text">Hi</span></div></div>`;
+                DOM.appendChild(DOM_topBar);
+            })();
+            (() => {
                 var DOM_embedVideo = document.createElement("div");
                 DOM_embedVideo.setAttribute("class", "video-container");
                 DOM_embedVideo.innerHTML = `<div id="video-main-content"></div><div class="video-blank"></div><div id="video-animation" class="hid"><i class="playbar-icon playbar-icon_play"></i></div>`;
@@ -812,8 +819,8 @@
 </li>
 <div class="playbar-volume_slider-container">
 <div class="playbar-shadow"></div>
-<div class="playbar-volume_slider">
-<input type="range" id="playbar-seek" max="100" value="100">
+<div class="playbar-volume_slider" role="progressbar">
+<span class="slider_track_played"></span><span class="slider_track_handle"></span>
 </div>
 </div>
 </div>
@@ -848,16 +855,6 @@
     --llRED: linear-gradient(0deg, rgba(195,0,0,1) 0%, rgba(108,0,0,1) 100%);
     --texture-playbar: url(${document.ciulinYT.data.playerSheetB}) no-repeat;
 }
-.hid {
-    display: none !important;
-}
-.deez::after {
-margin-left: 15px !important;
-}
-.right {
-    position: absolute;
-    right: 0;
-}
 .playmenu-container {
     display: none;
 }
@@ -871,11 +868,46 @@ margin-left: 15px !important;
     width: inherit;
     height: inherit;
 }
+#video-player .video-topbar {
+width: inherit;
+overflow: hidden;
+position: absolute;
+z-index: 1;
+height: 28px;
+user-select: none;
+}
+#video-player:hover .video-topbar-container {
+top: 0px;
+transition: top 0s ease-in;
+}
+#video-player .video-topbar-container {
+background: linear-gradient(0deg, rgba(31,31,31,0) 0%, rgba(31,31,31,1) 100%);
+width: inherit;
+top: -28px;
+transition: top 1s ease-out;
+position: absolute;
+}
+#video-player .video-title {
+float: left;
+padding: 8px 13px;
+}
+#video-player .video-topbar-buttons {
+display: flex;
+height: 25px;
+line-height: 25px;
+overflow: hidden;
+position: relative;
+user-select: none;
+border-top: 1px solid #484646;
+border-bottom: 1px solid #0b0b0b;
+background: var(--lld);
+z-index: 3;
+}
 #video-player .video-container {
     height: 359px;
     width: inherit;
     position: relative;
-    z-index: 1;
+    z-index: 0;
 }
 #video-player:fullscreen .video-container {
     height: 97%;
@@ -904,6 +936,7 @@ margin-left: 15px !important;
     height: 3px;
     user-select: none;
     border-bottom: 1px solid black;
+    border-top: 1px solid #323232;
 }
 #video-player:hover .video-scrubbar {
     height: 7px;
@@ -913,10 +946,12 @@ margin-left: 15px !important;
 }
 #video-player:hover .video-scrubbar .scrubbar_track_played {
     max-height: 7px;
+    transition: max-height 0s;
 }
 #video-player:hover .video-scrubbar .scrubbar_track_handle {
     transform: scale(1);
     opacity: 1;
+    transition: transform 0s, opacity 0s;
 }
 #video-player .scrubbar_track_played {
     max-height: 3px;
@@ -925,7 +960,7 @@ margin-left: 15px !important;
     top: 0;
     left: 0;
     bottom: 0;
-    transition: max-height 0.1s;
+    transition: max-height 1s;
 }
 #video-player .scrubbar_track_handle {
     background: var(--texture-playbar);
@@ -936,10 +971,10 @@ margin-left: 15px !important;
     bottom: 0;
     width: 16px;
     height: 16px;
-    margin: -4px -7.5px;
+    margin: -5px -7.5px;
     border-radius: 9px;
     opacity: 0;
-    transition: transform 0.1s, opacity 0.2s;
+    transition: transform 1s, opacity 1s;
     transform: scale(0.3);
     z-index: 100;
 }
@@ -978,12 +1013,12 @@ content: " ";
     height: 25px;
     line-height: 25px;
     overflow: hidden;
-    position: relative;
     user-select: none;
     border-top: 1px solid #484646;
     border-bottom: 1px solid #0b0b0b;
     background: var(--lld);
     z-index: 3;
+    width: inherit;
 }
 #video-player .playbar-controls {
     list-style-type: none;
@@ -1002,6 +1037,7 @@ content: " ";
     margin: 0 1px;
     border: 0;
     position: relative;
+    cursor: pointer;
 }
 #video-player .playbar-controls_icon::before, #video-player .playbar-controls_icon::after {
     content: ' ';
@@ -1034,6 +1070,8 @@ height: 17px;
 #video-player .playbar-controls_play[data-state^="1"] .playbar-icon.playbar-icon_play {
 background-position: 0px -22px;
 width: 11px;
+padding-top: 1px;
+padding-left: 2px;
 }
 #video-player .playbar-controls_play[data-state^="0"]:hover .playbar-icon.playbar-icon_play {
     background-position: -21px -0px;
@@ -1042,40 +1080,40 @@ width: 11px;
     background-position: -19px -22px;
 }
 #video-player .playbar-controls_volume[data-state^="0"] .playbar-icon.playbar-icon_volume {
-    background-position: 0px -104px;
+    background-position: 0px -105px;
 }
 #video-player .playbar-volume_container:hover .playbar-controls_volume[data-state^="0"] .playbar-icon.playbar-icon_volume {
-    background-position: -28px -104px;
+    background-position: -28px -105px;
 }
 #video-player .playbar-controls_volume[data-state^="1"] .playbar-icon.playbar-icon_volume {
-    background-position: 0px -123px;
+    background-position: 0px -124px;
 }
 #video-player .playbar-volume_container:hover .playbar-controls_volume[data-state^="1"] .playbar-icon.playbar-icon_volume {
-    background-position: -28px -123px;
+    background-position: -28px -124px;
 }
 #video-player .playbar-controls_volume[data-state^="2"] .playbar-icon.playbar-icon_volume {
-    background-position: 0px -142px;
+    background-position: 0px -143px;
 }
 #video-player .playbar-volume_container:hover .playbar-controls_volume[data-state^="2"] .playbar-icon.playbar-icon_volume {
-    background-position: -28px -142px;
+    background-position: -28px -143px;
 }
 #video-player .playbar-controls_volume[data-state^="3"] .playbar-icon.playbar-icon_volume {
-    background-position: 0px -161px;
+    background-position: 0px -162px;
 }
 #video-player .playbar-volume_container:hover .playbar-controls_volume[data-state^="3"] .playbar-icon.playbar-icon_volume {
-    background-position: -28px -161px;
+    background-position: -28px -162px;
 }
 #video-player .playbar-icon.playbar-icon_settings {
-    background-position: 0px -41px;
+    background-position: 0px -42px;
     height: 20px;
     width: 16px;
     margin-right: auto;
 }
 #video-player .playbar-controls_settings:hover .playbar-icon.playbar-icon_settings {
-background-position: -24px -41px;
+background-position: -24px -42px;
 }
 #video-player .playbar-icon.playbar-icon_watchlater {
-    background-position: 0px -65px;
+    background-position: 0px -66px;
     height: 14px;
     width: 13px;
     margin-right: auto;
@@ -1100,6 +1138,29 @@ background-position: -28px -180px;
 #video-player .playbar-volume_slider-container {
     display: none;
     width: 0px;
+}
+#video-player .playbar-volume_slider {
+background: black;
+width: 53px;
+height: 4px;
+border-radius: 4px;
+display: block;
+margin: 10px 6px;
+}
+#video-player .slider_track_played {
+background: red;
+border-radius: 4px;
+height: inherit;
+display: block;
+}
+#video-player .slider_track_handle {
+height: 15px;
+width: 6px;
+display: block;
+border-radius: 4px;
+background: white;
+margin: -10px 0px;
+position: relative;
 }
 #video-player .playbar-timestamp_container {
     margin: 0 1px;
@@ -1127,10 +1188,14 @@ background-position: -28px -180px;
     height: inherit;
     width: inherit;
     display: flex;
+    cursor: pointer;
+}
+#video-player .playbar-volume_container:hover {
+width: 98px;
 }
 #video-player .playbar-volume_container:hover .playbar-volume_slider-container {
     display: flex;
-    width: 60px;
+    width: 66px;
 }
 #video-player .playbar-controls_play {
     width: 55px;
@@ -1167,6 +1232,16 @@ background-position: -28px -180px;
 }
 #video-player #timestamp_total {
     color: gray;
+}
+
+.hid {
+    display: none !important;
+}
+.deez::after {
+margin-left: 15px !important;
+}
+.right {
+    margin-left: auto !important;
 }`;
                 script = script.replace(/(?:\r\n|\r|\n)/g, "");
                 a.innerText = script;
@@ -1251,7 +1326,6 @@ case "ArrowDown":
 document.ciulinYT.func.setVolume(document.ciulinYT.player.getVolume() - 5);
 break;
 };
-console.debug(e);
 });
 document.querySelector(".video-container").addEventListener("click", () => {
 document.ciulinYT.func.exitPlayerSettings();
@@ -1279,9 +1353,6 @@ document.ciulinYT.func.mutePlayer(document.querySelector(".playbar-controls_volu
 document.querySelector(".playbar-controls_fullscreen").addEventListener("click", () => {
 document.ciulinYT.func.fullscreenPlayer(document.querySelector(".playbar-controls_fullscreen").getAttribute("data-state"));
 });
-document.querySelector("#playbar-seek").addEventListener("input", (e) => {
-document.ciulinYT.func.setVolume(e.target.value);
-});
 document.querySelector(".video-scrubbar").addEventListener("mouseenter", e => {
 document.querySelector("#seek-tooltip").classList.remove("hid");
 });
@@ -1306,11 +1377,26 @@ if(canMouse !== true) return;
 document.querySelector(".scrubbar_track_played").style.width = ((e.pageX - e.currentTarget.offsetLeft) / e.currentTarget.offsetWidth * 100) + "%";
 document.querySelector(".scrubbar_track_handle").style.left = ((e.pageX - e.currentTarget.offsetLeft) / e.currentTarget.offsetWidth * 100) + "%";
 });
+document.querySelector(".playbar-volume_slider").addEventListener("mousemove", e => {
+if(canMouse !== true) return;
+let offset = ((e.pageX - e.currentTarget.offsetLeft) / e.currentTarget.offsetWidth * 100);
+if(offset > 99) return e.preventDefault();
+document.querySelector(".slider_track_played").style.width = offset + "%";
+document.querySelector(".slider_track_handle").style.left = offset + "%";
+document.ciulinYT.func.setVolume(offset);
+});
+document.querySelector(".playbar-volume_slider").addEventListener('mousedown', e => {
+canMouse = true;
+});
+document.querySelector(".playbar-volume_slider").addEventListener('mouseup', e => {
+canMouse = false;
+});
 var playVideo = () => {
 document.querySelector(".playbar-controls_play").setAttribute("data-state", "1");
 };
 var onPlayerReady = async () => {
 document.querySelector("#timestamp_total").innerText = document.ciulinYT.func.calculateLength(parseInt(document.ciulinYT.player.getDuration()));
+document.querySelector("#video-title-text").innerText = document.ciulinYT.player.videoTitle;
 progress = setInterval(document.ciulinYT.func.preProPos);
 setInterval(document.ciulinYT.func.trackCurrent);
 let speed = await document.ciulinYT.func.getFromStorage("playback");
@@ -1437,7 +1523,10 @@ document.querySelector(".playbar-controls_play").setAttribute("data-state", "0")
             let description = da.detailedMetadataSnippets ? da.detailedMetadataSnippets[0].snippetText.runs[0].text : da.descriptionSnippet ? da.descriptionSnippet.runs[0].text : da.videoDetails ? da.videoDetails.shortDescription : "";
             let icon = da.channelThumbnailSupportedRenderers ? da.channelThumbnailSupportedRenderers.channelThumbnailWithLinkRenderer.thumbnail.thumbnails[0].url : "";
             let tags = da.videoDetails ? da.videoDetails.keywords ? da.videoDetails.keywords : false : [];
-            let category = ytInitialPlayerResponse ? ytInitialPlayerResponse.microformat.playerMicroformatRenderer.category : "";
+            let category = "";
+            if (window.location.pathname.split("/")[1] == "watch") {
+                category = ytInitialPlayerResponse.microformat.playerMicroformatRenderer.category;
+            }
 
             description = description.replace(/(?:\r\n|\r|\n)/g, '<br>');
             let up = upload.split("-");
@@ -1708,7 +1797,7 @@ ${__a[1]}`;
                     document.ciulinYT.player.mute();
                     break;
             }
-            document.querySelector("#playbar-seek").value = seek;
+            //document.querySelector("#playbar-seek").value = seek;
             document.querySelector("#video-player").querySelector(".playbar-controls_volume").setAttribute("data-state", data);
         },
         toggleExpandedMasthead: () => {
@@ -2103,7 +2192,7 @@ ${videos}
 </strong>
 </div>
 </div>
-${OBJ_PLAYNAVA}
+${(videos.length > 0) ? OBJ_PLAYNAVA : ""}
 </div>`;
                 var OBJ_RECENTACT;
                 var OBJ_LEFTCOLL = `<div class="left-column" id="main-channel-left">
@@ -2903,7 +2992,7 @@ Loading...
                     });
                 });
                 document.ciulinYT.func.waitForElm(".comment-list").then(async (elm) => {
-                    if (ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.filter(b => b.itemSectionRenderer)[0]) {
+                    if (ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.filter(b => b.itemSectionRenderer)[1]) {
                         let con = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.filter(b => b.itemSectionRenderer)[1].itemSectionRenderer.contents[0].continuationItemRenderer.continuationEndpoint.continuationCommand.token;
                         let comments = await document.ciulinYT.load.comments(con, 1);
                     }
@@ -3136,16 +3225,18 @@ ${OBJ_SUGGESTEDVIDEOS}
                         collection.SUBCOUNT = collection.SUBCOUNT.replace(/\./, "").replace(/M/, "0000").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                         break;
                 }
+                let ihomev = ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer ? ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer ? true : false : false;
                 collection.DEC = "";
                 collection.VIDEOS = await document.ciulinYT.load.channel_videos();
                 collection.SUBSCRIPTIONS = await document.ciulinYT.load.channel_subscriptions();
                 collection.RECENTFEED = await document.ciulinYT.load.recent_feed();
                 collection.INFO = await document.ciulinYT.load.channel_info();
-                collection.HOMEVIDEO = ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer ? ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer : {};
+                collection.HOMEVIDEO = (ihomev == true) ? ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer : {};
                 collection.SUBSCRIBE = document.ciulinYT.func.getSubscription();
                 setInterval(() => {document.head.querySelector("title").innerText = `${collection.CHANNELNAME}'s Channel - YouTube`;}, 100);
                 document.ciulinYT.func.waitForElm("#video-player").then(() => {
-                    document.ciulinYT.func.buildPlayer(ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer ? ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer.videoId : "");
+                    let id = (ihomev == true) ? ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer.videoId : "";
+                    document.ciulinYT.func.buildPlayer(id);
                 });
                 return document.ciulinYT.func.buildChannelTheme(1, collection);
             })();
