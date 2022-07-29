@@ -13,9 +13,9 @@
 // @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/modules/yabai_component.js
 // @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/modules/open_uix_components.js
 // @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/modules/translations.js?v=1
-// @require      https://github.com/PANMARSAG14/ciulin-s-youtube/raw/main/translations/english.js?v=1
-// @require      https://github.com/PANMARSAG14/ciulin-s-youtube/raw/main/translations/dansk.js?v=1
-// @require      https://github.com/PANMARSAG14/ciulin-s-youtube/raw/main/translations/polski.js?v=1
+// @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/translations/english.js?v=1
+// @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/translations/dansk.js?v=1
+// @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/translations/polski.js?v=1
 // @grant unsafeWindow
 // @grant GM_addStyle
 // @grant GM.getValue
