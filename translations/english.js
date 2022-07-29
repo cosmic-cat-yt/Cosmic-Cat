@@ -67,6 +67,20 @@ window[NAMESPACE_MODULE_CIULINATIONS_EN] = {};
             from: "From:",
             uploadedavideo: "uploaded a video",
             islive: "is live"
+        },    
+        uploadmonth: {
+            jan: "Jan",
+            feb: "Feb",
+            mar: "Mar",
+            apr: "Apr",
+            may: "May",
+            jun: "Jun",
+            jul: "Jul",
+            aug: "Aug",
+            sep: "Sep",
+            oct: "Oct",
+            nov: "Nov",
+            dec: "Dec"
         },
         about: {
             country: "Country:",
