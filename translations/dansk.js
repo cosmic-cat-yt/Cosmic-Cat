@@ -94,7 +94,21 @@ window[NAMESPACE_MODULE_CIULINATIONS_DA] = {};
             category: "Kategori",
             from: "Fra:",
             uploadedavideo: "uploadet en video",
-            islive: "er live"            
+            islive: "er live"
+        },
+        uploadmonth: {
+            jan: "Jan",
+            feb: "Feb",
+            mar: "Mar",
+            apr: "Apr",
+            may: "Maj",
+            jun: "Jun",
+            jul: "Jul",
+            aug: "Aug",
+            sep: "Sep",
+            oct: "Okt",
+            nov: "Nov",
+            dec: "Dec"
         },
         browse: {
             mostviewed: "Mest set i dag",
