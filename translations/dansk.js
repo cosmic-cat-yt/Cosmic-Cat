@@ -89,20 +89,6 @@ window[NAMESPACE_MODULE_CIULINATIONS_DA] = {};
             uploadedavideo: "uploadet en video",
             islive: "er live"
         },
-        uploadmonth: {
-            Jan: "Jan",
-            Feb: "Feb",
-            Mar: "Mar",
-            Apr: "Apr",
-            May: "Maj",
-            Jun: "Jun",
-            Jul: "Jul",
-            Aug: "Aug",
-            Sep: "Sep",
-            Oct: "Okt",
-            Nov: "Nov",
-            Dec: "Dec",
-        },
         browse: {
             mostviewed: "Mest set i dag",
             recommended: "Anbefalet til dig"
