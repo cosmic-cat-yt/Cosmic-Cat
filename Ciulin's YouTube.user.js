@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.5.33
+// @version      0.5.34
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -10,8 +10,12 @@
 // @exclude      https://www.youtube.com/tv
 // @exclude      https://www.youtube.com/signin_prompt*
 // @icon         https://www.google.com/s2/favicons?domain=youtube.com
-// @require      https://raw.githubusercontent.com/ciulinuwu/ciulin-s-youtube/main/yabai_component.js
-// @require      https://raw.githubusercontent.com/ciulinuwu/ciulin-s-youtube/main/open_uix_components.js
+// @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/modules/yabai_component.js
+// @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/modules/open_uix_components.js
+// @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/modules/translations.js?v=1
+// @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/translations/english.js?v=1
+// @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/translations/dansk.js?v=1
+// @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/translations/polski.js?v=1
 // @grant unsafeWindow
 // @grant GM_addStyle
 // @grant GM.getValue
@@ -41,7 +45,19 @@
     var BOOL_LOGIN;
     var BOOL_SUBSCRIBE;
     var commCount = 1;
-    document.ciulinYT = {};
+    document.ciulinYT = {data: {}, func: {}, load: {}};
+    const translations = Ciulinations.listTranslations();
+
+    const localizeString = (varr) => {
+        if(!varr) return "";
+        let lang = document.documentElement.getAttribute("lang");
+        if(!lang || lang.length !== 2) return "";
+        varr = varr.split(".");
+
+        if(!translations[lang] || !translations[lang].json[varr[0]] || !translations[lang].json[varr[0]][varr[1]]) return translations.en.json[varr[0]][varr[1]];
+        return translations[lang].json[varr[0]][varr[1]];
+    };
+
     document.ciulinYT.data = {
         loggedin: false,
         playerSettingsSheet: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAANCAIAAADntZOlAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAlSURBVBhXY/j//z/Tv39/gfgfnP7/H8GGif8H0r9//WT69uUTAPDNJqPDjzoaAAAAAElFTkSuQmCC",
@@ -76,7 +92,8 @@
             "fr-CA": "Français (Canada)",
             "gl": "Galego",
             "hr": "Hrvatski",
-            "hu": "Magyar"
+            "hu": "Magyar",
+            "pl": "Polski"
         }
     };
     document.ciulinYT.load = {
@@ -291,6 +308,12 @@
                 let json = JSON.parse(xhr.response.split("var ytInitialData = ")[1].split(";</script>")[0]);
                 let template = async(a) => {
                     let {owner, time, views, title, id, url, description, upload, icon} = await document.ciulinYT.func.organizeVideoData(a);
+                    let string_uploadedorlive;
+                    if(views[1].length > 1) {
+                        string_uploadedorlive = localizeString("watch.uploadedavideo");
+                    } else {
+                        string_uploadedorlive = localizeString("watch.islive");
+                    };
                     let o = `<li>
 <div class="feed-item-container first" data-channel-key="UCBE-FO9JUOghSysV9gjTeHw">
 <div class="feed-author-bubble-container">
@@ -312,7 +335,7 @@
 <span class="feed-item-actions-line">
 <span class="feed-item-owner">
 <a href="${url}" class="yt-uix-sessionlink yt-user-name" dir="ltr">${owner.text}</a>
-</span> uploaded a video <span class="feed-item-time">${views[1]}</span>
+</span> ${string_uploadedorlive} <span class="feed-item-time">${views[1]}</span>
 </span>
 </div>
 <div class="feed-item-content-wrapper clearfix context-data-item" data-context-item-actionverb="uploaded" data-context-item-title="Steam for Linux a Bad Idea? - This Week in Linux Gaming" data-context-item-type="video" data-context-item-time="5:21" data-context-item-user="nixiedoeslinux" data-context-item-id="7LVtbTurdCk" data-context-item-views="25,816 views" data-context-item-actionuser="nixiedoeslinux">
@@ -531,15 +554,15 @@
             };
             switch (category) {
                 case "most-viewed":
-                    obj.name = "Most Viewed Today";
+                    obj.name = localizeString("browse.mostviewed");
                     obj.html = await document.ciulinYT.func.handleCategory(ytInitialData, 4, 8, template, ['<div class="browse-item-row ytg-box">', '</div>']);
                     return obj;
                 case "recommended":
                     string = "/";
-                    obj.name = "Recommended for You";
+                    obj.name = localizeString("browse.recommended");
                     break;
                 case "music":
-                    obj.name = "Music";
+                    obj.name = localizeString("guide.music");
                     string = "/channel/UC-9-kyTW8ZkZNDHQJ6FgpwQ";
                     break;
                 case "film":
@@ -547,27 +570,27 @@
                     string = "/feed/storefront";
                     break;
                 case "live":
-                    obj.name = "Live";
+                    obj.name = localizeString("guide.live");
                     string = "/channel/UC4R8DWoMoI7CAwX8_LjQHig";
                     break;
                 case "gaming":
-                    obj.name = "Gaming";
+                    obj.name = localizeString("guide.gaming");
                     string = "/gaming";
                     break;
                 case "news":
-                    obj.name = "News";
+                    obj.name = localizeString("guide.news");;
                     string = "/channel/UCYfdidRxbB8Qhf0Nx7ioOYw";
                     break;
                 case "sports":
-                    obj.name = "Sports";
+                    obj.name = localizeString("guide.sports");
                     string = "/channel/UCEgdi0XIXXZ-qJOFPf4JSKw";
                     break;
                 case "edu":
-                    obj.name = "Education";
+                    obj.name = localizeString("guide.education");;
                     string = "/channel/UCtFRv9O2AHqOZjjynzrv-xg";
                     break;
                 case "howto":
-                    obj.name = "Howto & Style";
+                    obj.name = localizeString("guide.howto");
                     string = "/channel/UCrpQ4p1Ql_hG8rKXIKM1MOQ";
                     break;
             }
@@ -593,39 +616,39 @@
             let string = "";
             switch (category) {
                 case "trending":
-                    obj.name = "Trending";
+                    obj.name = localizeString("guide.trending");
                     string = "/feed/trending";
                     break;
                 case "popular":
-                    obj.name = "Popular";
+                    obj.name = localizeString("guide.popular");
                     string = "/channel/UCF0pVplsI8R5kcAqgtoRqoA";
                     break;
                 case "music":
-                    obj.name = "Music";
+                    obj.name = localizeString("guide.music");
                     string = "/channel/UC-9-kyTW8ZkZNDHQJ6FgpwQ";
                     break;
                 case "live":
-                    obj.name = "Live";
+                    obj.name = localizeString("guide.live");
                     string = "/channel/UC4R8DWoMoI7CAwX8_LjQHig";
                     break;
                 case "gadgets":
-                    obj.name = "Gaming";
+                    obj.name = localizeString("guide.gaming");
                     string = "/gaming";
                     break;
                 case "news":
-                    obj.name = "News";
+                    obj.name = localizeString("guide.news");
                     string = "/channel/UCYfdidRxbB8Qhf0Nx7ioOYw";
                     break;
                 case "sports":
-                    obj.name = "Sports";
+                    obj.name = localizeString("guide.sports");
                     string = "/channel/UCEgdi0XIXXZ-qJOFPf4JSKw";
                     break;
                 case "education":
-                    obj.name = "Education";
+                    obj.name = localizeString("guide.education");
                     string = "/channel/UCtFRv9O2AHqOZjjynzrv-xg";
                     break;
                 case "howto":
-                    obj.name = "Howto & Style";
+                    obj.name = localizeString("guide.howto");
                     string = "/channel/UCrpQ4p1Ql_hG8rKXIKM1MOQ";
                     break;
                 case "technoblade":
@@ -652,7 +675,7 @@
             let api = await document.ciulinYT.func.getApi("/youtubei/v1/account/account_menu");
             console.debug(api);
             let sum = api.actions[0].openPopupAction.popup.multiPageMenuRenderer.sections[2].multiPageMenuSectionRenderer.items;
-            let ij, ik, ia, io, iu;
+            let ij, ik, ia, io, iu, pp;
             let fixArr = [];
             for (let i = 0; i < sum.length; i++) {
                 if(sum[i].compactLinkRenderer) {
@@ -665,6 +688,7 @@
                     sum = fixArr.find(a => a.icon.iconType == "TRANSLATE");
                     ij = "selectLanguageCommand";
                     ik = "hl";
+                    pp = "lang";
                     ia = "language-picker";
                     io = "Choose your language";
                     iu = "Choose the language in which you want to view YouTube. This will only change the interface, not any text entered by other users.";
@@ -673,6 +697,7 @@
                     sum = fixArr.find(a => a.icon.iconType == "LANGUAGE");
                     ij = "selectCountryCommand";
                     ik = "gl";
+                    pp = "country";
                     ia = "region-picker";
                     io = "Choose your content location";
                     iu = "Choose which country or region's content (videos and channels) you would like to view. This will not change the language of the site.";
@@ -692,9 +717,9 @@
                 let aaa = ``;
                 for (let I = 0; I < outArray[i].length; I++) {
                     console.debug(outArray[i][I].name + " " + outArray[i][I].lang);
-                    let im = (ik == "gl") ? `<a href="#" onclick="document.ciulinYT.func.setPref('${outArray[i][I].lang}', '${ik}'); return false;"><img id="flag_${outArray[i][I].lang.toLowerCase()}_${outArray[i][I].lang}" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="flag_${outArray[i][I].lang.toLowerCase()}_${outArray[i][I].lang}" alt="" width="17" height="11"> </a>` : ``;
+                    let im = (ik == "gl") ? `<a href="#" onclick="(async() => {await document.ciulinYT.func.addToStorage('${pp}', 'value', '${outArray[i][I].lang}');})(); window.location.reload(); return false;"><img id="flag_${outArray[i][I].lang.toLowerCase()}_${outArray[i][I].lang}" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="flag_${outArray[i][I].lang.toLowerCase()}_${outArray[i][I].lang}" alt="" width="17" height="11"> </a>` : ``;
                     aaa += `<div class="flag-div">${im}
-<a href="#" onclick="document.ciulinYT.func.setPref('${outArray[i][I].lang}', '${ik}'); return false;">${outArray[i][I].name}</a>
+<a href="#" onclick="(async() => {await document.ciulinYT.func.addToStorage('${pp}', 'value', '${outArray[i][I].lang}');})(); window.location.reload(); return false;">${outArray[i][I].name}</a>
 </div>`;
                 }
                 result += `<div class="flag-bucket">${aaa}</div>`;
@@ -715,8 +740,9 @@
             document.querySelector("#picker-loading").classList.add("hid");
         },
         comments: async (continuation, number) => {
+            let dd = ".all";
             let stopLoad = () => {
-                document.querySelector(".comment-list").classList.remove("hid");
+                document.querySelector(".comment-list" + dd).classList.remove("hid");
                 document.querySelector("#comments-loading").classList.add("hid");
             };
             if(!continuation) {
@@ -728,6 +754,12 @@
             if(api.responseContext.mainAppWebResponseContext.loggedOut == false && document.querySelector("#session").getAttribute("data-yes") !== "yes") {
                 document.querySelector("#session").setAttribute("data-yes", "yes");
                 document.querySelector("#session").value = api.onResponseReceivedEndpoints[0].reloadContinuationItemsCommand.continuationItems[0].commentsHeaderRenderer.createRenderer.commentSimpleboxRenderer.submitButton.buttonRenderer.serviceEndpoint.createCommentEndpoint.createCommentParams;
+            }
+            if(number == 0) {
+                dd = ".top";
+                let tt = api.onResponseReceivedEndpoints[0].reloadContinuationItemsCommand.continuationItems[0].commentsHeaderRenderer.sortMenu.sortFilterSubMenuRenderer.subMenuItems[1].serviceEndpoint.continuationCommand.token;
+                document.ciulinYT.load.comments(tt, 1);
+                collection = collection.splice(0, 2);
             }
             if(collection.length == 0 || collection == false) return stopLoad();
             let result = {result: "", con: ""};
@@ -757,8 +789,10 @@
             }
             for (let i = 0; i < collection.length; i++) {
                 if (collection[i].commentThreadRenderer) {
-                    let ap = await document.ciulinYT.func.organizeCommentData(collection[i].commentThreadRenderer.comment.commentRenderer);
-                    result.result += ap;
+                    if (number == 0 || collection[i].commentThreadRenderer.renderingPriority !== "RENDERING_PRIORITY_PINNED_COMMENT"){
+                        let ap = await document.ciulinYT.func.organizeCommentData(collection[i].commentThreadRenderer.comment.commentRenderer);
+                        result.result += ap;
+                    }
                 }
                 if (collection[i].continuationItemRenderer) {
                     commCount++;
@@ -768,7 +802,7 @@
                     result.con += `${collection[i].continuationItemRenderer.continuationEndpoint.continuationCommand.token}`;
                 }
             }
-            document.querySelector(".comment-list").innerHTML = result.result;
+            document.querySelector(".comment-list" + dd).innerHTML = result.result;
             stopLoad();
         }
     };
@@ -797,14 +831,14 @@
             (() => {
                 var DOM_embedVideo = document.createElement("div");
                 DOM_embedVideo.setAttribute("class", "video-container");
-                DOM_embedVideo.innerHTML = `<div id="video-main-content"></div><div class="video-blank"></div><div id="video-animation" class="hid"><i class="playbar-icon playbar-icon_play"></i></div>`;
+                DOM_embedVideo.innerHTML = `<div id="video-main-content"></div><div class="video-blank"></div>`;
                 DOM.appendChild(DOM_embedVideo);
             })();
             (() => {
                 var DOM_scrubBar = document.createElement("div");
                 DOM_scrubBar.setAttribute("class", "video-scrubbar");
                 DOM_scrubBar.setAttribute("role", "progressbar");
-                DOM_scrubBar.innerHTML = `<div class="seek-tooltip hid" id="seek-tooltip"></div><span class="scrubbar_track_played"></span><span class="scrubbar_track_handle"></span><div class="video-playbar_a"></div>`;
+                DOM_scrubBar.innerHTML = `<div class="seek-tooltip hid" id="seek-tooltip"></div><span class="scrubbar_track_played"></span><span class="scrubbar_track_handle"></span>`;
                 DOM.appendChild(DOM_scrubBar);
             })();
             (() => {
@@ -813,18 +847,18 @@
                 DOM_playBar.innerHTML = `<ul class="playbar-controls left">
 <li class="playbar-controls_icon playbar-controls_play" data-state="0">
 <i class="playbar-icon playbar-icon_play"></i>
-</li><div class="playbar-volume_container" data-name="volume" data-type="tooltip" data-tooltip="Mute">
+</li><div class="playbar-volume_container" data-name="volume" data-type="tooltip" data-tooltip="${localizeString("player.mute")}">
 <li class="playbar-controls_icon playbar-controls_volume" data-state="3">
 <i class="playbar-icon playbar-icon_volume"></i>
 </li>
-<div class="playbar-volume_slider-container">
-<div class="playbar-shadow"></div>
-<div class="playbar-volume_slider" role="progressbar">
-<span class="slider_track_played"></span><span class="slider_track_handle"></span>
+<div class="playbar-volume-container volume-movable">
+<div class="playbar-volume-slider volume-movable" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+<span class="playbar-volume playbar-volume-played volume-movable"></span>
+<span class="playbar-volume playbar-volume-notplayed volume-movable"></span>
+<span class="playbar-volume-handle volume-movable"></span>
 </div>
 </div>
 </div>
-<div class="playbar-shadow"></div>
 </ul>
 <div class="playbar-timestamp_container">
 <span class="playbar-timestamp">
@@ -834,11 +868,11 @@
 <ul class="playbar-controls right">
 <li class="playbar-controls_icon playbar-controls_cc">
 <i class="playbar-icon playbar-icon_cc"></i>
-</li><li class="playbar-controls_icon playbar-controls_settings" data-name="settings" data-type="tooltip" data-tooltip="Change quality">
+</li><li class="playbar-controls_icon playbar-controls_settings" data-name="settings" data-type="tooltip" data-tooltip="${localizeString("player.quality")}">
 <i class="playbar-icon playbar-icon_settings"></i>
-</li><li class="playbar-controls_icon playbar-controls_watchlater" data-name="watchlater" data-type="tooltip" data-tooltip="Watch Later">
+</li><li class="playbar-controls_icon playbar-controls_watchlater" data-name="watchlater" data-type="tooltip" data-tooltip="${localizeString("personal.watchlater")}">
 <i class="playbar-icon playbar-icon_watchlater"></i>
-</li><li class="playbar-controls_icon playbar-controls_fullscreen" data-name="fullscreen" data-state="0" data-type="tooltip" data-tooltip="Full screen">
+</li><li class="playbar-controls_icon playbar-controls_fullscreen" data-name="fullscreen" data-state="0" data-type="tooltip" data-tooltip="${localizeString("player.fullscreen")}">
 <i class="playbar-icon playbar-icon_fullscreen"></i>
 </li>
 </ul>`;
@@ -890,6 +924,7 @@ position: absolute;
 #video-player .video-title {
 float: left;
 padding: 8px 13px;
+color: white;
 }
 #video-player .video-topbar-buttons {
 display: flex;
@@ -1038,6 +1073,8 @@ content: " ";
     border: 0;
     position: relative;
     cursor: pointer;
+    background: var(--lld);
+    z-index: 1;
 }
 #video-player .playbar-controls_icon::before, #video-player .playbar-controls_icon::after {
     content: ' ';
@@ -1049,10 +1086,12 @@ content: " ";
 #video-player .playbar-controls_icon::before {
     left: -1px;
     background: var(--lll);
+    height: 25px;
 }
 #video-player .playbar-controls_icon::after {
     right: -1px;
     background: var(--llr);
+    height: 25px;
 }
 #video-player .playbar-icon {
     background: var(--texture-playbar);
@@ -1080,28 +1119,28 @@ padding-left: 2px;
     background-position: -19px -22px;
 }
 #video-player .playbar-controls_volume[data-state^="0"] .playbar-icon.playbar-icon_volume {
-    background-position: 0px -105px;
+    background-position: 6px -105px;
 }
 #video-player .playbar-volume_container:hover .playbar-controls_volume[data-state^="0"] .playbar-icon.playbar-icon_volume {
-    background-position: -28px -105px;
+    background-position: -22px -105px;
 }
 #video-player .playbar-controls_volume[data-state^="1"] .playbar-icon.playbar-icon_volume {
-    background-position: 0px -124px;
+    background-position: 6px -124px;
 }
 #video-player .playbar-volume_container:hover .playbar-controls_volume[data-state^="1"] .playbar-icon.playbar-icon_volume {
-    background-position: -28px -124px;
+    background-position: -22px -124px;
 }
 #video-player .playbar-controls_volume[data-state^="2"] .playbar-icon.playbar-icon_volume {
-    background-position: 0px -143px;
+    background-position: 6px -143px;
 }
 #video-player .playbar-volume_container:hover .playbar-controls_volume[data-state^="2"] .playbar-icon.playbar-icon_volume {
-    background-position: -28px -143px;
+    background-position: -22px -143px;
 }
 #video-player .playbar-controls_volume[data-state^="3"] .playbar-icon.playbar-icon_volume {
-    background-position: 0px -162px;
+    background-position: 6px -162px;
 }
 #video-player .playbar-volume_container:hover .playbar-controls_volume[data-state^="3"] .playbar-icon.playbar-icon_volume {
-    background-position: -28px -162px;
+    background-position: -22px -162px;
 }
 #video-player .playbar-icon.playbar-icon_settings {
     background-position: 0px -42px;
@@ -1135,18 +1174,6 @@ background-position: -24px -42px;
 #video-player .playbar-controls_fullscreen:hover .playbar-icon.playbar-icon_fullscreen {
 background-position: -28px -180px;
 }
-#video-player .playbar-volume_slider-container {
-    display: none;
-    width: 0px;
-}
-#video-player .playbar-volume_slider {
-background: black;
-width: 53px;
-height: 4px;
-border-radius: 4px;
-display: block;
-margin: 10px 6px;
-}
 #video-player .slider_track_played {
 background: red;
 border-radius: 4px;
@@ -1161,12 +1188,16 @@ border-radius: 4px;
 background: white;
 margin: -10px 0px;
 position: relative;
+margin-left: -3px;
 }
 #video-player .playbar-timestamp_container {
     margin: 0 1px;
     border: 0;
     position: relative;
     height: inherit;
+    z-index: 2;
+    background: var(--lld);
+    width: 80px;
 }
 #video-player .playbar-timestamp_container::before {
     content: ' ';
@@ -1184,25 +1215,64 @@ position: relative;
     cursor: default;
     text-decoration: none;
 }
+#video-player .playbar-volume-container {
+display: inline-block;
+width: 66px;
+height: 25px;
+line-height: 25px;
+-webkit-transition: margin .2s cubic-bezier(0.4,0,1,1),width .2s cubic-bezier(0.4,0,1,1);
+transition: margin .2s cubic-bezier(0.4,0,1,1),width .2s cubic-bezier(0.4,0,1,1);
+cursor: pointer;
+outline: 0;
+}
 #video-player .playbar-volume_container {
-    height: inherit;
-    width: inherit;
-    display: flex;
-    cursor: pointer;
+display: flex;
+width: 32px;
+transition: width 0.8s;
 }
 #video-player .playbar-volume_container:hover {
 width: 98px;
+transition: width 0.1s;
 }
-#video-player .playbar-volume_container:hover .playbar-volume_slider-container {
-    display: flex;
-    width: 66px;
+#video-player .playbar-volume-slider {
+width: 53px;
+height: 25px;
+border-radius: 4px;
+display: flex;
+margin: 0px 6px;
+}
+#video-player .playbar-volume {
+border-radius: 4px;
+height: 4px;
+display: block;
+position: relative;
+top: 50%;
+transform: translate(0, -50%);
+}
+#video-player .playbar-volume-played {
+background: red;
+width: 100%;
+}
+#video-player .playbar-volume-notplayed {
+background: black;
+}
+#video-player .playbar-volume-handle {
+height: 15px;
+width: 6px;
+display: block;
+border-radius: 4px;
+background: white;
+position: relative;
+margin-left: -55px;
+margin-top: 4px;
+left: 100%;
 }
 #video-player .playbar-controls_play {
     width: 55px;
 }
 #video-player .playbar-icon_volume {
     height: 16px;
-    width: 20px;
+    width: 30px;
 }
 #video-player #playbar-seek {
     -webkit-appearance: none;
@@ -1228,7 +1298,8 @@ width: 98px;
     padding: 6px;
     color: gray;
     position: relative;
-    top: -3px;
+    top: -7px;
+    float: left;
 }
 #video-player #timestamp_total {
     color: gray;
@@ -1329,13 +1400,7 @@ break;
 });
 document.querySelector(".video-container").addEventListener("click", () => {
 document.ciulinYT.func.exitPlayerSettings();
-document.querySelector("#video-animation").classList.remove("hid");
-document.querySelector("#video-animation").setAttribute("data-animation", "triggered");
 document.ciulinYT.func.playPause(document.querySelector(".playbar-controls_play").getAttribute("data-state"));
-});
-document.querySelector("#video-animation").addEventListener('animationend', () => {
-document.querySelector("#video-animation").classList.add("hid");
-document.querySelector("#video-animation").removeAttribute("data-animation");
 });
 document.querySelectorAll(".playmenu-button").forEach(a => {
 a.addEventListener("click", e => {
@@ -1368,28 +1433,39 @@ document.ciulinYT.player.seekTo(dur);
 progress = setInterval(document.ciulinYT.func.preProPos);
 canMouse = false;
 });
+const offset = function(e) {
+var value = e[0].target.getAttribute("aria-valuenow");
+
+document.querySelector(".playbar-volume-played").style.width = value + "%";
+document.querySelector(".playbar-volume-notplayed").style.width = (100 - value) + "%";
+document.querySelector(".playbar-volume-handle").style.left = value + "%";
+};
+new MutationObserver(offset).observe(document.querySelector(".playbar-volume-slider"), { attributes: true });
 document.querySelector(".video-scrubbar").addEventListener("mousemove", e => {
 dur = ((e.pageX - e.currentTarget.offsetLeft) / document.querySelector("#video-player").clientWidth * document.ciulinYT.player.getDuration());
 const rect = document.querySelector("#video-player").getBoundingClientRect();
 document.querySelector("#seek-tooltip").style.left = (e.pageX - rect.left) - 16 + "px";
 document.querySelector("#seek-tooltip").innerText = document.ciulinYT.func.calculateLength(dur);
 if(canMouse !== true) return;
-document.querySelector(".scrubbar_track_played").style.width = ((e.pageX - e.currentTarget.offsetLeft) / e.currentTarget.offsetWidth * 100) + "%";
-document.querySelector(".scrubbar_track_handle").style.left = ((e.pageX - e.currentTarget.offsetLeft) / e.currentTarget.offsetWidth * 100) + "%";
-});
-document.querySelector(".playbar-volume_slider").addEventListener("mousemove", e => {
-if(canMouse !== true) return;
 let offset = ((e.pageX - e.currentTarget.offsetLeft) / e.currentTarget.offsetWidth * 100);
-if(offset > 99) return e.preventDefault();
-document.querySelector(".slider_track_played").style.width = offset + "%";
-document.querySelector(".slider_track_handle").style.left = offset + "%";
+document.querySelector(".scrubbar_track_played").style.width = offset + "%";
+document.querySelector(".scrubbar_track_handle").style.left = offset + "%";
+});
+document.querySelector(".playbar-volume-slider").addEventListener("mousemove", e => {
+if(canMouse !== true) return;
+let offset = Math.round((e.pageX - e.currentTarget.offsetLeft) / e.currentTarget.offsetWidth * 100);
+if(offset > 100 || offset < 0) return e.preventDefault();
+document.querySelector(".playbar-volume-slider").setAttribute("aria-valuenow", offset);
 document.ciulinYT.func.setVolume(offset);
 });
-document.querySelector(".playbar-volume_slider").addEventListener('mousedown', e => {
+document.querySelector(".playbar-volume-slider").addEventListener('mousedown', e => {
 canMouse = true;
 });
-document.querySelector(".playbar-volume_slider").addEventListener('mouseup', e => {
+document.querySelector(".playbar-volume-slider").addEventListener('mouseup', e => {
 canMouse = false;
+});
+document.querySelector("movie-player").addEventListener("mouseout", e => {
+if (!e.target.classList.contains("volume-movable")) canMouse = false;
 });
 var playVideo = () => {
 document.querySelector(".playbar-controls_play").setAttribute("data-state", "1");
@@ -1676,12 +1752,14 @@ ${__a[1]}`;
             await GM.setValue("quality", {"value": ""});
             await GM.setValue("playback", {"value": 1});
             await GM.setValue("loop", {"value": false});
+            await GM.setValue("lang", {"value": "en"});
         },
         prepareStorage: async () => {
             let STORAGE = await GM.getValue("helloworld");
             if(!STORAGE) return document.ciulinYT.func.createStorage("SUPERSECRETROOTKEY");
         },
         addToStorage: async (a, b, c) => {
+            console.debug(a, b, c);
             if(!a && !b && !c) return error();
             await document.ciulinYT.func.prepareStorage();
             let STORAGE = GM.getValue(a);
@@ -1762,14 +1840,14 @@ ${__a[1]}`;
             if(typeof(length) !== 'number') return error(`calculateLength: '${length}' is not a valid number.`);
             var hours = "";
             var thours = Math.floor(length / 3600);
-            var tminute = Math.floor(length % 3600 / 60);
-            var tsecond = Math.floor(length % 3600 % 60);
-            tsecond = tsecond <= 9 ? ("0" + tsecond) : (tsecond);
+            var tminutes = Math.floor(length % 3600 / 60);
+            var tseconds = Math.floor(length % 3600 % 60);
+            tseconds = ('0' + tseconds).slice(-2);
             if(length > 3600) {
-                tminute = tminute <= 9 ? ("0" + tminute) : (tminute);
+                tminutes = ('0' + tminutes).slice(-2);
             }
             hours = length >= 3600 ? (thours + ":") : "";
-            return hours + "" + tminute + ":" + tsecond;
+            return hours + "" + tminutes + ":" + tseconds;
         },
         Modal: (DOM) => {
             DOM = document.querySelector(DOM);
@@ -1789,15 +1867,15 @@ ${__a[1]}`;
                 case 0:
                     seek = 100;
                     data = 3;
-                    document.querySelector("#video-player").querySelector(".playbar-volume_container").setAttribute("data-tooltip", "Mute");
+                    document.querySelector("#video-player").querySelector(".playbar-volume_container").setAttribute("data-tooltip", localizeString("player.mute"));
                     document.ciulinYT.player.unMute();
                     break;
                 default:
-                    document.querySelector("#video-player").querySelector(".playbar-volume_container").setAttribute("data-tooltip", "Unmute");
+                    document.querySelector("#video-player").querySelector(".playbar-volume_container").setAttribute("data-tooltip", localizeString("player.unmute"));
                     document.ciulinYT.player.mute();
                     break;
             }
-            //document.querySelector("#playbar-seek").value = seek;
+            document.querySelector(".playbar-volume-slider").setAttribute("aria-valuenow", seek);
             document.querySelector("#video-player").querySelector(".playbar-controls_volume").setAttribute("data-state", data);
         },
         toggleExpandedMasthead: () => {
@@ -1862,11 +1940,11 @@ ${__a[1]}`;
                 }
                 let OBJ_age = "";
                 if(tags.age !== undefined) {
-                    OBJ_age = `<div class="show_info outer-box-bg-as-border"><div class="profile-info-label">Age:</div><div class="profile-info-value" id="profile_show_age">${tags.age}</div><div class="cb"></div></div>`;
+                    OBJ_age = `<div class="show_info outer-box-bg-as-border"><div class="profile-info-label">${localizeString("customtag.age")}:</div><div class="profile-info-value" id="profile_show_age">${tags.age}</div><div class="cb"></div></div>`;
                 }
                 let OBJ_occu = "";
                 if(tags.occupation !== undefined) {
-                    OBJ_occu = `<div class="show_info outer-box-bg-as-border"><div class="profile-info-label">Occupation:</div><div class="profile-info-value" id="profile_show_age">${tags.occupation}</div><div class="cb"></div></div>`;
+                    OBJ_occu = `<div class="show_info outer-box-bg-as-border"><div class="profile-info-label">${localizeString("customtag.occupation")}:</div><div class="profile-info-value" id="profile_show_age">${tags.occupation}</div><div class="cb"></div></div>`;
                 }
                 let videos = "";
                 for (let i = 0; i < data.VIDEOS.length; i++) {
@@ -1887,7 +1965,7 @@ ${__a[1]}`;
 <button type="button" class="master-sprite start yt-uix-button yt-uix-button-short yt-uix-tooltip" onclick=";return false;" title="" role="button" aria-pressed="false">
 <img class="yt-uix-button-icon-addto" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
 <span class="yt-uix-button-content">
-<span class="addto-label">Add to</span>
+<span class="addto-label">${localizeString("buttons.addto")}</span>
 </span>
 </button>
 <button type="button" class="end yt-uix-button yt-uix-button-short yt-uix-tooltip" onclick=";return false;" title="" role="button" aria-pressed="false">
@@ -1908,6 +1986,7 @@ ${__a[1]}`;
 </div>
 </div>`;
                 }
+                console.debug(videos);
                 let recentfeed = "";
                 for (let i = 0; i < data.RECENTFEED.length; i++) {
                     let u = '<tr id="feed_divider"><td colspan="3" class="outer-box-bg-as-border divider">&nbsp;</td>';
@@ -1971,7 +2050,7 @@ ${u}</tr>`;
 
                     OBJ_SUBS = `<div class="inner-box" id="user_subscriptions" style="background-color: rgb(238, 238, 255); color: rgb(51, 51, 51);">
 <div style="zoom:1">
-<div class="box-title title-text-color">Subscriptions (<a href="?view=subscriptions" class="headersSmall" name="channel-box-item-count">${data.SUBSCRIPTIONS.length}</a>)</div>
+<div class="box-title title-text-color">${localizeString("personal.subscriptions")} (<a href="?view=subscriptions" class="headersSmall" name="channel-box-item-count">${data.SUBSCRIPTIONS.length}</a>)</div>
 <div class="box-editor">
 <div style="float:right"></div>
 </div>
@@ -1985,7 +2064,7 @@ ${peeps}
 </div>
 <div>
 <div style="font-size: 12px; text-align: right; margin-top: 7px;">
-<b><a name="channel-box-see-all" href="?view=subscriptions">see all</a></b>
+<b><a name="channel-box-see-all" href="?view=subscriptions">${localizeString("global.seeall")}</a></b>
 </div>
 </div>
 </div>
@@ -1994,19 +2073,19 @@ ${peeps}
                 }
                 let OBJ_views = "";
                 if(data.INFO.string.VIEWS !== undefined) {
-                    OBJ_views = `<div class="show_info outer-box-bg-as-border"><div class="profile-info-label">${data.INFO.name.VIEWS}:</div><div class="profile-info-value" id="profile_show_viewed_count">${data.INFO.string.VIEWS}</div><div class="cb"></div></div>`;
+                    OBJ_views = `<div class="show_info outer-box-bg-as-border"><div class="profile-info-label">${(Number(data.INFO.string.VIEWS.replace(/,/g, "")) > 1) ? localizeString("about.viewedcounts") : localizeString("about.viewedcount")}</div><div class="profile-info-value" id="profile_show_viewed_count">${data.INFO.string.VIEWS}</div><div class="cb"></div></div>`;
                 }
                 let OBJ_join = "";
                 if(data.INFO.string.JOIN !== undefined) {
-                    OBJ_join = `<div class="show_info outer-box-bg-as-border"><div class="profile-info-label">${data.INFO.name.JOIN}:</div><div class="profile-info-value" id="profile_show_member_since">${data.INFO.string.JOIN}</div><div class="cb"></div></div>`;
+                    OBJ_join = `<div class="show_info outer-box-bg-as-border"><div class="profile-info-label">${localizeString("about.membersince")}</div><div class="profile-info-value" id="profile_show_member_since">${data.INFO.string.JOIN}</div><div class="cb"></div></div>`;
                 }
                 let OBJ_subcount = "";
                 if(data.SUBCOUNT !== undefined) {
-                    OBJ_subcount = `<div class="show_info outer-box-bg-as-border"><div class="profile-info-label">${data.name.SUBCOUNT}:</div><div class="profile-info-value" id="profile_show_subscriber_count">${data.SUBCOUNT}</div><div class="cb"></div></div>`;
+                    OBJ_subcount = `<div class="show_info outer-box-bg-as-border"><div class="profile-info-label">${(Number(data.SUBCOUNT.replace(/,/g, "")) > 1) ? localizeString("about.subs") : localizeString("about.sub")}</div><div class="profile-info-value" id="profile_show_subscriber_count">${data.SUBCOUNT}</div><div class="cb"></div></div>`;
                 }
                 let OBJ_country = "";
                 if(data.INFO.string.COUNTRY !== undefined) {
-                    OBJ_country = `<div class="show_info outer-box-bg-as-border"><div class="profile-info-label">${data.INFO.name.COUNTRY}:</div><div class="profile-info-value" id="profile_show_country">${data.INFO.string.COUNTRY}</div><div class="cb"></div></div>`;
+                    OBJ_country = `<div class="show_info outer-box-bg-as-border"><div class="profile-info-label">${localizeString("about.country")}</div><div class="profile-info-value" id="profile_show_country">${data.INFO.string.COUNTRY}</div><div class="cb"></div></div>`;
                 }
                 var OBJ_USERPROFILE = `<div id="user_profile" class="inner-box" style="background-color: rgb(238, 238, 255); color: rgb(51, 51, 51);">
 <div class="box-title title-text-color">Profile</div>
@@ -2086,7 +2165,7 @@ ${title}
 </a>
 </div>
 <div id="playnav-curvideo-info-line">
-From: <span id="playnav-curvideo-channel-name"><a href="${window.location.href}">${data.CHANNELNAME}</a></span>&nbsp;|
+${localizeString("watch.from")} <span id="playnav-curvideo-channel-name"><a href="${window.location.href}">${data.CHANNELNAME}</a></span>&nbsp;|
 <span dir="ltr">${views[1]}</span>
 &nbsp;|
 <span id="playnav-curvideo-view-count">${views[0]}</span>
@@ -2095,7 +2174,7 @@ From: <span id="playnav-curvideo-channel-name"><a href="${window.location.href}"
 <div id="channel-like-result" class="hid">
 <div id="watch-actions-area" class="yt-rounded">&nbsp;</div>
 </div>
-<div id="channel-like-loading" class="hid">Loading...</div>
+<div id="channel-like-loading" class="hid">${localizeString("global.loading")}</div>
 <div class="cb"></div>
 <div id="playnav-curvideo-description-container">
 <div id="playnav-curvideo-description" dir="ltr">${description}</div>
@@ -2148,12 +2227,12 @@ ${videos}
 </div>
 <div class="channel-title-container">
 <div class="channel-title outer-box-color" id="channel_title" dir="ltr">${data.CHANNELNAME}</div>
-<div class="channel-title outer-box-color" style="font-size:11px" id="channel_base_title">${data.CHANNELNAME}'s Channel</div>
+<div class="channel-title outer-box-color" style="font-size:11px" id="channel_base_title">${data.CHANNELNAME}'s ${localizeString("global.channel")}</div>
 </div>
 <div id="subscribe-buttons">
 <span class="subscription-container">
 <button type="button" class="subscribe-button yt-uix-button yt-uix-button-urgent yt-uix-tooltip" onclick="document.ciulinYT.func.subscribe();return false;" title="Click to be notified of new videos from this channel" role="button" data-tooltip-text="Click to be notified of new videos from this channel">
-<span class="yt-uix-button-content">${data.SUBSCRIBE ? "Subscribed" : "Subscribe"}</span>
+<span class="yt-uix-button-content">${data.SUBSCRIBE ? localizeString("buttons.subscribed") : localizeString("buttons.subscribe")}</span>
 </button>
 <span class="subscription-subscribed-container hid">
 <span class="subscription-options-button subscription-expander yt-uix-expander yt-uix-expander-collapsed">
@@ -2162,7 +2241,7 @@ ${videos}
 </button>
 <span class="yt-alert yt-alert-success yt-alert-small yt-alert-naked yt-rounded">
 <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="icon" alt="Alert icon">
-<span class="yt-alert-content">Subscribed</span>
+<span class="yt-alert-content">${localizeString("buttons.subscribed")}</span>
 </span>
 </span>
 </span>
@@ -2212,7 +2291,7 @@ ${(videos.length > 0) ? OBJ_PLAYNAVA : ""}
 <div>
 <span class="subscription-container">
 <button type="button" class="subscribe-button yt-uix-button yt-uix-button-urgent yt-uix-tooltip" onclick="document.ciulinYT.func.subscribe();return false;" title="Click to be notified of new videos from this channel" role="button">
-<span class="yt-uix-button-content">${data.SUBSCRIBE ? "Subscribed" : "Subscribe"}</span>
+<span class="yt-uix-button-content">${data.SUBSCRIBE ? localizeString("buttons.subscribed") : localizeString("buttons.subscribe")}</span>
 <img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
 </button>
 </span>
@@ -2453,13 +2532,13 @@ ${OBJ_CHANCON}
             switch(sub) {
                 case false:
                     await document.ciulinYT.func.getApi("/youtubei/v1/subscription/subscribe", `channelIds: ["${ytapi}"]`);
-                    text = "Subscribed";
+                    text = localizeString("buttons.subscribed");
                     document.querySelector(button).classList.add("subscribed");
                     BOOL_SUBSCRIBE = true;
                     break;
                 case true:
                     await document.ciulinYT.func.getApi("/youtubei/v1/subscription/unsubscribe", `channelIds: ["${ytapi}"]`);
-                    text = "Subscribe";
+                    text = localizeString("buttons.subscribe");
                     document.querySelector(button).classList.remove("subscribed");
                     BOOL_SUBSCRIBE = false;
                     break;
@@ -2492,7 +2571,7 @@ ${OBJ_CHANCON}
             document.querySelector(".comments-textarea").addEventListener("input", fu);
         },
         preProPos: () => {
-            let track = document.ciulinYT.player.getCurrentTime() / document.ciulinYT.player.getDuration() * 100 + "%";
+            let track = (document.ciulinYT.player.getCurrentTime() / document.ciulinYT.player.getDuration() * 100) + "%";
             document.querySelector(".scrubbar_track_played").style.width = track;
             document.querySelector(".scrubbar_track_handle").style.left = track;
         },
@@ -2592,12 +2671,13 @@ ${OBJ_CHANCON}
         var ARR_MONTH = (TIMEDATE.getMonth() < 10) ? "0" + TIMEDATE.getMonth() : TIMEDATE.getMonth();
         var ARR_DATE = (TIMEDATE.getDate() < 10) ? "0" + TIMEDATE.getDate() : TIMEDATE.getDate();
         var VALUE_DATE = TIMEDATE.getFullYear() + "" + ARR_MONTH + "" + ARR_DATE;
-        var VALUE_LANG = DOMHTML.getAttribute("lang");
+        var VALUE_LANG = await document.ciulinYT.func.getFromStorage("lang");
         var VALUE_TITLE = "YouTube - Broadcast Yourself.";
         DOMHTML.removeAttribute("style");
         DOMHTML.removeAttribute("standardized-themed-scrollbar");
         DOMHTML.setAttribute("dir", "ltr");
         DOMHTML.setAttribute("xmlns:og", "https://opengraphprotocol.org/schema/");
+        DOMHTML.setAttribute("lang", VALUE_LANG.value);
         document.querySelector("head").innerHTML = "<title></title>";
         var DOMHEAD = document.querySelector("head");
         document.title = VALUE_TITLE;
@@ -2609,7 +2689,7 @@ ${OBJ_CHANCON}
         var DOMBODY = document.body;
         var SUPERDOM = document.createElement("div");
         SUPERDOM.setAttribute("id", "page");
-        DOMBODY.setAttribute("class", `date-${VALUE_DATE} ${VALUE_LANG} ltr ytg-old-clearfix guide-feed-v2 gecko gecko-16`);
+        DOMBODY.setAttribute("class", `date-${VALUE_DATE} ${VALUE_LANG.value} ltr ytg-old-clearfix guide-feed-v2 gecko gecko-16`);
         DOMBODY.setAttribute("dir", "ltr");
         DOMHTML.appendChild(DOMBODY);
 
@@ -2654,23 +2734,23 @@ ${OBJ_CHANCON}
 <span class="masthead-expanded-menu-header">YouTube</span>
 <ul id="masthead-expanded-menu-list">
 <li class="masthead-expanded-menu-item">
-<a href="${document.ciulinYT.data.link}?feature=mhee">My channel</a>
+<a href="${document.ciulinYT.data.link}?feature=mhee">${localizeString("personal.mychannel")}</a>
 </li>
 <li class="masthead-expanded-menu-item">
-<a href="/my_videos?feature=mhee">Video Manager</a>
+<a href="/my_videos?feature=mhee">${localizeString("personal.videomanager")}</a>
 </li>
 <li class="masthead-expanded-menu-item">
-<a href="/?c=subscriptions" onclick="document.ciulinYT.load.home_category(document.querySelector('[data-feed-name=subscriptions]')); return false;">Subscriptions</a>
+<a href="/?c=subscriptions" onclick="document.ciulinYT.load.home_category(document.querySelector('[data-feed-name=subscriptions]')); return false;">${localizeString("personal.subscriptions")}</a>
 </li>
 <li class="masthead-expanded-menu-item">
-<a href="/account?feature=mhee">YouTube settings</a>
+<a href="/account?feature=mhee">${localizeString("personal.settings")}</a>
 </li>
 </ul>
 </div>
 </div>
 <div id="masthead-expanded-sandbar">
 <div id="masthead-expanded-lists-container">
-<div id="masthead-expanded-loading-message">Loading...</div>
+<div id="masthead-expanded-loading-message">${localizeString("global.loading")}</div>
 </div>
 </div>
 <div class="clear"></div>
@@ -2698,7 +2778,7 @@ ${OBJ_CHANCON}
         var OBJ_FOOTER;
         var OBJ_CHANNEL = "";
 
-        document.ciulinYT.data.lang = document.ciulinYT.func.parseLang(yt.config_.HL);
+        document.ciulinYT.data.lang = document.ciulinYT.func.parseLang(VALUE_LANG.value);
         document.ciulinYT.data.country = document.ciulinYT.func.parseCoun(yt.config_.GL);
 
         if(window.location.pathname == "/") {
@@ -2736,19 +2816,19 @@ ${OBJ_CHANCON}
 <div id="personal-feeds">
 <ul>
 <li class="guide-item-container">
-<a class="guide-item guide-item-action" href="${document.ciulinYT.data.link}?feature=guide">My channel<img src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" class="see-more-arrow" alt=""></a>
+<a class="guide-item guide-item-action" href="${document.ciulinYT.data.link}?feature=guide">${localizeString("personal.mychannel")}<img src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" class="see-more-arrow" alt=""></a>
 </li>
 <li class="guide-item-container">
-<a class="guide-item" data-feed-name="uploads" data-feed-type="personal" title="Videos you have uploaded">Videos</a>
+<a class="guide-item" data-feed-name="uploads" data-feed-type="personal" title="Videos you have uploaded">${localizeString("personal.videos")}</a>
 </li>
 <li class="guide-item-container">
-<a class="guide-item" data-feed-name="likes" data-feed-type="personal" title="Videos you have liked">Likes</a>
+<a class="guide-item" data-feed-name="likes" data-feed-type="personal" title="Videos you have liked">${localizeString("personal.likes")}</a>
 </li>
 <li class="guide-item-container">
-<a class="guide-item" data-feed-name="history" data-feed-type="personal" title="Videos you have watched">History</a>
+<a class="guide-item" data-feed-name="history" data-feed-type="personal" title="Videos you have watched">${localizeString("personal.history")}</a>
 </li>
 <li class="guide-item-container">
-<a class="guide-item" data-feed-name="watch_later" data-feed-type="personal" title="Videos you have added to your Watch Later list">Watch Later</a>
+<a class="guide-item" data-feed-name="watch_later" data-feed-type="personal" title="Videos you have added to your Watch Later list">${localizeString("personal.watchlater")}</a>
 </li>
 </ul>
 </div>
@@ -2758,7 +2838,7 @@ ${OBJ_CHANCON}
 <a class="guide-item" data-feed-name="subscriptions" data-feed-url="/feed/subscriptions" data-feed-display="Subscriptions" data-feed-icon="subscriptions" onclick="document.ciulinYT.load.home_category(this)">
 <span class="thumb">
 <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="" class="system-icon category">
-</span><span class="display-name">Subscriptions</span>
+</span><span class="display-name">${localizeString("personal.subscriptions")}</span>
 </a>
 </h3>
 <ul>
@@ -2823,7 +2903,7 @@ ${subsbuilder}
 <a class="guide-item selected" data-feed-name="youtube" data-feed-url="" onclick="document.ciulinYT.load.home_category(this)">
 <span class="thumb">
 <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="" class="system-icon category">
-</span><span class="display-name">From YouTube</span>
+</span><span class="display-name">${localizeString("guide.fromyt")}</span>
 </a>
 </h3>
 <ul class="cockie">
@@ -2840,7 +2920,7 @@ ${c}
 <img class="feed-header-icon youtube" alt="" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
 </div>
 <div class="feed-header-details">
-<h2 class="feed-header-info">From YouTube</h2>
+<h2 class="feed-header-info">${localizeString("guide.fromyt")}</h2>
 </div>
 </div>
 <div class="feed-container">
@@ -2857,7 +2937,7 @@ ${c}
 <div class="feed-message">
 <p class="loading-spinner">
 <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
-Loading...
+${localizeString("global.loading")}
 </p>
 </div>
 </div>
@@ -2896,14 +2976,14 @@ Loading...
 </div>
 </div>
 <p class="comments-remaining">
-<span class="comments-remaining-count" data-max-count="500">500</span> characters remaining
+<span class="comments-remaining-count" data-max-count="500">500</span> ${localizeString("comments.charactersremain")}
 </p>
 <p class="comments-threshold-countdown hid">
-<span class="comments-threshold-count"></span> seconds remaining before you can post
+<span class="comments-threshold-count"></span> ${localizeString("comments.secondsremain")}
 </p>
 <p class="comments-post-buttons">
 <button type="submit" class="comments-post yt-uix-button yt-uix-button-default" onclick=";return true;" role="button">
-<span class="yt-uix-button-content">Post </span>
+<span class="yt-uix-button-content">${localizeString("buttons.post")} </span>
 </button>
 </p>
 </form>`;
@@ -2940,13 +3020,13 @@ Loading...
 <span class="video-time">${time}</span>
 <button type="button" class="addto-button video-actions spf-nolink ${VALUE_SUGGVIDLOG} yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" onclick=";return false;" role="button">
 <span class="yt-uix-button-content">
-<img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Watch Later">
+<img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="${localizeString("personal.watchlater")}">
 </span>
 <img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
 </button>
 </span>
 <span dir="ltr" class="title" title="${title}">${title}</span>
-<span class="stat attribution">by <span class="class="yt-user-name" dir="ltr">${owner.text}</span></span>
+<span class="stat attribution">${localizeString("watch.by")} <span class="class="yt-user-name" dir="ltr">${owner.text}</span></span>
 <span class="stat view-count">${views[0]}</span>
 </a>
 </li>`;
@@ -2993,8 +3073,9 @@ Loading...
                 });
                 document.ciulinYT.func.waitForElm(".comment-list").then(async (elm) => {
                     if (ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.filter(b => b.itemSectionRenderer)[1]) {
+                        document.querySelector("#comments-view").classList.remove("hid");
                         let con = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.filter(b => b.itemSectionRenderer)[1].itemSectionRenderer.contents[0].continuationItemRenderer.continuationEndpoint.continuationCommand.token;
-                        let comments = await document.ciulinYT.load.comments(con, 1);
+                        let comments = await document.ciulinYT.load.comments(con, 0);
                     }
                 });
                 return `<div id="content" class="">
@@ -3011,18 +3092,22 @@ ${title}
 <button href="https://www.youtube.com${url}?feature=watch" type="button" class="start yt-uix-button yt-uix-button-default" onclick=";window.location.href=this.getAttribute('href');return false;" role="button">
 <span class="yt-uix-button-content">${owner}</span>
 </button><div class="yt-subscription-button-hovercard yt-uix-hovercard">
+<span class="yt-uix-button-context-light yt-uix-button-subscription-container">
 <button href="" type="button" class="yt-subscription-button yt-subscription-button-js-default end yt-uix-button yt-uix-button-subscription yt-uix-tooltip ${VALUE_SUBBUTTON}" onclick="document.ciulinYT.func.subscribe();return false;" role="button">
+<span class="yt-uix-button-icon-wrapper">
 <img class="yt-uix-button-icon yt-uix-button-icon-subscribe" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
-<span class="yt-uix-button-content">
-<span class="subscribe-label">Subscribe</span>
-<span class="subscribed-label">Subscribed</span>
-<span class="unsubscribe-label">Unsubscribe</span>
+</span><span class="yt-uix-button-content">
+<span class="subscribe-label">${localizeString("buttons.subscribe")}</span>
+<span class="subscribed-label">${localizeString("buttons.subscribed")}</span>
+<span class="unsubscribe-label">${localizeString("buttons.unsubscribe")}</span>
 </span>
 </button>
+<span class="yt-subscription-button-disabled-mask"></span>
+</span>
 <div class="yt-uix-hovercard-content hid">
 <p class="loading-spinner">
 <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
-Loading...
+${localizeString("global.loading")}
 </p>
 </div>
 </div>
@@ -3030,7 +3115,7 @@ Loading...
 </div>
 <div id="watch-more-from-user" class="collapsed">
 <div id="watch-channel-discoverbox" class="yt-rounded">
-<span id="watch-channel-loading">Loading...</span>
+<span id="watch-channel-loading">${localizeString("global.loading")}</span>
 </div>
 </div>
 </div>
@@ -3046,40 +3131,25 @@ Loading...
 <div id="watch-main">
 <div id="watch-panel">
 <div id="watch-actions">
+<div id="watch-actions">
 <div id="watch-actions-right">
 <span class="watch-view-count">
 <strong>${views[0]}</strong>
 </span>
-<button onclick=";return false;" title="Show video statistics" type="button" id="watch-insight-button" class="yt-uix-tooltip yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip yt-uix-button-empty" data-button-action="yt.www.watch.actions.stats" role="button">
-<img class="yt-uix-button-icon yt-uix-button-icon-watch-insight" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Show video statistics">
-</button>
+<button onclick=";return false;" title="Show video statistics" type="button" id="watch-insight-button" class="yt-uix-tooltip yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip yt-uix-button-empty" role="button"><span class="yt-uix-button-icon-wrapper"><img class="yt-uix-button-icon yt-uix-button-icon-watch-insight" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="Show video statistics"><span class="yt-valign-trick"></span></span></button>
 </div>
-<span id="watch-like-unlike" class="yt-uix-button-group">
-<button data-videoid="${id}" onclick="document.ciulinYT.func.likeThis(this.getAttribute('data-videoid'));return false;" title="I like this" type="button" class="start yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip ${isLiked}" id="watch-like" data-tooltip-text="I like this" role="button">
-<img class="yt-uix-button-icon yt-uix-button-icon-watch-like" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="I like this">
-<span class="yt-uix-button-content">Like</span>
-</button><button data-videoid="${id}" onclick="document.ciulinYT.func.dislikeThis(this.getAttribute('data-videoid'));return false;" title="I dislike this" type="button" class="end yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip yt-uix-button-empty ${isDisliked}" id="watch-unlike" data-tooltip-text="I dislike this" role="button">
-<img class="yt-uix-button-icon yt-uix-button-icon-watch-unlike" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="I dislike this">
-</button>
-</span>
-<button onclick=";return false;" title="Add to favorites or playlist" type="button" class="addto-button watch show-label yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip" id="watch-addto-button" data-button-menu-id="some-nonexistent-id" data-video-ids="2mMWz9evo-s" data-button-action="yt.www.watch.actions.showSigninOrCreateChannelWarning" data-feature="watch" role="button">
-<img class="yt-uix-button-icon yt-uix-button-icon-addto" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Add to favorites or playlist">
-<span class="yt-uix-button-content">
-<span class="addto-label">Add to</span>
-</span>
-<img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
-</button>
-<button onclick=";return false;" title="Share or embed this video" type="button" class="yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip" id="watch-share" data-button-action="yt.www.watch.actions.share" role="button"><span class="yt-uix-button-content">Share</span>
-</button>
-<button onclick=";return false;" title="Flag as inappropriate" type="button" class="yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip yt-uix-button-empty" id="watch-flag" data-button-action="yt.www.watch.actions.flag" role="button">
-<img class="yt-uix-button-icon yt-uix-button-icon-watch-flag" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Flag as inappropriate">
-</button>
+<span id="watch-like-unlike" class="yt-uix-button-group"><button onclick="document.ciulinYT.func.likeThis('${id}');return false;" title="${localizeString("tooltip.ilikethis")}" type="button" class="start yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip" id="watch-like" role="button" data-tooltip-text="${localizeString("tooltip.ilikethis")}"><span class="yt-uix-button-icon-wrapper"><img class="yt-uix-button-icon yt-uix-button-icon-watch-like" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="${localizeString("tooltip.ilikethis")}"><span class="yt-valign-trick"></span></span><span class="yt-uix-button-content">${localizeString("buttons.like")} </span></button><button onclick="document.ciulinYT.func.dislikeThis('${id}');return false;" title="${localizeString("tooltip.idislikethis")}" type="button" class="end yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip yt-uix-button-empty" id="watch-unlike" role="button" data-tooltip-text="${localizeString("tooltip.idislikethis")}"><span class="yt-uix-button-icon-wrapper"><img class="yt-uix-button-icon yt-uix-button-icon-watch-unlike" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="${localizeString("tooltip.idislikethis")}"><span class="yt-valign-trick"></span></span></button></span>
+<button type="button" class="yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip" onclick=";return false;" title="Add to favorites or playlist" role="button" data-tooltip-text="Add to favorites or playlist"><span class="yt-uix-button-content"><span class="addto-label">${localizeString("buttons.addto")}</span> </span></button>
+<button onclick=";return false;" title="Share or embed this video" type="button" class="yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip" id="watch-share" data-button-action="yt.www.watch.actions.share" role="button" data-tooltip-text="${localizeString("tooltip.share")}"><span class="yt-uix-button-content">${localizeString("buttons.share")} </span></button>
+<button onclick=";return false;" title="Flag as inappropriate" type="button" class="yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip yt-uix-button-empty" id="watch-flag" data-button-action="yt.www.watch.actions.flag" role="button" data-tooltip-text="${localizeString("tooltip.flag")}"><span class="yt-uix-button-icon-wrapper"><img class="yt-uix-button-icon yt-uix-button-icon-watch-flag" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="${localizeString("tooltip.flag")}"><span class="yt-valign-trick"></span></span></button>
+<button onclick=";return false;" title="Interactive Transcript" type="button" class="yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip yt-uix-button-empty" id="watch-transcript" data-button-action="yt.www.watch.actions.transcript" role="button"><span class="yt-uix-button-icon-wrapper"><img class="yt-uix-button-icon yt-uix-button-icon-transcript" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="Interactive Transcript"><span class="yt-valign-trick"></span></span></button>
+</div>
 </div>
 <div id="watch-actions-area-container" class="hid">
 <div id="watch-actions-area" class="yt-rounded">
-<div id="watch-actions-loading" class="watch-actions-panel hid">Loading...</div>
+<div id="watch-actions-loading" class="watch-actions-panel hid">${localizeString("global.loading")}</div>
 <div id="watch-actions-logged-out" class="watch-actions-panel hid">
-<div class="yt-alert yt-alert-warn yt-alert-small yt-alert-naked yt-rounded ">
+<div class="yt-alert yt-alert-warn yt-alert-small yt-alert-naked yt-rounded">
 <span class="yt-alert-icon">
 <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="icon master-sprite" alt="Alert icon">
 </span>
@@ -3091,7 +3161,7 @@ Loading...
 </div>
 </div>
 <div id="watch-actions-error" class="watch-actions-panel hid">
-<div class="yt-alert yt-alert-error yt-alert-small yt-alert-naked yt-rounded ">
+<div class="yt-alert yt-alert-error yt-alert-small yt-alert-naked yt-rounded">
 <span class="yt-alert-icon">
 <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="icon master-sprite" alt="Alert icon">
 </span>
@@ -3108,29 +3178,28 @@ Loading...
 <div id="watch-info">
 <div id="watch-description" class="yt-uix-expander-collapsed yt-uix-expander">
 <div id="watch-description-clip">
-<p id="watch-uploader-info">Uploaded by <a href="https://www.youtube.com${url}" class="yt-user-name author" rel="author" dir="ltr">${owner}</a> on <span id="eow-date" class="watch-video-date">${upload}</span></p>
+<p id="watch-uploader-info">${localizeString("watch.uploadby")} <a href="https://www.youtube.com${url}" class="yt-uix-sessionlink yt-user-name author" rel="author" dir="ltr">${owner}</a> ${localizeString("watch.on")} <span id="eow-date" class="watch-video-date">${upload}</span></p>
 <div id="watch-description-text">
 <p id="eow-description">${description}</p>
 </div>
 <div id="watch-description-extras">
-<h4>Category:</h4>
+<h4>${localizeString("watch.category")}:</h4>
 <p id="eow-category"><a href="//www.youtube.com/videos">${category}</a></p>
-<h4>Tags:</h4>
+<h4>${localizeString("watch.tags")}:</h4>
 <ul id="eow-tags" class="watch-info-tag-list">
 ${VALUE_VIDEOTAGS}
 </ul>
-<h4>License:</h4>
+<h4>${localizeString("watch.license")}:</h4>
 <p id="eow-reuse">Standard YouTube License</p>
 </div>
 </div>
-<div id="watch-description-fadeout"></div>
 <ul id="watch-description-extra-info">
 <li>
 <div class="video-extras-sparkbars" style="background-color:red">
 <div class="video-extras-sparkbar-likes"></div>
 </div>
-<span class="watch-likes-dislikes">
-<span class="likes"></span> likes, <span class="dislikes"></span> dislikes
+<span class="video-extras-likes-dislikes">
+<span class="likes"></span> ${localizeString("stats.likes")}, <span class="dislikes"></span> ${localizeString("stats.dislikes")}
 </span>
 </li>
 </ul>
@@ -3142,24 +3211,28 @@ ${VALUE_VIDEOTAGS}
 <div id="watch-description-toggle" class="yt-uix-expander-head">
 <div id="watch-description-expand" class="expand">
 <button type="button" class="metadata-inline yt-uix-button yt-uix-button-text" onclick="return false;" role="button">
-<span class="yt-uix-button-content">Show more <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Show more"></span>
+<span class="yt-uix-button-content">${localizeString("buttons.showmore")} <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Show more"></span>
 </button>
 </div>
 <div id="watch-description-collapse" class="collapse">
 <button type="button" class="metadata-inline yt-uix-button yt-uix-button-text" onclick="return false;" role="button">
-<span class="yt-uix-button-content">Show less <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Show less"></span>
+<span class="yt-uix-button-content">${localizeString("buttons.showless")} <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Show less"></span>
 </button>
 </div>
 </div>
 </div>
 </div>
-<div id="comments-view" data-type="highlights" class="">
+<div id="comments-view" data-type="highlights" class="hid">
 <div class="comments-section">
-<h4><strong>All Comments</strong> (${ytInitialData.contents.twoColumnWatchNextResults.results ? ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.find(b => b.itemSectionRenderer) ? ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.find(b => b.itemSectionRenderer).itemSectionRenderer.contents[0].commentsEntryPointHeaderRenderer ? ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.find(b => b.itemSectionRenderer).itemSectionRenderer.contents[0].commentsEntryPointHeaderRenderer.commentCount ? ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.find(b => b.itemSectionRenderer).itemSectionRenderer.contents[0].commentsEntryPointHeaderRenderer.commentCount.simpleText : "0" : "0" : "0" : "0"}) <a class="comments-section-see-all" href="https://www.youtube.com/all_comments?v=${id}">see all</a></h4>
+<h4><strong>${localizeString("comments.topcomments")}</strong></h4>
+<ul class="comment-list top hid"></ul>
+</div>
+<div class="comments-section">
+<h4><strong>${localizeString("comments.allcomments")}</strong> (${ytInitialData.contents.twoColumnWatchNextResults.results ? ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.find(b => b.itemSectionRenderer) ? ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.find(b => b.itemSectionRenderer).itemSectionRenderer.contents[0].commentsEntryPointHeaderRenderer ? ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.find(b => b.itemSectionRenderer).itemSectionRenderer.contents[0].commentsEntryPointHeaderRenderer.commentCount ? ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.find(b => b.itemSectionRenderer).itemSectionRenderer.contents[0].commentsEntryPointHeaderRenderer.commentCount.simpleText : "0" : "0" : "0" : "0"}) <a class="comments-section-see-all" href="https://www.youtube.com/all_comments?v=${id}">${localizeString("global.seeall")}</a></h4>
 <div class="comments-post-container clearfix">
 ${commen}
 </div>
-<ul class="comment-list hid"></ul>
+<ul class="comment-list all hid"></ul>
 </div>
 <div class="comments-section">
 <div class="comments-pagination" data-ajax-enabled="true">
@@ -3169,9 +3242,9 @@ ${commen}
 </div>
 </div>
 <ul>
-<li class="hid" id="parent-comment-loading"> Loading comment...</li>
+<li class="hid" id="parent-comment-loading"> ${localizeString("comments.loading")}</li>
 </ul>
-<div id="comments-loading">Loading...</div>
+<div id="comments-loading">${localizeString("global.loading")}</div>
 </div>
 </div>
 <div id="watch-sidebar">
@@ -3233,7 +3306,7 @@ ${OBJ_SUGGESTEDVIDEOS}
                 collection.INFO = await document.ciulinYT.load.channel_info();
                 collection.HOMEVIDEO = (ihomev == true) ? ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer : {};
                 collection.SUBSCRIBE = document.ciulinYT.func.getSubscription();
-                setInterval(() => {document.head.querySelector("title").innerText = `${collection.CHANNELNAME}'s Channel - YouTube`;}, 100);
+                setInterval(() => {document.head.querySelector("title").innerText = `${collection.CHANNELNAME}'s ${localizeString("global.channel")} - YouTube`;}, 100);
                 document.ciulinYT.func.waitForElm("#video-player").then(() => {
                     let id = (ihomev == true) ? ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].channelVideoPlayerRenderer.videoId : "";
                     document.ciulinYT.func.buildPlayer(id);
@@ -3261,9 +3334,9 @@ ${OBJ_SUGGESTEDVIDEOS}
 </span>
 </span>
 <span class="video-time">${time}</span>
-<button onclick=";return false;" title="Watch Later" type="button" class="addto-button video-actions addto-watch-later-button-sign-in yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" role="button">
+<button onclick=";return false;" title="${localizeString("personal.watchlater")}" type="button" class="addto-button video-actions addto-watch-later-button-sign-in yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" role="button">
 <span class="yt-uix-button-content">
-<span class="addto-label">Watch Later</span>
+<span class="addto-label">${localizeString("personal.watchlater")}</span>
 <span class="addto-label-error">Error</span>
 <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
 </span>
@@ -3279,7 +3352,7 @@ ${OBJ_SUGGESTEDVIDEOS}
 </li>
 </ul>
 <p class="facets">
-<span class="username-prepend">by</span>
+<span class="username-prepend">${localizeString("watch.by")}</span>
 <a href="https://www.youtube.com${url}" class="yt-user-name" dir="ltr">${owner.text}</a> <span class="metadata-separator">|</span>  <span class="date-added">${views[1]}</span> <span class="metadata-separator">|</span>  <span class="viewcount">${views[0]}</span>
 </p>
 </div>
@@ -3316,7 +3389,7 @@ ${OBJ_SUGGESTEDVIDEOS}
 </li>
 </ul>
 <p class="facets">
-<span class="username-prepend">by</span> <a href="${link}" class="yt-user-name" dir="ltr">${title}</a><span class="metadata-separator"> | </span><span class="video-count">${videos}</span><span class="metadata-separator"> | </span><span class="channel-subscriber-count">${subs}</span>
+<span class="username-prepend">${localizeString("watch.by")}</span> <a href="${link}" class="yt-user-name" dir="ltr">${title}</a><span class="metadata-separator"> | </span><span class="video-count">${videos}</span><span class="metadata-separator"> | </span><span class="channel-subscriber-count">${subs}</span>
 </p>
 </div>
 </div>`;
@@ -3668,7 +3741,7 @@ ${videos.html}
 <div class="feed-message">
 <p class="loading-spinner">
 <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
-Loading...
+${localizeString("global.loading")}
 </p>
 </div>
 </div>
@@ -3698,17 +3771,17 @@ ${OBJ_USER}
 <div id="masthead-search-bar-container">
 <div id="masthead-search-bar">
 <div id="masthead-nav">
-<a href="https://www.youtube.com/feed/explore">Browse</a>
+<a href="https://www.youtube.com/feed/explore">${localizeString("global.browse")}</a>
 <span class="masthead-link-separator">|</span>
-<a href="https://youtube.com/upload">Upload</a>
+<a href="https://youtube.com/upload">${localizeString("global.upload")}</a>
 </div>
 <form id="masthead-search" class="search-form consolidated-form" action="https://www.youtube.com/results" onsubmit="if (document.body.querySelector('#masthead-search-term').value == '') return false;">
 <button class="search-btn-compontent search-button yt-uix-button yt-uix-button-default" onclick="if (document.querySelector('#masthead-search-term').value == '') return false; document.querySelector('#masthead-search').submit(); return false;;return true;" type="submit" id="search-btn" dir="ltr" tabindex="2" role="button">
-<span class="yt-uix-button-content">Search</span>
+<span class="yt-uix-button-content">${localizeString("global.search")}</span>
 </button>
 <div id="masthead-search-terms" class="masthead-search-terms-border" dir="ltr" style="border-color: rgb(192, 192, 192) rgb(217, 217, 217) rgb(217, 217, 217);">
 <label>
-<input id="masthead-search-term" onfocus="document.querySelector('#masthead-search').classList.add('focused');document.querySelector('#masthead-search-terms').setAttribute('style', 'border-color: rgb(77, 144, 254)')" onblur="document.querySelector('#masthead-search').classList.remove('focused');document.querySelector('#masthead-search-terms').setAttribute('style', 'border-color: rgb(192, 192, 192) rgb(217, 217, 217) rgb(217, 217, 217);')" autocomplete="off" class="search-term" name="search_query" value="" type="text" tabindex="1" title="Search" dir="ltr" spellcheck="false" style="outline: currentcolor none medium;">
+<input id="masthead-search-term" onfocus="document.querySelector('#masthead-search').classList.add('focused');document.querySelector('#masthead-search-terms').setAttribute('style', 'border-color: rgb(77, 144, 254)')" onblur="document.querySelector('#masthead-search').classList.remove('focused');document.querySelector('#masthead-search-terms').setAttribute('style', 'border-color: rgb(192, 192, 192) rgb(217, 217, 217) rgb(217, 217, 217);')" autocomplete="off" class="search-term" name="search_query" value="" type="text" tabindex="1" title="${localizeString("global.search")}" dir="ltr" spellcheck="false" style="outline: currentcolor none medium;">
 </label>
 </div>
 <input type="hidden" name="oq">
@@ -3738,16 +3811,16 @@ ${OBJ_MASTH}`;
 <div id="footer-main">
 <ul id="footer-links-primary">
 <li>
-<a href="https://support.google.com/youtube/#topic=9257498">Help</a>
+<a href="https://support.google.com/youtube/#topic=9257498">${localizeString("global.help")}</a>
 </li>
 <li>
-<a href="https://www.youtube.com/about">About</a>
+<a href="https://www.youtube.com/about">${localizeString("global.about")}</a>
 </li>
 <li>
 <a href="https://www.youtube.com/press/">Press &amp; Blogs</a>
 </li>
 <li>
-<a href="https://www.youtube.com/copyright">Copyright</a>
+<a href="https://www.youtube.com/copyright">${localizeString("global.copyright")}</a>
 </li>
 <li>
 <a href="https://www.youtube.com/creators">Creators &amp; Partners</a>
@@ -3769,7 +3842,7 @@ ${OBJ_MASTH}`;
 </li>
 </ul>
 <div id="picker-container"></div>
-<div id="picker-loading" style="display: none">Loading...</div>`;
+<div id="picker-loading" style="display: none">${localizeString("global.loading")}</div>`;
 
         let final = `<div id="masthead-container">
 ${OBJ_MASTHEAD}
