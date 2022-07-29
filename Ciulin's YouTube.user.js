@@ -1607,7 +1607,7 @@ document.querySelector(".playbar-controls_play").setAttribute("data-state", "0")
 
             description = description.replace(/(?:\r\n|\r|\n)/g, '<br>');
             let up = upload.split("-");
-            let m = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+            let m = ["${localizeString("uploadmonth.jan")}","${localizeString("uploadmonth.feb")}","${localizeString("uploadmonth.mar")}","${localizeString("uploadmonth.apr")}","${localizeString("uploadmonth.may")}","${localizeString("uploadmonth.jun")}","${localizeString("uploadmonth.jul")}","${localizeString("uploadmonth.aug")}","${localizeString("uploadmonth.sep")}","${localizeString("uploadmonth.oct")}","${localizeString("uploadmonth.nov")}","${localizeString("uploadmonth.dec")}"];
             let vv = up[1] ? up[1].toString().replace(/0/, "") : "";
             upload = `${m[vv - 1]} ${up[2]}, ${up[0]}`;
             let links = description.matchAll(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi);
