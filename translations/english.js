@@ -17,7 +17,8 @@ window[NAMESPACE_MODULE_CIULINATIONS_EN] = {};
             loading: "Loading...",
             channel: "Channel",
             seeall: "see all",
-            search: "Search"
+            search: "Search",
+            browsechannels: "Browse channels"
         },
         stats: {
             likes: "likes",
