@@ -2718,21 +2718,21 @@ ${OBJ_CHANCON}
 </div>
 <div id="masthead-expanded-menu-google-column1">
 <ul>
-<li class="masthead-expanded-menu-item"><a href="https://profiles.google.com?authuser=0">Profile</a></li>
+<li class="masthead-expanded-menu-item"><a href="https://profiles.google.com?authuser=0">${localizeString("personal.profile")}</a></li>
 <li class="masthead-expanded-menu-item"><a href="https://plus.google.com/u/0/stream">Google+</a></li>
-<li class="masthead-expanded-menu-item"><a href="https://plus.google.com/u/0/settings/privacy">Privacy</a></li>
+<li class="masthead-expanded-menu-item"><a href="https://plus.google.com/u/0/settings/privacy">${localizeString("personal.privacy")}</a></li>
 </ul>
 </div>
 <div id="masthead-expanded-menu-google-column2">
 <ul>
 <li class="masthead-expanded-menu-item">
-<a href="https://plus.google.com/u/0/settings">Settings</a>
+<a href="https://plus.google.com/u/0/settings">${localizeString("personal.settings")}</a>
 </li>
 <li class="masthead-expanded-menu-item">
-<a class="end" href="/logout">Sign out</a>
+<a class="end" href="/logout">${localizeString("personl.signout")}</a>
 </li>
 <li class="masthead-expanded-menu-item">
-<a href="#" onclick="yt.www.masthead.accountswitch.toggle(); return false;">Switch account</a>
+<a href="#" onclick="yt.www.masthead.accountswitch.toggle(); return false;">${localizeString("personal.switchaccount")}</a>
 </li>
 </ul>
 </div>
@@ -2751,7 +2751,7 @@ ${OBJ_CHANCON}
 <a href="/?c=subscriptions" onclick="document.ciulinYT.load.home_category(document.querySelector('[data-feed-name=subscriptions]')); return false;">${localizeString("personal.subscriptions")}</a>
 </li>
 <li class="masthead-expanded-menu-item">
-<a href="/account?feature=mhee">${localizeString("personal.settings")}</a>
+<a href="/account?feature=mhee">${localizeString("personal.youtubesettings")}</a>
 </li>
 </ul>
 </div>
