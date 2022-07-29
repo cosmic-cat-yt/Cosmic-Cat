@@ -17,7 +17,8 @@ window[NAMESPACE_MODULE_CIULINATIONS_PL] = {};
             loading: "Trwa wczytywanie...",
             channel: "Kanał",
             seeall: "Zobacz wszystko",
-            search: "Szukaj"
+            search: "Szukaj",
+            browsechannels: "Przeglądaj kanały"
         },
         stats: {
             likes: "głosów na tak",
@@ -66,6 +67,20 @@ window[NAMESPACE_MODULE_CIULINATIONS_PL] = {};
             from: "Od:",
             uploadedavideo: "przesłał(a) film",
             islive: "jest na żywo"
+        },    
+        uploadmonth: {
+            jan: "Sty",
+            feb: "Lut",
+            mar: "Mar",
+            apr: "Kwi",
+            may: "Maj",
+            jun: "Cze",
+            jul: "Lip",
+            aug: "Sie",
+            sep: "Wrz",
+            oct: "Paź",
+            nov: "Lis",
+            dec: "Gru"
         },
         about: {
             country: "Kraj:",
@@ -86,8 +101,14 @@ window[NAMESPACE_MODULE_CIULINATIONS_PL] = {};
             history: "Historia",
             watchlater: "Do obejrzenia",
             videomanager: "Menedżer filmów",
-            settings: "Ustawienia YouTube",
-            subscriptions: "Subskrypcje"
+            youtubesettings: "Ustawienia YouTube",
+            subscriptions: "Subskrypcje",
+            profile: "Profil",
+            privacy: "Prywatność",
+            settings: "Ustawienia",
+            signout: "Wyloguj się",
+            switchaccount: "Przełącz konto",
+            googleaccount: "Konto Google"
         },
         browse: {
             mostviewed: "Najczęściej oglądane dzisiaj",

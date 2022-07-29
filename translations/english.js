@@ -17,7 +17,8 @@ window[NAMESPACE_MODULE_CIULINATIONS_EN] = {};
             loading: "Loading...",
             channel: "Channel",
             seeall: "see all",
-            search: "Search"
+            search: "Search",
+            browsechannels: "Browse channels"
         },
         stats: {
             likes: "likes",
@@ -66,6 +67,20 @@ window[NAMESPACE_MODULE_CIULINATIONS_EN] = {};
             from: "From:",
             uploadedavideo: "uploaded a video",
             islive: "is live"
+        },    
+        uploadmonth: {
+            jan: "Jan",
+            feb: "Feb",
+            mar: "Mar",
+            apr: "Apr",
+            may: "May",
+            jun: "Jun",
+            jul: "Jul",
+            aug: "Aug",
+            sep: "Sep",
+            oct: "Oct",
+            nov: "Nov",
+            dec: "Dec"
         },
         about: {
             country: "Country:",
@@ -86,8 +101,14 @@ window[NAMESPACE_MODULE_CIULINATIONS_EN] = {};
             history: "History",
             watchlater: "Watch Later",
             videomanager: "Video Manager",
-            settings: "YouTube settings",
-            subscriptions: "Subscriptions"
+            youtubesettings: "YouTube settings",
+            subscriptions: "Subscriptions",
+            profile: "Profile",
+            privacy: "Privacy",
+            settings: "Settings",
+            signout: "Sign out",
+            switchaccount: "Switch account",
+            googleaccount: "Google account"
         },
         browse: {
             mostviewed: "Most Viewed Today",

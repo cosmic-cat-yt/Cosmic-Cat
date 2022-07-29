@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.5.35
+// @version      0.5.36
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -1607,7 +1607,7 @@ document.querySelector(".playbar-controls_play").setAttribute("data-state", "0")
 
             description = description.replace(/(?:\r\n|\r|\n)/g, '<br>');
             let up = upload.split("-");
-            let m = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+            let m = [`${localizeString("uploadmonth.jan")}`,`${localizeString("uploadmonth.feb")}`,`${localizeString("uploadmonth.mar")}`,`${localizeString("uploadmonth.apr")}`,`${localizeString("uploadmonth.may")}`,`${localizeString("uploadmonth.jun")}`,`${localizeString("uploadmonth.jul")}`,`${localizeString("uploadmonth.aug")}`,`${localizeString("uploadmonth.sep")}`,`${localizeString("uploadmonth.oct")}`,`${localizeString("uploadmonth.nov")}`,`${localizeString("uploadmonth.dec")}`];
             let vv = up[1] ? up[1].toString().replace(/0/, "") : "";
             upload = `${m[vv - 1]} ${up[2]}, ${up[0]}`;
             let links = description.matchAll(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi);
@@ -2709,7 +2709,7 @@ ${OBJ_CHANCON}
 <div id="masthead-expanded-menus-container">
 <span id="masthead-expanded-menu-shade"></span>
 <div id="masthead-expanded-google-menu">
-<span class="masthead-expanded-menu-header">Google account</span>
+<span class="masthead-expanded-menu-header">${localizeString("personal.googleaccount")}</span>
 <div id="masthead-expanded-menu-google-container">
 <img id="masthead-expanded-menu-gaia-photo" alt="" src="${document.ciulinYT.data.pfp}">
 <div id="masthead-expanded-menu-account-info">
@@ -2718,21 +2718,21 @@ ${OBJ_CHANCON}
 </div>
 <div id="masthead-expanded-menu-google-column1">
 <ul>
-<li class="masthead-expanded-menu-item"><a href="https://profiles.google.com?authuser=0">Profile</a></li>
+<li class="masthead-expanded-menu-item"><a href="https://profiles.google.com?authuser=0">${localizeString("personal.profile")}</a></li>
 <li class="masthead-expanded-menu-item"><a href="https://plus.google.com/u/0/stream">Google+</a></li>
-<li class="masthead-expanded-menu-item"><a href="https://plus.google.com/u/0/settings/privacy">Privacy</a></li>
+<li class="masthead-expanded-menu-item"><a href="https://plus.google.com/u/0/settings/privacy">${localizeString("personal.privacy")}</a></li>
 </ul>
 </div>
 <div id="masthead-expanded-menu-google-column2">
 <ul>
 <li class="masthead-expanded-menu-item">
-<a href="https://plus.google.com/u/0/settings">Settings</a>
+<a href="https://plus.google.com/u/0/settings">${localizeString("personal.settings")}</a>
 </li>
 <li class="masthead-expanded-menu-item">
-<a class="end" href="/logout">Sign out</a>
+<a class="end" href="/logout">${localizeString("personal.signout")}</a>
 </li>
 <li class="masthead-expanded-menu-item">
-<a href="#" onclick="yt.www.masthead.accountswitch.toggle(); return false;">Switch account</a>
+<a href="#" onclick="yt.www.masthead.accountswitch.toggle(); return false;">${localizeString("personal.switchaccount")}</a>
 </li>
 </ul>
 </div>
@@ -2751,7 +2751,7 @@ ${OBJ_CHANCON}
 <a href="/?c=subscriptions" onclick="document.ciulinYT.load.home_category(document.querySelector('[data-feed-name=subscriptions]')); return false;">${localizeString("personal.subscriptions")}</a>
 </li>
 <li class="masthead-expanded-menu-item">
-<a href="/account?feature=mhee">${localizeString("personal.settings")}</a>
+<a href="/account?feature=mhee">${localizeString("personal.youtubesettings")}</a>
 </li>
 </ul>
 </div>
@@ -2859,7 +2859,7 @@ ${mhtml}
 <button type="button" class="yt-uix-button yt-uix-button-primary">
 <span class="thumb">
 <img class="yt-uix-button-icon-add" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
-</span><span class="yt-uix-button-content">Browse channels</span>
+</span><span class="yt-uix-button-content">${localizeString("global.browsechannels")}</span>
 </button>
 </div>
 </div>`;
@@ -3147,7 +3147,7 @@ ${localizeString("global.loading")}
 <button onclick=";return false;" title="Show video statistics" type="button" id="watch-insight-button" class="yt-uix-tooltip yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip yt-uix-button-empty" role="button"><span class="yt-uix-button-icon-wrapper"><img class="yt-uix-button-icon yt-uix-button-icon-watch-insight" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="Show video statistics"><span class="yt-valign-trick"></span></span></button>
 </div>
 <span id="watch-like-unlike" class="yt-uix-button-group"><button onclick="document.ciulinYT.func.likeThis('${id}');return false;" title="${localizeString("tooltip.ilikethis")}" type="button" class="start yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip" id="watch-like" role="button" data-tooltip-text="${localizeString("tooltip.ilikethis")}"><span class="yt-uix-button-icon-wrapper"><img class="yt-uix-button-icon yt-uix-button-icon-watch-like" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="${localizeString("tooltip.ilikethis")}"><span class="yt-valign-trick"></span></span><span class="yt-uix-button-content">${localizeString("buttons.like")} </span></button><button onclick="document.ciulinYT.func.dislikeThis('${id}');return false;" title="${localizeString("tooltip.idislikethis")}" type="button" class="end yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip yt-uix-button-empty" id="watch-unlike" role="button" data-tooltip-text="${localizeString("tooltip.idislikethis")}"><span class="yt-uix-button-icon-wrapper"><img class="yt-uix-button-icon yt-uix-button-icon-watch-unlike" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="${localizeString("tooltip.idislikethis")}"><span class="yt-valign-trick"></span></span></button></span>
-<button type="button" class="yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip" onclick=";return false;" title="Add to favorites or playlist" role="button" data-tooltip-text="Add to favorites or playlist"><span class="yt-uix-button-content"><span class="addto-label">${localizeString("buttons.addto")}</span> </span></button>
+<button type="button" class="yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip" onclick=";return false;" title="${localizeString("tooltip.addto")}" role="button" data-tooltip-text="${localizeString("tooltip.addto")}"><span class="yt-uix-button-content"><span class="addto-label">${localizeString("buttons.addto")}</span> </span></button>
 <button onclick=";return false;" title="Share or embed this video" type="button" class="yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip" id="watch-share" data-button-action="yt.www.watch.actions.share" role="button" data-tooltip-text="${localizeString("tooltip.share")}"><span class="yt-uix-button-content">${localizeString("buttons.share")} </span></button>
 <button onclick=";return false;" title="Flag as inappropriate" type="button" class="yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip yt-uix-button-empty" id="watch-flag" data-button-action="yt.www.watch.actions.flag" role="button" data-tooltip-text="${localizeString("tooltip.flag")}"><span class="yt-uix-button-icon-wrapper"><img class="yt-uix-button-icon yt-uix-button-icon-watch-flag" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="${localizeString("tooltip.flag")}"><span class="yt-valign-trick"></span></span></button>
 <button onclick=";return false;" title="Interactive Transcript" type="button" class="yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip yt-uix-button-empty" id="watch-transcript" data-button-action="yt.www.watch.actions.transcript" role="button"><span class="yt-uix-button-icon-wrapper"><img class="yt-uix-button-icon yt-uix-button-icon-transcript" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="Interactive Transcript"><span class="yt-valign-trick"></span></span></button>

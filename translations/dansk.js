@@ -17,7 +17,8 @@ window[NAMESPACE_MODULE_CIULINATIONS_DA] = {};
             loading: "Indlæser...",
             channel: "Kanal",
             seeall: "se alle",
-            search: "Søg"
+            search: "Søg",
+            browsechannels: "Gennemse kanaler"
         },
         stats: {
             likes: "likes",
@@ -75,8 +76,14 @@ window[NAMESPACE_MODULE_CIULINATIONS_DA] = {};
             history: "Historik",
             watchlater: "Se senere",
             videomanager: "Video Manager",
-            settings: "YouTube-indstillinger",
-            subscriptions: "Abonnementer"
+            youtubesettings: "YouTube-indstillinger",
+            subscriptions: "Abonnementer",
+            profile: "Profil",
+            privacy: "Privatliv",
+            settings: "Indstillinger",
+            signout: "Logge ud",
+            switchaccount: "Skift konto",
+            googleaccount: "Google-konto"
         },
         watch: {
             by: "fra",
@@ -88,6 +95,20 @@ window[NAMESPACE_MODULE_CIULINATIONS_DA] = {};
             from: "Fra:",
             uploadedavideo: "uploadet en video",
             islive: "er live"
+        },
+        uploadmonth: {
+            jan: "Jan",
+            feb: "Feb",
+            mar: "Mar",
+            apr: "Apr",
+            may: "Maj",
+            jun: "Jun",
+            jul: "Jul",
+            aug: "Aug",
+            sep: "Sep",
+            oct: "Okt",
+            nov: "Nov",
+            dec: "Dec"
         },
         browse: {
             mostviewed: "Mest set i dag",
