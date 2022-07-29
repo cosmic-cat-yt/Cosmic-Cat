@@ -17,7 +17,8 @@ window[NAMESPACE_MODULE_CIULINATIONS_DA] = {};
             loading: "Indlæser...",
             channel: "Kanal",
             seeall: "se alle",
-            search: "Søg"
+            search: "Søg",
+            browsechannels: "Gennemse kanaler"
         },
         stats: {
             likes: "likes",
