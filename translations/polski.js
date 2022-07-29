@@ -87,8 +87,13 @@ window[NAMESPACE_MODULE_CIULINATIONS_PL] = {};
             history: "Historia",
             watchlater: "Do obejrzenia",
             videomanager: "Menedżer filmów",
-            settings: "Ustawienia YouTube",
-            subscriptions: "Subskrypcje"
+            youtubesettings: "Ustawienia YouTube",
+            subscriptions: "Subskrypcje",
+            profile: "Profil",
+            privacy: "Prywatność",
+            settings: "Ustawienia",
+            signout: "Wyloguj się",
+            switchaccount: "Przełącz konto"
         },
         browse: {
             mostviewed: "Najczęściej oglądane dzisiaj",
