@@ -82,7 +82,8 @@ window[NAMESPACE_MODULE_CIULINATIONS_DA] = {};
             privacy: "Privatliv",
             settings: "Indstillinger",
             signout: "Logge ud",
-            switchaccount: "Skift konto" 
+            switchaccount: "Skift konto",
+            googleaccount: "Google-konto"
         },
         watch: {
             by: "fra",
