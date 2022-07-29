@@ -76,8 +76,13 @@ window[NAMESPACE_MODULE_CIULINATIONS_DA] = {};
             history: "Historik",
             watchlater: "Se senere",
             videomanager: "Video Manager",
-            settings: "YouTube-indstillinger",
-            subscriptions: "Abonnementer"
+            youtubesettings: "YouTube-indstillinger",
+            subscriptions: "Abonnementer",
+            profile: "Profil",
+            privacy: "Privatliv",
+            settings: "Indstillinger",
+            signout: "Logge ud",
+            switchaccount: "Skift konto" 
         },
         watch: {
             by: "fra",
@@ -88,7 +93,7 @@ window[NAMESPACE_MODULE_CIULINATIONS_DA] = {};
             category: "Kategori",
             from: "Fra:",
             uploadedavideo: "uploadet en video",
-            islive: "er live"
+            islive: "er live"            
         },
         browse: {
             mostviewed: "Mest set i dag",
