@@ -13,9 +13,9 @@
 // @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/modules/yabai_component.js
 // @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/modules/open_uix_components.js
 // @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/modules/translations.js?v=1
-// @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/translations/english.js?v=1
-// @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/translations/dansk.js?v=1
-// @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/translations/polski.js?v=1
+// @require      https://github.com/PANMARSAG14/ciulin-s-youtube/raw/main/translations/english.js?v=1
+// @require      https://github.com/PANMARSAG14/ciulin-s-youtube/raw/main/translations/dansk.js?v=1
+// @require      https://github.com/PANMARSAG14/ciulin-s-youtube/raw/main/translations/polski.js?v=1
 // @grant unsafeWindow
 // @grant GM_addStyle
 // @grant GM.getValue
@@ -3785,7 +3785,7 @@ ${OBJ_USER}
 </div>
 <form id="masthead-search" class="search-form consolidated-form" action="https://www.youtube.com/results" onsubmit="if (document.body.querySelector('#masthead-search-term').value == '') return false;">
 <button class="search-btn-compontent search-button yt-uix-button yt-uix-button-default" onclick="if (document.querySelector('#masthead-search-term').value == '') return false; document.querySelector('#masthead-search').submit(); return false;;return true;" type="submit" id="search-btn" dir="ltr" tabindex="2" role="button">
-<span class="yt-uix-button-content">${localizeString("global.search")}</span>
+<span class="yt-uix-button-content">${localizeString("global.search")}${localizeString("global.browsechannels")}</span>
 </button>
 <div id="masthead-search-terms" class="masthead-search-terms-border" dir="ltr" style="border-color: rgb(192, 192, 192) rgb(217, 217, 217) rgb(217, 217, 217);">
 <label>
