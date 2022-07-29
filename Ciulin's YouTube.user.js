@@ -2729,7 +2729,7 @@ ${OBJ_CHANCON}
 <a href="https://plus.google.com/u/0/settings">${localizeString("personal.settings")}</a>
 </li>
 <li class="masthead-expanded-menu-item">
-<a class="end" href="/logout">${localizeString("personl.signout")}</a>
+<a class="end" href="/logout">${localizeString("personal.signout")}</a>
 </li>
 <li class="masthead-expanded-menu-item">
 <a href="#" onclick="yt.www.masthead.accountswitch.toggle(); return false;">${localizeString("personal.switchaccount")}</a>
