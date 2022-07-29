@@ -93,7 +93,8 @@ window[NAMESPACE_MODULE_CIULINATIONS_PL] = {};
             privacy: "Prywatność",
             settings: "Ustawienia",
             signout: "Wyloguj się",
-            switchaccount: "Przełącz konto"
+            switchaccount: "Przełącz konto",
+            googleaccount: "Konto Google"
         },
         browse: {
             mostviewed: "Najczęściej oglądane dzisiaj",
