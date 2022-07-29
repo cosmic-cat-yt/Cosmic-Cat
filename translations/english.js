@@ -93,7 +93,8 @@ window[NAMESPACE_MODULE_CIULINATIONS_EN] = {};
             privacy: "Privacy",
             settings: "Settings",
             signout: "Sign out",
-            switchaccount: "Switch account"
+            switchaccount: "Switch account",
+            googleaccount: "Google account"
         },
         browse: {
             mostviewed: "Most Viewed Today",
