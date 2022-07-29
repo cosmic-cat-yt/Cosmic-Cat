@@ -87,8 +87,13 @@ window[NAMESPACE_MODULE_CIULINATIONS_EN] = {};
             history: "History",
             watchlater: "Watch Later",
             videomanager: "Video Manager",
-            settings: "YouTube settings",
-            subscriptions: "Subscriptions"
+            youtubesettings: "YouTube settings",
+            subscriptions: "Subscriptions",
+            profile: "Profile",
+            privacy: "Privacy",
+            settings: "Settings",
+            signout: "Sign out",
+            switchaccount: "Switch account"
         },
         browse: {
             mostviewed: "Most Viewed Today",
