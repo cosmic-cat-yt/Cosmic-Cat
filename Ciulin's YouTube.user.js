@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.5.34
+// @version      0.5.35
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -59,6 +59,7 @@
     };
 
     document.ciulinYT.data = {
+        version: 1,
         loggedin: false,
         playerSettingsSheet: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAANCAIAAADntZOlAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAlSURBVBhXY/j//z/Tv39/gfgfnP7/H8GGif8H0r9//WT69uUTAPDNJqPDjzoaAAAAAElFTkSuQmCC",
         playbarScrub: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAD5SURBVChTjZHNjkRQEIUP4p+dVe/EC9iJhQgvLlYsvQC2JFaIIOH21G09s5CZnpNclZz66kdKwKVt21hd1xiG4XJechwHnudBVVXO8s88zyzPcxzHAUH47sHFGIMkSYjjGJZlCQJ1LooC+75D0zSs63qLJEVREIYhxKZpeGcyoiiCLMu3+LUOzvMEsWLXdTAMg5u/iXLE9H0PkXYk468Cmk6Ppoj0Q58K3nli+Ur/LSBW1HWdj/pUQAyxYpqmqKqKm+M44vF43CLliCGWX6ltW0ZGEAQwTZN3fWtZFpRlCd/34bruz1np2lmWYZqmy3nJtm0kScKvDABP3bl3Ot4gE8wAAAAASUVORK5CYII=",
@@ -1748,6 +1749,7 @@ ${__a[1]}`;
         createStorage: async (a) => {
             if(a !== "SUPERSECRETROOTKEY") return error("Permission denied to this function. Reason: Tempering with this can break the script.");
             await GM.setValue("helloworld", "Hello World");
+            await GM.setValue("storageVer", document.ciulinYT.data.version);
             await GM.setValue("subtitles", {"value": ""});
             await GM.setValue("quality", {"value": ""});
             await GM.setValue("playback", {"value": 1});
@@ -1755,15 +1757,18 @@ ${__a[1]}`;
             await GM.setValue("lang", {"value": "en"});
         },
         prepareStorage: async () => {
-            let STORAGE = await GM.getValue("helloworld");
+            let STORAGE = await GM.getValue("storageVer");
             if(!STORAGE) return document.ciulinYT.func.createStorage("SUPERSECRETROOTKEY");
+            if(STORAGE !== document.ciulinYT.data.version) return document.ciulinYT.func.createStorage("SUPERSECRETROOTKEY");
         },
         addToStorage: async (a, b, c) => {
-            console.debug(a, b, c);
             if(!a && !b && !c) return error();
             await document.ciulinYT.func.prepareStorage();
             let STORAGE = GM.getValue(a);
-            if(!STORAGE) return error(`Storage: ${a} does not exist in storage`);
+            if(!STORAGE) {
+                await document.ciulinYT.func.createStorage("SUPERSECRETROOTKEY");
+                return error(`Storage: ${a} does not exist in storage`);
+            }
             STORAGE[b] = c;
             await GM.setValue(a, STORAGE);
         },
@@ -1771,7 +1776,10 @@ ${__a[1]}`;
             if(!a) return error();
             await document.ciulinYT.func.prepareStorage();
             let STORAGE = await GM.getValue(a);
-            if(!STORAGE) return error(`Storage: ${a} does not exist in storage`);
+            if(!STORAGE) {
+                await document.ciulinYT.func.createStorage("SUPERSECRETROOTKEY");
+                return error(`Storage: ${a} does not exist in storage`);
+            }
             return STORAGE;
         },
         setPref: async (a, b) => {
