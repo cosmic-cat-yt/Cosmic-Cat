@@ -17,7 +17,8 @@ window[NAMESPACE_MODULE_CIULINATIONS_PL] = {};
             loading: "Trwa wczytywanie...",
             channel: "Kanał",
             seeall: "Zobacz wszystko",
-            search: "Szukaj"
+            search: "Szukaj",
+            browsechannels: "Przeglądaj kanały"
         },
         stats: {
             likes: "głosów na tak",
