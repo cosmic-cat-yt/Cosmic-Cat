@@ -2709,7 +2709,7 @@ ${OBJ_CHANCON}
 <div id="masthead-expanded-menus-container">
 <span id="masthead-expanded-menu-shade"></span>
 <div id="masthead-expanded-google-menu">
-<span class="masthead-expanded-menu-header">Google account</span>
+<span class="masthead-expanded-menu-header">${localizeString("personal.googleaccount")}</span>
 <div id="masthead-expanded-menu-google-container">
 <img id="masthead-expanded-menu-gaia-photo" alt="" src="${document.ciulinYT.data.pfp}">
 <div id="masthead-expanded-menu-account-info">
