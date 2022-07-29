@@ -67,6 +67,20 @@ window[NAMESPACE_MODULE_CIULINATIONS_PL] = {};
             uploadedavideo: "przesłał(a) film",
             islive: "jest na żywo"
         },
+        uploadmonth: {
+            Jan: "Sty",
+            Feb: "Lut",
+            Mar: "Mar",
+            Apr: "Kwi",
+            May: "Maj",
+            Jun: "Cze",
+            Jul: "Lip",
+            Aug: "Sie",
+            Sep: "Wrz",
+            Oct: "Paź",
+            Nov: "Lis",
+            Dec: "Gru",          
+        },
         about: {
             country: "Kraj:",
             membersince: "Data dołączenia:",
