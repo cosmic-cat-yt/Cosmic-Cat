@@ -2,10 +2,10 @@
 
 
 ## Pull requests
-You must be familiar with JavaScript ES 8+ and Cosmic Panda (2012 YouTube)
+You must be familiar with JavaScript ES 8+ and Cosmic Panda (2012 YouTube)</br>
 Do not contribute if you're new to JavaScript or otherwise use YandereDev-level coding. 
 
-You must not modify *ANY* HTML code. We aim to be as close to the original Cosmic Panda layout as possible.
+You must not modify *ANY* HTML code. We aim to be as close to the original Cosmic Panda layout as possible.</br>
 If you have Cosmic Panda HTML code that's not currently present in this script - Please contact the author (ciulinuwu) to have them added. Don't add it yourself.
 
 Absolute NO usage of polymer componenets.
@@ -16,10 +16,10 @@ If you want to help them out, feel free to ask them! Teamwork is good work.
 Low-effort pull requests will be closed immediately. As will bug reports.
 
 ## Issues
-You must describe the bug in great details. Including screenshots of good quality and no cropping will be extra helpful.
-Provide screenshots of the entire full Console with all tabs [Warn, Info, Log, Error & Debug] enabled.
-Include the URL of the page you're experiecing the bug in. Zero buts and stuff that deviates from providing the URL.
-Include name and version of the browser you're using.
+You must describe the bug in great details. Including screenshots of good quality and no cropping will be extra helpful.</br>
+Provide screenshots of the entire full Console with all tabs [Warn, Info, Log, Error & Debug] enabled.</br>
+Include the URL of the page you're experiecing the bug in. Zero buts and stuff that deviates from providing the URL.</br>
+Include name and version of the browser you're using.</br>
 
 Low-effort bug reports will be closed.
 
