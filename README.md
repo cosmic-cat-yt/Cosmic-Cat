@@ -6,15 +6,11 @@ This UserScript aims to recreate the 2012 layout of YouTube completely. Includin
 ## Important
 This is super WIP but it works!<br/><br/>
 
-## Bug report & Standards
+## Contributing
 If you experience any issues with the script, please open up a ticket on the [**Issues**](https://github.com/ciulinuwu/ciulin-s-youtube/issues/new/choose) tab.</br></br>
 Do not use this for discussions - We have a Discussions tab and Discord server for that.</br></br>
-Your ticket must be in this format to be considered a valid bug report:</br>
-`1. What happened?:`</br>
-`2. Screenshot of Developer Tools Console (Must have Logs, Warn, Error, Debug & Info enabled):`</br>
-`3. Page URL of where you encountered the issue:`</br></br>
+If you want to contribute to this project, please read [Contributing Guidelines](https://github.com/ciulinuwu/ciulin-s-youtube/blob/master/CONTRIBUTING.md) before doing so.
 
-If your ticket does not meet the standard - You will be asked for each item in the standard.</br></br>
 **YouTube is a trademark of Google LLC.** (don't sue me please)
 
 ## Install
