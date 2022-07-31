@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.5.38
+// @version      0.5.39
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -13,7 +13,7 @@
 // @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/modules/yabai_component.js
 // @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/modules/open_uix_components.js
 // @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/modules/translations.js?v=1
-// @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/translations/english.js?v=1
+// @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/translations/english.js?v=20220731.1
 // @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/translations/dansk.js?v=1
 // @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/translations/polski.js?v=1
 // @grant unsafeWindow
@@ -314,7 +314,7 @@
                         string_uploadedorlive = localizeString("watch.uploadedavideo");
                     } else {
                         string_uploadedorlive = localizeString("watch.islive");
-                    };
+                    }
                     let o = `<li>
 <div class="feed-item-container first" data-channel-key="UCBE-FO9JUOghSysV9gjTeHw">
 <div class="feed-author-bubble-container">
@@ -323,8 +323,7 @@
 <span class="video-thumb ux-thumb yt-thumb-square-28">
 <span class="yt-thumb-clip">
 <span class="yt-thumb-clip-inner">
-<img src="${icon}" alt="${owner.text}" data-thumb="${icon}" width="28">
-<span class="vertical-align"></span>
+<img src="${icon}" alt="${owner.text}" data-thumb="${icon}" width="28"><span class="vertical-align"></span>
 </span>
 </span>
 </span>
@@ -344,8 +343,7 @@
 <a class="ux-thumb-wrap contains-addto yt-uix-contextlink yt-uix-sessionlink" href="/watch?v=${id}">
 <span class="video-thumb ux-thumb yt-thumb-default-185">
 <span class="yt-thumb-clip"><span class="yt-thumb-clip-inner">
-<img src="//i2.ytimg.com/vi/${id}/hqdefault.jpg" alt="Thumbnail" width="185">
-<span class="vertical-align"></span>
+<img src="//i2.ytimg.com/vi/${id}/hqdefault.jpg" alt="Thumbnail" width="185"><span class="vertical-align"></span>
 </span>
 </span>
 </span>
@@ -529,17 +527,17 @@
             let template = async(current) => {
                 let {owner, time, views, title, id, url} = await document.ciulinYT.func.organizeVideoData(current);
                 let a = `<div class="browse-item yt-tile-default">
-<a href="https://www.youtube.com/watch?v=${id}" class="ux-thumb-wrap">
-<span class="video-thumb ux-thumb ux-thumb-184">
-<span class="clip">
-<span class="clip-inner"><img alt="Thumbnail" src="//i2.ytimg.com/vi/${id}/hqdefault.jpg" data-group-key="thumb-group-0"><span class="vertical-align"></span></span>
+<a href="https://www.youtube.com/watch?v=${id}" class="ux-thumb-wrap yt-uix-sessionlink yt-uix-contextlink contains-addto">
+<span class="video-thumb ux-thumb yt-thumb-default-194">
+<span class="yt-thumb-clip">
+<span class="yt-thumb-clip-inner"><img alt="Thumbnail" src="//i2.ytimg.com/vi/${id}/hqdefault.jpg" data-group-key="thumb-group-0" width="179"><span class="vertical-align"></span></span>
 </span>
 </span>
 <span class="video-time">${time}</span>
 </a>
 <div class="browse-item-content">
 <h3 dir="ltr">
-<a href="https://www.youtube.com/watch?v=${id}" title="${title}">${title}</a>
+<a class="yt-uix-sessionlink" href="https://www.youtube.com/watch?v=${id}" title="${title}">${title}</a>
 </h3>
 <div class="browse-item-info">
 <div class="metadata-line">
@@ -547,7 +545,7 @@
 <span class="metadata-separator">|</span>
 <span class="video-date-added">${views[1]}</span>
 </div>
-<a class="yt-user-name" dir="ltr" href="https://www.youtube.com${url}">${owner.text}</a>
+<a class="yt-uix-sessionlink yt-user-name" dir="ltr" href="https://www.youtube.com${url}">${owner.text}</a>
 </div>
 </div>
 </div>`;
@@ -579,7 +577,7 @@
                     string = "/gaming";
                     break;
                 case "news":
-                    obj.name = localizeString("guide.news");;
+                    obj.name = localizeString("guide.news");
                     string = "/channel/UCYfdidRxbB8Qhf0Nx7ioOYw";
                     break;
                 case "sports":
@@ -587,7 +585,7 @@
                     string = "/channel/UCEgdi0XIXXZ-qJOFPf4JSKw";
                     break;
                 case "edu":
-                    obj.name = localizeString("guide.education");;
+                    obj.name = localizeString("guide.education");
                     string = "/channel/UCtFRv9O2AHqOZjjynzrv-xg";
                     break;
                 case "howto":
@@ -674,7 +672,6 @@
             if(!pickie) return;
             document.querySelector("#picker-loading").removeAttribute("style");
             let api = await document.ciulinYT.func.getApi("/youtubei/v1/account/account_menu");
-            console.debug(api);
             let sum = api.actions[0].openPopupAction.popup.multiPageMenuRenderer.sections[2].multiPageMenuSectionRenderer.items;
             let ij, ik, ia, io, iu, pp;
             let fixArr = [];
@@ -717,7 +714,6 @@
             for (let i = 0; i < outArray.length; i++) {
                 let aaa = ``;
                 for (let I = 0; I < outArray[i].length; I++) {
-                    console.debug(outArray[i][I].name + " " + outArray[i][I].lang);
                     let im = (ik == "gl") ? `<a href="#" onclick="(async() => {await document.ciulinYT.func.addToStorage('${pp}', 'value', '${outArray[i][I].lang}');})(); window.location.reload(); return false;"><img id="flag_${outArray[i][I].lang.toLowerCase()}_${outArray[i][I].lang}" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="flag_${outArray[i][I].lang.toLowerCase()}_${outArray[i][I].lang}" alt="" width="17" height="11"> </a>` : ``;
                     aaa += `<div class="flag-div">${im}
 <a href="#" onclick="(async() => {await document.ciulinYT.func.addToStorage('${pp}', 'value', '${outArray[i][I].lang}');})(); window.location.reload(); return false;">${outArray[i][I].name}</a>
@@ -772,21 +768,23 @@
                 commCount = number;
                 ana();
             } else {
-                let abc = document.querySelector(".yt-uix-pager");
-                let bcd = document.querySelector(".yt-uix-button-toggled");
-                let def = document.createElement("a");
-                let ded = document.querySelector("#next-btn");
-                def.setAttribute("class", "yt-uix-button yt-uix-sessionlink yt-uix-pager-button yt-uix-button-toggled yt-uix-button-default yt-pp");
-                def.setAttribute("data-page", commCount);
-                def.setAttribute("onclick", "document.ciulinYT.load.comments(this.getAttribute('data-token'), this.getAttribute('data-page'))");
-                def.setAttribute("aria-label", `Go to page ${commCount}`);
-                def.setAttribute("data-token", continuation);
-                def.innerHTML = `<span class="yt-uix-button-content">${commCount}</span>`;
-                ded.setAttribute("data-page", commCount);
-                if (bcd) {
-                    bcd.classList.remove("yt-uix-button-toggled");
+                if (number !== 0) {
+                    let abc = document.querySelector(".yt-uix-pager");
+                    let bcd = document.querySelector(".yt-uix-button-toggled");
+                    let def = document.createElement("a");
+                    let ded = document.querySelector("#next-btn");
+                    def.setAttribute("class", "yt-uix-button yt-uix-sessionlink yt-uix-pager-button yt-uix-button-toggled yt-uix-button-default yt-pp");
+                    def.setAttribute("data-page", commCount);
+                    def.setAttribute("onclick", "document.ciulinYT.load.comments(this.getAttribute('data-token'), this.getAttribute('data-page'))");
+                    def.setAttribute("aria-label", `Go to page ${commCount}`);
+                    def.setAttribute("data-token", continuation);
+                    def.innerHTML = `<span class="yt-uix-button-content">${commCount}</span>`;
+                    ded.setAttribute("data-page", commCount);
+                    if (bcd) {
+                        bcd.classList.remove("yt-uix-button-toggled");
+                    }
+                    abc.insertBefore(def, document.querySelector("#next-btn"));
                 }
-                abc.insertBefore(def, document.querySelector("#next-btn"));
             }
             for (let i = 0; i < collection.length; i++) {
                 if (collection[i].commentThreadRenderer) {
@@ -807,7 +805,56 @@
             stopLoad();
         },
         moreSuggestedVideos: async (token) => {
-            alert("I got lazy will add this later");
+            let stopLoad = () => {
+                document.querySelector("#watch-more-related-button").classList.remove("hid");
+                document.querySelector("#watch-more-related").classList.add("hid");
+            };
+            let hide = () => {
+                document.querySelector("#watch-more-related-button").classList.add("hid");
+                document.querySelector("#watch-more-related").classList.add("hid");
+            };
+            if(!token) return stopLoad();
+            document.querySelector("#watch-more-related").classList.remove("hid");
+            document.querySelector("#watch-more-related-button").classList.add("hid");
+            let api = await document.ciulinYT.func.getApi("/youtubei/v1/next", `continuation: "${token}"`);
+            let collection = api.onResponseReceivedEndpoints[0] ? api.onResponseReceivedEndpoints[0].appendContinuationItemsAction.continuationItems : [];
+            if(collection.length == 0 || collection == false) return stopLoad();
+            var VALUE_SUGGVIDLOG = (BOOL_LOGIN == true) ? "addto-watch-later-button": "addto-watch-later-button-sign-in";
+            let result = "";
+            for (let i = 0; i < collection.length; i++) {
+                if (collection[i].compactVideoRenderer) {
+                    let {owner, time, views, title, id, url} = await document.ciulinYT.func.organizeVideoData(collection[i].compactVideoRenderer);
+                    result += `<li class="video-list-item">
+<a href="https://www.youtube.com/watch?v=${id}" class="related-video yt-uix-contextlink yt-uix-sessionlink">
+<span class="ux-thumb-wrap contains-addto">
+<span class="video-thumb ux-thumb yt-thumb-default-120">
+<span class="yt-thumb-clip">
+<span class="yt-thumb-clip-inner">
+<img src="//i1.ytimg.com/vi/${id}/default.jpg" alt="Thumbnail"><span class="vertical-align"></span>
+</span>
+</span>
+</span>
+<span class="video-time">${time}</span>
+<button type="button" class="addto-button video-actions spf-nolink ${VALUE_SUGGVIDLOG} yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" onclick=";return false;" role="button">
+<span class="yt-uix-button-content">
+<img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="${localizeString("personal.watchlater")}">
+</span>
+<img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
+</button>
+</span>
+<span dir="ltr" class="title" title="${title}">${title}</span>
+<span class="stat attribution">${localizeString("watch.by")} <span class="class="yt-user-name" dir="ltr">${owner.text}</span></span>
+<span class="stat view-count">${views[0]}</span>
+</a>
+</li>`;
+                }
+                if (collection[i].continuationItemRenderer) {
+                    document.querySelector("#watch-more-related-button").setAttribute("data-token", collection[i].continuationItemRenderer.continuationEndpoint.continuationCommand.token);
+                }
+            }
+            document.querySelector("#watch-related").innerHTML += result;
+            if (!collection.at(-1).continuationItemRenderer) return hide();
+            stopLoad();
         }
     };
     document.ciulinYT.func = {
@@ -1597,10 +1644,13 @@ document.querySelector(".playbar-controls_play").setAttribute("data-state", "0")
             let meta = da.metadataText ? da.metadataText.simpleText.split(" · ") : [[],[]];
             view = view.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
             let views = view ? [view, upload] : meta;
+            if (views[0] == "false") {
+                views[0] = "";
+            }
             let title = da.title ? (da.title.simpleText) ? da.title.simpleText : (da.title.runs) ? da.title.runs[0].text : false : da.videoDetails ? da.videoDetails.title : "";
             let videoId = da.videoId ? da.videoId : da.videoDetails ? da.videoDetails.videoId : "";
             let url = owner.navigationEndpoint ? owner.navigationEndpoint.browseEndpoint.canonicalBaseUrl : da.videoDetails ? "/channel/" + da.videoDetails.channelId : "";
-            let description = da.detailedMetadataSnippets ? da.detailedMetadataSnippets[0].snippetText.runs[0].text : da.descriptionSnippet ? da.descriptionSnippet.runs[0].text : da.videoDetails ? da.videoDetails.shortDescription : "";
+            let description = da.detailedMetadataSnippets ? da.detailedMetadataSnippets[0].snippetText.runs[0].text : da.descriptionSnippet ? da.descriptionSnippet.runs[0].text : da.description ? da.description.runs[0].text : da.videoDetails ? da.videoDetails.shortDescription : "";
             let icon = da.channelThumbnailSupportedRenderers ? da.channelThumbnailSupportedRenderers.channelThumbnailWithLinkRenderer.thumbnail.thumbnails[0].url : "";
             let tags = da.videoDetails ? da.videoDetails.keywords ? da.videoDetails.keywords : false : [];
             let category = "";
@@ -1663,6 +1713,10 @@ document.querySelector(".playbar-controls_play").setAttribute("data-state", "0")
             let time = da.publishedTimeText.runs[0].text;
             let url = da.authorEndpoint.browseEndpoint.canonicalBaseUrl;
             let authorId = da.authorEndpoint.browseEndpoint.browseId;
+            let likes = da.voteCount ? `<span dir="ltr" class="comments-rating-positive" title="">
+${da.voteCount ? da.voteCount.simpleText : ""}
+<img class="comments-rating-thumbs-up" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif">
+</span>` : "";
 
             let __a = [[], []];
 
@@ -1684,6 +1738,7 @@ document.querySelector(".playbar-controls_play").setAttribute("data-state", "0")
 <span class="time" dir="ltr">
 <a dir="ltr" href="https://www.youtube.com/watch?v=${id}&lc=${id}">${time}</a>
 </span>
+${likes}
 </p>
 </div>
 <div class="comment-actions">
@@ -1932,7 +1987,8 @@ ${__a[1]}`;
             let channel1 = () => {
             };
             let channel2 = async() => {
-                document.head.innerHTML += '<link rel="stylesheet" href="//s.ytimg.com/yt/cssbin/www-channel_new-vflrWkVe_.css">';
+                document.querySelector("#yt-core").href = "//s.ytimg.com/yt/cssbin/www-refresh-vflzVUPsm.css";
+                document.head.innerHTML += '<link rel="stylesheet" href="//s.ytimg.com/yt/cssbin/www-channel_new-vflrWkVe_.css"><link rel="stylesheet" href="//s.ytimg.com/yt/cssbin/www-the-rest-vflNb6rAI.css">';
                 let thelegend = "";
                 if (window.location.pathname.split("/")[2].match(/technoblade/gi)) {
                     thelegend = `<div id="the-blood-king">Long live the blood king🐷❤️</div>`;
@@ -1997,7 +2053,6 @@ ${__a[1]}`;
 </div>
 </div>`;
                 }
-                console.debug(videos);
                 let recentfeed = "";
                 for (let i = 0; i < data.RECENTFEED.length; i++) {
                     let u = '<tr id="feed_divider"><td colspan="3" class="outer-box-bg-as-border divider">&nbsp;</td>';
@@ -2155,13 +2210,12 @@ ${OBJ_occu}
 <div id="playnav-panel-info" class="scrollable" style="display: block;">
 <div id="channel-like-action">
 <div id="channel-like-buttons">
-<button title="I like this" type="button" class="master-sprite yt-uix-button yt-uix-tooltip" data-watchid="${id}" onclick="document.ciulinYT.func.likeThis(this.getAttribute('data-watchid'));return false;" id="watch-like" role="button" aria-pressed="false">
-<img class="yt-uix-button-icon-watch-like" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
-<span class="yt-uix-button-content">Like</span>
+<button title="I like this" type="button" class="yt-uix-button yt-uix-tooltip" data-watchid="${id}" onclick="document.ciulinYT.func.likeThis(this.getAttribute('data-watchid'));return false;" id="watch-like" role="button" aria-pressed="false">
+<img class="yt-uix-button-icon yt-uix-button-icon-watch-like" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""><span class="yt-uix-button-content">Like</span>
 </button>
 &nbsp;
-<button title="I dislike this" type="button" class="master-sprite yt-uix-button yt-uix-tooltip" data-watchid="${id}" onclick="document.ciulinYT.func.dislikeThis(this.getAttribute('data-watchid'));return false;" id="watch-unlike" role="button" aria-pressed="false">
-<img class="yt-uix-button-icon-watch-unlike" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
+<button title="I dislike this" type="button" class="yt-uix-button yt-uix-tooltip yt-uix-button-empty" data-watchid="${id}" onclick="document.ciulinYT.func.dislikeThis(this.getAttribute('data-watchid'));return false;" id="watch-unlike" role="button" aria-pressed="false">
+<img class="yt-uix-button-icon yt-uix-button-icon-watch-unlike" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
 </button>
 </div>
 <div id="channel-like-logged-out" class="hid">
@@ -2694,7 +2748,7 @@ ${OBJ_CHANCON}
         document.title = VALUE_TITLE;
         DOMHEAD.innerHTML += '<link rel="icon" href="//s.ytimg.com/yt/favicon-refresh-vfldLzJxy.ico">';
         DOMHEAD.innerHTML += '<link rel="shortcut icon" href="//s.ytimg.com/yt/favicon-refresh-vfldLzJxy.ico">';
-        DOMHEAD.innerHTML += '<link rel="stylesheet" href="//s.ytimg.com/yts/cssbin/www-core-vfleLhVpH.css"><link rel="stylesheet" class="refresh" href="//s.ytimg.com/yt/cssbin/www-refresh-vflzVUPsm.css"><link rel="stylesheet" href="//s.ytimg.com/yt/cssbin/www-the-rest-vflNb6rAI.css">';
+        DOMHEAD.innerHTML += '<link id="yt-core" rel="stylesheet" href="//s.ytimg.com/yts/cssbin/www-core-vfleLhVpH.css">';
         document.body.innerHTML = "";
         await document.ciulinYT.func.checkLogin().then(afs => {BOOL_LOGIN = afs;});
         var DOMBODY = document.body;
@@ -2783,7 +2837,23 @@ ${OBJ_CHANCON}
 </span>
 </span>`;
         } else {
-            OBJ_USER = `<a class="start" href="https://www.youtube.com/signup">Create Account</a><span class="masthead-link-separator">|</span><a class="end" href="${document.ciulinYT.data.loginUrl}">Sign In</a>`;
+            OBJ_USER = `<div id="masthead-user-display">
+<span id="masthead-user-wrapper">
+<button href="${document.ciulinYT.data.loginUrl}" type="button" id="masthead-user-button" onclick=";window.location.href=this.getAttribute('href');return false;" class="yt-uix-button yt-uix-button-text" role="button">
+<span class="yt-uix-button-content">
+<span id="masthead-user-image">
+<span class="clip">
+<span class="clip-center">
+<img src="//s.ytimg.com/yts/img/silhouette48-vflLdu7sh.png" alt="">
+<span class="vertical-center"></span>
+</span>
+</span>
+</span>
+<span class="masthead-user-username">${localizeString("buttons.signin")}</span>
+</span>
+</button>
+</span>
+</div>`;
         }
         var OBJ_MASTHEAD;
         var OBJ_FOOTER;
@@ -2817,8 +2887,7 @@ ${OBJ_CHANCON}
 <span class="video-thumb ux-thumb yt-thumb-square-77">
 <span class="yt-thumb-clip">
 <span class="yt-thumb-clip-inner">
-<img src="${document.ciulinYT.data.pfp}" alt="${document.ciulinYT.data.name}" width="77">
-<span class="vertical-align"></span>
+<img src="${document.ciulinYT.data.pfp}" alt="${document.ciulinYT.data.name}" width="77"><span class="vertical-align"></span>
 </span>
 </span>
 </span>
@@ -2961,7 +3030,6 @@ ${localizeString("global.loading")}
         }
         if(window.location.pathname.split("/")[1].match(/watch/i)) {
             let FUNC = (async () => {
-                document.querySelector(".refresh").parentNode.removeChild(document.querySelector(".refresh"));
                 let commen = "";
                 if (BOOL_LOGIN == true) {
                     commen = `<form class="comments-post" method="post">
@@ -3257,7 +3325,7 @@ ${commen}
 </div>
 </div>
 <ul>
-<li class="hid" id="parent-comment-loading"> ${localizeString("comments.loading")}</li>
+<li class="hid" id="parent-comment-loading">${localizeString("comments.loading")}</li>
 </ul>
 <div id="comments-loading">${localizeString("global.loading")}</div>
 </div>
@@ -3265,8 +3333,11 @@ ${commen}
 <div id="watch-sidebar">
 <div class="watch-sidebar-section">
 <div id="watch-related-container">
-<ul id="watch-related" class="video-list watch-sidebar-body">
+<ul id="watch-related" class="video-list">
 ${OBJ_SUGGESTEDVIDEOS}
+</ul>
+<ul id="watch-more-related" class="video-list hid">
+<li id="watch-more-related-loading">${localizeString("suggestions.loading")}</li>
 </ul>
 </div>
 <div class="watch-sidebar-foot">
@@ -3679,26 +3750,25 @@ ${parse}
         }
         if(window.location.pathname.match(/\/feed\/explore/i)) {
             let FUNC = (async () => {
-                let CSS1 = `<link rel="stylesheet" href="//s.ytimg.com/yt/cssbin/www-videos-nav-vfl8KBBHC.css"/>`;
-                let CSS2 = `<link rel="stylesheet" href="//s.ytimg.com/yt/cssbin/www-refresh-browse-vflPUlXqz.css"/>`;
-                document.querySelector(".refresh").href = "//s.ytimg.com/yt/cssbin/www-refresh-vflAbAPqe.css";
+                let CSS1 = `<link rel="stylesheet" href="//s.ytimg.com/yts/cssbin/www-videos-nav-vflWHHWFS.css""/>`;
+                let CSS2 = `<link rel="stylesheet" href="//s.ytimg.com/yts/cssbin/www-browse-new-vflUr2lEG.css""/>`;
                 document.head.innerHTML += CSS1 + CSS2;
                 document.title = "Videos - YouTube";
                 var c = "";
                 document.ciulinYT.func.waitForElm("#page").then(async elm => {
-                    elm.setAttribute("class", "browse-base browse-videos");
+                    elm.setAttribute("class", "browse-base");
                     let categories = ["most-viewed", "recommended", "music", "live", "gaming", "news", "sports", "edu", "howto"];
                     for (let i = 0; i < categories.length; i++) {
                         let videos = await document.ciulinYT.load.browse_category(categories[i]);
                         let html = `<div class="browse-collection">
 <div class="ytg-box collection-header with-icon">
 <a class="heading ytg-box" href="">
-<img class="header-icon ${videos.class}" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
+<img class="header-icon ${videos.class}" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
 <div class="header-container">
 <h2>${videos.name} »</h2>
 </div>
 </a>
-<a class="yt-playall-link" href="">
+<a class="yt-playall-link yt-playall-link-default yt-uix-sessionlink" href="">
 <img class="small-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
 Play all
 </a>
@@ -3742,9 +3812,7 @@ ${videos.html}
 </li>
 </ul>
 </div>
-<div class="ytg-fl browse-header">
-</div>
-<div class="browse-container ytg-box no-stage browse-bg-gradient">
+<div class="browse-container ytg-wide ytg-box no-stage browse-bg-gradient">
 <div class="ytg-fl browse-content">
 <div id="browse-side-column" class="ytg-2col ytg-last">
 <ol class="navigation-menu">
@@ -3825,7 +3893,7 @@ ${OBJ_MASTH}`;
 </div>
 <div id="footer-logo">
 <a href="https://www.youtube.com/" title="YouTube home">
-<img id="logo" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="YouTube home">
+<img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="YouTube home">
 </a>
 <span id="footer-divider"></span>
 </div>

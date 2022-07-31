@@ -36,7 +36,8 @@ window[NAMESPACE_MODULE_CIULINATIONS_EN] = {};
             subscribed: "Subscribed",
             unsubscribe: "Unsubscribe",
             post: "Post",
-            loadmoresuggestions: "Load more suggestions"
+            loadmoresuggestions: "Load more suggestions",
+            signin: "Sign In"
         },
         suggestions: {
             loading: "Loading more suggestions..."
