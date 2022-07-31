@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.5.37
+// @version      0.5.38
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -13,9 +13,9 @@
 // @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/modules/yabai_component.js
 // @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/modules/open_uix_components.js
 // @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/modules/translations.js?v=1
-// @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/translations/english.js?v=2
-// @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/translations/dansk.js?v=2
-// @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/translations/polski.js?v=2
+// @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/translations/english.js?v=1
+// @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/translations/dansk.js?v=1
+// @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/translations/polski.js?v=1
 // @grant unsafeWindow
 // @grant GM_addStyle
 // @grant GM.getValue
@@ -314,7 +314,7 @@
                         string_uploadedorlive = localizeString("watch.uploadedavideo");
                     } else {
                         string_uploadedorlive = localizeString("watch.islive");
-                    }
+                    };
                     let o = `<li>
 <div class="feed-item-container first" data-channel-key="UCBE-FO9JUOghSysV9gjTeHw">
 <div class="feed-author-bubble-container">
@@ -579,7 +579,7 @@
                     string = "/gaming";
                     break;
                 case "news":
-                    obj.name = localizeString("guide.news");
+                    obj.name = localizeString("guide.news");;
                     string = "/channel/UCYfdidRxbB8Qhf0Nx7ioOYw";
                     break;
                 case "sports":
@@ -587,7 +587,7 @@
                     string = "/channel/UCEgdi0XIXXZ-qJOFPf4JSKw";
                     break;
                 case "edu":
-                    obj.name = localizeString("guide.education");
+                    obj.name = localizeString("guide.education");;
                     string = "/channel/UCtFRv9O2AHqOZjjynzrv-xg";
                     break;
                 case "howto":
@@ -805,6 +805,9 @@
             }
             document.querySelector(".comment-list" + dd).innerHTML = result.result;
             stopLoad();
+        },
+        moreSuggestedVideos: async (token) => {
+            alert("I got lazy will add this later");
         }
     };
     document.ciulinYT.func = {
@@ -3006,6 +3009,7 @@ ${localizeString("global.loading")}
                 var VALUE_VIDEOTAGS = "";
                 var OBJ_SUGGESTEDVIDEO = ytInitialData.contents.twoColumnWatchNextResults.secondaryResults.secondaryResults.results[1].itemSectionRenderer ? ytInitialData.contents.twoColumnWatchNextResults.secondaryResults.secondaryResults.results[1].itemSectionRenderer.contents : ytInitialData.contents.twoColumnWatchNextResults.secondaryResults.secondaryResults.results;
                 var OBJ_SUGGESTEDVIDEOS = "";
+                var VALUE_SUGGESTEDTOKEN = "";
                 var VALUE_SUBBUTTON = document.ciulinYT.func.getSubscription() ? "subscribed" : "subscribe";
                 var isLiked = ytInitialData.contents.twoColumnWatchNextResults.results ? ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.find(a => a.videoPrimaryInfoRenderer).videoPrimaryInfoRenderer.videoActions.menuRenderer.topLevelButtons[0].toggleButtonRenderer.isToggled ? "liked" : false : "";
                 var isDisliked = ytInitialData.contents.twoColumnWatchNextResults.results? ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.find(a => a.videoPrimaryInfoRenderer).videoPrimaryInfoRenderer.videoActions.menuRenderer.topLevelButtons[1].toggleButtonRenderer.isToggled ? "unliked" : false : "";
@@ -3038,6 +3042,9 @@ ${localizeString("global.loading")}
 <span class="stat view-count">${views[0]}</span>
 </a>
 </li>`;
+                    }
+                    if(OBJ_SUGGESTEDVIDEO[i].continuationItemRenderer) {
+                        VALUE_SUGGESTEDTOKEN = OBJ_SUGGESTEDVIDEO[i].continuationItemRenderer.continuationEndpoint.continuationCommand.token;
                     }
                 }
                 document.ciulinYT.func.waitForElm(".video-stream.html5-main-video").then((elm) => elm.parentNode.removeChild(elm));
@@ -3211,7 +3218,7 @@ ${VALUE_VIDEOTAGS}
 </span>
 </li>
 </ul>
-<div class="horizontal-rule">
+<div class="yt-horizontal-rule">
 <span class="first"></span>
 <span class="second"></span>
 <span class="third"></span>
@@ -3261,12 +3268,18 @@ ${commen}
 <ul id="watch-related" class="video-list watch-sidebar-body">
 ${OBJ_SUGGESTEDVIDEOS}
 </ul>
-<p class="content"></p>
+</div>
+<div class="watch-sidebar-foot">
+<p class="content">
+<button type="button" id="watch-more-related-button" onclick="document.ciulinYT.load.moreSuggestedVideos(this.getAttribute('data-token'));return false;" class="yt-uix-button yt-uix-button-default" data-token="${VALUE_SUGGESTEDTOKEN}" role="button">
+<span class="yt-uix-button-content">${localizeString("buttons.loadmoresuggestions")}</span>
+</button>
+</p>
 </div>
 </div>
-<span class="vertical-rule-main"></span>
-<span class="vertical-rule-corner-top"></span>
-<span class="vertical-rule-corner-bottom"></span>
+<span class="yt-vertical-rule-main"></span>
+<span class="yt-vertical-rule-corner-top"></span>
+<span class="yt-vertical-rule-corner-bottom"></span>
 </div>
 <div class="clear"></div>
 </div>
@@ -3805,7 +3818,7 @@ ${OBJ_USER}
 ${OBJ_MASTH}`;
         OBJ_FOOTER = `<div id="footer-container">
 <div id="footer">
-<div class="horizontal-rule">
+<div class="yt-horizontal-rule">
 <span class="first"></span>
 <span class="second"></span>
 <span class="third"></span>
