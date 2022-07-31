@@ -18,7 +18,9 @@ window[NAMESPACE_MODULE_CIULINATIONS_PL] = {};
             channel: "Kanał",
             seeall: "Zobacz wszystko",
             search: "Szukaj",
-            browsechannels: "Przeglądaj kanały"
+            browsechannels: "Przeglądaj kanały",
+            press: "Prasa i blogi",
+            creators: "Twórcy i partnerzy",
         },
         stats: {
             likes: "głosów na tak",
@@ -49,7 +51,8 @@ window[NAMESPACE_MODULE_CIULINATIONS_PL] = {};
             share: "Udostępnij lub umieść ten film",
             flag: "Zgłoś film jako nieodpowiedni",
             statistics: "Pokaż statystyki filmu",
-            clicktobe: "Kliknij, aby otrzymywać powiadomienia o nowych filmach z tego kanału"
+            clicktobe: "Kliknij, aby otrzymywać powiadomienia o nowych filmach z tego kanału",
+            interactive: "Interaktywny transkrypt"
         },
         player: {
             mute: "Wycisz",

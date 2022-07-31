@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.5.36
+// @version      0.5.37
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -13,9 +13,9 @@
 // @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/modules/yabai_component.js
 // @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/modules/open_uix_components.js
 // @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/modules/translations.js?v=1
-// @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/translations/english.js?v=1
-// @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/translations/dansk.js?v=1
-// @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/translations/polski.js?v=1
+// @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/translations/english.js?v=2
+// @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/translations/dansk.js?v=2
+// @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/translations/polski.js?v=2
 // @grant unsafeWindow
 // @grant GM_addStyle
 // @grant GM.getValue
@@ -314,7 +314,7 @@
                         string_uploadedorlive = localizeString("watch.uploadedavideo");
                     } else {
                         string_uploadedorlive = localizeString("watch.islive");
-                    };
+                    }
                     let o = `<li>
 <div class="feed-item-container first" data-channel-key="UCBE-FO9JUOghSysV9gjTeHw">
 <div class="feed-author-bubble-container">
@@ -579,7 +579,7 @@
                     string = "/gaming";
                     break;
                 case "news":
-                    obj.name = localizeString("guide.news");;
+                    obj.name = localizeString("guide.news");
                     string = "/channel/UCYfdidRxbB8Qhf0Nx7ioOYw";
                     break;
                 case "sports":
@@ -587,7 +587,7 @@
                     string = "/channel/UCEgdi0XIXXZ-qJOFPf4JSKw";
                     break;
                 case "edu":
-                    obj.name = localizeString("guide.education");;
+                    obj.name = localizeString("guide.education");
                     string = "/channel/UCtFRv9O2AHqOZjjynzrv-xg";
                     break;
                 case "howto":
@@ -3063,7 +3063,7 @@ ${localizeString("global.loading")}
                         let api = await document.ciulinYT.func.getApi("/youtubei/v1/comment/create_comment", `createCommentParams: "${document.querySelector("input#session").value}", commentText: "${comm}"`);
                         if(api.actionResult.status == "STATUS_SUCCEEDED") {
                             let re = api.actions[0].runAttestationCommand.ids;
-                            let comments = document.querySelector("ul.comment-list");
+                            let comments = document.querySelector("ul.comment-list.all");
                             let comment = document.createElement("li");
                             comment.setAttribute("class", "comment yt-tile-default");
                             comment.setAttribute("data-author-id", re[2].externalChannelId);
@@ -3144,13 +3144,13 @@ ${localizeString("global.loading")}
 <span class="watch-view-count">
 <strong>${views[0]}</strong>
 </span>
-<button onclick=";return false;" title="Show video statistics" type="button" id="watch-insight-button" class="yt-uix-tooltip yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip yt-uix-button-empty" role="button"><span class="yt-uix-button-icon-wrapper"><img class="yt-uix-button-icon yt-uix-button-icon-watch-insight" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="Show video statistics"><span class="yt-valign-trick"></span></span></button>
+<button onclick=";return false;" title="${localizeString("tooltip.statistics")}" type="button" id="watch-insight-button" class="yt-uix-tooltip yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip yt-uix-button-empty" role="button"><span class="yt-uix-button-icon-wrapper"><img class="yt-uix-button-icon yt-uix-button-icon-watch-insight" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="Show video statistics"><span class="yt-valign-trick"></span></span></button>
 </div>
 <span id="watch-like-unlike" class="yt-uix-button-group"><button onclick="document.ciulinYT.func.likeThis('${id}');return false;" title="${localizeString("tooltip.ilikethis")}" type="button" class="start yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip" id="watch-like" role="button" data-tooltip-text="${localizeString("tooltip.ilikethis")}"><span class="yt-uix-button-icon-wrapper"><img class="yt-uix-button-icon yt-uix-button-icon-watch-like" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="${localizeString("tooltip.ilikethis")}"><span class="yt-valign-trick"></span></span><span class="yt-uix-button-content">${localizeString("buttons.like")} </span></button><button onclick="document.ciulinYT.func.dislikeThis('${id}');return false;" title="${localizeString("tooltip.idislikethis")}" type="button" class="end yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip yt-uix-button-empty" id="watch-unlike" role="button" data-tooltip-text="${localizeString("tooltip.idislikethis")}"><span class="yt-uix-button-icon-wrapper"><img class="yt-uix-button-icon yt-uix-button-icon-watch-unlike" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="${localizeString("tooltip.idislikethis")}"><span class="yt-valign-trick"></span></span></button></span>
 <button type="button" class="yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip" onclick=";return false;" title="${localizeString("tooltip.addto")}" role="button" data-tooltip-text="${localizeString("tooltip.addto")}"><span class="yt-uix-button-content"><span class="addto-label">${localizeString("buttons.addto")}</span> </span></button>
 <button onclick=";return false;" title="Share or embed this video" type="button" class="yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip" id="watch-share" data-button-action="yt.www.watch.actions.share" role="button" data-tooltip-text="${localizeString("tooltip.share")}"><span class="yt-uix-button-content">${localizeString("buttons.share")} </span></button>
 <button onclick=";return false;" title="Flag as inappropriate" type="button" class="yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip yt-uix-button-empty" id="watch-flag" data-button-action="yt.www.watch.actions.flag" role="button" data-tooltip-text="${localizeString("tooltip.flag")}"><span class="yt-uix-button-icon-wrapper"><img class="yt-uix-button-icon yt-uix-button-icon-watch-flag" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="${localizeString("tooltip.flag")}"><span class="yt-valign-trick"></span></span></button>
-<button onclick=";return false;" title="Interactive Transcript" type="button" class="yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip yt-uix-button-empty" id="watch-transcript" data-button-action="yt.www.watch.actions.transcript" role="button"><span class="yt-uix-button-icon-wrapper"><img class="yt-uix-button-icon yt-uix-button-icon-transcript" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="Interactive Transcript"><span class="yt-valign-trick"></span></span></button>
+<button onclick=";return false;" title="${localizeString("tooltip.interactive")}" type="button" class="yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip yt-uix-button-empty" id="watch-transcript" data-button-action="yt.www.watch.actions.transcript" role="button"><span class="yt-uix-button-icon-wrapper"><img class="yt-uix-button-icon yt-uix-button-icon-transcript" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="Interactive Transcript"><span class="yt-valign-trick"></span></span></button>
 </div>
 </div>
 <div id="watch-actions-area-container" class="hid">
@@ -3825,16 +3825,16 @@ ${OBJ_MASTH}`;
 <a href="https://www.youtube.com/about">${localizeString("global.about")}</a>
 </li>
 <li>
-<a href="https://www.youtube.com/press/">Press &amp; Blogs</a>
+<a href="https://www.youtube.com/press/">${localizeString("global.press")}</a>
 </li>
 <li>
 <a href="https://www.youtube.com/copyright">${localizeString("global.copyright")}</a>
 </li>
 <li>
-<a href="https://www.youtube.com/creators">Creators &amp; Partners</a>
+<a href="https://www.youtube.com/creators">${localizeString("global.creators")}</a>
 </li>
 <li>
-<a href="https://www.youtube.com/ads">Advertising</a>
+<a href="https://www.youtube.com/ads">${localizeString("global.advertising")}</a>
 </li>
 </ul>
 <ul class="pickers yt-uix-button-group" data-button-toggle-group="true">

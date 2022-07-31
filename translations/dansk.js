@@ -13,12 +13,14 @@ window[NAMESPACE_MODULE_CIULINATIONS_DA] = {};
             help: "Hjælp",
             about: "Om",
             copyright: "Ophevsret",
-            advertising: "Advertising",
+            advertising: "Annoncér",
             loading: "Indlæser...",
             channel: "Kanal",
             seeall: "se alle",
             search: "Søg",
-            browsechannels: "Gennemse kanaler"
+            browsechannels: "Gennemse kanaler",
+            press: "Presse og blogs",
+            creators: "Skabere og partnere",
         },
         stats: {
             likes: "likes",
@@ -42,7 +44,8 @@ window[NAMESPACE_MODULE_CIULINATIONS_DA] = {};
             share: "Del eller integrér denne video",
             flag: "Markér som upassende",
             statistics: "Vis videostatistik",
-            clicktobe: "Klik for at blive underrettet om nye videoer fra denne kanal"
+            clicktobe: "Klik for at blive underrettet om nye videoer fra denne kanal",
+            interactive: "Interaktiv udskrift"
         },
         comments: {
             charactersremain: "characters remaining",
@@ -81,7 +84,7 @@ window[NAMESPACE_MODULE_CIULINATIONS_DA] = {};
             profile: "Profil",
             privacy: "Privatliv",
             settings: "Indstillinger",
-            signout: "Logge ud",
+            signout: "Log ud",
             switchaccount: "Skift konto",
             googleaccount: "Google-konto"
         },

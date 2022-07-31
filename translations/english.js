@@ -18,7 +18,9 @@ window[NAMESPACE_MODULE_CIULINATIONS_EN] = {};
             channel: "Channel",
             seeall: "see all",
             search: "Search",
-            browsechannels: "Browse channels"
+            browsechannels: "Browse channels",
+            press: "Press & Blogs",
+            creators: "Creators & Partners",
         },
         stats: {
             likes: "likes",
@@ -49,7 +51,8 @@ window[NAMESPACE_MODULE_CIULINATIONS_EN] = {};
             share: "Share or embed this video",
             flag: "Flag as inappropriate",
             statistics: "Show video statistics",
-            clicktobe: "Click to be notified of new videos from this channel"
+            clicktobe: "Click to be notified of new videos from this channel",
+            interactive: "Interactive Transcript"
         },
         player: {
             mute: "Mute",
