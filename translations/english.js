@@ -38,6 +38,9 @@ window[NAMESPACE_MODULE_CIULINATIONS_EN] = {};
             post: "Post",
             loadmoresuggestions: "Load more suggestions"
         },
+        suggestions: {
+            loading: "Loading more suggestions..."
+        },
         comments: {
             charactersremain: "characters remaining",
             secondsremain: "seconds remaining before you can post",
