@@ -35,7 +35,8 @@ window[NAMESPACE_MODULE_CIULINATIONS_EN] = {};
             subscribe: "Subscribe",
             subscribed: "Subscribed",
             unsubscribe: "Unsubscribe",
-            post: "Post"
+            post: "Post",
+            loadmoresuggestions: "Load more suggestions"
         },
         comments: {
             charactersremain: "characters remaining",
