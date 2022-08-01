@@ -7,7 +7,7 @@ Do not contribute if you're new to JavaScript or otherwise use YandereDev-level 
 
 You must not modify *ANY* HTML code. We aim to be as close to the original Cosmic Panda layout as possible.</br>
 If you have Cosmic Panda HTML code that's not currently present in this script - Please contact the author (ciulinuwu) to have them added. Don't add it yourself.</br></br>
-If you're helping to translate, you're allowed to change TEXT and only TEXT into ${localizeString("")}.
+If you have better knowledge at HTML and JavaScript, you have 100% permission to rewrite whatever you want including HTML because I'm not good at coding and I've used a lot of questionable coding techniques.
 
 Absolute NO usage of polymer componenets.
 
