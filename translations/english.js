@@ -2,7 +2,7 @@
 const NAMESPACE_MODULE_CIULINATIONS_EN = "Ciulinations_English";
 
 window[NAMESPACE_MODULE_CIULINATIONS_EN] = {};
-(function translation(exports) {
+(function translation() {
     var language = "en";
     var author = "Ciulin's YouTube";
 
@@ -23,8 +23,7 @@ window[NAMESPACE_MODULE_CIULINATIONS_EN] = {};
             creators: "Creators & Partners",
         },
         stats: {
-            likes: "likes",
-            dislikes: "dislikes"
+            likesdislikes: "%s likes, %r dislikes"
         },
         buttons: {
             like: "Like",
@@ -43,11 +42,12 @@ window[NAMESPACE_MODULE_CIULINATIONS_EN] = {};
             loading: "Loading more suggestions..."
         },
         comments: {
-            charactersremain: "characters remaining",
-            secondsremain: "seconds remaining before you can post",
+            charactersremain: "%s characters remaining",
+            secondsremain: "%s seconds remaining before you can post",
             loading: "Loading comment...",
             allcomments: "All Comments",
-            topcomments: "Top Comments"
+            topcomments: "Top Comments",
+            respond: "Respond to this video..."
         },
         tooltip: {
             ilikethis: "I like this",
@@ -66,15 +66,14 @@ window[NAMESPACE_MODULE_CIULINATIONS_EN] = {};
             fullscreen: "Full screen"
         },
         watch: {
-            by: "by",
             tags: "Tags",
-            on: "on",
             license: "License",
-            uploadby: "Uploaded by",
+            uploaderinfo: "Uploaded by %s on %r",
             category: "Category",
-            from: "From:",
-            uploadedavideo: "uploaded a video",
-            islive: "is live"
+            from: "From: %s",
+            uploadedavideo: "%s uploaded a video",
+            islive: "%s is live",
+            by: "by %s"
         },    
         uploadmonth: {
             jan: "Jan",
@@ -99,8 +98,8 @@ window[NAMESPACE_MODULE_CIULINATIONS_EN] = {};
             subs: "Subscribers:"
         },
         customtag: {
-            age: "Age",
-            occupation: "Occupation"
+            age: "Age:",
+            occupation: "Occupation:"
         },
         personal: {
             mychannel: "My channel",

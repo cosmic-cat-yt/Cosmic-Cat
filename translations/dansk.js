@@ -2,7 +2,7 @@
 const NAMESPACE_MODULE_CIULINATIONS_DA = "Ciulinations_Dansk";
 
 window[NAMESPACE_MODULE_CIULINATIONS_DA] = {};
-(function translation(exports) {
+(function translation() {
     var language = "da";
     var author = "ciulinuwu";
 
@@ -22,9 +22,17 @@ window[NAMESPACE_MODULE_CIULINATIONS_DA] = {};
             press: "Presse og blogs",
             creators: "Skabere og partnere",
         },
-        stats: {
-            likes: "likes",
-            dislikes: "dislikes"
+        about: {
+            country: "Land:",
+            membersince: "Tilmeldt:",
+            viewedcounts: "Visninger:",
+            viewedcount: "Visning:",
+            sub: "Abonnent:",
+            subs: "Abonnenter:"
+        },
+        browse: {
+            mostviewed: "Mest set i dag",
+            recommended: "Anbefalet til dig"
         },
         buttons: {
             like: "Like",
@@ -37,40 +45,28 @@ window[NAMESPACE_MODULE_CIULINATIONS_DA] = {};
             unsubscribe: "Unsubscribe",
             post: "Post"
         },
-        tooltip: {
-            ilikethis: "Jeg kan godt lide denne video",
-            idislikethis: "Jeg kan ikke lide denne video",
-            addto: "Tilføj til favoritter eller playlist",
-            share: "Del eller integrér denne video",
-            flag: "Markér som upassende",
-            statistics: "Vis videostatistik",
-            clicktobe: "Klik for at blive underrettet om nye videoer fra denne kanal",
-            interactive: "Interaktiv udskrift"
-        },
         comments: {
-            charactersremain: "characters remaining",
-            secondsremain: "seconds remaining before you can post",
+            charactersremain: "%s characters remaining",
+            secondsremain: "%s seconds remaining before you can post",
             loading: "Indlæser kommentar...",
             allcomments: "Alle kommentarer",
             topcomments: "Top kommentarer"
         },
-        player: {
-            mute: "Lyd fra",
-            unmute: "Lyd til",
-            quality: "Change quality",
-            fullscreen: "Fuld skærm"
-        },
-        about: {
-            country: "Land:",
-            membersince: "Tilmeldt:",
-            viewedcounts: "Visninger:",
-            viewedcount: "Visning:",
-            sub: "Abonnent:",
-            subs: "Abonnenter:"
-        },
         customtag: {
-            age: "Alder",
-            occupation: "Beskæftigelse"
+            age: "Alder:",
+            occupation: "Beskæftigelse:"
+        },
+        guide: {
+            fromyt: "Fra YouTube",
+            trending: "Trending",
+            popular: "Popular",
+            music: "Musik",
+            live: "Live",
+            gaming: "Gaming",
+            news: "Nyheder",
+            sports: "Sports",
+            education: "Uddannelse",
+            howto: "Howto & Style"
         },
         personal: {
             mychannel: "Min kanal",
@@ -88,16 +84,27 @@ window[NAMESPACE_MODULE_CIULINATIONS_DA] = {};
             switchaccount: "Skift konto",
             googleaccount: "Google-konto"
         },
-        watch: {
-            by: "fra",
-            tags: "Tags",
-            on: "på",
-            license: "Licens",
-            uploadby: "Uploadet af",
-            category: "Kategori",
-            from: "Fra:",
-            uploadedavideo: "uploadet en video",
-            islive: "er live"
+        player: {
+            mute: "Lyd fra",
+            unmute: "Lyd til",
+            quality: "Change quality",
+            fullscreen: "Fuld skærm"
+        },
+        stats: {
+            likesdislikes: "%s likes, %r dislikes"
+        },
+        suggestions: {
+            loading: "Indlæser flere anbefalinger..."
+        },
+        tooltip: {
+            ilikethis: "Jeg kan godt lide denne video",
+            idislikethis: "Jeg kan ikke lide denne video",
+            addto: "Tilføj til favoritter eller playlist",
+            share: "Del eller integrér denne video",
+            flag: "Markér som upassende",
+            statistics: "Vis videostatistik",
+            clicktobe: "Klik for at blive underrettet om nye videoer fra denne kanal",
+            interactive: "Interaktiv udskrift"
         },
         uploadmonth: {
             jan: "Jan",
@@ -113,22 +120,16 @@ window[NAMESPACE_MODULE_CIULINATIONS_DA] = {};
             nov: "Nov",
             dec: "Dec"
         },
-        browse: {
-            mostviewed: "Mest set i dag",
-            recommended: "Anbefalet til dig"
+        watch: {
+            tags: "Tags",
+            license: "Licens",
+            uploaderinfo: "Uploadet af %s på %r",
+            category: "Kategori",
+            from: "Fra: %s",
+            uploadedavideo: "%s uploadet en video",
+            islive: "%s er live",
+            by: "fra %s"
         },
-        guide: {
-            fromyt: "Fra YouTube",
-            trending: "Trending",
-            popular: "Popular",
-            music: "Musik",
-            live: "Live",
-            gaming: "Gaming",
-            news: "Nyheder",
-            sports: "Sports",
-            education: "Uddannelse",
-            howto: "Howto & Style"
-        }
     };
     
     Ciulinations.addTranslation(language, json, author);
