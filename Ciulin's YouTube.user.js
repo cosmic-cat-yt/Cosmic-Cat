@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.5.39
+// @version      0.5.40
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -13,8 +13,8 @@
 // @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/modules/yabai_component.js
 // @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/modules/open_uix_components.js
 // @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/modules/translations.js?v=1
-// @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/translations/english.js?v=20220731.1
-// @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/translations/dansk.js?v=1
+// @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/translations/english.js?v=20220802.0
+// @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/translations/dansk.js?v=20220802.0
 // @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/translations/polski.js?v=1
 // @grant unsafeWindow
 // @grant GM_addStyle
@@ -32,7 +32,7 @@
 // @grant GM_info
 // @run-at document-load
 // ==/UserScript==
-/* jshint esversion: 10 */
+/* jshint esversion: 11 */
 
 (async () => {
     'use strict';
@@ -48,14 +48,39 @@
     document.ciulinYT = {data: {}, func: {}, load: {}};
     const translations = Ciulinations.listTranslations();
 
-    const localizeString = (varr) => {
-        if(!varr) return "";
+    const localizeString = (varr, DOM) => {
         let lang = document.documentElement.getAttribute("lang");
-        if(!lang || lang.length !== 2) return "";
-        varr = varr.split(".");
+        let args = varr.split(".");
+        let i18n = translations[lang]?.json[args[0]]?.[args[1]];
+        if(!i18n) i18n = translations.en.json[args[0]]?.[args[1]];
 
-        if(!translations[lang] || !translations[lang].json[varr[0]] || !translations[lang].json[varr[0]][varr[1]]) return translations.en.json[varr[0]][varr[1]];
-        return translations[lang].json[varr[0]][varr[1]];
+        switch (varr) {
+            case "watch.uploaderinfo":
+                i18n = i18n.replace(/%s/g, `<a href="https://www.youtube.com${DOM?.url}" class="yt-uix-sessionlink yt-user-name author" rel="author" dir="ltr">${DOM?.owner}</a>`);
+                i18n = i18n.replace(/%r/g, `<span id="eow-date" class="watch-video-date">${DOM?.upload}</span>`);
+                break;
+            case "watch.uploadedavideo":
+                i18n = i18n.replace(/%s/g, `<span class="feed-item-owner"><a href="${DOM?.url}" class="yt-uix-sessionlink yt-user-name" dir="ltr">${DOM?.owner.text}</a></span>`);
+                break;
+            case "watch.from":
+                i18n = i18n.replace(/%s/g, `<span id="playnav-curvideo-channel-name"><a href="${window.location.href}">${DOM}</a></span>`);
+                break;
+            case "watch.islive":
+                i18n = i18n.replace(/%s/g, `<span class="feed-item-owner"><a href="${DOM?.url}" class="yt-uix-sessionlink yt-user-name" dir="ltr">${DOM?.owner.text}</a></span>`);
+                break;
+            case "watch.by":
+                i18n = i18n.replace(/%s/g, `<span class="yt-user-name" dir="ltr">${DOM?.owner.text}</span>`);
+                break;
+            case "stats.likesdislikes":
+                i18n = i18n.replace(/%s/g, `<span class="likes"></span>`);
+                i18n = i18n.replace(/%r/g, `<span class="dislikes"></span>`);
+                break;
+            case "comments.charactersremain":
+                i18n = i18n.replace(/%s/g, `<span class="comments-remaining-count" data-max-count="500">500</span>`);
+                break;
+        }
+
+        return i18n;
     };
 
     document.ciulinYT.data = {
@@ -113,7 +138,7 @@
                         return stor;
                     };
                     let video = async (vid) => {
-                        let {id, title, time} = await document.ciulinYT.func.organizeVideoData(vid);
+                        let {id, title, time} = document.ciulinYT.func.organizeVideoData(vid);
                         return `<div class="playnav-item playnav-video">
 <div style="display:none" class="encryptedVideoId">${id}</div>
 <div class="selector"></div>
@@ -160,7 +185,7 @@
                     let j;
                     let data = [];
                     for (j = 0; j < b.length; j++) {
-                        if(!b[j].continuationItemRenderer && !b[j].messageRenderer) {
+                        if(b[j].backstagePostThreadRenderer) {
                             data[j] = {};
                             let post = b[j].backstagePostThreadRenderer.post.sharedPostRenderer ? b[j].backstagePostThreadRenderer.post.sharedPostRenderer.originalPost.backstagePostRenderer : b[j].backstagePostThreadRenderer.post.backstagePostRenderer;
                             data[j].text = post.contentText.runs ? post.contentText.runs[0].text : "";
@@ -194,7 +219,7 @@
                     let data = [];
                     for (let j = 0; j < b.length; j++) {
                         if(!b[j].continuationItemRenderer) {
-                            let videoData = await document.ciulinYT.func.organizeVideoData(b[j].gridVideoRenderer);
+                            let videoData = document.ciulinYT.func.organizeVideoData(b[j].gridVideoRenderer);
                             data[j] = videoData;
                         }
                     }
@@ -280,7 +305,7 @@
 
             return a;
         },
-        home_category: async(category) => {
+        home_category: async (category) => {
             if(!category || window.location.pathname !== "/") {
                 window.location.href = "/?c=subscriptions";
                 return;
@@ -304,26 +329,26 @@
                 document.querySelector("#feed-loading-template").classList.add("hid");
                 document.querySelector("#feed-error").classList.remove("hid");
             };
-            xhr.onload = async (e) => {
+            xhr.onload = async () => {
                 document.querySelector(".feed-header-info").innerText = category.querySelector(".display-name").innerText;
                 let json = JSON.parse(xhr.response.split("var ytInitialData = ")[1].split(";</script>")[0]);
-                let template = async(a) => {
-                    let {owner, time, views, title, id, url, description, upload, icon} = await document.ciulinYT.func.organizeVideoData(a);
+                let template = (a) => {
+                    let videoData = document.ciulinYT.func.organizeVideoData(a);
                     let string_uploadedorlive;
-                    if(views[1].length > 1) {
-                        string_uploadedorlive = localizeString("watch.uploadedavideo");
+                    if(videoData.views[1].length > 1) {
+                        string_uploadedorlive = localizeString("watch.uploadedavideo", videoData);
                     } else {
-                        string_uploadedorlive = localizeString("watch.islive");
+                        string_uploadedorlive = localizeString("watch.islive", videoData);
                     }
                     let o = `<li>
 <div class="feed-item-container first" data-channel-key="UCBE-FO9JUOghSysV9gjTeHw">
 <div class="feed-author-bubble-container">
-<a href="${url}" class="feed-author-bubble">
+<a href="${videoData.url}" class="feed-author-bubble">
 <span class="feed-item-author">
 <span class="video-thumb ux-thumb yt-thumb-square-28">
 <span class="yt-thumb-clip">
 <span class="yt-thumb-clip-inner">
-<img src="${icon}" alt="${owner.text}" data-thumb="${icon}" width="28"><span class="vertical-align"></span>
+<img src="${videoData.icon}" alt="${videoData.owner.text}" data-thumb="${videoData.icon}" width="28"><span class="vertical-align"></span>
 </span>
 </span>
 </span>
@@ -333,21 +358,19 @@
 <div class="feed-item-main">
 <div class="feed-item-header">
 <span class="feed-item-actions-line">
-<span class="feed-item-owner">
-<a href="${url}" class="yt-uix-sessionlink yt-user-name" dir="ltr">${owner.text}</a>
-</span> ${string_uploadedorlive} <span class="feed-item-time">${views[1]}</span>
+${string_uploadedorlive} <span class="feed-item-time">${videoData.views[1]}</span>
 </span>
 </div>
 <div class="feed-item-content-wrapper clearfix context-data-item" data-context-item-actionverb="uploaded" data-context-item-title="Steam for Linux a Bad Idea? - This Week in Linux Gaming" data-context-item-type="video" data-context-item-time="5:21" data-context-item-user="nixiedoeslinux" data-context-item-id="7LVtbTurdCk" data-context-item-views="25,816 views" data-context-item-actionuser="nixiedoeslinux">
 <div class="feed-item-thumb">
-<a class="ux-thumb-wrap contains-addto yt-uix-contextlink yt-uix-sessionlink" href="/watch?v=${id}">
+<a class="ux-thumb-wrap contains-addto yt-uix-contextlink yt-uix-sessionlink" href="/watch?v=${videoData.id}">
 <span class="video-thumb ux-thumb yt-thumb-default-185">
 <span class="yt-thumb-clip"><span class="yt-thumb-clip-inner">
-<img src="//i2.ytimg.com/vi/${id}/hqdefault.jpg" alt="Thumbnail" width="185"><span class="vertical-align"></span>
+<img src="//i2.ytimg.com/vi/${videoData.id}/hqdefault.jpg" alt="Thumbnail" width="185"><span class="vertical-align"></span>
 </span>
 </span>
 </span>
-<span class="video-time">${time}</span>
+<span class="video-time">${videoData.time}</span>
 <button onclick=";return false;" title="Watch Later" type="button" class="addto-button video-actions addto-watch-later-button yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" data-video-ids="7LVtbTurdCk" role="button">
 <span class="yt-uix-button-content">
 <img src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="Watch Later">
@@ -357,12 +380,12 @@
 </div>
 <div class="feed-item-content">
 <h4>
-<a class="feed-video-title title yt-uix-contextlink yt-uix-sessionlink" href="/watch?v=${id}">${title}</a>
+<a class="feed-video-title title yt-uix-contextlink yt-uix-sessionlink" href="/watch?v=${videoData.id}">${videoData.title}</a>
 </h4>
 <div class="metadata">
-<span class="view-count">${views[0]}</span>
+<span class="view-count">${videoData.views[0]}</span>
 <div class="description">
-<p>${description}</p>
+<p>${videoData.description}</p>
 </div>
 </div>
 </div>
@@ -394,138 +417,11 @@
             };
             xhr.send();
         },
-        settings_tab: async(dataName) => {
-            if (!dataName) return;
-            let DOM = document.querySelector("video-settings");
-            let CON = DOM.querySelector(".playmenu-content");
-            CON.innerHTML = "";
-            document.querySelector(".playmenu-button.selected").classList.remove("selected");
-            document.querySelector(`[data-name="${dataName}"]`).classList.add("selected");
-
-            let loadSubtitles = async () => {
-                let HTML = [];
-                let subtitlesSTORAGE = await document.ciulinYT.func.getFromStorage("subtitles");
-                let jSON = [{disabled: "", languageCode: "", name: {simpleText: "No subtitles"}}];
-                let posiShort = (ytInitialPlayerResponse) ? (ytInitialPlayerResponse.captions) ? ytInitialPlayerResponse.captions.playerCaptionsTracklistRenderer.captionTracks : jSON : jSON;
-                let posiSubtitles = ``;
-                let value = subtitlesSTORAGE.value;
-
-                for (let i = 0; i < posiShort.length; i++) {
-                    let _value = (posiShort[i].languageCode == subtitlesSTORAGE.value) ? 'selected=""' : "";
-                    posiSubtitles += `<option value="${posiShort[i].languageCode}" ${_value}>${posiShort[i].name.simpleText}</option>`;
-                }
-
-                let chck_toggle = (posiShort[0].disabled == "") ? 'disabled=""' : '';
-
-                let _toggle = `<span class="playmenu-text">Subtitles</span><div class="settings-toggle"><input type="checkbox" class="settings-toggle" id="settings-subtitles" ${chck_toggle}><label for="settings-subtitles" class="playmenu-text">Enable Subtitles</label></div><div class="settings-selecter"><select class="settings-selecter" id="settings-subtitles" disabled="">${posiSubtitles}</select></div>`;
-
-                HTML.push(_toggle);
-
-                for (let i = 0; i < HTML.length; i++) {
-                    CON.innerHTML += HTML[i];
-                }
-
-                document.querySelector(".settings-toggle#settings-subtitles").addEventListener("click", e => {
-                    if(e.srcElement.checked == true) {
-                        document.querySelector(".settings-selecter#settings-subtitles").removeAttribute("disabled");
-                    } else {
-                        document.querySelector(".settings-selecter#settings-subtitles").setAttribute("disabled", "");
-                    }
-
-                    document.ciulinYT.player.toggleSubtitles();
-                });
-
-                document.querySelector(".settings-selecter#settings-subtitles").addEventListener("change", e => {
-                    document.ciulinYT.func.addToStorage("subtitles", "value", e.srcElement.value);
-                    document.ciulinYT.player.setOption("captions", "track", {"languageCode": e.srcElement.value});
-                });
-            };
-
-            let loadQuality = async () => {
-                let HTML = [];
-                let qualitySTORAGE = await document.ciulinYT.func.getFromStorage("quality");
-                let qualShort = document.ciulinYT.player.getAvailableQualityLevels();
-                let qualShorter = document.ciulinYT.player.getPlaybackQuality();
-                let qualQuality = ``;
-                let value = qualitySTORAGE.value;
-
-                for (let i = 0; i < qualShort.length; i++) {
-                    let _value = (qualShort[i] == qualShorter) ? 'selected=""' : (qualShort[i] == qualitySTORAGE.value) ? 'selected=""' : "";
-                    qualQuality += `<option value="${qualShort[i]}" ${_value}>${qualShort[i]}</option>`;
-                }
-
-                let _select = `<span class="playmenu-text">Video Quality</span><div class="settings-selecter"><select class="settings-selecter" id="settings-quality">${qualQuality}</select><span class="playmenu-text">Technically doesn't do anything since YouTube deprecated <a href="https://developers.google.com/youtube/iframe_api_reference#october-24,-2019" target="_blank">setPlaybackQuality</a></span></div>`;
-
-                HTML.push(_select);
-
-                for (let i = 0; i < HTML.length; i++) {
-                    CON.innerHTML += HTML[i];
-                }
-            };
-
-            let loadPlayback = async () => {
-                let HTML = [];
-                let playbackSTORAGE = await document.ciulinYT.func.getFromStorage("playback");
-                let playShort = document.ciulinYT.player.getAvailablePlaybackRates();
-                let playShorter = document.ciulinYT.player.getPlaybackRate();
-                let playRate = ``;
-                let value = playbackSTORAGE.value;
-
-                for (let i = 0; i < playShort.length; i++) {
-                    let _value = (playShort[i] == playShorter) ? 'selected=""' : (playShort[i] == playbackSTORAGE.value) ? 'selected=""' : "";
-                    playRate += `<option value="${playShort[i]}" ${_value}>${playShort[i]}</option>`;
-                }
-
-                let _select = `<span class="playmenu-text">Playback Rate</span><div class="settings-selecter"><select class="settings-selecter" id="settings-play">${playRate}</select></div>`;
-
-                HTML.push(_select);
-
-                for (let i = 0; i < HTML.length; i++) {
-                    CON.innerHTML += HTML[i];
-                }
-
-                document.querySelector(".settings-selecter#settings-play").addEventListener("change", e => {
-                    document.ciulinYT.func.addToStorage("playback", "value", Number(e.srcElement.value));
-                    document.ciulinYT.player.setPlaybackRate(Number(e.srcElement.value));
-                });
-            };
-
-            let loadLoop = async () => {
-                let _select = `<span class="playmenu-text">Loop Video</span><div class="settings-toggle"><input type="checkbox" class="settings-toggle" id="settings-loop"><label for="settings-loop" class="playmenu-text">Enable Loop</label></div>`;
-                CON.innerHTML += _select;
-                document.querySelector(".settings-toggle#settings-loop").addEventListener("click", e => {
-                    let id = document.ciulinYT.player.getVideoUrl().split("v=")[1];
-                    let l = document.ciulinYT.player.getCurrentTime();
-                    if(e.srcElement.checked == true) {
-                        document.ciulinYT.player.loadPlaylist(id, 0, l);
-                        document.ciulinYT.player.setLoop(true);
-                    } else {
-                        document.ciulinYT.player.loadVideoById(id, l);
-                    }
-                });
-            };
-
-            switch (dataName) {
-                case "subtitles":
-                    loadSubtitles();
-                    break;
-                case "quality":
-                    loadQuality();
-                    break;
-                case "playback":
-                    loadPlayback();
-                    break;
-                case "loop":
-                    loadLoop();
-                    break;
-            }
-        },
-        browse_category: async (category) => {
-            if(!category) return;
-            let obj = {class: category};
+        browse_category: async (category = String) => {
+            let obj = {class: category, html: ""};
             let string = "";
             let template = async(current) => {
-                let {owner, time, views, title, id, url} = await document.ciulinYT.func.organizeVideoData(current);
+                let {owner, time, views, title, id, url} = document.ciulinYT.func.organizeVideoData(current);
                 let a = `<div class="browse-item yt-tile-default">
 <a href="https://www.youtube.com/watch?v=${id}" class="ux-thumb-wrap yt-uix-sessionlink yt-uix-contextlink contains-addto">
 <span class="video-thumb ux-thumb yt-thumb-default-194">
@@ -609,8 +505,7 @@
             obj.html = await test;
             return obj;
         },
-        homepage_list: async (category) => {
-            if(!category) return;
+        homepage_list: (category = String) => {
             let obj = {class: category};
             let string = "";
             switch (category) {
@@ -668,8 +563,7 @@
             let a = await test;
             return a;
         },
-        picker: async (pickie) => {
-            if(!pickie) return;
+        picker: async (pickie = String) => {
             document.querySelector("#picker-loading").removeAttribute("style");
             let api = await document.ciulinYT.func.getApi("/youtubei/v1/account/account_menu");
             let sum = api.actions[0].openPopupAction.popup.multiPageMenuRenderer.sections[2].multiPageMenuSectionRenderer.items;
@@ -736,7 +630,7 @@
             document.querySelector("#picker-container").innerHTML = html;
             document.querySelector("#picker-loading").classList.add("hid");
         },
-        comments: async (continuation, number) => {
+        comments: async (continuation = String, number = Number) => {
             let dd = ".all";
             let stopLoad = () => {
                 document.querySelector(".comment-list" + dd).classList.remove("hid");
@@ -804,7 +698,7 @@
             document.querySelector(".comment-list" + dd).innerHTML = result.result;
             stopLoad();
         },
-        moreSuggestedVideos: async (token) => {
+        moreSuggestedVideos: async (token = String) => {
             let stopLoad = () => {
                 document.querySelector("#watch-more-related-button").classList.remove("hid");
                 document.querySelector("#watch-more-related").classList.add("hid");
@@ -823,18 +717,18 @@
             let result = "";
             for (let i = 0; i < collection.length; i++) {
                 if (collection[i].compactVideoRenderer) {
-                    let {owner, time, views, title, id, url} = await document.ciulinYT.func.organizeVideoData(collection[i].compactVideoRenderer);
+                    let videoData = document.ciulinYT.func.organizeVideoData(collection[i].compactVideoRenderer);
                     result += `<li class="video-list-item">
-<a href="https://www.youtube.com/watch?v=${id}" class="related-video yt-uix-contextlink yt-uix-sessionlink">
+<a href="https://www.youtube.com/watch?v=${videoData.id}" class="related-video yt-uix-contextlink yt-uix-sessionlink">
 <span class="ux-thumb-wrap contains-addto">
 <span class="video-thumb ux-thumb yt-thumb-default-120">
 <span class="yt-thumb-clip">
 <span class="yt-thumb-clip-inner">
-<img src="//i1.ytimg.com/vi/${id}/default.jpg" alt="Thumbnail"><span class="vertical-align"></span>
+<img src="//i1.ytimg.com/vi/${videoData.id}/default.jpg" alt="Thumbnail"><span class="vertical-align"></span>
 </span>
 </span>
 </span>
-<span class="video-time">${time}</span>
+<span class="video-time">${videoData.time}</span>
 <button type="button" class="addto-button video-actions spf-nolink ${VALUE_SUGGVIDLOG} yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" onclick=";return false;" role="button">
 <span class="yt-uix-button-content">
 <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="${localizeString("personal.watchlater")}">
@@ -842,9 +736,9 @@
 <img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
 </button>
 </span>
-<span dir="ltr" class="title" title="${title}">${title}</span>
-<span class="stat attribution">${localizeString("watch.by")} <span class="class="yt-user-name" dir="ltr">${owner.text}</span></span>
-<span class="stat view-count">${views[0]}</span>
+<span dir="ltr" class="title" title="${videoData.title}">${videoData.title}</span>
+<span class="stat attribution">${localizeString("watch.by", videoData)}</span>
+<span class="stat view-count">${videoData.views[0]}</span>
 </a>
 </li>`;
                 }
@@ -865,14 +759,6 @@
             ELEMENT.setAttribute("tabindex", 0);
             ELEMENT.append(TEMP);
             var DOM = ELEMENT.querySelector(".player");
-            (() => {
-                var DOM_menu = document.createElement("video-settings");
-                DOM_menu.setAttribute("class", "hid");
-                DOM_menu.setAttribute("data-state", "0");
-                DOM_menu.innerHTML = `<div class="playmenu-container"><a class="playmenu-text">YouTube Player Settings</a><div class="playmenu-content"></div><ul class="playmenu-buttons"><li class="playmenu-button selected" data-name="subtitles"></li><li class="playmenu-button" data-name="quality"></li><li class="playmenu-button" data-name="playback"></li><li class="playmenu-button" data-name="loop"></li><div class="playmenu-button_exit"><span>Close</span></div></ul></div>`;
-                DOM.appendChild(DOM_menu);
-                document.ciulinYT.load.settings_tab("subtitles");
-            })();
             (() => {
                 var DOM_topBar = document.createElement("div");
                 DOM_topBar.setAttribute("class", "video-topbar");
@@ -1408,13 +1294,12 @@ let tooltip = document.querySelector("#seek-tooltip");
 let pos = e.target.getAttribute("data-name");
 if(pos == "fullscreen") {tooltip.classList.add("deez");};
 tooltip.classList.remove("hid");
-const rect = document.querySelector("#video-player").getBoundingClientRect();
 tooltip.style.left = list[pos][0] + "px";
 tooltip.style.top = "-15px";
 tooltip.style.display = "flex";
 tooltip.innerText = text;
 };
-let toolTipEnd = (e) => {
+let toolTipEnd = () => {
 let tooltip = document.querySelector("#seek-tooltip");
 tooltip.style = "";
 tooltip.classList.add("hid");
@@ -1450,15 +1335,7 @@ break;
 };
 });
 document.querySelector(".video-container").addEventListener("click", () => {
-document.ciulinYT.func.exitPlayerSettings();
 document.ciulinYT.func.playPause(document.querySelector(".playbar-controls_play").getAttribute("data-state"));
-});
-document.querySelectorAll(".playmenu-button").forEach(a => {
-a.addEventListener("click", e => {
-document.ciulinYT.load.settings_tab(e.srcElement.getAttribute("data-name"));
-})});
-document.querySelector(".playmenu-button_exit").addEventListener("click", () => {
-document.ciulinYT.func.exitPlayerSettings();
 });
 document.querySelector(".playbar-controls_play").addEventListener("click", () => {
 document.ciulinYT.func.playPause(document.querySelector(".playbar-controls_play").getAttribute("data-state"));
@@ -1469,17 +1346,17 @@ document.ciulinYT.func.mutePlayer(document.querySelector(".playbar-controls_volu
 document.querySelector(".playbar-controls_fullscreen").addEventListener("click", () => {
 document.ciulinYT.func.fullscreenPlayer(document.querySelector(".playbar-controls_fullscreen").getAttribute("data-state"));
 });
-document.querySelector(".video-scrubbar").addEventListener("mouseenter", e => {
+document.querySelector(".video-scrubbar").addEventListener("mouseenter", () => {
 document.querySelector("#seek-tooltip").classList.remove("hid");
 });
-document.querySelector(".video-scrubbar").addEventListener("mouseleave", e => {
+document.querySelector(".video-scrubbar").addEventListener("mouseleave", () => {
 document.querySelector("#seek-tooltip").classList.add("hid");
 });
-document.querySelector(".video-scrubbar").addEventListener('mousedown', e => {
+document.querySelector(".video-scrubbar").addEventListener('mousedown', () => {
 clearInterval(progress);
 canMouse = true;
 });
-document.querySelector(".video-scrubbar").addEventListener('mouseup', e => {
+document.querySelector(".video-scrubbar").addEventListener('mouseup', () => {
 document.ciulinYT.player.seekTo(dur);
 progress = setInterval(document.ciulinYT.func.preProPos);
 canMouse = false;
@@ -1544,10 +1421,8 @@ document.querySelector(".playbar-controls_play").setAttribute("data-state", "0")
                 DOM.append(a);
             })();
         },
-        handleCategory: async (yt, divide, maxAmount, func, ex) => {
+        handleCategory: async (yt = Object, divide = Number, maxAmount = Number, func = Function, ex = Array) => {
             if(!yt || !divide || !maxAmount || !func || !ex) return;
-            divide = Number(divide);
-            maxAmount = Number(maxAmount);
             var CONTENTS = "";
             let TAB = [];
             let p = yt.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content;
@@ -1621,20 +1496,7 @@ document.querySelector(".playbar-controls_play").setAttribute("data-state", "0")
             }
             return CONTENTS;
         },
-        playerSettings: () => {
-            let DOM = document.querySelector("video-settings");
-            let state = Number(DOM.getAttribute("data-state"));
-            if(state !== 0) return;
-            DOM.classList.remove("hid");
-            switch (state) {
-                case 0:
-                    document.ciulinYT.func.playPause(1);
-                    document.querySelector("video-settings").setAttribute("data-state", "1");
-                    break;
-            }
-        },
-        organizeVideoData: async (da) => {
-            if(!da) return {};
+        organizeVideoData: (da = Object) => {
             let regEx = /(Premiere[ |s|d])|(in progress.)|Started|less than/g;
             let owner = (da.owner) ? da.owner.videoOwnerRenderer.title.runs[0] : da.bylineText ? da.bylineText.runs[0] : da.shortBylineText ? da.shortBylineText.runs[0] : da.ownerText ? da.ownerText.runs[0] : da.videoDetails ? da.videoDetails.author : "";
             let time = da.thumbnailOverlays ? da.thumbnailOverlays.find(c => c.thumbnailOverlayTimeStatusRenderer) ? da.thumbnailOverlays.find(c => c.thumbnailOverlayTimeStatusRenderer).thumbnailOverlayTimeStatusRenderer.text.simpleText ? da.thumbnailOverlays.find(c => c.thumbnailOverlayTimeStatusRenderer).thumbnailOverlayTimeStatusRenderer.text.simpleText : da.thumbnailOverlays.find(c => c.thumbnailOverlayTimeStatusRenderer).thumbnailOverlayTimeStatusRenderer.text.runs[0].text : da.lengthText ? da.lengthText.simpleText : "" : "";
@@ -1705,7 +1567,7 @@ document.querySelector(".playbar-controls_play").setAttribute("data-state", "0")
                 .replace(/"/g, "&quot;")
                 .replace(/'/g, "&#039;");
         },
-        organizeCommentData: async (da) => {
+        organizeCommentData: (da = Object) => {
             if(!da) return {};
             let author = da.authorText.simpleText;
             let id = da.commentId;
@@ -1785,7 +1647,7 @@ ${__a[1]}`;
 
             return result;
         },
-        organizeSubscriptionsData: async (da) => {
+        organizeSubscriptionsData: (da = Object) => {
             if(!da) return {};
             if(!da.items.find(b => b.guideSubscriptionsSectionRenderer)) return [];
             let a = da.items.find(b => b.guideSubscriptionsSectionRenderer).guideSubscriptionsSectionRenderer.items;
@@ -1804,8 +1666,7 @@ ${__a[1]}`;
             return TAB;
         },
         secret: () => { return alert("Exception occurred at 6F 77 6F 20 66 75 72 72 79"); },
-        createStorage: async (a) => {
-            if(a !== "SUPERSECRETROOTKEY") return error("Permission denied to this function. Reason: Tempering with this can break the script.");
+        createStorage: async () => {
             await GM.setValue("helloworld", "Hello World");
             await GM.setValue("storageVer", document.ciulinYT.data.version);
             await GM.setValue("subtitles", {"value": ""});
@@ -1816,15 +1677,15 @@ ${__a[1]}`;
         },
         prepareStorage: async () => {
             let STORAGE = await GM.getValue("storageVer");
-            if(!STORAGE) return document.ciulinYT.func.createStorage("SUPERSECRETROOTKEY");
-            if(STORAGE !== document.ciulinYT.data.version) return document.ciulinYT.func.createStorage("SUPERSECRETROOTKEY");
+            if(!STORAGE) return document.ciulinYT.func.createStorage();
+            if(STORAGE !== document.ciulinYT.data.version) return document.ciulinYT.func.createStorage();
         },
         addToStorage: async (a, b, c) => {
             if(!a && !b && !c) return error();
             await document.ciulinYT.func.prepareStorage();
             let STORAGE = GM.getValue(a);
             if(!STORAGE) {
-                await document.ciulinYT.func.createStorage("SUPERSECRETROOTKEY");
+                await document.ciulinYT.func.createStorage();
                 return error(`Storage: ${a} does not exist in storage`);
             }
             STORAGE[b] = c;
@@ -1840,29 +1701,7 @@ ${__a[1]}`;
             }
             return STORAGE;
         },
-        setPref: async (a, b) => {
-            if(!a || !b) return;
-            let parseCookie = str => str.split('&').map(v => v.split('=')).reduce((acc, v) => {acc[decodeURIComponent(v[0].trim())] = decodeURIComponent(v[1].trim());return acc;}, {});
-            let PREF = parseCookie(document.ciulinYT.func.getCookie("PREF"));
-            //if(!PREF[b]) return error();
-            PREF[b] = a;
-            let hell = `tz=${PREF.tz}&f6=${PREF.f6}&gl=${PREF.gl}&f5=${PREF.f5}&hl=${PREF.hl}`;
-            await document.ciulinYT.func.setCookie("PREF", hell, 800);
-            window.location.reload();
-        },
-        getPref: (a) => {
-            if(!a) return;
-            let parseCookie = str => str.split('&').map(v => v.split('=')).reduce((acc, v) => {acc[decodeURIComponent(v[0].trim())] = decodeURIComponent(v[1].trim());return acc;}, {});
-            let PREF = parseCookie(document.ciulinYT.func.getCookie("PREF"));
-            return PREF[a];
-        },
-        exitPlayerSettings: () => {
-            let DOM = document.querySelector("video-settings");
-            DOM.classList.add("hid");
-            document.querySelector("video-settings").setAttribute("data-state", "0");
-        },
         fullscreenPlayer: (e) => {
-            let target = Number(e);
             let $ = document.querySelector("#video-player");
             let requestFullScreen = $.requestFullScreen || $.mozRequestFullScreen || $.webkitRequestFullScreen;
             if(!requestFullScreen) return;
@@ -1874,11 +1713,11 @@ ${__a[1]}`;
                 document.querySelector(".playbar-controls_fullscreen").setAttribute("data-state", "0");
                 document.exitFullscreen();
             };
-            switch (target) {
-                case 0:
+            switch (e) {
+                case "0":
                     makeFullscreen();
                     break;
-                case 1:
+                case "1":
                     unmakeFullscreen();
                     break;
             }
@@ -1890,20 +1729,18 @@ ${__a[1]}`;
             document.querySelector("#timestamp_current").innerText = document.ciulinYT.func.calculateLength(parseInt(document.ciulinYT.player.getCurrentTime()));
         },
         playPause: (e) => {
-            let target = Number(e);
-            switch (target) {
-                case 0:
+            switch (e) {
+                case "0":
                     document.ciulinYT.player.playVideo();
                     document.querySelector(".playbar-controls_play").setAttribute("data-state", 1);
                     break;
-                case 1:
+                case "1":
                     document.ciulinYT.player.pauseVideo();
                     document.querySelector(".playbar-controls_play").setAttribute("data-state", 0);
                     break;
             }
         },
-        calculateLength: (length) => {
-            if(typeof(length) !== 'number') return error(`calculateLength: '${length}' is not a valid number.`);
+        calculateLength: (length = Number) => {
             var hours = "";
             var thours = Math.floor(length / 3600);
             var tminutes = Math.floor(length % 3600 / 60);
@@ -1926,11 +1763,10 @@ ${__a[1]}`;
             DOM.style = "display:block";
         },
         mutePlayer: (state) => {
-            state = Number(state);
             let seek = 0;
             let data = 0;
             switch (state) {
-                case 0:
+                case "0":
                     seek = 100;
                     data = 3;
                     document.querySelector("#video-player").querySelector(".playbar-volume_container").setAttribute("data-tooltip", localizeString("player.mute"));
@@ -1982,8 +1818,7 @@ ${__a[1]}`;
                 return ytInitialData.contents.twoColumnWatchNextResults.results ? ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.find(a => a.videoSecondaryInfoRenderer).videoSecondaryInfoRenderer.subscribeButton.subscribeButtonRenderer ? ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.find(a => a.videoSecondaryInfoRenderer).videoSecondaryInfoRenderer.subscribeButton.subscribeButtonRenderer.subscribed : false : false;
             }
         },
-        buildChannelTheme: async (arg, data) => {
-            if(typeof(arg) !== "number") return error("buildChannelTheme: Supply valid number between 0-2");
+        buildChannelTheme: async (arg = Number, data = Object) => {
             let channel1 = () => {
             };
             let channel2 = async() => {
@@ -1993,7 +1828,7 @@ ${__a[1]}`;
                 if (window.location.pathname.split("/")[2].match(/technoblade/gi)) {
                     thelegend = `<div id="the-blood-king">Long live the blood king🐷❤️</div>`;
                 }
-                let {owner, time, views, title, id, url, description} = await document.ciulinYT.func.organizeVideoData(data.HOMEVIDEO);
+                let videoData = document.ciulinYT.func.organizeVideoData(data.HOMEVIDEO);
                 let tags = {age: undefined, occupation: undefined};
                 let TAGS = data.DESCRIPTION.matchAll(/\[\+\w\+="(\d+|.+)"]/g);
                 data.DESCRIPTION = data.DESCRIPTION.replace(/\[\+\w\+="(\d+|.+)"]/g, "");
@@ -2007,11 +1842,11 @@ ${__a[1]}`;
                 }
                 let OBJ_age = "";
                 if(tags.age !== undefined) {
-                    OBJ_age = `<div class="show_info outer-box-bg-as-border"><div class="profile-info-label">${localizeString("customtag.age")}:</div><div class="profile-info-value" id="profile_show_age">${tags.age}</div><div class="cb"></div></div>`;
+                    OBJ_age = `<div class="show_info outer-box-bg-as-border"><div class="profile-info-label">${localizeString("customtag.age")}</div><div class="profile-info-value" id="profile_show_age">${tags.age}</div><div class="cb"></div></div>`;
                 }
                 let OBJ_occu = "";
                 if(tags.occupation !== undefined) {
-                    OBJ_occu = `<div class="show_info outer-box-bg-as-border"><div class="profile-info-label">${localizeString("customtag.occupation")}:</div><div class="profile-info-value" id="profile_show_age">${tags.occupation}</div><div class="cb"></div></div>`;
+                    OBJ_occu = `<div class="show_info outer-box-bg-as-border"><div class="profile-info-label">${localizeString("customtag.occupation")}</div><div class="profile-info-value" id="profile_show_age">${tags.occupation}</div><div class="cb"></div></div>`;
                 }
                 let videos = "";
                 for (let i = 0; i < data.VIDEOS.length; i++) {
@@ -2139,7 +1974,7 @@ ${peeps}
                 }
                 let OBJ_views = "";
                 if(data.INFO.string.VIEWS !== undefined) {
-                    OBJ_views = `<div class="show_info outer-box-bg-as-border"><div class="profile-info-label">${(Number(data.INFO.string.VIEWS.replace(/,/g, "")) > 1) ? localizeString("about.viewedcounts") : localizeString("about.viewedcount")}</div><div class="profile-info-value" id="profile_show_viewed_count">${data.INFO.string.VIEWS}</div><div class="cb"></div></div>`;
+                    OBJ_views = `<div class="show_info outer-box-bg-as-border"><div class="profile-info-label">${(Number(data.INFO.string.VIEWS.replace(/,|./g, "")) > 1) ? localizeString("about.viewedcounts") : localizeString("about.viewedcount")}</div><div class="profile-info-value" id="profile_show_viewed_count">${data.INFO.string.VIEWS}</div><div class="cb"></div></div>`;
                 }
                 let OBJ_join = "";
                 if(data.INFO.string.JOIN !== undefined) {
@@ -2147,7 +1982,7 @@ ${peeps}
                 }
                 let OBJ_subcount = "";
                 if(data.SUBCOUNT !== undefined) {
-                    OBJ_subcount = `<div class="show_info outer-box-bg-as-border"><div class="profile-info-label">${(Number(data.SUBCOUNT.replace(/,/g, "")) > 1) ? localizeString("about.subs") : localizeString("about.sub")}</div><div class="profile-info-value" id="profile_show_subscriber_count">${data.SUBCOUNT}</div><div class="cb"></div></div>`;
+                    OBJ_subcount = `<div class="show_info outer-box-bg-as-border"><div class="profile-info-label">${(Number(data.SUBCOUNT.replace(/,|./g, "")) > 1) ? localizeString("about.subs") : localizeString("about.sub")}</div><div class="profile-info-value" id="profile_show_subscriber_count">${data.SUBCOUNT}</div><div class="cb"></div></div>`;
                 }
                 let OBJ_country = "";
                 if(data.INFO.string.COUNTRY !== undefined) {
@@ -2210,11 +2045,11 @@ ${OBJ_occu}
 <div id="playnav-panel-info" class="scrollable" style="display: block;">
 <div id="channel-like-action">
 <div id="channel-like-buttons">
-<button title="I like this" type="button" class="yt-uix-button yt-uix-tooltip" data-watchid="${id}" onclick="document.ciulinYT.func.likeThis(this.getAttribute('data-watchid'));return false;" id="watch-like" role="button" aria-pressed="false">
+<button title="I like this" type="button" class="yt-uix-button yt-uix-tooltip" data-watchid="${videoData.id}" onclick="document.ciulinYT.func.likeThis(this.getAttribute('data-watchid'));return false;" id="watch-like" role="button" aria-pressed="false">
 <img class="yt-uix-button-icon yt-uix-button-icon-watch-like" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""><span class="yt-uix-button-content">Like</span>
 </button>
 &nbsp;
-<button title="I dislike this" type="button" class="yt-uix-button yt-uix-tooltip yt-uix-button-empty" data-watchid="${id}" onclick="document.ciulinYT.func.dislikeThis(this.getAttribute('data-watchid'));return false;" id="watch-unlike" role="button" aria-pressed="false">
+<button title="I dislike this" type="button" class="yt-uix-button yt-uix-tooltip yt-uix-button-empty" data-watchid="${videoData.id}" onclick="document.ciulinYT.func.dislikeThis(this.getAttribute('data-watchid'));return false;" id="watch-unlike" role="button" aria-pressed="false">
 <img class="yt-uix-button-icon yt-uix-button-icon-watch-unlike" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
 </button>
 </div>
@@ -2225,15 +2060,15 @@ ${OBJ_occu}
 </div>
 </div>
 <div id="playnav-curvideo-title" class="inner-box-link-color" dir="ltr">
-<a style="cursor:pointer;margin-right:7px" href="/watch?v=${id}" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">
-${title}
+<a style="cursor:pointer;margin-right:7px" href="/watch?v=${videoData.id}" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">
+${videoData.title}
 </a>
 </div>
 <div id="playnav-curvideo-info-line">
-${localizeString("watch.from")} <span id="playnav-curvideo-channel-name"><a href="${window.location.href}">${data.CHANNELNAME}</a></span>&nbsp;|
-<span dir="ltr">${views[1]}</span>
+${localizeString("watch.from", data.CHANNELNAME)} &nbsp;|
+<span dir="ltr">${videoData.views[1]}</span>
 &nbsp;|
-<span id="playnav-curvideo-view-count">${views[0]}</span>
+<span id="playnav-curvideo-view-count">${videoData.views[0]}</span>
 </div>
 <div class="cb"></div>
 <div id="channel-like-result" class="hid">
@@ -2242,9 +2077,9 @@ ${localizeString("watch.from")} <span id="playnav-curvideo-channel-name"><a href
 <div id="channel-like-loading" class="hid">${localizeString("global.loading")}</div>
 <div class="cb"></div>
 <div id="playnav-curvideo-description-container">
-<div id="playnav-curvideo-description" dir="ltr">${description}</div>
+<div id="playnav-curvideo-description" dir="ltr">${videoData.description}</div>
 </div>
-<a href="https://www.youtube.com/watch?v=${id}" id="playnav-watch-link" onclick="playnav.goToWatchPage()">View comments, related videos, and more</a>
+<a href="https://www.youtube.com/watch?v=${videoData.id}" id="playnav-watch-link" onclick="playnav.goToWatchPage()">View comments, related videos, and more</a>
 <div id="playnav-curvideo-controls"></div>
 <div class="cb"></div>
 </div>
@@ -2414,7 +2249,7 @@ ${OBJ_CHANCON}
                     return error("buildChannelTheme: Supply valid number between 0-2");
             }
         },
-        setVolume: (vol) => {
+        setVolume: (vol = Number) => {
             let volume = 0;
             switch (true) {
                 case (vol == 0):
@@ -2528,7 +2363,7 @@ ${OBJ_CHANCON}
             document.querySelector("#watch-unlike").classList.add("unliked");
             document.querySelector("#watch-like").classList.remove("liked");
         },
-        loadPlaynavVideo: (id) => {
+        loadPlaynavVideo: (id = String) => {
             if(!id) return error("loadPlaynavVideo: No ID was specified");
             var data = new Promise(async resolve => {
                 let xhr = new XMLHttpRequest();
@@ -2553,7 +2388,7 @@ ${OBJ_CHANCON}
                 var b = a.tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].gridRenderer.items;
                 try {
                     b = b.find(a => a.gridVideoRenderer.videoId === id);
-                    b = await document.ciulinYT.func.organizeVideoData(b.gridVideoRenderer);
+                    b = document.ciulinYT.func.organizeVideoData(b.gridVideoRenderer);
                 } catch(err) {
                     return error("loadPlaynavVideo: Video does not exist or can't be found");
                 }
@@ -2721,6 +2556,7 @@ ${OBJ_CHANCON}
         document.ciulinYT.func.waitForElm(".ytp-watermark").then((elm) => {elm.parentNode.removeChild(elm);});
         document.ciulinYT.func.waitForElm(".html5-endscreen").then((elm) => {elm.parentNode.removeChild(elm);});
         document.ciulinYT.func.waitForElm(".ytp-pause-overlay").then((elm) => {elm.parentNode.removeChild(elm);});
+        document.ciulinYT.func.waitForElm(".ytp-gradient-top").then((elm) => {elm.parentNode.removeChild(elm);});
         return;
     }
     if(window.location.pathname.split("/")[1] == "watch"){
@@ -2757,6 +2593,8 @@ ${OBJ_CHANCON}
         DOMBODY.setAttribute("class", `date-${VALUE_DATE} ${VALUE_LANG.value} ltr ytg-old-clearfix guide-feed-v2 gecko gecko-16`);
         DOMBODY.setAttribute("dir", "ltr");
         DOMHTML.appendChild(DOMBODY);
+        var STYLE_DARK = `<style>html[dark^="true"] body {background: #000} .browse-container, #content {background: #201e1e !important} #masthead-container {background: #ebebeb !important}</style>`;
+        //DOMHEAD.innerHTML += STYLE_DARK;
 
         let OBJ_MASTH = "";
         let OBJ_USER = "";
@@ -3050,12 +2888,12 @@ ${localizeString("global.loading")}
 </a>
 <div class="comments-textarea-container" onclick="document.ciulinYT.func.initCommentsForm();">
 <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="" class="comments-textarea-tip">
-<label class="comments-textarea-label" data-upsell="comment">Respond to this video...</label>  <div class="yt-uix-form-input-fluid yt-grid-fluid ">
+<label class="comments-textarea-label" data-upsell="comment">${localizeString("comments.respond")}</label>  <div class="yt-uix-form-input-fluid yt-grid-fluid ">
 <textarea id="" class="yt-uix-form-textarea comments-textarea" onfocus="document.ciulinYT.func.initCommentsForm();" data-upsell="comment" name="comment"></textarea>
 </div>
 </div>
 <p class="comments-remaining">
-<span class="comments-remaining-count" data-max-count="500">500</span> ${localizeString("comments.charactersremain")}
+${localizeString("comments.charactersremain")}
 </p>
 <p class="comments-threshold-countdown hid">
 <span class="comments-threshold-count"></span> ${localizeString("comments.secondsremain")}
@@ -3071,7 +2909,7 @@ ${localizeString("global.loading")}
 <a href="${document.ciulinYT.data.loginUrl}">Sign In</a> or <a href="https://www.youtube.com/signup">Sign Up</a><span class="comments-post-form-rollover-text"> now to post a comment!</span>
 </div>`;
                 }
-                let {id, views, title, upload, url, tags, owner, description, category} = await document.ciulinYT.func.organizeVideoData(ytInitialPlayerResponse);
+                let videoData = document.ciulinYT.func.organizeVideoData(ytInitialPlayerResponse);
                 BOOL_SUBSCRIBE = document.ciulinYT.func.getSubscription();
                 var VALUE_SUGGVIDLOG = (BOOL_LOGIN == true) ? "addto-watch-later-button": "addto-watch-later-button-sign-in";
                 var VALUE_VIDEOTAGS = "";
@@ -3081,23 +2919,23 @@ ${localizeString("global.loading")}
                 var VALUE_SUBBUTTON = document.ciulinYT.func.getSubscription() ? "subscribed" : "subscribe";
                 var isLiked = ytInitialData.contents.twoColumnWatchNextResults.results ? ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.find(a => a.videoPrimaryInfoRenderer).videoPrimaryInfoRenderer.videoActions.menuRenderer.topLevelButtons[0].toggleButtonRenderer.isToggled ? "liked" : false : "";
                 var isDisliked = ytInitialData.contents.twoColumnWatchNextResults.results? ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.find(a => a.videoPrimaryInfoRenderer).videoPrimaryInfoRenderer.videoActions.menuRenderer.topLevelButtons[1].toggleButtonRenderer.isToggled ? "unliked" : false : "";
-                for (let i = 0; i < tags.length; i++) {
-                    VALUE_VIDEOTAGS += `<li><a href="https://www.youtube.com/results?search_query=${tags[i]}&amp;search=tag">${tags[i]}</a></li>`;
+                for (let i = 0; i < videoData.tags.length; i++) {
+                    VALUE_VIDEOTAGS += `<li><a href="https://www.youtube.com/results?search_query=${videoData.tags[i]}&amp;search=tag">${videoData.tags[i]}</a></li>`;
                 }
                 for (let i = 0; i < OBJ_SUGGESTEDVIDEO.length; i++) {
                     if(OBJ_SUGGESTEDVIDEO[i].compactVideoRenderer) {
-                        let {owner, time, views, title, id, url} = await document.ciulinYT.func.organizeVideoData(OBJ_SUGGESTEDVIDEO[i].compactVideoRenderer);
+                        let videoData = document.ciulinYT.func.organizeVideoData(OBJ_SUGGESTEDVIDEO[i].compactVideoRenderer);
                         OBJ_SUGGESTEDVIDEOS += `<li class="video-list-item">
-<a href="https://www.youtube.com/watch?v=${id}" class="related-video yt-uix-contextlink yt-uix-sessionlink">
+<a href="https://www.youtube.com/watch?v=${videoData.id}" class="related-video yt-uix-contextlink yt-uix-sessionlink">
 <span class="ux-thumb-wrap contains-addto">
 <span class="video-thumb ux-thumb yt-thumb-default-120">
 <span class="yt-thumb-clip">
 <span class="yt-thumb-clip-inner">
-<img src="//i1.ytimg.com/vi/${id}/default.jpg" alt="Thumbnail"><span class="vertical-align"></span>
+<img src="//i1.ytimg.com/vi/${videoData.id}/default.jpg" alt="Thumbnail"><span class="vertical-align"></span>
 </span>
 </span>
 </span>
-<span class="video-time">${time}</span>
+<span class="video-time">${videoData.time}</span>
 <button type="button" class="addto-button video-actions spf-nolink ${VALUE_SUGGVIDLOG} yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" onclick=";return false;" role="button">
 <span class="yt-uix-button-content">
 <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="${localizeString("personal.watchlater")}">
@@ -3105,9 +2943,9 @@ ${localizeString("global.loading")}
 <img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
 </button>
 </span>
-<span dir="ltr" class="title" title="${title}">${title}</span>
-<span class="stat attribution">${localizeString("watch.by")} <span class="class="yt-user-name" dir="ltr">${owner.text}</span></span>
-<span class="stat view-count">${views[0]}</span>
+<span dir="ltr" class="title" title="${videoData.title}">${videoData.title}</span>
+<span class="stat attribution">${localizeString("watch.by", videoData)}</span>
+<span class="stat view-count">${videoData.views[0]}</span>
 </a>
 </li>`;
                     }
@@ -3117,9 +2955,9 @@ ${localizeString("global.loading")}
                 }
                 document.ciulinYT.func.waitForElm(".video-stream.html5-main-video").then((elm) => elm.parentNode.removeChild(elm));
                 document.ciulinYT.func.waitForElm("#video-player").then((elm) => {
-                    document.ciulinYT.func.buildPlayer(id, window.location.href.split("t=")[1] ? window.location.href.split("t=")[1].split("s")[0] : 1);
+                    document.ciulinYT.func.buildPlayer(videoData.id, window.location.href.split("t=")[1] ? window.location.href.split("t=")[1].split("s")[0] : 1);
                     var xhr = new XMLHttpRequest();
-                    xhr.open("GET", "https://returnyoutubedislikeapi.com/Votes?videoId=" + id);
+                    xhr.open("GET", "https://returnyoutubedislikeapi.com/Votes?videoId=" + videoData.id);
                     xhr.send();
                     xhr.onload = (e) => {
                         var result = JSON.parse(e.target.response);
@@ -3135,6 +2973,7 @@ ${localizeString("global.loading")}
                     document.querySelector(".comments-post").addEventListener("submit", async (e) => {
                         e.preventDefault();
                         let comm = document.querySelector(".comments-textarea").value;
+                        if(comm.length < 1) return;
                         let api = await document.ciulinYT.func.getApi("/youtubei/v1/comment/create_comment", `createCommentParams: "${document.querySelector("input#session").value}", commentText: "${comm}"`);
                         if(api.actionResult.status == "STATUS_SUCCEEDED") {
                             let re = api.actions[0].runAttestationCommand.ids;
@@ -3166,14 +3005,14 @@ ${localizeString("global.loading")}
 <div id="watch-headline-container">
 <div id="watch-headline" class="watch-headline">
 <h1 id="watch-headline-title">
-<span id="eow-title" class="" dir="ltr" title="${title}">
-${title}
+<span id="eow-title" class="" dir="ltr" title="${videoData.title}">
+${videoData.title}
 </span>
 </h1>
 <div id="watch-headline-user-info">
 <span class="yt-uix-button-group">
-<button href="https://www.youtube.com${url}?feature=watch" type="button" class="start yt-uix-button yt-uix-button-default" onclick=";window.location.href=this.getAttribute('href');return false;" role="button">
-<span class="yt-uix-button-content">${owner}</span>
+<button href="https://www.youtube.com${videoData.url}?feature=watch" type="button" class="start yt-uix-button yt-uix-button-default" onclick=";window.location.href=this.getAttribute('href');return false;" role="button">
+<span class="yt-uix-button-content">${videoData.owner}</span>
 </button><div class="yt-subscription-button-hovercard yt-uix-hovercard">
 <span class="yt-uix-button-context-light yt-uix-button-subscription-container">
 <button href="" type="button" class="yt-subscription-button yt-subscription-button-js-default end yt-uix-button yt-uix-button-subscription yt-uix-tooltip ${VALUE_SUBBUTTON}" onclick="document.ciulinYT.func.subscribe();return false;" role="button">
@@ -3217,11 +3056,11 @@ ${localizeString("global.loading")}
 <div id="watch-actions">
 <div id="watch-actions-right">
 <span class="watch-view-count">
-<strong>${views[0]}</strong>
+<strong>${videoData.views[0]}</strong>
 </span>
 <button onclick=";return false;" title="${localizeString("tooltip.statistics")}" type="button" id="watch-insight-button" class="yt-uix-tooltip yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip yt-uix-button-empty" role="button"><span class="yt-uix-button-icon-wrapper"><img class="yt-uix-button-icon yt-uix-button-icon-watch-insight" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="Show video statistics"><span class="yt-valign-trick"></span></span></button>
 </div>
-<span id="watch-like-unlike" class="yt-uix-button-group"><button onclick="document.ciulinYT.func.likeThis('${id}');return false;" title="${localizeString("tooltip.ilikethis")}" type="button" class="start yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip" id="watch-like" role="button" data-tooltip-text="${localizeString("tooltip.ilikethis")}"><span class="yt-uix-button-icon-wrapper"><img class="yt-uix-button-icon yt-uix-button-icon-watch-like" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="${localizeString("tooltip.ilikethis")}"><span class="yt-valign-trick"></span></span><span class="yt-uix-button-content">${localizeString("buttons.like")} </span></button><button onclick="document.ciulinYT.func.dislikeThis('${id}');return false;" title="${localizeString("tooltip.idislikethis")}" type="button" class="end yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip yt-uix-button-empty" id="watch-unlike" role="button" data-tooltip-text="${localizeString("tooltip.idislikethis")}"><span class="yt-uix-button-icon-wrapper"><img class="yt-uix-button-icon yt-uix-button-icon-watch-unlike" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="${localizeString("tooltip.idislikethis")}"><span class="yt-valign-trick"></span></span></button></span>
+<span id="watch-like-unlike" class="yt-uix-button-group"><button onclick="document.ciulinYT.func.likeThis('${videoData.id}');return false;" title="${localizeString("tooltip.ilikethis")}" type="button" class="start yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip" id="watch-like" role="button" data-tooltip-text="${localizeString("tooltip.ilikethis")}"><span class="yt-uix-button-icon-wrapper"><img class="yt-uix-button-icon yt-uix-button-icon-watch-like" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="${localizeString("tooltip.ilikethis")}"><span class="yt-valign-trick"></span></span><span class="yt-uix-button-content">${localizeString("buttons.like")} </span></button><button onclick="document.ciulinYT.func.dislikeThis('${videoData.id}');return false;" title="${localizeString("tooltip.idislikethis")}" type="button" class="end yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip yt-uix-button-empty" id="watch-unlike" role="button" data-tooltip-text="${localizeString("tooltip.idislikethis")}"><span class="yt-uix-button-icon-wrapper"><img class="yt-uix-button-icon yt-uix-button-icon-watch-unlike" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="${localizeString("tooltip.idislikethis")}"><span class="yt-valign-trick"></span></span></button></span>
 <button type="button" class="yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip" onclick=";return false;" title="${localizeString("tooltip.addto")}" role="button" data-tooltip-text="${localizeString("tooltip.addto")}"><span class="yt-uix-button-content"><span class="addto-label">${localizeString("buttons.addto")}</span> </span></button>
 <button onclick=";return false;" title="Share or embed this video" type="button" class="yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip" id="watch-share" data-button-action="yt.www.watch.actions.share" role="button" data-tooltip-text="${localizeString("tooltip.share")}"><span class="yt-uix-button-content">${localizeString("buttons.share")} </span></button>
 <button onclick=";return false;" title="Flag as inappropriate" type="button" class="yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip yt-uix-button-empty" id="watch-flag" data-button-action="yt.www.watch.actions.flag" role="button" data-tooltip-text="${localizeString("tooltip.flag")}"><span class="yt-uix-button-icon-wrapper"><img class="yt-uix-button-icon yt-uix-button-icon-watch-flag" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="${localizeString("tooltip.flag")}"><span class="yt-valign-trick"></span></span></button>
@@ -3261,13 +3100,13 @@ ${localizeString("global.loading")}
 <div id="watch-info">
 <div id="watch-description" class="yt-uix-expander-collapsed yt-uix-expander">
 <div id="watch-description-clip">
-<p id="watch-uploader-info">${localizeString("watch.uploadby")} <a href="https://www.youtube.com${url}" class="yt-uix-sessionlink yt-user-name author" rel="author" dir="ltr">${owner}</a> ${localizeString("watch.on")} <span id="eow-date" class="watch-video-date">${upload}</span></p>
+<p id="watch-uploader-info">${localizeString("watch.uploaderinfo", videoData)}</p>
 <div id="watch-description-text">
-<p id="eow-description">${description}</p>
+<p id="eow-description">${videoData.description}</p>
 </div>
 <div id="watch-description-extras">
 <h4>${localizeString("watch.category")}:</h4>
-<p id="eow-category"><a href="//www.youtube.com/videos">${category}</a></p>
+<p id="eow-category"><a href="//www.youtube.com/videos">${videoData.category}</a></p>
 <h4>${localizeString("watch.tags")}:</h4>
 <ul id="eow-tags" class="watch-info-tag-list">
 ${VALUE_VIDEOTAGS}
@@ -3282,7 +3121,7 @@ ${VALUE_VIDEOTAGS}
 <div class="video-extras-sparkbar-likes"></div>
 </div>
 <span class="video-extras-likes-dislikes">
-<span class="likes"></span> ${localizeString("stats.likes")}, <span class="dislikes"></span> ${localizeString("stats.dislikes")}
+${localizeString("stats.likesdislikes")}
 </span>
 </li>
 </ul>
@@ -3311,7 +3150,7 @@ ${VALUE_VIDEOTAGS}
 <ul class="comment-list top hid"></ul>
 </div>
 <div class="comments-section">
-<h4><strong>${localizeString("comments.allcomments")}</strong> (${ytInitialData.contents.twoColumnWatchNextResults.results ? ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.find(b => b.itemSectionRenderer) ? ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.find(b => b.itemSectionRenderer).itemSectionRenderer.contents[0].commentsEntryPointHeaderRenderer ? ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.find(b => b.itemSectionRenderer).itemSectionRenderer.contents[0].commentsEntryPointHeaderRenderer.commentCount ? ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.find(b => b.itemSectionRenderer).itemSectionRenderer.contents[0].commentsEntryPointHeaderRenderer.commentCount.simpleText : "0" : "0" : "0" : "0"}) <a class="comments-section-see-all" href="https://www.youtube.com/all_comments?v=${id}">${localizeString("global.seeall")}</a></h4>
+<h4><strong>${localizeString("comments.allcomments")}</strong> (${ytInitialData.contents.twoColumnWatchNextResults.results ? ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.find(b => b.itemSectionRenderer) ? ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.find(b => b.itemSectionRenderer).itemSectionRenderer.contents[0].commentsEntryPointHeaderRenderer ? ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.find(b => b.itemSectionRenderer).itemSectionRenderer.contents[0].commentsEntryPointHeaderRenderer.commentCount ? ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.find(b => b.itemSectionRenderer).itemSectionRenderer.contents[0].commentsEntryPointHeaderRenderer.commentCount.simpleText : "0" : "0" : "0" : "0"}) <a class="comments-section-see-all" href="https://www.youtube.com/all_comments?v=${videoData.id}">${localizeString("global.seeall")}</a></h4>
 <div class="comments-post-container clearfix">
 ${commen}
 </div>
@@ -3416,7 +3255,7 @@ ${OBJ_SUGGESTEDVIDEOS}
                 DOMHEAD.innerHTML += '<link rel="stylesheet" href="//s.ytimg.com/yt/cssbin/www-refresh-vflj_nHFo.css">';
                 for(let i = 0; i < results.length; i++) {
                     if(results[i].videoRenderer) {
-                        let {owner, time, views, title, id, url, description} = await document.ciulinYT.func.organizeVideoData(results[i].videoRenderer);
+                        let {owner, time, views, title, id, url, description} = document.ciulinYT.func.organizeVideoData(results[i].videoRenderer);
                         let main = `<div class="result-item yt-uix-tile yt-tile-default *sr">
 <div class="thumb-container">
 <a href="https://www.youtube.com/watch?v=${id}" class="ux-thumb-wrap contains-addto result-item-thumb">
