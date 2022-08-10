@@ -9,7 +9,7 @@ You must not modify *ANY* HTML code. We aim to be as close to the original Cosmi
 If you have Cosmic Panda HTML code that's not currently present in this script - Please contact the author (ciulinuwu) to have them added. Don't add it yourself.</br></br>
 If you have better knowledge at HTML and JavaScript, you have 100% permission to rewrite whatever you want including HTML because I'm not good at coding and I've used a lot of questionable coding techniques.
 
-Absolute NO usage of polymer componenets.
+Absolute NO usage of polymer components.
 
 Before contributing, check [Pull requests] to see if anyone is currently working on the same thing you plan to work on.
 If you want to help them out, feel free to ask them! Teamwork is good work.
