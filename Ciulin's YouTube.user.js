@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.5.40
+// @version      0.5.41
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
@@ -69,7 +69,7 @@
                 i18n = i18n.replace(/%s/g, `<span class="feed-item-owner"><a href="${DOM?.url}" class="yt-uix-sessionlink yt-user-name" dir="ltr">${DOM?.owner.text}</a></span>`);
                 break;
             case "watch.by":
-                i18n = i18n.replace(/%s/g, `<span class="yt-user-name" dir="ltr">${DOM?.owner.text}</span>`);
+                i18n = (window.location.pathname.split("/")[1] == "results") ? i18n.replace(/%s/g, `<a href="https://www.youtube.com/${DOM?.url}" class="yt-user-name" dir="ltr">${DOM?.title}</a>`) : i18n.replace(/%s/g, `<span class="yt-user-name" dir="ltr">${DOM?.owner.text}</span>`);
                 break;
             case "stats.likesdislikes":
                 i18n = i18n.replace(/%s/g, `<span class="likes"></span>`);
@@ -90,9 +90,12 @@
         playbarScrub: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAD5SURBVChTjZHNjkRQEIUP4p+dVe/EC9iJhQgvLlYsvQC2JFaIIOH21G09s5CZnpNclZz66kdKwKVt21hd1xiG4XJechwHnudBVVXO8s88zyzPcxzHAUH47sHFGIMkSYjjGJZlCQJ1LooC+75D0zSs63qLJEVREIYhxKZpeGcyoiiCLMu3+LUOzvMEsWLXdTAMg5u/iXLE9H0PkXYk468Cmk6Ppoj0Q58K3nli+Ur/LSBW1HWdj/pUQAyxYpqmqKqKm+M44vF43CLliCGWX6ltW0ZGEAQwTZN3fWtZFpRlCd/34bruz1np2lmWYZqmy3nJtm0kScKvDABP3bl3Ot4gE8wAAAAASUVORK5CYII=",
         playbarSheet: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAZCAIAAAB/8tMoAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAhSURBVBhXY7h69SoTCDAzMxNNMzAwgNmMjIyEMMP///8BIN0GJrVyhfoAAAAASUVORK5CYII=",
         playerSheetB: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAADLCAYAAACYqDZvAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAABaOSURBVHhe7Z0J1FVT+8D3vYq8bxpJ6C3RKM2Tpq9oklqEUn2t8CeLaDCUhcoyfFmL9PmoKGItlimfEhJJ6JMopAlFkwyZEmVKOP/9ezr7du7tvufec4fX7d79W+tZ7xn23ue9+zl7fPZ+jurXr58zbtw4p2fPno7KEJdcconz+OOPO0OGDMlYmoVCaOLEic7evXtV5cqV1ZdffqkWLVqk1q9fH3Lvp8SSJUucww47TCHvvPOOmjp1qlq7dm1aaRYK4V27dqlffvlFbd++XVWsWFFdeOGFqnv37mm92Ycccoj6448/1M8//6yaNWumZsyYoQYPHmxLSxKE//rrL+U4jshPP/0kitEKUVdccYVTv379lDKRNI38/vvv6s8//1Rjx45FMU6TJk2sYnwIG2UYIfOoukxp6datW+AMjE0TobQ0bdpUzZw5U5133nlWKaUQdv8eABn49ddfK93YS2k58cQTk87EeApBaKtQuO5EqHvvvddp3LixVUwMB5QQr5jSUlxcrC666CLVtWtXp1atWgkz0VtlxQpp7t69W0rLfffdpwYMGOCUlJRYxbj4KsSIaVt69OihDj/8cDdq6cRLI1ZoW1AQbUu1atXcmJakFILwZm/ZskV6ZImIFz+eoBAUTU/Pso+kFfL555+rp59+WtqBRMSLH0/ef/99NWLEiKSUXCiU2qgb9uzZo95880310ksvqUMPPVSFQonHd942I578+OOPavr06Wr8+PFS8pJJs1AIXXrppaU2qF988QWjbslE3etKOte08kpNc/Xq1equu+6SdkmL1UQMcaus3377TUrFwoULVfny5QMpA+KlSTvBiH3ChAlS7VllxOcAhVAq5s6dKw24zrjQ999/HzjjYquoVatWqVGjRsk8GWnu2LHDKqMUZC4LRVAqli1bJqUiHA4HLhVe6DmRJuMNRuYTJ06UtiidNAuG6tWrO61atXKOOOIIR48xMjJAO+GEE2Tq/eijj3aKiorsoC8IFStWZKpcFOJeShvSqlChglOpUiWrDIvFYrFYLBZLDhAaP368U7NmTTn56quv1KRJkyKDN7978Zg3bx6WRTne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",
+        scrubBarGraySheet: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAICAYAAAA4GpVBAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAaSURBVBhXYzAyMvrP9OHDBwYmBiDAQTAwAACYMAR0XgeDoQAAAABJRU5ErkJggg==",
+        scrubBarRedSheet: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAICAYAAAA4GpVBAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAZSURBVBhXYzjDwPCf6TMDAwM68QWJy8AAAMJ9CIClUo4sAAAAAElFTkSuQmCC",
         playbarShadow: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAZCAIAAACZ2xhsAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAA6SURBVChTY1y2bJm4uLiAgAA3NzcTAxgwggGIA2UBwWCRgQAMZXCA0AMECBkEB8gCkthkIIB0AxgZAbxaA1A95vt3AAAAAElFTkSuQmCC",
         playbarSeeker: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAaCAYAAAB2BDbRAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABQSURBVBhXbYqxDYAwEANP7kkmyDBZiDYTsUK2oosUpTK8oEK4OFu22UsxB1gJ0HaDs3eHQ2vNqrWinDNKKU6htZZlmy9ifNIYA8053+4fcAGeySL/5lJgnAAAAABJRU5ErkJggg==",
         playbarSeek: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAECAIAAADAusJtAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAZSURBVBhXYzhy5AiToKAgw5s3bxi+f/8OADiwCCtHhAKiAAAAAElFTkSuQmCC",
+        playbarBg: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAaCAIAAAD5ZqGGAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAtSURBVBhXY/B0d2dmYWVlYmBgYPr37x/T////wTSID2ODaHSMTy2yHjD7/38AbSI/wk3ikisAAAAASUVORK5CYII=",
         loginUrl: "https://accounts.google.com/ServiceLogin?service=youtube&uilel=3&passive=true&continue=https%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26app%3Ddesktop%26hl%3Den%26next%3Dhttps%253A%252F%252Fwww.youtube.com%252F&hl=en&ec=65620",
         lang: {
             "af": "Afrikaans",
@@ -762,7 +765,7 @@ ${string_uploadedorlive} <span class="feed-item-time">${videoData.views[1]}</spa
             (() => {
                 var DOM_topBar = document.createElement("div");
                 DOM_topBar.setAttribute("class", "video-topbar");
-                DOM_topBar.innerHTML = `<div class="video-topbar-container"><div class="video-title"><span id="video-title-text">Hi</span></div></div>`;
+                DOM_topBar.innerHTML = `<div class="video-topbar-container"><div class="video-title"><span id="video-title-text">Hey guys, did you know that in terms of male human and female Pokémon breeding...</span></div></div>`;
                 DOM.appendChild(DOM_topBar);
             })();
             (() => {
@@ -775,8 +778,16 @@ ${string_uploadedorlive} <span class="feed-item-time">${videoData.views[1]}</spa
                 var DOM_scrubBar = document.createElement("div");
                 DOM_scrubBar.setAttribute("class", "video-scrubbar");
                 DOM_scrubBar.setAttribute("role", "progressbar");
-                DOM_scrubBar.innerHTML = `<div class="seek-tooltip hid" id="seek-tooltip"></div><span class="scrubbar_track_played"></span><span class="scrubbar_track_handle"></span>`;
+                DOM_scrubBar.setAttribute("aria-valuemin", "0");
+                DOM_scrubBar.setAttribute("aria-valuemax", "100");
+                DOM_scrubBar.setAttribute("data-canmouse", "false");
+                DOM_scrubBar.innerHTML = `<div class="dddd" data-canmouse="false" style="height: inherit;width: 640px;z-index: 33;position: absolute;"></div><span class="playbar-scrubbar track_played"></span><span class="playbar-scrubbar track_handle"></span>`;
                 DOM.appendChild(DOM_scrubBar);
+            })();
+            (() => {
+                var DOM_blackBar = document.createElement("div");
+                DOM_blackBar.setAttribute("class", "black_line");
+                DOM.appendChild(DOM_blackBar);
             })();
             (() => {
                 var DOM_playBar = document.createElement("div");
@@ -788,11 +799,11 @@ ${string_uploadedorlive} <span class="feed-item-time">${videoData.views[1]}</spa
 <li class="playbar-controls_icon playbar-controls_volume" data-state="3">
 <i class="playbar-icon playbar-icon_volume"></i>
 </li>
-<div class="playbar-volume-container volume-movable">
-<div class="playbar-volume-slider volume-movable" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-<span class="playbar-volume playbar-volume-played volume-movable"></span>
-<span class="playbar-volume playbar-volume-notplayed volume-movable"></span>
-<span class="playbar-volume-handle volume-movable"></span>
+<div class="playbar-volume-container">
+<div class="playbar-volume-slider progressbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" data-canmouse="false">
+<span class="playbar-volume track_played"></span>
+<span class="playbar-volume track_notplayed"></span>
+<span class="playbar-volume track_handle"></span>
 </div>
 </div>
 </div>
@@ -820,10 +831,11 @@ ${string_uploadedorlive} <span class="feed-item-time">${videoData.views[1]}</spa
                 a.setAttribute("class", "player-style");
                 let script = `body {margin:0}
 * {
-    --lld: linear-gradient(0deg, rgba(10,10,10,1) 0%, rgba(39,39,39,1) 100%);
+    --lld: url(${document.ciulinYT.data.playbarBg});
     --lll: linear-gradient(0deg, rgba(29,29,29,1) 0%, rgba(49,49,49,1) 100%);
     --llr: linear-gradient(0deg, rgba(9,9,9,1) 0%, rgba(29,29,29,1) 100%);
-    --llRED: linear-gradient(0deg, rgba(195,0,0,1) 0%, rgba(108,0,0,1) 100%);
+    --llRED: url(${document.ciulinYT.data.scrubBarRedSheet});
+    --llGRAY: url(${document.ciulinYT.data.scrubBarGraySheet});
     --texture-playbar: url(${document.ciulinYT.data.playerSheetB}) no-repeat;
 }
 .playmenu-container {
@@ -838,6 +850,9 @@ ${string_uploadedorlive} <span class="feed-item-time">${videoData.views[1]}</spa
 #video-player .player {
     width: inherit;
     height: inherit;
+    display: flex;
+    flex-direction: column;
+    user-select: none;
 }
 #video-player .video-topbar {
 width: inherit;
@@ -852,10 +867,10 @@ top: 0px;
 transition: top 0s ease-in;
 }
 #video-player .video-topbar-container {
-background: linear-gradient(0deg, rgba(31,31,31,0) 0%, rgba(31,31,31,1) 100%);
+background: linear-gradient(0deg, rgb(13, 13, 13) 0%, rgb(40, 40, 40) 100%);
 width: inherit;
-top: -28px;
-transition: top 1s ease-out;
+top: -30px;
+transition: top .6s cubic-bezier(1,0,1,1);
 position: absolute;
 }
 #video-player .video-title {
@@ -876,10 +891,16 @@ background: var(--lld);
 z-index: 3;
 }
 #video-player .video-container {
-    height: 359px;
+    height: 360px;
     width: inherit;
     position: relative;
     z-index: 0;
+}
+#video-player .black_line {
+    height: 1px;
+    width: inherit;
+    z-index: 1;
+    background: black;
 }
 #video-player:fullscreen .video-container {
     height: 97%;
@@ -901,46 +922,36 @@ z-index: 3;
     z-index: -1;
 }
 #video-player .video-scrubbar {
-    z-index: 4;
-    background-color: #222;
-    position: relative;
-    cursor: pointer;
-    height: 3px;
-    user-select: none;
-    border-bottom: 1px solid black;
-    border-top: 1px solid #323232;
+background: var(--lld);
+cursor: pointer;
+height: 3px;
+position: relative;
+transition: margin-top .6s cubic-bezier(1,0,1,1), height .6s cubic-bezier(1,0,1,1);
+z-index: 4;
 }
 #video-player:hover .video-scrubbar {
-    height: 7px;
-    margin-top: -4px;
-    position: relative;
-    transition: 0.1s;
+transition: .1s;
+height: 8px;
+margin-top: -5px;
 }
-#video-player:hover .video-scrubbar .scrubbar_track_played {
-    max-height: 7px;
-    transition: max-height 0s;
-}
-#video-player:hover .video-scrubbar .scrubbar_track_handle {
+#video-player:hover .playbar-scrubbar.track_handle {
     transform: scale(1);
     opacity: 1;
     transition: transform 0s, opacity 0s;
 }
-#video-player .scrubbar_track_played {
-    max-height: 3px;
-    background: var(--llRED);
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    transition: max-height 1s;
+#video-player .playbar-scrubbar.track_played {
+height: inherit;
+background: var(--llRED);
+position: absolute;
+top: 0;
+left: 0;
+bottom: 0;
+transition: max-height 1s;
 }
-#video-player .scrubbar_track_handle {
+#video-player .playbar-scrubbar.track_handle {
     background: var(--texture-playbar);
     background-position: -84px -185px;
     display: block;
-    position: absolute;
-    top: 0;
-    bottom: 0;
     width: 16px;
     height: 16px;
     margin: -5px -7.5px;
@@ -949,48 +960,19 @@ z-index: 3;
     transition: transform 1s, opacity 1s;
     transform: scale(0.3);
     z-index: 100;
+    position: absolute;
 }
-#video-player .scrubbar_track_handle:hover {
+#video-player .playbar-scrubbar.track_handle:hover {
 background-position: -84px -163px;
-}
-#video-player #seek-tooltip {
-position: absolute;
-top: -25px;
-z-index: 1000;
-color: white;
-background: black;
-width: max-content;
-padding: 0px 5px;
-text-align: center;
-border: 1px solid white;
-border-radius: 6px;
-font-size: 10px;
-height: 17px;
-justify-content: center;
-align-items: center;
-user-select: none;
-}
-#video-player #seek-tooltip::after {
-content: " ";
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  margin-left: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: black transparent transparent transparent;
 }
 #video-player .video-playbar {
     display: flex;
+    background: var(--lld);
     height: 25px;
     line-height: 25px;
     overflow: hidden;
-    user-select: none;
-    border-top: 1px solid #484646;
-    border-bottom: 1px solid #0b0b0b;
-    background: var(--lld);
-    z-index: 3;
     width: inherit;
+    z-index: 3;
 }
 #video-player .playbar-controls {
     list-style-type: none;
@@ -1002,16 +984,14 @@ content: " ";
 }
 #video-player .playbar-controls_icon {
     width: 30px;
-    display: inline-block;
+    display: flex;
     text-align: center;
-    font-size: 2em;
-    height: inherit;
-    margin: 0 1px;
     border: 0;
     position: relative;
     cursor: pointer;
     background: var(--lld);
     z-index: 1;
+    margin: 0px 1px;
 }
 #video-player .playbar-controls_icon::before, #video-player .playbar-controls_icon::after {
     content: ' ';
@@ -1032,22 +1012,14 @@ content: " ";
 }
 #video-player .playbar-icon {
     background: var(--texture-playbar);
-    display: inline-block;
-    margin-left: auto;
+    margin: auto;
 }
 #video-player .playbar-controls_play .playbar-icon.playbar-icon_play {
-    height: 16px;
-    margin-right: auto;
-}
-#video-player .playbar-controls_play[data-state^="0"] .playbar-icon.playbar-icon_play {
 width: 13px;
 height: 17px;
 }
 #video-player .playbar-controls_play[data-state^="1"] .playbar-icon.playbar-icon_play {
 background-position: 0px -22px;
-width: 11px;
-padding-top: 1px;
-padding-left: 2px;
 }
 #video-player .playbar-controls_play[data-state^="0"]:hover .playbar-icon.playbar-icon_play {
     background-position: -21px -0px;
@@ -1056,34 +1028,33 @@ padding-left: 2px;
     background-position: -19px -22px;
 }
 #video-player .playbar-controls_volume[data-state^="0"] .playbar-icon.playbar-icon_volume {
-    background-position: 6px -105px;
+    background-position: 4px -105px;
 }
 #video-player .playbar-volume_container:hover .playbar-controls_volume[data-state^="0"] .playbar-icon.playbar-icon_volume {
-    background-position: -22px -105px;
+    background-position: -24px -105px;
 }
 #video-player .playbar-controls_volume[data-state^="1"] .playbar-icon.playbar-icon_volume {
-    background-position: 6px -124px;
+    background-position: 4px -124px;
 }
 #video-player .playbar-volume_container:hover .playbar-controls_volume[data-state^="1"] .playbar-icon.playbar-icon_volume {
-    background-position: -22px -124px;
+    background-position: -24px -124px;
 }
 #video-player .playbar-controls_volume[data-state^="2"] .playbar-icon.playbar-icon_volume {
-    background-position: 6px -143px;
+    background-position: 4px -143px;
 }
 #video-player .playbar-volume_container:hover .playbar-controls_volume[data-state^="2"] .playbar-icon.playbar-icon_volume {
-    background-position: -22px -143px;
+    background-position: -24px -143px;
 }
 #video-player .playbar-controls_volume[data-state^="3"] .playbar-icon.playbar-icon_volume {
-    background-position: 6px -162px;
+    background-position: 4px -162px;
 }
 #video-player .playbar-volume_container:hover .playbar-controls_volume[data-state^="3"] .playbar-icon.playbar-icon_volume {
-    background-position: -22px -162px;
+    background-position: -24px -162px;
 }
 #video-player .playbar-icon.playbar-icon_settings {
     background-position: 0px -42px;
     height: 20px;
     width: 16px;
-    margin-right: auto;
 }
 #video-player .playbar-controls_settings:hover .playbar-icon.playbar-icon_settings {
 background-position: -24px -42px;
@@ -1092,46 +1063,26 @@ background-position: -24px -42px;
     background-position: 0px -66px;
     height: 14px;
     width: 13px;
-    margin-right: auto;
-    top: -2px;
-    position: relative;
 }
 #video-player .playbar-icon.playbar-icon_cc {
     background-position: 0px -85px;
     height: 13px;
     width: 17px;
-    margin-right: auto;
 }
 #video-player .playbar-icon.playbar-icon_fullscreen {
-    background-position: 0px -180px;
+    background-position: 0px -181px;
     height: 17px;
     width: 20px;
-    margin-right: auto;
 }
 #video-player .playbar-controls_fullscreen:hover .playbar-icon.playbar-icon_fullscreen {
-background-position: -28px -180px;
-}
-#video-player .slider_track_played {
-background: red;
-border-radius: 4px;
-height: inherit;
-display: block;
-}
-#video-player .slider_track_handle {
-height: 15px;
-width: 6px;
-display: block;
-border-radius: 4px;
-background: white;
-margin: -10px 0px;
-position: relative;
-margin-left: -3px;
+background-position: -28px -181px;
 }
 #video-player .playbar-timestamp_container {
     margin: 0 1px;
     border: 0;
     position: relative;
-    height: inherit;
+    height: 26px;
+    line-height: 26px;
     z-index: 2;
     background: var(--lld);
     width: 80px;
@@ -1155,8 +1106,8 @@ margin-left: -3px;
 #video-player .playbar-volume-container {
 display: inline-block;
 width: 66px;
-height: 25px;
-line-height: 25px;
+height: 26px;
+line-height: 26px;
 -webkit-transition: margin .2s cubic-bezier(0.4,0,1,1),width .2s cubic-bezier(0.4,0,1,1);
 transition: margin .2s cubic-bezier(0.4,0,1,1),width .2s cubic-bezier(0.4,0,1,1);
 cursor: pointer;
@@ -1165,11 +1116,11 @@ outline: 0;
 #video-player .playbar-volume_container {
 display: flex;
 width: 32px;
-transition: width 0.8s;
+transition: width .8s;
 }
 #video-player .playbar-volume_container:hover {
 width: 98px;
-transition: width 0.1s;
+transition: width .1s;
 }
 #video-player .playbar-volume-slider {
 width: 53px;
@@ -1186,14 +1137,14 @@ position: relative;
 top: 50%;
 transform: translate(0, -50%);
 }
-#video-player .playbar-volume-played {
+#video-player .playbar-volume.track_played {
 background: red;
 width: 100%;
 }
-#video-player .playbar-volume-notplayed {
+#video-player .playbar-volume.track_notplayed {
 background: black;
 }
-#video-player .playbar-volume-handle {
+#video-player .playbar-volume.track_handle {
 height: 15px;
 width: 6px;
 display: block;
@@ -1201,7 +1152,6 @@ border-radius: 4px;
 background: white;
 position: relative;
 margin-left: -55px;
-margin-top: 4px;
 left: 100%;
 }
 #video-player .playbar-controls_play {
@@ -1232,11 +1182,9 @@ left: 100%;
 }
 #video-player .playbar-timestamp {
     font-size: 10px;
-    padding: 6px;
     color: gray;
-    position: relative;
-    top: -7px;
     float: left;
+    margin-left: 6px;
 }
 #video-player #timestamp_total {
     color: gray;
@@ -1265,6 +1213,7 @@ margin-left: 15px !important;
 var progress;
 let canMouse = false;
 let dur = 0;
+/* Called by YouTube API */
 var onYouTubeIframeAPIReady = () => {
 document.ciulinYT.player = new YT.Player('video-main-content', {
 height: '360',
@@ -1282,34 +1231,7 @@ events: {
 }
 });
 };
-let toolTipOver = (e) => {
-let list = {
-"volume": [55, 35],
-"settings": [519, 82],
-"watchlater": [558, 70],
-"fullscreen": [572, 64]
-};
-let text = e.target.getAttribute("data-tooltip");
-let tooltip = document.querySelector("#seek-tooltip");
-let pos = e.target.getAttribute("data-name");
-if(pos == "fullscreen") {tooltip.classList.add("deez");};
-tooltip.classList.remove("hid");
-tooltip.style.left = list[pos][0] + "px";
-tooltip.style.top = "-15px";
-tooltip.style.display = "flex";
-tooltip.innerText = text;
-};
-let toolTipEnd = () => {
-let tooltip = document.querySelector("#seek-tooltip");
-tooltip.style = "";
-tooltip.classList.add("hid");
-tooltip.classList.remove("deez");
-};
-let doCU = document.querySelectorAll("[data-type='tooltip']");
-for (let i = 0; i < doCU.length; i++) {
-doCU[i].addEventListener("mouseenter", toolTipOver);
-doCU[i].addEventListener("mouseleave", toolTipEnd);
-}
+/* Keyboard shortcuts for the player */
 document.querySelector("#video-player").addEventListener("keydown", (e) => {
 if (!e) return;
 e.preventDefault();
@@ -1334,66 +1256,71 @@ document.ciulinYT.func.setVolume(document.ciulinYT.player.getVolume() - 5);
 break;
 };
 });
-document.querySelector(".video-container").addEventListener("click", () => {
+/* New click event */
+document.querySelector("movie-player").addEventListener("click", e => {
+const target = e.target.className;
+switch (true) {
+case /video-blank|playbar-icon_play|playbar-controls_play/g.test(target):
 document.ciulinYT.func.playPause(document.querySelector(".playbar-controls_play").getAttribute("data-state"));
-});
-document.querySelector(".playbar-controls_play").addEventListener("click", () => {
-document.ciulinYT.func.playPause(document.querySelector(".playbar-controls_play").getAttribute("data-state"));
-});
-document.querySelector(".playbar-controls_volume").addEventListener("click", () => {
+break;
+case /playbar-icon_volume|playbar-controls_volume/g.test(target):
 document.ciulinYT.func.mutePlayer(document.querySelector(".playbar-controls_volume").getAttribute("data-state"));
-});
-document.querySelector(".playbar-controls_fullscreen").addEventListener("click", () => {
+break;
+case /playbar-icon_fullscreen|playbar-controls_fullscreen/g.test(target):
 document.ciulinYT.func.fullscreenPlayer(document.querySelector(".playbar-controls_fullscreen").getAttribute("data-state"));
-});
-document.querySelector(".video-scrubbar").addEventListener("mouseenter", () => {
-document.querySelector("#seek-tooltip").classList.remove("hid");
-});
-document.querySelector(".video-scrubbar").addEventListener("mouseleave", () => {
-document.querySelector("#seek-tooltip").classList.add("hid");
-});
-document.querySelector(".video-scrubbar").addEventListener('mousedown', () => {
-clearInterval(progress);
-canMouse = true;
-});
-document.querySelector(".video-scrubbar").addEventListener('mouseup', () => {
-document.ciulinYT.player.seekTo(dur);
-progress = setInterval(document.ciulinYT.func.preProPos);
-canMouse = false;
-});
-const offset = function(e) {
-var value = e[0].target.getAttribute("aria-valuenow");
-
-document.querySelector(".playbar-volume-played").style.width = value + "%";
-document.querySelector(".playbar-volume-notplayed").style.width = (100 - value) + "%";
-document.querySelector(".playbar-volume-handle").style.left = value + "%";
+break;
 };
-new MutationObserver(offset).observe(document.querySelector(".playbar-volume-slider"), { attributes: true });
-document.querySelector(".video-scrubbar").addEventListener("mousemove", e => {
+});
+/* Mousedown event */
+document.querySelector("movie-player").addEventListener("mousedown", e => {
+let tar = e.target;
+if (tar.classList[1] == "track_handle") {
+tar = e.target.parentElement;
+}
+if (tar.dataset.canmouse == "false") { tar.dataset.canmouse = true; };
+});
+/* Mouseout event */
+document.addEventListener("mouseup", () => {
+if (!document.querySelector("[data-canmouse='true']")) return;
+document.querySelector("[data-canmouse='true']").dataset.canmouse = false;
+progress = setInterval(document.ciulinYT.func.preProPos, 1);
+});
+/* Move event */
+const getOffset = (e) => {
+console.debug(e);
+let offset = Math.round((e.pageX - e.currentTarget.offsetLeft) / e.currentTarget.offsetWidth * 100);
+
+return offset;
+};
+
+const setValuenow = (e) => {
+let get = e[0].target.parentElement;
+let tar = e[0].target.attributes["aria-valuenow"].nodeValue;
+
+if (e[0].target.className == "track_handle") {
+get = get.parentElement;
+};
+
+if (get.className == "video-scrubbar") {
+document.ciulinYT.player.seekTo(dur);
+};
+
+get.children[1].style.width = tar + "%";
+get.children[2].style.left = tar + "%";
+};
+
+new MutationObserver(setValuenow).observe(document.querySelector(".dddd"), { attributes: true });
+new MutationObserver(setValuenow).observe(document.querySelector(".playbar-volume-slider"), { attributes: true });
+
+document.querySelector("#video-player").addEventListener("mousemove", e => {
+if (!document.querySelector("[data-canmouse='true']")) return;
+clearInterval(progress);
+document.querySelector("[data-canmouse='true']").setAttribute("aria-valuenow", getOffset(e));
 dur = ((e.pageX - e.currentTarget.offsetLeft) / document.querySelector("#video-player").clientWidth * document.ciulinYT.player.getDuration());
-const rect = document.querySelector("#video-player").getBoundingClientRect();
-document.querySelector("#seek-tooltip").style.left = (e.pageX - rect.left) - 16 + "px";
-document.querySelector("#seek-tooltip").innerText = document.ciulinYT.func.calculateLength(dur);
-if(canMouse !== true) return;
-let offset = ((e.pageX - e.currentTarget.offsetLeft) / e.currentTarget.offsetWidth * 100);
-document.querySelector(".scrubbar_track_played").style.width = offset + "%";
-document.querySelector(".scrubbar_track_handle").style.left = offset + "%";
 });
 document.querySelector(".playbar-volume-slider").addEventListener("mousemove", e => {
-if(canMouse !== true) return;
-let offset = Math.round((e.pageX - e.currentTarget.offsetLeft) / e.currentTarget.offsetWidth * 100);
-if(offset > 100 || offset < 0) return e.preventDefault();
-document.querySelector(".playbar-volume-slider").setAttribute("aria-valuenow", offset);
-document.ciulinYT.func.setVolume(offset);
-});
-document.querySelector(".playbar-volume-slider").addEventListener('mousedown', e => {
-canMouse = true;
-});
-document.querySelector(".playbar-volume-slider").addEventListener('mouseup', e => {
-canMouse = false;
-});
-document.querySelector("movie-player").addEventListener("mouseout", e => {
-if (!e.target.classList.contains("volume-movable")) canMouse = false;
+if (!document.querySelector("[data-canmouse='true']")) return;
+document.querySelector("[data-canmouse='true']").setAttribute("aria-valuenow", Math.round((e.pageX - e.currentTarget.offsetLeft) / e.currentTarget.offsetWidth * 100));
 });
 var playVideo = () => {
 document.querySelector(".playbar-controls_play").setAttribute("data-state", "1");
@@ -1401,7 +1328,7 @@ document.querySelector(".playbar-controls_play").setAttribute("data-state", "1")
 var onPlayerReady = async () => {
 document.querySelector("#timestamp_total").innerText = document.ciulinYT.func.calculateLength(parseInt(document.ciulinYT.player.getDuration()));
 document.querySelector("#video-title-text").innerText = document.ciulinYT.player.videoTitle;
-progress = setInterval(document.ciulinYT.func.preProPos);
+progress = setInterval(document.ciulinYT.func.preProPos, 1);
 setInterval(document.ciulinYT.func.trackCurrent);
 let speed = await document.ciulinYT.func.getFromStorage("playback");
 document.ciulinYT.player.setPlaybackRate(Number(speed.value));
@@ -1420,6 +1347,9 @@ document.querySelector(".playbar-controls_play").setAttribute("data-state", "0")
                 a.innerText = script;
                 DOM.append(a);
             })();
+        },
+        trackCurrent: () => {
+            document.querySelector("#timestamp_current").innerText = document.ciulinYT.func.calculateLength(parseInt(document.ciulinYT.player.getCurrentTime()));
         },
         handleCategory: async (yt = Object, divide = Number, maxAmount = Number, func = Function, ex = Array) => {
             if(!yt || !divide || !maxAmount || !func || !ex) return;
@@ -1566,6 +1496,24 @@ document.querySelector(".playbar-controls_play").setAttribute("data-state", "0")
                 .replace(/>/g, "&gt;")
                 .replace(/"/g, "&quot;")
                 .replace(/'/g, "&#039;");
+        },
+        organizeChannelData: (da = Object) => {
+            let description = da.descriptionSnippet ? da.descriptionSnippet.runs[0].text : "";
+            let title = da.title.simpleText;
+            let link = "https://www.youtube.com" + da.shortBylineText.runs[0].navigationEndpoint.browseEndpoint.canonicalBaseUrl;
+            let thumbnail = da.thumbnail.thumbnails[0].url;
+            let video = da.videoCountText ? da.videoCountText.runs : [];
+            let videos = video[1] ? video[0].text + video[1].text : video.text;
+            let subs = da.subscriberCountText ? da.subscriberCountText.simpleText : "No subscribers";
+
+            return {
+                description: description,
+                title: title,
+                link: link,
+                thumbnail: thumbnail,
+                videos: videos,
+                subs: subs
+            }
         },
         organizeCommentData: (da = Object) => {
             if(!da) return {};
@@ -1721,12 +1669,6 @@ ${__a[1]}`;
                     unmakeFullscreen();
                     break;
             }
-        },
-        trackLength: () => {
-            document.querySelector("#playbar-progressbar").style.width = document.ciulinYT.player.getCurrentTime() / document.ciulinYT.player.getDuration() * 100 + "%";
-        },
-        trackCurrent: () => {
-            document.querySelector("#timestamp_current").innerText = document.ciulinYT.func.calculateLength(parseInt(document.ciulinYT.player.getCurrentTime()));
         },
         playPause: (e) => {
             switch (e) {
@@ -2472,8 +2414,8 @@ ${OBJ_CHANCON}
         },
         preProPos: () => {
             let track = (document.ciulinYT.player.getCurrentTime() / document.ciulinYT.player.getDuration() * 100) + "%";
-            document.querySelector(".scrubbar_track_played").style.width = track;
-            document.querySelector(".scrubbar_track_handle").style.left = track;
+            document.querySelector(".playbar-scrubbar.track_played").style.width = track;
+            document.querySelector(".playbar-scrubbar.track_handle").style.left = track;
         },
         showModal: (text) => {
             alert(text);
@@ -2560,13 +2502,10 @@ ${OBJ_CHANCON}
         return;
     }
     if(window.location.pathname.split("/")[1] == "watch"){
-        let elm = document.querySelector(".video-stream.html5-main-video");
-        elm.pause();
-        elm.src = "";
-        elm.play();
-        elm.parentNode.removeChild(elm);
+        document.ciulinYT.func.waitForElm(".video-stream.html5-main-video").then((elm) => {elm.pause();elm.src="";elm.play();elm.parentNode.removeChild(elm)});
     }
     async function buildYouTube() {
+        console.debug("A4");
         var DOMHTML = document.querySelector("html");
         var TIMEDATE = new Date();
         var ARR_MONTH = (TIMEDATE.getMonth() < 10) ? "0" + TIMEDATE.getMonth() : TIMEDATE.getMonth();
@@ -2585,9 +2524,12 @@ ${OBJ_CHANCON}
         DOMHEAD.innerHTML += '<link rel="icon" href="//s.ytimg.com/yt/favicon-refresh-vfldLzJxy.ico">';
         DOMHEAD.innerHTML += '<link rel="shortcut icon" href="//s.ytimg.com/yt/favicon-refresh-vfldLzJxy.ico">';
         DOMHEAD.innerHTML += '<link id="yt-core" rel="stylesheet" href="//s.ytimg.com/yts/cssbin/www-core-vfleLhVpH.css">';
-        document.body.innerHTML = "";
+        const script = document.createElement("script");
+        script.src = "//s.ytimg.com/yts/jsbin/html5player-en_US-vfln6g5Eq/html5player.js";
+        DOMHEAD.appendChild(script);
         await document.ciulinYT.func.checkLogin().then(afs => {BOOL_LOGIN = afs;});
         var DOMBODY = document.body;
+        DOMBODY.innerHTML = "";
         var SUPERDOM = document.createElement("div");
         SUPERDOM.setAttribute("id", "page");
         DOMBODY.setAttribute("class", `date-${VALUE_DATE} ${VALUE_LANG.value} ltr ytg-old-clearfix guide-feed-v2 gecko gecko-16`);
@@ -2599,6 +2541,7 @@ ${OBJ_CHANCON}
         let OBJ_MASTH = "";
         let OBJ_USER = "";
         if(BOOL_LOGIN === true) {
+            console.debug("A5");
             OBJ_MASTH = `<div id="masthead-expanded" class="hid">
 <div id="masthead-expanded-container" class="with-sandbar">
 <div id="masthead-expanded-menus-container">
@@ -2701,7 +2644,9 @@ ${OBJ_CHANCON}
         document.ciulinYT.data.country = document.ciulinYT.func.parseCoun(yt.config_.GL);
 
         if(window.location.pathname == "/") {
+            console.debug("A6");
             let FUNC = (async () => {
+                console.debug("A7");
                 let guidebuilder = "";
                 let subsbuilder = "";
                 let c = "";
@@ -2913,7 +2858,10 @@ ${localizeString("comments.charactersremain")}
                 BOOL_SUBSCRIBE = document.ciulinYT.func.getSubscription();
                 var VALUE_SUGGVIDLOG = (BOOL_LOGIN == true) ? "addto-watch-later-button": "addto-watch-later-button-sign-in";
                 var VALUE_VIDEOTAGS = "";
-                var OBJ_SUGGESTEDVIDEO = ytInitialData.contents.twoColumnWatchNextResults.secondaryResults.secondaryResults.results[1].itemSectionRenderer ? ytInitialData.contents.twoColumnWatchNextResults.secondaryResults.secondaryResults.results[1].itemSectionRenderer.contents : ytInitialData.contents.twoColumnWatchNextResults.secondaryResults.secondaryResults.results;
+                var OBJ_SUGGESTEDVIDEO = [];
+                if (ytInitialData.contents.twoColumnWatchNextResults.secondaryResults) {
+                    OBJ_SUGGESTEDVIDEO = ytInitialData.contents.twoColumnWatchNextResults.secondaryResults.secondaryResults.results[1].itemSectionRenderer ? ytInitialData.contents.twoColumnWatchNextResults.secondaryResults.secondaryResults.results[1].itemSectionRenderer.contents : ytInitialData.contents.twoColumnWatchNextResults.secondaryResults.secondaryResults.results;
+                }
                 var OBJ_SUGGESTEDVIDEOS = "";
                 var VALUE_SUGGESTEDTOKEN = "";
                 var VALUE_SUBBUTTON = document.ciulinYT.func.getSubscription() ? "subscribed" : "subscribe";
@@ -3046,6 +2994,9 @@ ${localizeString("global.loading")}
 <div id="watch-video" style="position:inherit">
 <div id="watch-player" class="flash-player player-root wm-videoplayer" style="position:inherit;">
 <movie-player id="video-player"></movie-player>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -3255,16 +3206,16 @@ ${OBJ_SUGGESTEDVIDEOS}
                 DOMHEAD.innerHTML += '<link rel="stylesheet" href="//s.ytimg.com/yt/cssbin/www-refresh-vflj_nHFo.css">';
                 for(let i = 0; i < results.length; i++) {
                     if(results[i].videoRenderer) {
-                        let {owner, time, views, title, id, url, description} = document.ciulinYT.func.organizeVideoData(results[i].videoRenderer);
+                        let videoData = document.ciulinYT.func.organizeVideoData(results[i].videoRenderer);
                         let main = `<div class="result-item yt-uix-tile yt-tile-default *sr">
 <div class="thumb-container">
-<a href="https://www.youtube.com/watch?v=${id}" class="ux-thumb-wrap contains-addto result-item-thumb">
+<a href="https://www.youtube.com/watch?v=${videoData.id}" class="ux-thumb-wrap contains-addto result-item-thumb">
 <span class="video-thumb ux-thumb ux-thumb-128">
 <span class="clip" style="height: auto;width: auto;">
-<span class="clip-inner"><img alt="Thumbnail" src="//i1.ytimg.com/vi/${id}/default.jpg" data-group-key="thumb-group-1" style="position: static"><span class="vertical-align"></span></span>
+<span class="clip-inner"><img alt="Thumbnail" src="//i1.ytimg.com/vi/${videoData.id}/default.jpg" data-group-key="thumb-group-1" style="position: static"><span class="vertical-align"></span></span>
 </span>
 </span>
-<span class="video-time">${time}</span>
+<span class="video-time">${videoData.time}</span>
 <button onclick=";return false;" title="${localizeString("personal.watchlater")}" type="button" class="addto-button video-actions addto-watch-later-button-sign-in yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" role="button">
 <span class="yt-uix-button-content">
 <span class="addto-label">${localizeString("personal.watchlater")}</span>
@@ -3276,51 +3227,44 @@ ${OBJ_SUGGESTEDVIDEOS}
 </div>
 <div class="result-item-main-content">
 <h3>
-<a href="https://www.youtube.com/watch?v=${id}" class="yt-uix-tile-link" dir="ltr" title="${title}">${title}</a>
+<a href="https://www.youtube.com/watch?v=${videoData.id}" class="yt-uix-tile-link" dir="ltr" title="${videoData.title}">${videoData.title}</a>
 </h3>
-<p id="video-description-${id}" class="description" dir="ltr">${description}</p>
+<p id="video-description-${videoData.id}" class="description" dir="ltr">${videoData.description}</p>
 <ul class="single-line-lego-list"><li><a href="https://www.youtube.com/results?search_query=${searchpar}%2C+hd" class="yt-badge-std">hd</a>
 </li>
 </ul>
 <p class="facets">
-<span class="username-prepend">${localizeString("watch.by")}</span>
-<a href="https://www.youtube.com${url}" class="yt-user-name" dir="ltr">${owner.text}</a> <span class="metadata-separator">|</span>  <span class="date-added">${views[1]}</span> <span class="metadata-separator">|</span>  <span class="viewcount">${views[0]}</span>
+<span class="username-prepend">${localizeString("watch.by", videoData)}</span> <span class="metadata-separator">|</span>  <span class="date-added">${videoData.views[1]}</span> <span class="metadata-separator">|</span>  <span class="viewcount">${videoData.views[0]}</span>
 </p>
 </div>
 </div>`;
                         parse += main;
                     }
                     if(results[i].channelRenderer) {
-                        let description = results[i].channelRenderer.descriptionSnippet ? results[i].channelRenderer.descriptionSnippet.runs[0].text : "";
-                        let title = results[i].channelRenderer.title.simpleText;
-                        let link = "https://www.youtube.com" + results[i].channelRenderer.shortBylineText.runs[0].navigationEndpoint.browseEndpoint.canonicalBaseUrl;
-                        let thumbnail = results[i].channelRenderer.thumbnail.thumbnails[0].url;
-                        let video = results[i].channelRenderer.videoCountText ? results[i].channelRenderer.videoCountText.runs : [];
-                        let videos = video[1] ? video[0].text + video[1].text : video.text;
-                        let subs = results[i].channelRenderer.subscriberCountText ? results[i].channelRenderer.subscriberCountText.simpleText : "No subscribers";
+                        let channelData = document.ciulinYT.func.organizeChannelData(results[i].channelRenderer);
 
                         let main = `<div class="result-item yt-uix-tile yt-tile-default *sr channel">
 <div class="thumb-container">
-<a href="${link}" class="ux-thumb-wrap result-item-thumb">
+<a href="${channelData.link}" class="ux-thumb-wrap result-item-thumb">
 <span class="video-thumb ux-thumb ux-thumb-profile-77">
 <span class="clip" style="position:unset;">
-<span class="clip-inner"><img onload="" alt="Thumbnail" src="${thumbnail}"><span class="vertical-align"></span></span>
+<span class="clip-inner"><img onload="" alt="Thumbnail" src="${channelData.thumbnail}"><span class="vertical-align"></span></span>
 </span>
 </span>
 </a>
 </div>
 <div class="result-item-main-content">
 <h3>
-<a href="${link}" class="yt-uix-tile-link" dir="ltr" title="${title}">${title}</a>
+<a href="${channelData.link}" class="yt-uix-tile-link" dir="ltr" title="${channelData.title}">${channelData.title}</a>
 </h3>
-<p id="video-description-" class="description" dir="ltr">${description}</p>
+<p id="video-description-" class="description" dir="ltr">${channelData.description}</p>
 <ul class="single-line-lego-list">
 <li>
 <a href="https://www.youtube.com/results?search_type=search_users" class="yt-badge-std">CHANNEL</a>
 </li>
 </ul>
 <p class="facets">
-<span class="username-prepend">${localizeString("watch.by")}</span> <a href="${link}" class="yt-user-name" dir="ltr">${title}</a><span class="metadata-separator"> | </span><span class="video-count">${videos}</span><span class="metadata-separator"> | </span><span class="channel-subscriber-count">${subs}</span>
+<span class="username-prepend">${localizeString("watch.by", channelData)}</span> <span class="metadata-separator"> | </span><span class="video-count">${channelData.videos}</span><span class="metadata-separator"> | </span><span class="channel-subscriber-count">${channelData.subs}</span>
 </p>
 </div>
 </div>`;
@@ -3784,14 +3728,18 @@ ${OBJ_FOOTER}`;
 
     }
     (async () => {
+        return buildYouTube();
+        console.debug("A1");
         if(document.ciulinYT.func.getCookie("APISID")) {
+            console.debug("A2");
             return buildYouTube();
         }
         if(!document.ciulinYT.func.getCookie("CONSENT")) return;
         if(document.ciulinYT.func.getCookie("CONSENT").indexOf("YES") !== 0) {
+            console.debug("A3");
             await document.ciulinYT.func.waitForElm("#dialog");
             await document.ciulinYT.func.waitForElm(".ytd-consent-bump-v2-lightbox").then((elm) => document.querySelector("#dialog").querySelectorAll("ytd-button-renderer")[3].querySelector("#button").addEventListener("click", () => {window.location.href = '';}));
-            return;
+            return error("Awaiting output from cookie consent.");
         }
         buildYouTube();
     })();
