@@ -22,6 +22,9 @@ window[NAMESPACE_MODULE_CIULINATIONS_EN] = {};
             press: "Press & Blogs",
             creators: "Creators & Partners",
         },
+        channels: {
+            about: "About %s"
+        },
         stats: {
             likesdislikes: "%s likes, %r dislikes"
         },
