@@ -4,10 +4,8 @@
 This UserScript aims to recreate the 2012 layout of YouTube completely. Including look and functionality.
 
 ## Important
-This project is discontinued.<br/><br/>
-I'm not a skilled programmer and the code quality in this is bad. I don't know how to impledement most of 2012 YT's features.<br/>
-This script will be replaced by a 2012 theme for V3.<br/>
-Thank you for your patronage.
+This project is super WIP. So things might be broken.<br/>
+Seriously in need of someone who can help me fix up a lot of the code and add features that I can't add!
 
 ## Contributing
 If you experience any issues with the script, please open up a ticket on the [**Issues**](https://github.com/ciulinuwu/ciulin-s-youtube/issues/new/choose) tab.</br></br>
