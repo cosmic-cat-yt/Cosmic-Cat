@@ -1,5 +1,5 @@
 /* jshint esversion: 10 */
-const NAMESPACE_MODULE_CIULINATIONS_PTBR = "Ciulinations_Português_Brasileiro";
+const NAMESPACE_MODULE_CIULINATIONS_PT = "Ciulinations_Português_Brasileiro";
 
 window[NAMESPACE_MODULE_CIULINATIONS_PT] = {};
 (function translation() {
