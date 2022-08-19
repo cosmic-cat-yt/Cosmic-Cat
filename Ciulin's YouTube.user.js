@@ -1,21 +1,30 @@
 // ==UserScript==
 // @name         Ciulin's YouTube
 // @namespace    https://www.youtube.com/*
-// @version      0.5.41
+// @version      0.5.42
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
 // @downloadURL  https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/Ciulin's%20YouTube.user.js
-// @match        https://www.youtube.com/*
-// @exclude      https://www.youtube.com/tv
-// @exclude      https://www.youtube.com/signin_prompt*
+// @match        https://www.youtube.com/
+// @match        https://www.youtube.com/?*
+// @match        https://www.youtube.com/watch?*
+// @match        https://www.youtube.com/user/*
+// @match        https://www.youtube.com/channel/*
+// @match        https://www.youtube.com/c/*
+// @match        https://www.youtube.com/results*
+// @match        https://www.youtube.com/shorts/*
+// @match        https://www.youtube.com/feed/explore
+// @match        https://www.youtube.com/embed/*
 // @icon         https://www.google.com/s2/favicons?domain=youtube.com
 // @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/modules/yabai_component.js
 // @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/modules/open_uix_components.js
 // @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/modules/translations.js?v=1
-// @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/translations/english.js?v=20220802.0
+// @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/translations/english.js?v=20220815.0
 // @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/translations/dansk.js?v=20220802.0
 // @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/translations/polski.js?v=1
+// @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/translations/russkiy.js?v=20220819.0
+// @require      https://github.com/ciulinuwu/ciulin-s-youtube/raw/main/translations/português_brasileiro.js?v=20220819.0
 // @grant unsafeWindow
 // @grant GM_addStyle
 // @grant GM.getValue
@@ -69,11 +78,14 @@
                 i18n = i18n.replace(/%s/g, `<span class="feed-item-owner"><a href="${DOM?.url}" class="yt-uix-sessionlink yt-user-name" dir="ltr">${DOM?.owner.text}</a></span>`);
                 break;
             case "watch.by":
-                i18n = (window.location.pathname.split("/")[1] == "results") ? i18n.replace(/%s/g, `<a href="https://www.youtube.com/${DOM?.url}" class="yt-user-name" dir="ltr">${DOM?.title}</a>`) : i18n.replace(/%s/g, `<span class="yt-user-name" dir="ltr">${DOM?.owner.text}</span>`);
+                i18n = (window.location.pathname.split("/")[1] == "results") ? i18n.replace(/%s/g, `<a href="https://www.youtube.com${DOM?.url}" class="yt-user-name" dir="ltr">${DOM?.owner.text}</a>`) : i18n.replace(/%s/g, `<span class="yt-user-name" dir="ltr">${DOM?.owner.text}</span>`);
                 break;
             case "stats.likesdislikes":
                 i18n = i18n.replace(/%s/g, `<span class="likes"></span>`);
                 i18n = i18n.replace(/%r/g, `<span class="dislikes"></span>`);
+                break;
+            case "channels.about":
+                i18n = i18n.replace(/%s/g, `${DOM?.owner}`);
                 break;
             case "comments.charactersremain":
                 i18n = i18n.replace(/%s/g, `<span class="comments-remaining-count" data-max-count="500">500</span>`);
@@ -296,6 +308,7 @@
                     collection.string.JOIN = b.joinedDateText ? b.joinedDateText.runs[1].text : undefined;
                     collection.name.VIEWS = b.viewCountText ? b.viewCountText.simpleText.split(" ")[1].charAt(0).toUpperCase() + b.viewCountText.simpleText.split(" ")[1].slice(1) : undefined;
                     collection.string.VIEWS = b.viewCountText ? b.viewCountText.simpleText.split(" ")[0] : undefined;
+                    collection.links = b.primaryLinks ? b.primaryLinks : undefined;
                     resolve(collection);
                 };
                 xhr.onerror = () => {
@@ -801,6 +814,7 @@ ${string_uploadedorlive} <span class="feed-item-time">${videoData.views[1]}</spa
 </li>
 <div class="playbar-volume-container">
 <div class="playbar-volume-slider progressbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" data-canmouse="false">
+<div class="ddde" data-canmouse="false" style="height: inherit;width: 53px;z-index: 33;position: absolute;"></div>
 <span class="playbar-volume track_played"></span>
 <span class="playbar-volume track_notplayed"></span>
 <span class="playbar-volume track_handle"></span>
@@ -1278,17 +1292,20 @@ if (tar.classList[1] == "track_handle") {
 tar = e.target.parentElement;
 }
 if (tar.dataset.canmouse == "false") { tar.dataset.canmouse = true; };
+if (tar.classList[0] == "playbar-scrubbar") { document.ciulinYT.player.pauseVideo(); };
 });
 /* Mouseout event */
 document.addEventListener("mouseup", () => {
 if (!document.querySelector("[data-canmouse='true']")) return;
 document.querySelector("[data-canmouse='true']").dataset.canmouse = false;
 progress = setInterval(document.ciulinYT.func.preProPos, 1);
+document.ciulinYT.player.playVideo();
 });
 /* Move event */
 const getOffset = (e) => {
-console.debug(e);
 let offset = Math.round((e.pageX - e.currentTarget.offsetLeft) / e.currentTarget.offsetWidth * 100);
+
+if (offset > 100 || offset < 0) return;
 
 return offset;
 };
@@ -1301,8 +1318,10 @@ if (e[0].target.className == "track_handle") {
 get = get.parentElement;
 };
 
+if (tar > 100 || tar < 0) return;
+
 if (get.className == "video-scrubbar") {
-document.ciulinYT.player.seekTo(dur);
+document.ciulinYT.player.seekBy(dur);
 };
 
 get.children[1].style.width = tar + "%";
@@ -1310,17 +1329,18 @@ get.children[2].style.left = tar + "%";
 };
 
 new MutationObserver(setValuenow).observe(document.querySelector(".dddd"), { attributes: true });
-new MutationObserver(setValuenow).observe(document.querySelector(".playbar-volume-slider"), { attributes: true });
+new MutationObserver(setValuenow).observe(document.querySelector(".ddde"), { attributes: true });
 
 document.querySelector("#video-player").addEventListener("mousemove", e => {
-if (!document.querySelector("[data-canmouse='true']")) return;
+if (!document.querySelector(".dddd[data-canmouse='true']")) return;
 clearInterval(progress);
-document.querySelector("[data-canmouse='true']").setAttribute("aria-valuenow", getOffset(e));
+document.querySelector(".dddd[data-canmouse='true']").setAttribute("aria-valuenow", getOffset(e));
 dur = ((e.pageX - e.currentTarget.offsetLeft) / document.querySelector("#video-player").clientWidth * document.ciulinYT.player.getDuration());
 });
-document.querySelector(".playbar-volume-slider").addEventListener("mousemove", e => {
-if (!document.querySelector("[data-canmouse='true']")) return;
-document.querySelector("[data-canmouse='true']").setAttribute("aria-valuenow", Math.round((e.pageX - e.currentTarget.offsetLeft) / e.currentTarget.offsetWidth * 100));
+document.querySelector(".ddde").addEventListener("mousemove", e => {
+if (!document.querySelector(".ddde[data-canmouse='true']")) return;
+document.querySelector(".ddde[data-canmouse='true']").setAttribute("aria-valuenow", getOffset(e));
+document.ciulinYT.func.setVolume(getOffset(e));
 });
 var playVideo = () => {
 document.querySelector(".playbar-controls_play").setAttribute("data-state", "1");
@@ -1505,6 +1525,7 @@ document.querySelector(".playbar-controls_play").setAttribute("data-state", "0")
             let video = da.videoCountText ? da.videoCountText.runs : [];
             let videos = video[1] ? video[0].text + video[1].text : video.text;
             let subs = da.subscriberCountText ? da.subscriberCountText.simpleText : "No subscribers";
+            let owner = da.shortBylineText.runs[0];
 
             return {
                 description: description,
@@ -1512,8 +1533,9 @@ document.querySelector(".playbar-controls_play").setAttribute("data-state", "0")
                 link: link,
                 thumbnail: thumbnail,
                 videos: videos,
-                subs: subs
-            }
+                subs: subs,
+                owner: owner
+            };
         },
         organizeCommentData: (da = Object) => {
             if(!da) return {};
@@ -1760,6 +1782,21 @@ ${__a[1]}`;
                 return ytInitialData.contents.twoColumnWatchNextResults.results ? ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.find(a => a.videoSecondaryInfoRenderer).videoSecondaryInfoRenderer.subscribeButton.subscribeButtonRenderer ? ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.find(a => a.videoSecondaryInfoRenderer).videoSecondaryInfoRenderer.subscribeButton.subscribeButtonRenderer.subscribed : false : false;
             }
         },
+        customTags: (data) => {
+            let tags = [];
+            let TAGS = data.DESCRIPTION.matchAll(/\[\+\w\+="(\d+|.+)"]/g);
+            data.DESCRIPTION = data.DESCRIPTION.replace(/\[\+\w\+="(\d+|.+)"]/g, "");
+            for (const tag of TAGS) {
+                if(tag[0].split(/\+/g)[1] == "a" && tag[0].match(/"\d+"/g) && tag[0].split(/"/g)[1] < 101) {
+                    tags.push({name: "Age", value: tag[0].split(/"/g)[1]});
+                }
+                if(tag[0].split(/\+/g)[1] == "o" && tag[0].match(/"\w+/g)) {
+                    tags.push({name: "Occupation", value: tag[0].split(/"/g)[1]});
+                }
+            }
+
+            return tags;
+        },
         buildChannelTheme: async (arg = Number, data = Object) => {
             let channel1 = () => {
             };
@@ -1771,24 +1808,10 @@ ${__a[1]}`;
                     thelegend = `<div id="the-blood-king">Long live the blood king🐷❤️</div>`;
                 }
                 let videoData = document.ciulinYT.func.organizeVideoData(data.HOMEVIDEO);
-                let tags = {age: undefined, occupation: undefined};
-                let TAGS = data.DESCRIPTION.matchAll(/\[\+\w\+="(\d+|.+)"]/g);
-                data.DESCRIPTION = data.DESCRIPTION.replace(/\[\+\w\+="(\d+|.+)"]/g, "");
-                for (const tag of TAGS) {
-                    if(tag[0].split(/\+/g)[1] == "a" && tag[0].match(/"\d+"/g) && tag[0].split(/"/g)[1] < 101) {
-                        tags.age = tag[0].split(/"/g)[1];
-                    }
-                    if(tag[0].split(/\+/g)[1] == "o" && tag[0].match(/"\w+/g)) {
-                        tags.occupation = tag[0].split(/"/g)[1];
-                    }
-                }
-                let OBJ_age = "";
-                if(tags.age !== undefined) {
-                    OBJ_age = `<div class="show_info outer-box-bg-as-border"><div class="profile-info-label">${localizeString("customtag.age")}</div><div class="profile-info-value" id="profile_show_age">${tags.age}</div><div class="cb"></div></div>`;
-                }
-                let OBJ_occu = "";
-                if(tags.occupation !== undefined) {
-                    OBJ_occu = `<div class="show_info outer-box-bg-as-border"><div class="profile-info-label">${localizeString("customtag.occupation")}</div><div class="profile-info-value" id="profile_show_age">${tags.occupation}</div><div class="cb"></div></div>`;
+                let tags = document.ciulinYT.func.customTags(data);
+                let OBJ_SECTIONS = "";
+                for (let i = 0; i < tags.length; i++) {
+                    OBJ_SECTIONS += `<div class="show_info outer-box-bg-as-border"><div class="profile-info-label">${localizeString("customtag." + tags[i].name.toLowerCase())}</div><div class="profile-info-value" id="profile_show_${tags[i].name}">${tags[i].value}</div><div class="cb"></div></div>`;
                 }
                 let videos = "";
                 for (let i = 0; i < data.VIDEOS.length; i++) {
@@ -1936,11 +1959,10 @@ ${peeps}
 <div id="user_profile-body">
 <div class="profile_info vcard">
 ${OBJ_views}
-${OBJ_age}
 ${OBJ_join}
 ${OBJ_subcount}
 ${OBJ_country}
-${OBJ_occu}
+${OBJ_SECTIONS}
 <div class="show_info outer-box-bg-as-border" style="border-bottom-width:1px;margin-bottom:4px;line-height:140%" dir="ltr">${data.DESCRIPTION}${data.INFO.string.BIO}</div>
 </div>
 </div>
@@ -2502,7 +2524,7 @@ ${OBJ_CHANCON}
         return;
     }
     if(window.location.pathname.split("/")[1] == "watch"){
-        document.ciulinYT.func.waitForElm(".video-stream.html5-main-video").then((elm) => {elm.pause();elm.src="";elm.play();elm.parentNode.removeChild(elm)});
+        document.ciulinYT.func.waitForElm(".video-stream.html5-main-video").then((elm) => {elm.pause();elm.src="";elm.play();elm.parentNode.removeChild(elm);});
     }
     async function buildYouTube() {
         console.debug("A4");
@@ -2524,13 +2546,12 @@ ${OBJ_CHANCON}
         DOMHEAD.innerHTML += '<link rel="icon" href="//s.ytimg.com/yt/favicon-refresh-vfldLzJxy.ico">';
         DOMHEAD.innerHTML += '<link rel="shortcut icon" href="//s.ytimg.com/yt/favicon-refresh-vfldLzJxy.ico">';
         DOMHEAD.innerHTML += '<link id="yt-core" rel="stylesheet" href="//s.ytimg.com/yts/cssbin/www-core-vfleLhVpH.css">';
-        const script = document.createElement("script");
-        script.src = "//s.ytimg.com/yts/jsbin/html5player-en_US-vfln6g5Eq/html5player.js";
-        DOMHEAD.appendChild(script);
         await document.ciulinYT.func.checkLogin().then(afs => {BOOL_LOGIN = afs;});
         var DOMBODY = document.body;
         DOMBODY.innerHTML = "";
         var SUPERDOM = document.createElement("div");
+        var SUPERDUM = document.createElement("div");
+        SUPERDUM.setAttribute("id", "body-container");
         SUPERDOM.setAttribute("id", "page");
         DOMBODY.setAttribute("class", `date-${VALUE_DATE} ${VALUE_LANG.value} ltr ytg-old-clearfix guide-feed-v2 gecko gecko-16`);
         DOMBODY.setAttribute("dir", "ltr");
@@ -3724,23 +3745,10 @@ ${OBJ_CHANNEL}
 </div>
 ${OBJ_FOOTER}`;
         SUPERDOM.innerHTML += final;
-        document.body.appendChild(SUPERDOM);
-
+        SUPERDUM.appendChild(SUPERDOM);
+        document.body.appendChild(SUPERDUM);
     }
     (async () => {
         return buildYouTube();
-        console.debug("A1");
-        if(document.ciulinYT.func.getCookie("APISID")) {
-            console.debug("A2");
-            return buildYouTube();
-        }
-        if(!document.ciulinYT.func.getCookie("CONSENT")) return;
-        if(document.ciulinYT.func.getCookie("CONSENT").indexOf("YES") !== 0) {
-            console.debug("A3");
-            await document.ciulinYT.func.waitForElm("#dialog");
-            await document.ciulinYT.func.waitForElm(".ytd-consent-bump-v2-lightbox").then((elm) => document.querySelector("#dialog").querySelectorAll("ytd-button-renderer")[3].querySelector("#button").addEventListener("click", () => {window.location.href = '';}));
-            return error("Awaiting output from cookie consent.");
-        }
-        buildYouTube();
     })();
 })();
