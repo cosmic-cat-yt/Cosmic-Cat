@@ -1,9 +1,9 @@
 /* jshint esversion: 10 */
 const NAMESPACE_MODULE_CIULINATIONS_PTBR = "Ciulinations_Português_Brasileiro";
 
-window[NAMESPACE_MODULE_CIULINATIONS_PTBR] = {};
+window[NAMESPACE_MODULE_CIULINATIONS_PT] = {};
 (function translation() {
-    var language = "ptbr";
+    var language = "pt";
     var author = "micenest";
 
     const json = {
@@ -139,4 +139,4 @@ window[NAMESPACE_MODULE_CIULINATIONS_PTBR] = {};
     };
     
     Ciulinations.addTranslation(language, json, author);
-})(NAMESPACE_MODULE_CIULINATIONS_PTBR);
+})(NAMESPACE_MODULE_CIULINATIONS_PT);
