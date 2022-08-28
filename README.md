@@ -16,7 +16,7 @@ If you want to contribute to this project, please read [Contributing Guidelines]
 
 ## Install
 - Get **Tampermonkey** for your Browser: https://www.tampermonkey.net<br/>
-- Click here to open up the install prompt (requires **Tampermonkey**): [Ciulin's YouTube.user.js](https://github.com/ciulinuwu/cosmic-cat/raw/main/cosmic-cat.user.js)
+- Click here to open up the install prompt (requires **Tampermonkey**): [cosmic-cat.user.js](https://github.com/ciulinuwu/cosmic-cat/raw/main/cosmic-cat.user.js)
 
 ## Things supported so far
 Check the [Wiki](https://github.com/ciulinuwu/cosmic-cat/wiki/) out for a list of features.
