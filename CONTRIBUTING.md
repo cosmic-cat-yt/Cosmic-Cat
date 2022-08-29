@@ -26,7 +26,7 @@ Low-effort bug reports will be closed.
 
 Do not suggest stuff or start conversations in Issues.
 
-If you repeat offends, you will be blocked from accessing this and all my Repos. Including the Discord server.
+If you repeat offend, you will be blocked from accessing this and all my Repos. Including the Discord server.
 
 ## Translations
 Must speak fluently in the language.
