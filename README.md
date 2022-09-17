@@ -17,3 +17,7 @@ If you want to contribute to this project, please read [Contributing Guidelines]
 ## Install
 - Get **Tampermonkey** for your Browser: https://www.tampermonkey.net<br/>
 - Click here to open up the install prompt (requires **Tampermonkey**): [cosmic-cat.user.js](https://github.com/ciulinuwu/cosmic-cat/raw/main/cosmic-cat.user.js)
+
+## Beta
+Wanna test out new features?
+- Download beta here [cosmic-cat.user.js](https://github.com/ciulinuwu/cosmic-cat/raw/beta/cosmic-cat.user.js)
