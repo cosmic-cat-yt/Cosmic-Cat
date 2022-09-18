@@ -1,4 +1,5 @@
 (async () => {
+    await document.cosmicCat.func.waitForElm("[ytdataloaded]");
 if(window.location.pathname.split("/")[1].match(/channel|user|^c{1}$/i)) {
     if (/community|videos|about|channels|playlists|membership|store/.test(window.location.pathname.split("/")[3])) window.location.href = window.location.pathname.split("/").slice(0,3).join("/");
     const channelCSS = document.createElement("link");
