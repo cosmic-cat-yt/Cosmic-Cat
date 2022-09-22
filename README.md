@@ -8,8 +8,7 @@ This project is super WIP. So things might be broken.<br/>
 Seriously in need of someone who can help me fix up a lot of the code and add features that I can't add!
 
 ## Contributing
-If you experience any issues with the script, please open up a ticket on the [**Issues**](https://github.com/ciulinuwu/cosmic-cat/issues/new/choose) tab.</br></br>
-Do not use this for discussions - We have a Discussions tab and Discord server for that.</br></br>
+If something doesn't work as intended, please fill a report through the  [**Issues**](https://github.com/ciulinuwu/cosmic-cat/issues/new/choose) tab.</br></br>
 If you want to contribute to this project, please read [Contributing Guidelines](https://github.com/ciulinuwu/cosmic-cat/blob/master/CONTRIBUTING.md) before doing so.
 
 **YouTube is a trademark of Google LLC.** (don't sue me please)
