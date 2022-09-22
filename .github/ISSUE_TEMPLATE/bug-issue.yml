@@ -3,7 +3,7 @@ description: Report an issue.
 body:
 -type: markdown
 attributes:
-values: |
+value: |
 # bug report
 all fields must be filled
 
