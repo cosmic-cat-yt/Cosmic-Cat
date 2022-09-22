@@ -1,5 +1,5 @@
 name: Bug report
-description: Report a very clearly broken issue.
+description: Report an bug.
 body:
   - type: markdown
     attributes:
