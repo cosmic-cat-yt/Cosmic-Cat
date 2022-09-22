@@ -16,6 +16,12 @@ body:
         - Player
     validations:
       required: true
+      
+  - type: input
+    attributes:
+      label: Page URL
+    validations:
+      required: true
 
   - type: dropdown
     attributes:
