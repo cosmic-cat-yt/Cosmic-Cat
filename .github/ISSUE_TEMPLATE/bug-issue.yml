@@ -1,11 +1,11 @@
 name: Bug report
-description: Report an issue.
+description: Report a very clearly broken issue.
 body:
-- type: markdown
-attributes:
-value: |
-# bug report
-all fields must be filled
+  - type: markdown
+    attributes:
+      value: |
+        # bug report
+        all fields must be filled
 
 - type: dropdown
 attributes:
