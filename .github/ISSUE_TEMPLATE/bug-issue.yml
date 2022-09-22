@@ -4,9 +4,12 @@ body:
   - type: markdown
     attributes:
       value: |
-        # bug report
+        # Bug report
 
-        all fields must be filled
+        * All fields must be filled.
+        * Please provide as much detail in each field as possible.
+        * Note that if you do not respond to requests made by the developer within 7-days, your issue will be closed.
+        * Do not waste developer's time with low effort reports or spam.
 
   - type: dropdown
     attributes:
