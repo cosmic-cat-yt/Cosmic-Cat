@@ -1,53 +1,54 @@
 name: Bug report
-description: Report an bug.
+description: Report an issue.
 body:
   - type: markdown
     attributes:
       value: |
         # bug report
+
         all fields must be filled
 
-- type: dropdown
-attributes:
-label: Type
-options:
-- Page Renderer
-- Player
-validations:
-required: true
+  - type: dropdown
+    attributes:
+      label: Type
+      options:
+        - Page Renderer
+        - Player
+    validations:
+      required: true
 
-- type: dropdown
-attributes:
-label: Branch
-options:
-- main
-- beta
-validations:
-required: true
+  - type: dropdown
+    attributes:
+      label: Branch
+      options:
+        - main
+        - beta
+    validations:
+      required: true
 
-- type: input
-attributes:
-label: Version
-validations:
-required: true
+  - type: input
+    attributes:
+      label: Version
+    validations:
+      required: true
 
-- type: textarea
-attributes:
-label: A brief description:
-description: How did you find the bug?
-validations:
-required: true
+  - type: textarea
+    attributes:
+      label: A brief description
+      description: How did you find the bug?
+    validations:
+      required: true
 
-- type: textarea
-attributes:
-label: Screenshots or videos:
-description: Add screenshots or videos that show the bug here.
-validations:
-required: true
+  - type: textarea
+    attributes:
+      label: Screenshots or videos
+      description: Add screenshots or videos that show the bug here.
+    validations:
+      required: true
 
-- type: textarea
-attributes:
-label: Console output:
-description: It is mandatory to provide the console output for any useful errors.
-validations:
-required: true
+  - type: textarea
+    attributes:
+      label: Console output
+      description: It is mandatory to provide the console output for any useful errors.
+    validations:
+      required: true
