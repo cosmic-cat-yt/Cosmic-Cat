@@ -4,8 +4,11 @@
 This UserScript aims to recreate the 2012 layout of YouTube completely. Including look and functionality.
 
 ## Important
+
+### Note about missing text.
+Due to a rewrite in Ciulinations (i18n) text are missing from certain elements on both release, and any beta from 0.6 Beta 6 and below.
+
 This project is super WIP. So things might be broken.<br/>
-Seriously in need of someone who can help me fix up a lot of the code and add features that I can't add!
 
 ## Contributing
 If something doesn't work as intended, please fill a report through the  [**Issues**](https://github.com/ciulinuwu/cosmic-cat/issues/new/choose) tab.</br></br>
