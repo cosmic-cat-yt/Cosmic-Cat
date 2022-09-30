@@ -21,5 +21,7 @@ If you want to contribute to this project, please read [Contributing Guidelines]
 - Click here to open up the install prompt (requires **Tampermonkey**): [cosmic-cat.user.js](https://github.com/ciulinuwu/cosmic-cat/raw/main/cosmic-cat.user.js)
 
 ## Beta
-Wanna test out new features?
-- Download beta here [cosmic-cat.user.js](https://github.com/ciulinuwu/cosmic-cat/raw/beta/cosmic-cat.user.js)
+We're now using beta to test out new features before adding them to the release version.
+
+If you want to test them out, get the beta from below!
+[cosmic-cat.user.js](https://github.com/ciulinuwu/cosmic-cat/raw/beta/cosmic-cat.user.js)
