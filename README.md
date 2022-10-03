@@ -16,12 +16,12 @@ If you want to contribute to this project, please read [Contributing Guidelines]
 
 **YouTube is a trademark of Google LLC.** (don't sue me please)
 
-## Install
+## Beta Install
 - Get **Tampermonkey** for your Browser: https://www.tampermonkey.net<br/>
-- Click here to open up the install prompt (requires **Tampermonkey**): [cosmic-cat.user.js](https://github.com/ciulinuwu/cosmic-cat/raw/main/cosmic-cat.user.js)
+- Click here to open up the install prompt (requires **Tampermonkey**): [cosmic-cat.user.js Beta](https://github.com/ciulinuwu/cosmic-cat/raw/beta/cosmic-cat.user.js)
 
-## Beta
-We're now using beta to test out new features before adding them to the release version.
+## Old release install
+### NOT RECOMMENDED
+This version of Cosmic Cat is slow and broken AF
 
-If you want to test them out, get the beta from below!<br/>
-[cosmic-cat.user.js](https://github.com/ciulinuwu/cosmic-cat/raw/beta/cosmic-cat.user.js)
+[cosmic-cat.user.js OLD release](https://github.com/ciulinuwu/cosmic-cat/raw/main/cosmic-cat.user.js)
