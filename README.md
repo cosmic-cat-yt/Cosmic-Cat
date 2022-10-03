@@ -8,7 +8,7 @@ This UserScript aims to recreate the 2012 layout of YouTube completely. Includin
 This project is super WIP. So things might be broken.<br/>
 
 ### Note about missing text.
-Due to a rewrite in Ciulinations (i18n) text are missing from certain elements on both release, and any beta from 0.6 Beta 6 and below.
+Due to constant changes to Ciulinations (i18n); text will be missing from certain elements on current versions.
 
 ## Contributing
 If something doesn't work as intended, please fill a report through the  [**Issues**](https://github.com/ciulinuwu/cosmic-cat/issues/new/choose) tab.</br></br>
@@ -21,7 +21,8 @@ If you want to contribute to this project, please read [Contributing Guidelines]
 - Click here to open up the install prompt (requires **Tampermonkey**): [cosmic-cat.user.js Beta](https://github.com/ciulinuwu/cosmic-cat/raw/beta/cosmic-cat.user.js)
 
 ## Old release install
-### NOT RECOMMENDED
-This version of Cosmic Cat is slow and broken AF
+### ⚠️ NOT RECOMMENDED ⚠️
+This version of Cosmic Cat is slow and broken AF. It's preferred to install the beta instead.<br/>
+⚠️**INSTALL AT YOUR OWN RISK**⚠️
 
 [cosmic-cat.user.js OLD release](https://github.com/ciulinuwu/cosmic-cat/raw/main/cosmic-cat.user.js)
