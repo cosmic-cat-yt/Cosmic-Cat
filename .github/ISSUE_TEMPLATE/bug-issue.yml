@@ -30,7 +30,7 @@ body:
     attributes:
       label: Branch
       options:
-        - main (Will be ignored for now!)
+        - main
         - beta
     validations:
       required: true
