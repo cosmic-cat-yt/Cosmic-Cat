@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6
+// @version      0.6.1
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://raw.githubusercontent.com/ciulinuwu/cosmic-cat/main/cosmic-cat.user.js
@@ -285,9 +285,9 @@ ${localizeString("global.loading.main")}
             Subnav: {
                 Main: () => {
                     let items = "";
-                    let a = ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].destinationShelfRenderer.destinationButtons;
+                    let a = ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs;//ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].destinationShelfRenderer.destinationButtons;
                     for (let i = 0; i < a.length; i++) {
-                        items += document.cosmicCat.Template.Browse.Subnav.navItem(a[i].destinationButtonRenderer.label.simpleText);
+                        items += document.cosmicCat.Template.Browse.Subnav.navItem(a[i].tabRenderer.title);//destinationButtonRenderer.label.simpleText);
                     }
                     return `<div id="masthead-subnav" class="yt-nav yt-nav-dark">
 <ul>${items}</ul>
@@ -1315,7 +1315,7 @@ ${badges}
                 return `<li class="yt-grid-box playlist *sr context-data-item" data-context-item-title="${data.title}" data-context-item-count="${data.videos.text}" data-context-item-id="${data.id}" data-context-item-type="playlist" data-context-item-videos="[&quot;nyMkLwSyOVQ&quot;, &quot;2_HXUhShhmY&quot;, &quot;lLJf9qJHR3E&quot;]">
 <div id="" class="yt-uix-tile yt-lockup-list yt-tile-default yt-grid-box">
 <div class="yt-lockup-thumbnail">
-<a href="&feature=results_main" class="yt-pl-thumb-link yt-uix-contextlink yt-uix-sessionlink" data-sessionlink="">
+<a href="${data.url}" class="yt-pl-thumb-link yt-uix-contextlink yt-uix-sessionlink" data-sessionlink="">
 <span class="yt-pl-thumb">
 <span class="video-thumb ux-thumb yt-thumb-feed-185">
 <span class="yt-thumb-clip">
@@ -1344,7 +1344,7 @@ ${sideThumbs}
 </div>
 <div class="yt-lockup-content">
 <h3 class="yt-lockup-ellipsize">
-<a class="yt-uix-contextlink yt-uix-sessionlink yt-uix-tile-link result-item-translation-title" dir="ltr" title="${data.title}" data-sessionlink="" href="&feature=results_main">${data.title}</a>
+<a class="yt-uix-contextlink yt-uix-sessionlink yt-uix-tile-link result-item-translation-title" dir="ltr" title="${data.title}" data-sessionlink="" href="${data.url}">${data.title}</a>
 </h3>
 
 <div class="yt-lockup-meta">
@@ -1353,9 +1353,9 @@ ${sideThumbs}
 <a href="/web/20121022214036/https://www.youtube.com/results?search_query=playlist%2C+playlist&amp;lclk=playlist/a" class="yt-badge-std">playlist</a>
 </li>
 </ul>
-<p class="facets"><a href="${data.url}" class="video-count">${data.videos.text}</a></p>
+<p class="facets"><a href="/playlist?list=${data.id}" class="video-count">${data.videos.text}</a></p>
 <p>
-<span class="username-prepend">by <a href="/web/20121022214036/https://www.youtube.com/user/iaian7" class="yt-uix-sessionlink yt-user-name" data-sessionlink="ved=CFgQwRs%3D&amp;ei=CNyy4KHLlbMCFSXtRAodZHCYmg%3D%3D" dir="ltr">iaian7</a></span></p>
+<span class="username-prepend">by <a href="${data.owner.url}" class="yt-uix-sessionlink yt-user-name" data-sessionlink="ved=CFgQwRs%3D&amp;ei=CNyy4KHLlbMCFSXtRAodZHCYmg%3D%3D" dir="ltr">${data.owner.name}</a></span></p>
 </div>
 </div>
 </div>
@@ -2560,14 +2560,15 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
         browseTabs: {
             find: (data, param) => {
                 try {
-                    return data.contents.twoColumnBrowseResultsRenderer.tabs.find(b => b.tabRenderer ? b.tabRenderer.endpoint.commandMetadata.webCommandMetadata.url.split("/")[2] === param || b.tabRenderer.endpoint.commandMetadata.webCommandMetadata.url.split("/")[3] == param : {});
+                    return data.contents.twoColumnBrowseResultsRenderer.tabs.find(b => b.tabRenderer ? b.tabRenderer.endpoint.commandMetadata.webCommandMetadata.url.split("/")[3] === param : {});
                 } catch {
                     return {error: 404};
                 }
             },
             content: (data) => {
                 try {
-                    return data.tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents;
+                    console.debug(data);
+                    return data.tabRenderer.content?.richGridRenderer?.contents || data.tabRenderer.content?.sectionListRenderer?.contents;
                 } catch {
                     return {error: 404};
                 }
@@ -3158,13 +3159,13 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
 
                 try {
                     let tab = document.cosmicCat.Utils.browseTabs.find(data, "videos");
-                    let contents = document.cosmicCat.Utils.browseTabs.content(tab)[0]?.gridRenderer?.items;
+                    let contents = document.cosmicCat.Utils.browseTabs.content(tab);
 
                     if (!contents) throw Error();
 
                     for (let i = 0; i < contents.length; i++) {
-                        if (!contents[i].continuationItemRenderer) {
-                            result[i] = document.cosmicCat.Utils.Sort.videoData(contents[i].gridVideoRenderer);
+                        if (!contents[i].continuationItemRenderer) { // will be kept for if YT reverts change
+                            result[i] = document.cosmicCat.Utils.Sort.videoData(contents[i].richItemRenderer.content.videoRenderer);
                         }
                     }
                 } catch(err) {
@@ -3183,7 +3184,11 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                     try {
                         contents = contents.shelfRenderer.content.horizontalListRenderer.items;
                     } catch {
-                        contents = contents.gridRenderer.items;
+                        try {
+                            contents = contents.gridRenderer.items;
+                        } catch {
+                            contents = contents.itemSectionRenderer.contents[0].shelfRenderer.content.horizontalListRenderer.items;
+                        }
                     }
 
                     if (!contents) throw Error();
@@ -3204,7 +3209,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
 
                 try {
                     let tab = document.cosmicCat.Utils.browseTabs.find(data, "about");
-                    let contents = document.cosmicCat.Utils.browseTabs.content(tab)[0].channelAboutFullMetadataRenderer;
+                    let contents = document.cosmicCat.Utils.browseTabs.content(tab)[0].itemSectionRenderer.contents[0].channelAboutFullMetadataRenderer;
 
                     if (!contents) throw Error();
 
@@ -4702,7 +4707,7 @@ const localizeString = (varr, DOM) => {
             i18n = i18n.replace(/%r/g, `<span class="dislikes"></span>`);
             break;
         case "playlists.body.primaryPane.items.video.by":
-            i18n = i18n.replace(/%s/g, `${DOM?.owner?.text}`);
+            i18n = i18n.replace(/%s/g, `${DOM?.owner?.name}`);
             break;
         case "search.playlists.by":
             i18n = i18n.replace(/%s/g, `<a href="${DOM?.owner?.url}" class="yt-user-name" dir="ltr">${DOM?.owner?.name}</a>`);
