@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.3
+// @version      0.6.4
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://raw.githubusercontent.com/ciulinuwu/cosmic-cat/main/cosmic-cat.user.js
@@ -4515,7 +4515,7 @@ ${OBJ_FOOTER}
             window.location.href = "https://www.youtube.com/watch?v=" + window.location.pathname.split("/")[2];
         }
         await document.cosmicCat.Utils.waitForElm2().then(async () => {
-            if (!ytInitialData?.header?.c4TabbedHeaderRenderer || window.location.href.match(/cosmic_cat/) || !window.location.href.match(/channel|user|^c{1}$/i) || !document.cosmicCat.Channels.isUsertag()) return;
+            if (!ytInitialData?.header?.c4TabbedHeaderRenderer || window.location.href.match(/cosmic_cat/) || !window.location.href.match(/channel|user|^c{1}$/i) && !document.cosmicCat.Channels.isUsertag()) return;
             (!/^videos|playlists$/g.test(window.location.pathname.split("/").splice(document.cosmicCat.Channels.isUsertag() ? 2 : 3).join("/"))) && window.location.replace(window.location.pathname.split("/").slice(0, document.cosmicCat.Channels.isUsertag() ? 2 : 3).join("/") + "/videos");
             await new Promise((a,b) => setTimeout(a, 1000));
             let revision = document.cosmicCat.Storage.get("channel_mode").value;
