@@ -1,5 +1,5 @@
 # Cosmic Cat UserScript
-[![playground](https://discordapp.com/api/guilds/996349883663523881/widget.png?style=shield)](https://discord.gg/cs6ccRKmjx)
+[![playground](https://discordapp.com/api/guilds/1058727079136464977/widget.png?style=shield)](https://discord.gg/NSUgUJdMQa)
 
 This UserScript aims to recreate the 2012 layout of YouTube completely. Including look and functionality.
 
