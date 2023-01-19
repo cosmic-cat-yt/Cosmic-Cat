@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.2
+// @version      0.6.3
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://raw.githubusercontent.com/ciulinuwu/cosmic-cat/main/cosmic-cat.user.js
@@ -1976,6 +1976,7 @@ text-shadow : none;
         },
         Buttons: {
             Subscribe: (data) => {
+                console.debug(data);
                 const l = {
                     watch: () => {
                         return `<div class="yt-subscription-button-hovercard yt-uix-hovercard" data-card-class="watch-subscription-card">
@@ -2165,7 +2166,7 @@ ${data.primary.title}
 <span class="yt-uix-button-group">
 <button href="${data.secondary.owner.url}/videos?feature=watch" type="button" class="start yt-uix-button yt-uix-button-default" onclick=";window.location.href=this.getAttribute('href');return false;" role="button">
 <span class="yt-uix-button-content">${data.secondary.owner.name}</span>
-</button>${document.cosmicCat.Template.Buttons.Subscribe(data.alternative)}
+</button>${document.cosmicCat.Template.Buttons.Subscribe(data.alternative.owner)}
 </span>
 </div>
 <div id="watch-more-from-user" class="collapsed">
@@ -2554,7 +2555,10 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
         browseTabs: {
             find: (data, param) => {
                 try {
-                    return data.contents.twoColumnBrowseResultsRenderer.tabs.find(b => b.tabRenderer ? b.tabRenderer.endpoint.commandMetadata.webCommandMetadata.url.split("/")[2] === param : {});
+                    return data.contents.twoColumnBrowseResultsRenderer.tabs.find(b =>
+                             b.tabRenderer ?
+                               b.tabRenderer.endpoint.commandMetadata.webCommandMetadata.url.split("/")[2] === param :
+                                 {});
                 } catch {
                     return {error: 404};
                 }
@@ -3064,7 +3068,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
         },
         checkIfSubscribed: () => {
             try {
-                if(window.location.pathname.split("/")[1].match(/channel|user|^c{1}$/i)) {
+                if(document.cosmicCat.Channels.isUsertag() || window.location.pathname.split("/")[1].match(/channel|user|^c{1}$/i)) {
                     return ytInitialData.header.c4TabbedHeaderRenderer.subscribeButton?.subscribeButtonRenderer?.subscribed || false;
                 }
                 if(window.location.pathname.split("/")[1].match(/watch/i)) {
@@ -3077,7 +3081,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
         },
         toggleSubscribe: () => {
             try {
-                if(window.location.pathname.split("/")[1].match(/channel|user|^c{1}$/i)) {
+                if(document.cosmicCat.Channels.isUsertag() || window.location.pathname.split("/")[1].match(/channel|user|^c{1}$/i)) {
                     ytInitialData.header.c4TabbedHeaderRenderer.subscribeButton.subscribeButtonRenderer.subscribed = ytInitialData.header.c4TabbedHeaderRenderer.subscribeButton.subscribeButtonRenderer.subscribed ? false : true;
                 }
                 if(window.location.pathname.split("/")[1].match(/watch/i)) {
@@ -3093,7 +3097,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
         getCurrentChannelTab: () => {
             let mode = document.cosmicCat.Storage.get("channel_mode").value;
             if (mode == "3") {
-                return window.location.pathname.split("/")[document.cosmicCat.Channels.isUsertag ? 2 : 3];
+                return window.location.pathname.split("/")[document.cosmicCat.Channels.isUsertag() ? 2 : 3];
             }
             if (mode == "2") {
                 return window.location.hash.length > 1 && window.location.hash.slice(1).split("/")[1] == "p" ? "playlists" : "videos" || window.location.pathname.split("/")[3];
@@ -3178,13 +3182,19 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                     let tab = document.cosmicCat.Utils.browseTabs.find(data, "playlists");
                     let contents = document.cosmicCat.Utils.browseTabs.content(tab)[0];
 
+                    console.log(contents);
+
                     try {
                         contents = contents.shelfRenderer.content.horizontalListRenderer.items;
                     } catch {
                         try {
                             contents = contents.gridRenderer.items;
                         } catch {
-                            contents = contents.itemSectionRenderer.contents[0].shelfRenderer.content.horizontalListRenderer.items;
+                            try {
+                                contents = contents.itemSectionRenderer.contents[0].shelfRenderer.content.horizontalListRenderer.items;
+                            } catch {
+                                contents = contents.itemSectionRenderer.contents[0].gridRenderer.items;
+                            }
                         }
                     }
 
@@ -3393,7 +3403,11 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                     document.cosmicCat.Ajax.post("/youtubei/v1/like/like", `target:{videoId: "${ytInitialPlayerResponse.videoDetails.videoId}"}`);
                 }
 
-                ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.videoActions.menuRenderer.topLevelButtons[0].toggleButtonRenderer.isToggled = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.videoActions.menuRenderer.topLevelButtons[0].toggleButtonRenderer.isToggled ? false : true;
+                try {
+                    ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.videoActions.menuRenderer.topLevelButtons[0].segmentedLikeDislikeButtonRenderer.likeButton.toggleButtonRenderer.isToggled = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.videoActions.menuRenderer.topLevelButtons[0].segmentedLikeDislikeButtonRenderer.likeButton.toggleButtonRenderer.isToggled ? false : true;
+                } catch(err) {
+                    console.error("[Watch] Failed to un/like video:", err);
+                }
             },
             unlike: (a, b) => {
                 if (!document.cosmicCat.Utils.getCookie("SAPISID")) {
@@ -3411,7 +3425,11 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                     document.cosmicCat.Ajax.post("/youtubei/v1/like/dislike", `target:{videoId: "${ytInitialPlayerResponse.videoDetails.videoId}"}`);
                 }
 
-                ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.videoActions.menuRenderer.topLevelButtons[1].toggleButtonRenderer.isToggled = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.videoActions.menuRenderer.topLevelButtons[1].toggleButtonRenderer.isToggled ? false : true;
+                try {
+                    ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.videoActions.menuRenderer.topLevelButtons[0].segmentedLikeDislikeButtonRenderer.dislikeButton.toggleButtonRenderer.isToggled = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.videoActions.menuRenderer.topLevelButtons[0].segmentedLikeDislikeButtonRenderer.dislikeButton.toggleButtonRenderer.isToggled ? false : true;
+                } catch(err) {
+                    console.error("[Watch] Failed to un/like video:", err);
+                }
             }
         },
         watch5: {
@@ -3425,10 +3443,10 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
             }
         },
         isVideoLiked: () => {
-            return ytInitialData.contents?.twoColumnWatchNextResults?.results?.results?.contents?.[0]?.videoPrimaryInfoRenderer?.videoActions?.menuRenderer?.topLevelButtons?.[0]?.toggleButtonRenderer?.isToggled;
+            return ytInitialData.contents?.twoColumnWatchNextResults?.results?.results?.contents?.[0]?.videoPrimaryInfoRenderer?.videoActions?.menuRenderer?.topLevelButtons?.[0]?.segmentedLikeDislikeButtonRenderer?.likeButton?.toggleButtonRenderer?.isToggled;
         },
         isVideoDisliked: () => {
-            return ytInitialData.contents?.twoColumnWatchNextResults?.results?.results?.contents?.[0]?.videoPrimaryInfoRenderer?.videoActions?.menuRenderer?.topLevelButtons?.[1]?.toggleButtonRenderer?.isToggled;
+            return ytInitialData.contents?.twoColumnWatchNextResults?.results?.results?.contents?.[0]?.videoPrimaryInfoRenderer?.videoActions?.menuRenderer?.topLevelButtons?.[1]?.segmentedLikeDislikeButtonRenderer?.dislikeButton?.toggleButtonRenderer?.isToggled;
         }
     },
     Browse: {
@@ -4249,7 +4267,7 @@ document.cosmicCat.Utils.waitForElm("ytd-app").then(async (e) => {
     document.cosmicCat.Utils.addStyle("//s.ytimg.com/yts/cssbin/www-core-vfleLhVpH.css");
 
     if (window.location.pathname == "/") {document.cosmicCat.Utils.addStyle("//s.ytimg.com/yts/cssbin/www-guide-vfljovH6N.css");}
-    if (window.location.pathname.split("/")[1].match(/channel|user|^c{1}$/i) || document.cosmicCat.Channels.isUsertag) {
+    if (window.location.pathname.split("/")[1].match(/channel|user|^c{1}$/i) || document.cosmicCat.Channels.isUsertag()) {
         let style = {
             3: ["//s.ytimg.com/yts/cssbin/www-channels3-vflIpog6R.css", "//s.ytimg.com/yts/cssbin/www-watch-inlineedit-vflg-l3kd.css"],
             2: ["//s.ytimg.com/yt/cssbin/www-refresh-vflzVUPsm.css", "//s.ytimg.com/yt/cssbin/www-the-rest-vflNb6rAI.css", "//s.ytimg.com/yt/cssbin/www-channel_new-vflrWkVe_.css"]
@@ -4497,7 +4515,7 @@ ${OBJ_FOOTER}
             window.location.href = "https://www.youtube.com/watch?v=" + window.location.pathname.split("/")[2];
         }
         await document.cosmicCat.Utils.waitForElm2().then(async () => {
-            if (!ytInitialData?.header?.c4TabbedHeaderRenderer || window.location.href.match(/cosmic_cat/)) return;
+            if (!ytInitialData?.header?.c4TabbedHeaderRenderer || window.location.href.match(/cosmic_cat/) || !window.location.href.match(/channel|user|^c{1}$/i) || !document.cosmicCat.Channels.isUsertag()) return;
             (!/^videos|playlists$/g.test(window.location.pathname.split("/").splice(document.cosmicCat.Channels.isUsertag() ? 2 : 3).join("/"))) && window.location.replace(window.location.pathname.split("/").slice(0, document.cosmicCat.Channels.isUsertag() ? 2 : 3).join("/") + "/videos");
             await new Promise((a,b) => setTimeout(a, 1000));
             let revision = document.cosmicCat.Storage.get("channel_mode").value;
