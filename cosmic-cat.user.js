@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.4
+// @version      0.6.5
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://raw.githubusercontent.com/ciulinuwu/cosmic-cat/main/cosmic-cat.user.js
@@ -202,7 +202,7 @@ document.cosmicCat = {
         Fetch: async (url, callback) => {
             if (!url) return console.error("[Ajax] Parameters must be supplied!");
             let a = new Promise(async resolve => {
-                await fetch(url).then(a => document.cosmicCat.Utils.convertXHRtoJSON(a.text())).then(res => resolve((callback) ? callback(res) : res))
+                await fetch(url).then(a => document.cosmicCat.Utils.convertXHRtoJSON(a.text())).then(res => resolve((callback) ? callback(res) : res));
             });
             return await a;
         }
@@ -376,7 +376,7 @@ ${document.cosmicCat.Template.Buttons.Subscribe(data.header)}
 <div class="upper-right-section">
 <div class="header-stats">
 <div class="stat-entry">
-<span class="stat-value">${data.info.subs.split(" ")[0]}</span>
+<span class="stat-value">${data?.info?.subs?.split(" ")?.[0]}</span>
 <span class="stat-name">subscribers</span>
 </div>
 <div class="stat-entry">
@@ -561,13 +561,22 @@ ${document.cosmicCat.Template.Channel.Channels3.secondaryPane.createdBySection.M
                         Main: (data) => {
                             return `<div class="section created-by-section">
 <div class="user-profile-item">${localizeString("channels.3.body.secondaryPane.userProfile.createdBy.by", data.header)}</div>
+<ul>
+${document.cosmicCat.Template.Channel.Channels3.secondaryPane.createdBySection.Item(data.info)}
+</ul>
 </div>`;
                         },
                         Item: (data) => {
-                            return `<div class="user-profile-item">
-<h5>Latest Activity</h5>
-<span class="value">Oct 31, 2012</span>
-</div>`;
+                            let fields = "";
+                            for (const info in data.fields) {
+                                if (data.fields[info] && !info.match(/description|views/i)) {
+                                    fields += `<li class="user-profile-item">
+<span class="item-name">${localizeString("channels.2.modules.userProfile.cards." + info)}</span>
+<span class="value">${data.fields[info]}</span>
+</li>`;
+                                }
+                            }
+                            return fields;
                         }
                     }
                 },
@@ -588,7 +597,7 @@ ${document.cosmicCat.Template.Channel.Channels3.secondaryPane.createdBySection.M
 </ul>
 <ul id="watch7-creator-bar-edit-buttons">
 <li class="creator-bar-item">
-<a href="/channel_editor" class="yt-uix-button yt-uix-sessionlink yt-uix-button-dark yt-uix-button-size-default" data-sessionlink="ei=PAqqU5WaN4278AO4hoCACg&amp;feature=mhsn">
+<a href="https://studio.youtube.com/channel/${data.header.id}/editing/details" class="yt-uix-button yt-uix-sessionlink yt-uix-button-dark yt-uix-button-size-default" data-sessionlink="ei=PAqqU5WaN4278AO4hoCACg&amp;feature=mhsn">
 <span class="yt-uix-button-content">${localizeString("channels.3.creatorBar.settings")}</span>
 </a>
 </li>
@@ -1247,6 +1256,57 @@ ${document.cosmicCat.Template.Buttons.Subscribe(data)}
             }
         },
         Search: {
+            Main: (searchpar) => {
+                return `<div id="content">
+<div id="search-header" class="yt-uix-expander yt-uix-expander-collapsed">
+<h2>Search results for <strong class="query"><span class="search-title-lego">${searchpar}</span></strong></h2>
+<div class="filter-top">
+<button type="button" class="filter-button yt-uix-expander-head yt-uix-button yt-uix-button-default" onclick=";return false;" data-button-toggle="true" data-button-menu-id="some-nonexistent-menu" data-button-action="" role="button">
+<span class="yt-uix-button-content">Filters </span>
+<img class="yt-uix-button-arrow" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="">
+</button>
+<ul class="filter-crumb-list"></ul>
+<p class="num-results">About <strong>${ytInitialData.estimatedResults.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</strong> results</p>
+<br class="clear">
+</div>
+<div id="filter-dropdown" class="yt-uix-expander-body"></div>
+<div class="yt-horizontal-rule"><span class="first"></span><span class="second"></span><span class="third"></span></div>
+</div>
+<div id="search-base-div">
+<div id="search-main" class="ytg-4col new-snippets">
+<div id="results-main-content">
+<ol id="search-results" class="result-list context-data-container"></ol>
+</div>
+</div>
+</div>
+<div id="search-footer-box" class="searchFooterBox">
+<div class="yt-uix-pager" role="navigation">
+<a href="/web/20121031234035/http://www.youtube.com/results?page=1" id="next-btn" class="yt-uix-button yt-uix-sessionlink yt-uix-pager-button yt-uix-button-toggled yt-uix-button-default" data-sessionlink="" data-page="1" aria-label="Go to page 1">
+<span class="yt-uix-button-content">1</span>
+</a>
+<a class="yt-uix-button yt-uix-sessionlink yt-uix-pager-button yt-uix-button-default" data-sessionlink="" onclick="document.cosmicCat.Search.next(this.getAttribute('data-token'), this.getAttribute('data-page'))" data-token="" data-page="2">
+<span class="yt-uix-button-content">Next »</span>
+</a>
+</div>
+</div>
+</div>`;
+            },
+            dropdownFilter: {
+                Main: (a, b, temC) => {
+                    return `<div class="filter-col">
+<h4 class="filter-col-title">${a[b].searchFilterGroupRenderer.title.simpleText}</h4>
+<ul>
+${temC}
+</ul>
+</div>
+`;
+                },
+                Con: (data, b, searchpar) => {
+                    return `<li class="filter">
+${data && `<a class="filter-text filter-content" title="Search for last hour" href="https://www.youtube.com/results?search_query=${searchpar}&sp=${data}">${b}</a>` || `<span class="filter-content filter-selected">${b}</span>`}
+</li>`;
+                }
+            },
             videoRender: (videoData) => {
                 let badges = "";
                 for (let i = 0; i < videoData.badges.length; i++) {
@@ -2100,6 +2160,10 @@ ${document.cosmicCat.Template.Watch.Content.mainCon.Main(data)}
 </div>
 </div>`;
                 },
+                tag: (data, i) => {
+                    return `<li><a href="https://www.youtube.com/results?search_query=${data.alternative.tags[i]}&amp;search=tag">${data.alternative.tags[i]}</a></li>
+`;
+                },
                 ownerContainer: (data) => {
                     return `<div id="watch-owner-container">
 <div id="masthead-subnav" class="yt-nav yt-nav-dark">
@@ -2790,7 +2854,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                     text: text,
                     time: data.publishedTimeText.runs[0].text,
                     likes: data.voteCount ? data.voteCount.accessibility ? (data.voteCount.accessibility.accessibilityData ? parseInt(data.voteCount.accessibility.accessibilityData.label.replace(/[^0-9.]/g, '')) : '') : (data.voteCount.accessibility ? parseInt(data.voteCount.accessibility.label.replace(/[^0-9.]/g, '')) : '') : ''
-                }
+                };
             }
         }
     },
@@ -3066,6 +3130,9 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                 document.querySelector("#playnav-play-loading").style.display = "none";
             }
         },
+        isChannelsPage: () => {
+            return (!ytInitialData?.header?.c4TabbedHeaderRenderer || window.location.href.match(/cosmic_cat/) || !window.location.href.match(/channel|user|^c{1}$/i) && !document.cosmicCat.Channels.isUsertag());
+        },
         checkIfSubscribed: () => {
             try {
                 if(document.cosmicCat.Channels.isUsertag() || window.location.pathname.split("/")[1].match(/channel|user|^c{1}$/i)) {
@@ -3103,7 +3170,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                 return window.location.hash.length > 1 && window.location.hash.slice(1).split("/")[1] == "p" ? "playlists" : "videos" || window.location.pathname.split("/")[3];
             }
         },
-        getNaviHash: () => { return (document.cosmicCat.Channels.getCurrentChannelTab() == "playlists" ? "p" : "u")},
+        getNaviHash: () => { return (document.cosmicCat.Channels.getCurrentChannelTab() == "playlists" ? "p" : "u"); },
         isCurrentChannelTab: (params) => {
             return (document.cosmicCat.Channels.getCurrentChannelTab() == params);
         },
@@ -3182,8 +3249,6 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                     let tab = document.cosmicCat.Utils.browseTabs.find(data, "playlists");
                     let contents = document.cosmicCat.Utils.browseTabs.content(tab)[0];
 
-                    console.log(contents);
-
                     try {
                         contents = contents.shelfRenderer.content.horizontalListRenderer.items;
                     } catch {
@@ -3193,7 +3258,11 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                             try {
                                 contents = contents.itemSectionRenderer.contents[0].shelfRenderer.content.horizontalListRenderer.items;
                             } catch {
-                                contents = contents.itemSectionRenderer.contents[0].gridRenderer.items;
+                                try {
+                                    contents = contents.itemSectionRenderer.contents[0].gridRenderer.items;
+                                } catch {
+                                    throw Error("Channel has no playlists, or data is stored in a location thats not programmed into the script.");
+                                }
                             }
                         }
                     }
@@ -3222,7 +3291,11 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
 
                     result = document.cosmicCat.Utils.Sort.channelData(contents);
 
-                    result.subs = data.header.c4TabbedHeaderRenderer.subscriberCountText.simpleText || data.subs.simpleText;
+                    try {
+                        result.subs = data.header.c4TabbedHeaderRenderer.subscriberCountText.simpleText || data.subs.simpleText;
+                    } catch(err) {
+                        console.error("[Channels] Something went wrong with sorting subscriber count:\n", err);
+                    }
                 } catch(err) {
                     console.error("[Channels] Something went wrong with sorting channel info:\n", err);
                 }
@@ -4035,7 +4108,7 @@ margin-left:16px
         handleGuideItem: (a, b) => {
             document.cosmicCat.Home.Feed.load(a.children[0]);
         },
-        handleExpander: () => {document.cosmicCat.toggleElm("#masthead-expanded")}
+        handleExpander: () => {document.cosmicCat.toggleElm("#masthead-expanded"); }
     },
     null: () => null
 };
@@ -4232,7 +4305,7 @@ if ("onbeforescriptexecute" in document) {
     }),
      document.cosmicCat.Utils.waitForElm("script[src*=spf]").then(function (e) {
         e.remove();
-    }))
+    }));
 }
 
 document.cosmicCat.Utils.waitForElm("ytd-app").then(async (e) => {
@@ -4442,8 +4515,7 @@ ${OBJ_FOOTER}
 
                 try {
                     for (let i = 0; i < data.alternative.tags.length; i++) {
-                        document.cosmicCat.pageRenderer.add("#eow-tags",`<li><a href="https://www.youtube.com/results?search_query=${data.alternative.tags[i]}&amp;search=tag">${data.alternative.tags[i]}</a></li>
-`);
+                        document.cosmicCat.pageRenderer.add("#eow-tags", document.cosmicCat.Template.Watch.Content.tag(data, i));
                     }
                 } catch(err) {
                     console.error(err);
@@ -4515,14 +4587,13 @@ ${OBJ_FOOTER}
             window.location.href = "https://www.youtube.com/watch?v=" + window.location.pathname.split("/")[2];
         }
         await document.cosmicCat.Utils.waitForElm2().then(async () => {
-            if (!ytInitialData?.header?.c4TabbedHeaderRenderer || window.location.href.match(/cosmic_cat/) || !window.location.href.match(/channel|user|^c{1}$/i) && !document.cosmicCat.Channels.isUsertag()) return;
+            if (document.cosmicCat.Channels.isChannelsPage()) return;
             (!/^videos|playlists$/g.test(window.location.pathname.split("/").splice(document.cosmicCat.Channels.isUsertag() ? 2 : 3).join("/"))) && window.location.replace(window.location.pathname.split("/").slice(0, document.cosmicCat.Channels.isUsertag() ? 2 : 3).join("/") + "/videos");
             await new Promise((a,b) => setTimeout(a, 1000));
             let revision = document.cosmicCat.Storage.get("channel_mode").value;
             const naviHash = document.cosmicCat.Channels.getNaviHash();
 
             (revision == "2" && /playlists/.test(window.location.pathname.split("/").splice(2).join("/"))) && window.location.replace(window.location.pathname.split("/").slice(0,2).join("/") + "/videos");
-
 
             let data = {
                 info: await document.cosmicCat.Ajax.Fetch(`https://www.youtube.com${window.location.pathname.split("/").slice(0, -1).join("/")}/about`, document.cosmicCat.Channels._Data.Info),
@@ -4589,39 +4660,7 @@ ${OBJ_FOOTER}
                 document.querySelector("#page").classList.add("search-base");
                 var results = ytInitialData?.contents?.twoColumnSearchResultsRenderer?.primaryContents?.sectionListRenderer?.contents[0]?.itemSectionRenderer?.contents || [];
 
-                document.cosmicCat.pageRenderer.set("#content-container", `<div id="content">
-<div id="search-header" class="yt-uix-expander yt-uix-expander-collapsed">
-<h2>Search results for <strong class="query"><span class="search-title-lego">${searchpar}</span></strong></h2>
-<div class="filter-top">
-<button type="button" class="filter-button yt-uix-expander-head yt-uix-button yt-uix-button-default" onclick=";return false;" data-button-toggle="true" data-button-menu-id="some-nonexistent-menu" data-button-action="" role="button">
-<span class="yt-uix-button-content">Filters </span>
-<img class="yt-uix-button-arrow" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="">
-</button>
-<ul class="filter-crumb-list"></ul>
-<p class="num-results">About <strong>${ytInitialData.estimatedResults.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</strong> results</p>
-<br class="clear">
-</div>
-<div id="filter-dropdown" class="yt-uix-expander-body"></div>
-<div class="yt-horizontal-rule"><span class="first"></span><span class="second"></span><span class="third"></span></div>
-</div>
-<div id="search-base-div">
-<div id="search-main" class="ytg-4col new-snippets">
-<div id="results-main-content">
-<ol id="search-results" class="result-list context-data-container"></ol>
-</div>
-</div>
-</div>
-<div id="search-footer-box" class="searchFooterBox">
-<div class="yt-uix-pager" role="navigation">
-<a href="/web/20121031234035/http://www.youtube.com/results?page=1" id="next-btn" class="yt-uix-button yt-uix-sessionlink yt-uix-pager-button yt-uix-button-toggled yt-uix-button-default" data-sessionlink="" data-page="1" aria-label="Go to page 1">
-<span class="yt-uix-button-content">1</span>
-</a>
-<a class="yt-uix-button yt-uix-sessionlink yt-uix-pager-button yt-uix-button-default" data-sessionlink="" onclick="document.cosmicCat.Search.next(this.getAttribute('data-token'), this.getAttribute('data-page'))" data-token="" data-page="2">
-<span class="yt-uix-button-content">Next »</span>
-</a>
-</div>
-</div>
-</div>`);
+                document.cosmicCat.pageRenderer.set("#content-container", document.cosmicCat.Template.Search.Main(searchpar));
 
                 for(let i = 0; i < results.length; i++) {
                     if(results[i].videoRenderer) {
@@ -4640,10 +4679,7 @@ ${OBJ_FOOTER}
 
                 var a = ytInitialData.contents.twoColumnSearchResultsRenderer.primaryContents.sectionListRenderer.subMenu.searchSubMenuRenderer.groups;
 
-                var temF = (data, b) => {
-                    return `<li class="filter">
-${data && `<a class="filter-text filter-content" title="Search for last hour" href="https://www.youtube.com/results?search_query=${searchpar}&sp=${data}">${b}</a>` || `<span class="filter-content filter-selected">${b}</span>`}
-</li>`;}
+                var temF = (data, b) => document.cosmicCat.Template.Search.dropdownFilter.Con(data, b);
 
                 for (const b in a) {
                     var temC = ``;
@@ -4651,15 +4687,10 @@ ${data && `<a class="filter-text filter-content" title="Search for last hour" hr
                         temC += temF(a[b]?.searchFilterGroupRenderer?.filters[c]?.searchFilterRenderer?.navigationEndpoint?.searchEndpoint?.params, a[b].searchFilterGroupRenderer.filters[c].searchFilterRenderer.label.simpleText);
                     }
 
-                    document.cosmicCat.pageRenderer.add("#filter-dropdown", `<div class="filter-col">
-<h4 class="filter-col-title">${a[b].searchFilterGroupRenderer.title.simpleText}</h4>
-<ul>
-${temC}
-</ul>
-</div>
-`);
+                    document.cosmicCat.pageRenderer.add("#filter-dropdown", document.cosmicCat.Template.Search.dropdownFilter.Main(a, b, temC));
                 }
-            })}
+            });
+        }
         if(window.location.pathname.split("/")[1].match(/playlist/i)) {
             await document.cosmicCat.Utils.waitForElm("[rel=\"alternate\"").then(async () => {
                 let data = {
