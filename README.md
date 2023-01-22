@@ -1,8 +1,9 @@
 # Cosmic Cat UserScript
 [![playground](https://discordapp.com/api/guilds/1058727079136464977/widget.png?style=shield)](https://discord.gg/NSUgUJdMQa)
 
-The UserScript that aims to restore YouTube's 2012 layout!</br></br>
-![0](https://ciulinuwu.github.io/@PromotionalImages/cosmic-cat/0.jpg?a)
+The UserScript that aims to restore YouTube's 2012 layout!
+## Screenshots
+![0](https://ciulinuwu.github.io/@PromotionalImages/cosmic-cat/0.jpg)
 
 ## Contributing
 If something doesn't work as intended, please fill a report through the [**Issues**](https://github.com/ciulinuwu/cosmic-cat/issues/new/choose) tab.</br></br>
