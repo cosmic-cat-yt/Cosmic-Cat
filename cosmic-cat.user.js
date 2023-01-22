@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.5
+// @version      0.6.6
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://raw.githubusercontent.com/ciulinuwu/cosmic-cat/main/cosmic-cat.user.js
@@ -327,7 +327,7 @@ ${document.cosmicCat.Template.Buttons.addTo(data)}
 <div class="metadata-line">
 <span class="viewcount">${data.views}</span>
 <span class="metadata-separator">|</span>
-<span class="video-date-added">${data.uploaded}</span>
+<span class="video-date-added">${data.upload}</span>
 </div>
 <a href="${data.owner?.url}" class="yt-uix-sessionlink yt-user-name" data-sessionlink="" dir="ltr">${data.owner?.name}</a>
 </div>
@@ -371,7 +371,7 @@ ${document.cosmicCat.Template.Channel.Channels3.Content(data)}
 </h1>
 </div>
 <div class="upper-left-section">
-${document.cosmicCat.Template.Buttons.Subscribe(data.header)}
+${document.cosmicCat.Template.Buttons.Subscribe(data.header.id)}
 </div>
 <div class="upper-right-section">
 <div class="header-stats">
@@ -646,7 +646,7 @@ ${document.cosmicCat.Template.Channel.Channels2.playlistNavigator.Content.Main(d
 <div class="channel-title outer-box-color" style="font-size:11px" id="channel_base_title">${data.name}'s Channel</div>
 </div>
 <div id="subscribe-buttons">
-${document.cosmicCat.Template.Buttons.Subscribe(data)}
+${document.cosmicCat.Template.Buttons.Subscribe(data.id)}
 </div>
 </div>
 <div id="playnav-chevron">&nbsp;</div>
@@ -1015,7 +1015,7 @@ ${data.updated}<br>
 </div>
 <div style="whitespace:no-wrap;position:relative;width:170px;">
 <div>
-${document.cosmicCat.Template.Buttons.Subscribe(data)}
+${document.cosmicCat.Template.Buttons.Subscribe(data.id)}
 <div class="cb"></div>
 </div>
 <div style="padding:4px">
@@ -1168,7 +1168,7 @@ ${document.cosmicCat.Template.Buttons.LikeDis(data)}
 <span class="yt-alert-vertical-trick"></span>
 <div class="yt-alert-message">
 <strong>
-<a href="${document.cosmicCat.data.loginUrl}">Sign in</a> or <a href="/web/20121018081830/https://www.youtube.com/signup">sign up</a> now!
+<a href="${document.cosmicCat.data.loginUrl}">Sign in</a> or <a href="https://www.youtube.com/signup">sign up</a> now!
 </strong>
 </div>
 </div>
@@ -1244,10 +1244,10 @@ ${document.cosmicCat.Template.Playlist.secondaryPane.aboutSection(data)}
 </div>
 <div class="creator-stats">
 <p>${data.creatorInfo.fields.views} views</p>
-<p>${data.creatorInfo.fields.subs}</p>
+<p>${data.creatorInfo.subs}</p>
 </div>
 <div class="enable-fancy-subscribe-button">
-${document.cosmicCat.Template.Buttons.Subscribe(data)}
+${document.cosmicCat.Template.Buttons.Subscribe(data.creatorInfo.id)}
 </span>
 </div>
 <div class="yt-horizontal-rule"><span class="first"></span><span class="second"></span><span class="third"></span></div>
@@ -2041,7 +2041,7 @@ text-shadow : none;
                     watch: () => {
                         return `<div class="yt-subscription-button-hovercard yt-uix-hovercard" data-card-class="watch-subscription-card">
 <span class="yt-uix-button-context-light yt-uix-button-subscription-container">
-<button onclick=";return false;" type="button" class="yt-subscription-button yt-uix-button yt-uix-button-subscription yt-uix-tooltip yt-subscription-button-js-default end ${document.cosmicCat.Channels.checkIfSubscribed() ? "subscribed hover-enabled" : ""}" data-enable-hovercard="true" data-subscription-value="${data.id}" data-subscription-feature="${document.cosmicCat.Utils.whatPage()}" data-subscription-type="" data-sessionlink="" data-subscription-initialized="true" role="button">
+<button onclick=";return false;" type="button" class="yt-subscription-button yt-uix-button yt-uix-button-subscription yt-uix-tooltip yt-subscription-button-js-default end ${document.cosmicCat.Channels.checkIfSubscribed() ? "subscribed hover-enabled" : ""}" data-enable-hovercard="true" data-subscription-value="${data}" data-subscription-feature="${document.cosmicCat.Utils.whatPage()}" data-subscription-type="" data-sessionlink="" data-subscription-initialized="true" role="button">
 <span class="yt-uix-button-icon-wrapper">
 <img class="yt-uix-button-icon yt-uix-button-icon-subscribe" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt=""><span class="yt-valign-trick"></span>
 </span><span class="yt-uix-button-content">
@@ -2057,7 +2057,7 @@ text-shadow : none;
                     channels3: () => {
                         return `<div class="yt-subscription-button-hovercard yt-uix-hovercard">
 <span class="yt-uix-button-context-light yt-uix-button-subscription-container">
-<button onclick=";return false;" title="" type="button" class="yt-subscription-button subscription-button-with-recommended-channels yt-uix-button yt-uix-button-subscription yt-uix-tooltip ${document.cosmicCat.Channels.checkIfSubscribed() ? "subscribed hover-enabled" : ""}" data-enable-hovercard="true" data-subscription-value="${data.id}" data-force-position="" data-position="" data-subscription-feature="${document.cosmicCat.Utils.whatPage()}" data-subscription-type="" role="button">
+<button onclick=";return false;" title="" type="button" class="yt-subscription-button subscription-button-with-recommended-channels yt-uix-button yt-uix-button-subscription yt-uix-tooltip ${document.cosmicCat.Channels.checkIfSubscribed() ? "subscribed hover-enabled" : ""}" data-enable-hovercard="true" data-subscription-value="${data}" data-force-position="" data-position="" data-subscription-feature="${document.cosmicCat.Utils.whatPage()}" data-subscription-type="" role="button">
 <span class="yt-uix-button-icon-wrapper">
 <img class="yt-uix-button-icon yt-uix-button-icon-subscribe" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt=""><span class="yt-valign-trick"></span>
 </span><span class="yt-uix-button-content">
@@ -2071,7 +2071,7 @@ text-shadow : none;
 </div>`;
                     },
                     channels2: () => {
-                        return `<span class="subscription-container" data-subscription-expandable-id="subscription-button-module-menu" data-subscription-channels-container="subscription-recommended-channels" data-subscription-value="${data.id}" data-subscription-menu-type="expander" data-subscription-xsrf="" data-subscription-feature="channel" data-subscription-type="user">
+                        return `<span class="subscription-container" data-subscription-expandable-id="subscription-button-module-menu" data-subscription-channels-container="subscription-recommended-channels" data-subscription-value="${data}" data-subscription-menu-type="expander" data-subscription-xsrf="" data-subscription-feature="channel" data-subscription-type="user">
 <button type="button" class="subscribe-button yt-uix-button yt-uix-tooltip ${document.cosmicCat.Channels.checkIfSubscribed() ? "yt-subscription-button-green" : "yt-uix-button-urgent"}" onclick=";return false;" title="${document.cosmicCat.Channels.checkIfSubscribed() ? localizeString("tooltip.channels2.subscribe.subscribed") : localizeString("tooltip.channels2.subscribe.subscribe")}" data-loaded="true" data-button-action="yt.www.subscriptions.button.toggleMenu" role="button" data-tooltip-text="${document.cosmicCat.Channels.checkIfSubscribed() ? localizeString("tooltip.channels2.subscribe.subscribed") : localizeString("tooltip.channels2.subscribe.subscribe")}">
 <span class="yt-uix-button-content">${document.cosmicCat.Channels.checkIfSubscribed() ? localizeString("buttons.subscribe.subscribed") : localizeString("buttons.subscribe.subscribe")}</span>
 </button>
@@ -2088,7 +2088,7 @@ text-shadow : none;
 </span>`;
                     },
                     playlist: () => {
-                        return `<button onclick=";return false;" title="" type="button" class="yt-subscription-button yt-subscription-button-js-default yt-uix-button yt-uix-button-subscription yt-uix-tooltip ${document.cosmicCat.Channels.checkIfSubscribed() ? "subscribed hover-enabled" : ""}" data-subscription-feature="${document.cosmicCat.Utils.whatPage()}" data-sessionlink="" data-subscription-value="${data.id}" data-subscription-type="" role="button" data-subscription-initialized="true">
+                        return `<button onclick=";return false;" title="" type="button" class="yt-subscription-button yt-subscription-button-js-default yt-uix-button yt-uix-button-subscription yt-uix-tooltip ${document.cosmicCat.Channels.checkIfSubscribed() ? "subscribed hover-enabled" : ""}" data-subscription-feature="${document.cosmicCat.Utils.whatPage()}" data-sessionlink="" data-subscription-value="${data}" data-subscription-type="" role="button" data-subscription-initialized="true">
 <span class="yt-uix-button-icon-wrapper">
 <img class="yt-uix-button-icon yt-uix-button-icon-subscribe" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt=""><span class="yt-valign-trick"></span>
 </span><span class="yt-uix-button-content">
@@ -2103,7 +2103,7 @@ text-shadow : none;
 <span class="yt-uix-button-content">${localizeString("buttons.subscribe.subscribe")}</span>
 </button>`;
 
-                return `${((document.cosmicCat.Channels.isOwner(data.id)) || document.cosmicCat.watch.isOwner()) ? l_signedout : undefined || l[document.cosmicCat.Utils.whatPage()]()}`;
+                return `${((document.cosmicCat.Channels.isOwner(data)) || document.cosmicCat.watch.isOwner()) ? l_signedout : undefined || l[document.cosmicCat.Utils.whatPage()]()}`;
             },
             LikeDis: (data) => {
                 return `<span id="watch-like-unlike" class="yt-uix-button-group">
@@ -2230,7 +2230,7 @@ ${data.primary.title}
 <span class="yt-uix-button-group">
 <button href="${data.secondary.owner.url}/videos?feature=watch" type="button" class="start yt-uix-button yt-uix-button-default" onclick=";window.location.href=this.getAttribute('href');return false;" role="button">
 <span class="yt-uix-button-content">${data.secondary.owner.name}</span>
-</button>${document.cosmicCat.Template.Buttons.Subscribe(data.alternative.owner)}
+</button>${document.cosmicCat.Template.Buttons.Subscribe(data.alternative.owner.id)}
 </span>
 </div>
 <div id="watch-more-from-user" class="collapsed">
@@ -4087,14 +4087,26 @@ margin-left:16px
             return (b.dataset.buttonAction?.slice(7)?.split('.')?.reduce((o,i)=> o[i]||"", document.cosmicCat) || document.cosmicCat.null)(b, b.dataset);
         },
         handleSubscribeButton: async (a, b) => {
-            let classn = a.classList.contains("yt-subscription-button");
+            let classn = "";
             let d = classn ? a.dataset.subscriptionValue : a.parentElement.dataset.subscriptionValue;
             let c = (a.classList.contains("subscribed") || a.classList.contains("yt-subscription-button-green")) ? "unsubscribe" : "subscribe";
+
+            switch(document.cosmicCat.Utils.whatPage()) {
+                case "channels2":
+                    classn = ".subscription-container";
+                    break;
+                case "watch":
+                case "channels3":
+                    classn = ".yt-subscription-button-hovercard";
+                    break;
+                case "playlist":
+                    classn = ".enable-fancy-subscribe-button";
+            }
 
             try {
                 await document.cosmicCat.Ajax.post(`/youtubei/v1/subscription/${c}`, `channelIds: ["${d}"]`);
                 document.cosmicCat.Channels.toggleSubscribe();
-                document.cosmicCat.pageRenderer.replace((classn ? ".yt-subscription-button-hovercard" : ".subscription-container"), document.cosmicCat.Template.Buttons.Subscribe({id: d}));
+                document.cosmicCat.pageRenderer.replace(classn, document.cosmicCat.Template.Buttons.Subscribe(d));
             } catch(err) {
                 console.error(`[Subscribe] Something went wrong with subscribing to ${d}:\n`, err);
             }
@@ -4679,7 +4691,7 @@ ${OBJ_FOOTER}
 
                 var a = ytInitialData.contents.twoColumnSearchResultsRenderer.primaryContents.sectionListRenderer.subMenu.searchSubMenuRenderer.groups;
 
-                var temF = (data, b) => document.cosmicCat.Template.Search.dropdownFilter.Con(data, b);
+                var temF = (data, b) => document.cosmicCat.Template.Search.dropdownFilter.Con(data, b, searchpar);
 
                 for (const b in a) {
                     var temC = ``;
