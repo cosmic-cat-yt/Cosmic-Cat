@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.6
+// @version      0.6.7
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://raw.githubusercontent.com/ciulinuwu/cosmic-cat/main/cosmic-cat.user.js
@@ -47,7 +47,7 @@ var startTime = new Date().getTime();
 var commCount = 1;
 document.cosmicCat = {
     data: {
-        version: 20221129,
+        version: 20230122,
         loggedin: false,
         homeCategories: ["technoblade", "trending", "popular", "music", "live", "gadgets", "news", "sports", "education", "howto"],
         darkyoutubelogo: "data:image/png;base64,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",
@@ -317,7 +317,7 @@ ${localizeString("global.loading.main")}
 </span>
 </span>
 <span class="video-time">${data.time}</span>
-${document.cosmicCat.Template.Buttons.addTo(data)}
+${document.cosmicCat.Template.Buttons.addTo(data.id)}
 </a>
 <div class="browse-item-content">
 <h3 dir="ltr">
@@ -396,12 +396,12 @@ ${document.cosmicCat.Template.Buttons.Subscribe(data.header.id)}
 <a href="./videos" class="gh-tab-101" role="tab" aria-selected="false">${localizeString("channels.3.header.tabs.videos")}</a>
 </li>
 </ul>
-<form id="channel-search" class="" action="${window.location.pathname}/videos">
+<form id="channel-search" class="" action="${window.location.pathname}">
 <input name="query" type="text" autocomplete="off" class="search-field label-input-label" maxlength="100" placeholder="${localizeString("channels.3.header.tabs.search")}" value="">
 <button class="search-btn" type="submit">
 <span class="search-btn-content">Search</span>
 </button>
-<a class="search-dismiss-btn" href="${window.location.pathname}/videos?view=0">
+<a class="search-dismiss-btn" href="${window.location.pathname}?view=0">
 <span class="search-btn-content">Clear</span>
 </a>
 </form>
@@ -462,7 +462,7 @@ ${document.cosmicCat.Template.Buttons.Subscribe(data.header.id)}
 </span>
 </span>
 <span class="video-time">${data.time}</span>
-${document.cosmicCat.Template.Buttons.addTo(data)}
+${document.cosmicCat.Template.Buttons.addTo(data.id)}
 </a>
 <a href="https://www.youtube.com/watch?v=${data.id}" title="${data.title}" class="content-item-title spf-link yt-uix-sessionlink yt-uix-contextlink" dir="ltr" data-sessionlink="ei">${data.title}</a>
 <span class="content-item-detail">
@@ -623,7 +623,7 @@ ${document.cosmicCat.Template.Channel.Channels2.playlistNavigator.Header(data.he
 <div id="subscription-button-module-menu" class="hid subscription-menu-expandable subscription-menu">
 <div class="subscription-menu-not-logged-in">
 <strong>
-<a href="">Sign in</a> or <a href="https://www.youtube.com/signup?next=%2Fuser%2Fssswarriorcats">sign up</a> now!
+<a href="${document.cosmicCat.data.loginUrl}">Sign in</a> or <a href="https://www.youtube.com/signup">sign up</a> now!
 </strong>
 </div>
 </div>
@@ -831,17 +831,17 @@ ${document.cosmicCat.Template.Channel.Channels2.playlistNavigator.Content.LeftPa
 <button class=" yt-uix-button yt-uix-tooltip yt-uix-button-empty" type="button" id="watch-unlike" onclick=";return false;" title="I dislike this" data-button-action="playnav.unlike" role="button">
 <img class="yt-uix-button-icon yt-uix-button-icon-watch-unlike" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="I dislike this"></button>
 </div>
-<form method="post" action="/web/20120125165454mp_/http://www.youtube.com/watch_actions_Ajax" name="likeForm" class="hid">
+<form method="post" action="//www.youtube.com/watch_actions_Ajax" name="likeForm" class="hid">
 <input type="hidden" name="action_like_video" value="1">
-<input type="hidden" name="video_id" value="2mMWz9evo-s">
+<input type="hidden" name="video_id" value="${data.id}">
 <input name="session_token" type="hidden" value="jk7H8NNcOfnfqH-6En0oRy0yffx8MTMyNzU5Njg5NEAxMzI3NTEwNDk0"></form>
-<form method="post" action="/web/20120125165454mp_/http://www.youtube.com/watch_actions_Ajax" name="unlikeForm" class="hid">
+<form method="post" action="//www.youtube.com/watch_actions_Ajax" name="unlikeForm" class="hid">
 <input type="hidden" name="action_dislike_video" value="1">
-<input type="hidden" name="video_id" value="2mMWz9evo-s">
+<input type="hidden" name="video_id" value="${data.id}">
 <input name="session_token" type="hidden" value="jk7H8NNcOfnfqH-6En0oRy0yffx8MTMyNzU5Njg5NEAxMzI3NTEwNDk0"></form>
 <div id="channel-like-logged-out" class="hid">
 <strong>
-<a href="https://accounts.google.com/ServiceLogin?service=youtube&amp;uilel=3&amp;passive=true&amp;continue=https%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26app%3Ddesktop%26hl%3Den%26next%3Dhttps%253A%252F%252Fwww.youtube.com%252F&amp;hl=en&amp;ec=65620">Sign in</a> or <a href="https://www.youtube.com/signup?next=/channel/UCuIyhmJyKRsc5p0g56NDzvQ/videos">sign up</a> now!
+<a href="${document.cosmicCat.data.loginUrl}">Sign in</a> or <a href="https://www.youtube.com/signup">sign up</a> now!
 </strong>
 </div>
 <div id="channel-like-close" class="hid">
@@ -905,8 +905,6 @@ ${document.cosmicCat.Template.Channel.Channels2.playlistNavigator.Content.PlayPa
 <div class="outer-scrollbox">
 <div id="playnav-play-${chk}-items" class="inner-scrollbox">
 <div id="playnav-play-${chk}-page-0" class="scrollbox-page loaded ${chk}-rows-50">
-
-<div class="cb"></div>
 </div>
 </div>
 </div>
@@ -928,7 +926,7 @@ ${document.cosmicCat.Template.Channel.Channels2.playlistNavigator.Content.PlayPa
 </span>
 </span>
 <span class="video-time">${data.time}</span>
-${document.cosmicCat.Template.Buttons.addTo(data)}
+${document.cosmicCat.Template.Buttons.addTo(data.id)}
 </a>
 </div>
 <div class="playnav-video-info">
@@ -944,8 +942,7 @@ ${document.cosmicCat.Template.Buttons.addTo(data)}
 </div>`;
                                 },
                                 playlists: (data) => {
-                                    return `<div id="playnav-play-playlists-page-0" class="scrollbox-page loaded playlists-rows-50">
-<div class="playnav-item playnav-playlist">
+                                    return `<div class="playnav-item playnav-playlist">
 <div style="display:none" class="encryptedPlaylistId">${data.id}</div>
 <div class="selector"></div>
 <div class="content">
@@ -953,9 +950,9 @@ ${document.cosmicCat.Template.Buttons.addTo(data)}
 <div class="vCluster120WideEntry">
 <div class="vCluster120WrapperOuter">
 <div class="vCluster120WrapperInner">
-<a id="video-url-bu_8gUnhhRQ" href="javascript:;" rel="nofollow" onclick="playnav.selectPlaylist('user', '${data.id}')">
+<a id="video-url-${data.id}" href="javascript:;" rel="nofollow" onclick="playnav.selectPlaylist('user', '${data.id}')">
 <img title="" src="${data.thumbnail}" class="vimgCluster120" alt="">
-<span class="video-corner-text" id="video-corner-text-bu_8gUnhhRQ">${data.videos.text}</span>
+<span class="video-corner-text" id="video-corner-text-${data.id}">${data.videos.text}</span>
 </a>
 </div>
 </div>
@@ -970,8 +967,6 @@ ${data.updated}<br>
 </div>
 <div class="cb"></div>
 </div>
-</div>
-<div class="cb"></div>
 </div>`;
                                 }
                             }
@@ -1196,7 +1191,7 @@ ${document.cosmicCat.Template.Buttons.LikeDis(data)}
 </span>
 </span>
 <span class="video-time">${data.time}</span>
-${document.cosmicCat.Template.Buttons.addTo(data)}
+${document.cosmicCat.Template.Buttons.addTo(data.id)}
 </div>
 </div>
 <div class="video-info">
@@ -1325,7 +1320,7 @@ ${data && `<a class="filter-text filter-content" title="Search for last hour" hr
 </span>
 </span>
 <span class="video-time">${videoData.time}</span>
-${document.cosmicCat.Template.Buttons.addTo(videoData)}
+${document.cosmicCat.Template.Buttons.addTo(videoData.id)}
 </a>
 </div>
 <div class="yt-lockup-content">
@@ -1412,6 +1407,7 @@ ${sideThumbs}
 </li>`;
             },
             channelRender: (data) => {
+                console.debug(data);
                 return `<li class="yt-grid-box result-item-channel *sr">
 <div id="" class="yt-uix-tile yt-lockup-list yt-tile-default yt-grid-box">
 <div class="yt-lockup-thumbnail">
@@ -1441,7 +1437,7 @@ ${sideThumbs}
 <span class="subscriber-count">${data.subscriberCount}</span>
 </p>
 <p>
-${localizeString("watch.by", data)}
+${localizeString("search.channels.by", data)}
 </p>
 </div>
 </div>
@@ -1813,7 +1809,7 @@ ${localizeString("home.feed.uploadedavideo", data)} <span class="feed-item-time"
 </span>
 </span>
 <span class="video-time">${data.time}</span>
-${document.cosmicCat.Template.Buttons.addTo(data)}
+${document.cosmicCat.Template.Buttons.addTo(data.id)}
 </a>
 </div>
 <div class="feed-item-content">
@@ -2119,7 +2115,7 @@ text-shadow : none;
 </span>`;
             },
             addTo: (data) => {
-                return `<button onclick=";return false;" title="Watch Later" type="button" class="addto-button video-actions addto-watch-later-button-sign-in yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" data-button-menu-id="shared-addto-watch-later-login" data-video-ids="${data.id}" role="button" data-tooltip-text="Watch Later">
+                return `<button onclick=";return false;" title="Watch Later" type="button" class="addto-button video-actions addto-watch-later-button-sign-in yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip" data-button-menu-id="shared-addto-watch-later-login" data-video-ids="${data}" role="button" data-tooltip-text="Watch Later">
 <span class="yt-uix-button-content">
 <img src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="Watch Later">
 </span><img class="yt-uix-button-arrow" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="">
@@ -2416,7 +2412,7 @@ ${document.cosmicCat.Template.Comments.Main(data)}
 </span>
 </span>
 <span class="video-time">${videoData.time}</span>
-${document.cosmicCat.Template.Buttons.addTo(videoData)}
+${document.cosmicCat.Template.Buttons.addTo(videoData.id)}
 </span>
 <span dir="ltr" class="title" title="${videoData.title}">${videoData.title}</span>
 <span class="stat attribution">${localizeString("watch.by", videoData)}</span>
@@ -2740,6 +2736,8 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                 for (const snippet in _description) {
                     description += _description[snippet].text;
                 }
+
+                console.debug(data);
 
                 return {
                     id: data.channelId,
@@ -4237,7 +4235,10 @@ const localizeString = (varr, DOM) => {
             i18n = i18n.replace(/%s/g, `<span class="feed-item-owner"><a href="${DOM?.owner?.url}" class="yt-uix-sessionlink yt-user-name" dir="ltr">${DOM?.owner?.name}</a></span>`);
             break;
         case "watch.by":
-            i18n = (window.location.pathname.split("/")[1] == "results") ? i18n.replace(/%s/g, `<a href="https://www.youtube.com${DOM?.owner?.url}" class="yt-uix-sessionlink yt-user-name" dir="ltr">${DOM?.owner?.name}</a>`) : i18n.replace(/%s/g, `<span class="yt-user-name" dir="ltr">${DOM?.owner?.name}</span>`);
+            i18n = i18n.replace(/%s/g, `<span class="yt-user-name" dir="ltr">${DOM?.owner?.name}</span>`);
+            break;
+        case "search.channels.by":
+            i18n = i18n.replace(/%s/g, `<a href="https://www.youtube.com${DOM?.url}" class="yt-uix-sessionlink yt-user-name" dir="ltr">${DOM?.name}</a>`);
             break;
         case "stats.likesdislikes":
             i18n = i18n.replace(/%s/g, `<span class="likes"></span>`);
