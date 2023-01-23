@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.7
+// @version      0.6.8
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://raw.githubusercontent.com/ciulinuwu/cosmic-cat/main/cosmic-cat.user.js
@@ -3129,7 +3129,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
             }
         },
         isChannelsPage: () => {
-            return (!ytInitialData?.header?.c4TabbedHeaderRenderer || window.location.href.match(/cosmic_cat/) || !window.location.href.match(/channel|user|^c{1}$/i) && !document.cosmicCat.Channels.isUsertag());
+            return (window.location.href.match(/cosmic_cat/) || !window.location.href.match(/channel|user|^c{1}$/i) && !document.cosmicCat.Channels.isUsertag());
         },
         checkIfSubscribed: () => {
             try {
@@ -4603,6 +4603,7 @@ ${OBJ_FOOTER}
             if (document.cosmicCat.Channels.isChannelsPage()) return;
             (!/^videos|playlists$/g.test(window.location.pathname.split("/").splice(document.cosmicCat.Channels.isUsertag() ? 2 : 3).join("/"))) && window.location.replace(window.location.pathname.split("/").slice(0, document.cosmicCat.Channels.isUsertag() ? 2 : 3).join("/") + "/videos");
             await new Promise((a,b) => setTimeout(a, 1000));
+            if (!ytInitialData?.header?.c4TabbedHeaderRenderer) return;
             let revision = document.cosmicCat.Storage.get("channel_mode").value;
             const naviHash = document.cosmicCat.Channels.getNaviHash();
 
