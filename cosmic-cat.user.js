@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.8
+// @version      0.6.9
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://raw.githubusercontent.com/ciulinuwu/cosmic-cat/main/cosmic-cat.user.js
@@ -1066,6 +1066,335 @@ ${fields}
 .outer-box-bg-color, .inner-box-colors, .inner-box, .inner-box-bg-color {background-color: rgb(238, 238, 255)}
 #playnav-chevron {border-left-color: rgb(153, 153, 153);}
 .panel-tab-selected .panel-tab-indicator-arrow {border-bottom-color: rgb(238, 238, 255) !important}</style>`;
+                }
+            },
+            Channels1: {
+                Main: (data) => {
+                    return `<div id="baseDiv">
+<div class="profileTitleLinks">
+<div id="profileSubNav">
+<a href="${data.header.url}/videos">Videos</a>
+<span class="delimiter">|</span>
+<a href="${data.header.url}/playlists">Playlists</a>
+</div>
+</div>
+<div id="profile-side-content">
+${document.cosmicCat.Template.Channel.Channels1.sideCon.userPro(data)}
+${document.cosmicCat.Template.Channel.Channels1.sideCon.userConn(data)}
+</div>
+</div>
+<div id="profile-main-content">
+${document.cosmicCat.Template.Channel.Channels1.mainCon.userVideos.Main(data)}
+</div>
+<div style="clear:both"></div>
+</div>`;
+                },
+                sideCon: {
+                    userPro: (data) => {
+                        return `<div class="profile-box profile-highlightbox" id="user_profile">
+<div class="box-head">
+<div class="box-fg">
+<div class="headerTitleEdit">
+<div class="headerTitleRight">
+<div id="subscribeDiv">
+<a class="yt-button yt-button-urgent" id="user-profile-subscribe-button" style="" href="#" onclick="subscribe(watchUsername, 'username', subscribeaxc, true, true); return false;">
+<span>Subscribe</span>
+</a>
+</div>
+<div id="unsubscribeDiv" class="hid">
+<a class="yt-button" id="user-profile-unsubscribe-button" style="" href="#" onclick="unsubscribe(watchUsername, 'username', subscribeaxc); return false;">
+<span>Unsubscribe</span>
+</a>
+</div>
+</div>
+<div class="headerTitleLeft">
+<span id="user-profile-title">${data.header.name}'s YouTube Channel</span>
+</div>
+</div>
+</div>
+<div class="box-bg"></div>
+</div>
+<div class="box-body">
+<div class="box-fg">
+<div id="subscribeLoginInvite" style="border: 1px solid rgb(153, 153, 153); padding: 5px; margin-bottom: 5px; background-color: #fff; display: none;">
+<div style="border: 1px solid rgb(204, 204, 204); padding: 4px; background: #eee; text-align: center;">
+<strong>Want to Subscribe?</strong><br>
+<a href="/web/20090609053526/http://www.youtube.com/login?next=/user/YouTube">Sign In</a> or <a href="/web/20090609053526/http://www.youtube.com/signup?next=/user/YouTube">Sign Up</a> now!
+</div>
+</div>
+<div id="subscribeMessage" style="margin-bottom: 5px; display: none;"></div>
+<div id="user-profile-image" class="floatL">
+<div class="user-thumb-xlarge">
+<div>
+<img id="" src="${data.header.avatar}" alt="">
+</div>
+</div>
+</div>
+<div style="float:left;margin-left:5px;width:180px;">
+<div class="largeTitles">
+<strong id="user-profile-username">${data.header.name}</strong>
+</div>
+<div style="padding-top: 3px;">
+<div class="smallText">Joined: <strong id="user-profile-member-since">${data.info.fields.joined}</strong></div>
+<div class="smallText">Subscribers: <strong id="user-profile-subscriber-count">${data.header.subscriberCount}</strong></div>
+<div class="smallText">Channel Views: <strong id="user-profile-viewed-count">${data.info.fields.views}</strong></div>
+</div>
+</div>
+<div style="clear:both"></div>
+<div id="user-profile-channel-desc" style="padding: 6px 0px 8px 0px;">
+${data.info.fields.description}
+</div>
+<div class="profileAssets" style="padding-top: 5px;">
+<br>
+<br>
+</div>
+</div>
+<div class="box-bg"></div>
+</div>
+</div>`;
+                    },
+                    userConn: (data) => {
+                        return `<div class="profile-box" id="user_connect">
+<div class="box-head">
+<div class="box-fg">
+<div class="headerTitleRight floatR">
+</div>
+<div class="headerTitle channel-box-title" id="user_connect-head">
+Connect with ${data.header.name}
+</div>
+<div class="clear"></div>
+</div>
+<div class="box-bg"></div>
+</div>
+<div class="box-body" id="user_connect-body">
+<div class="box-fg">
+<table class="connectTable" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tbody>
+<tr>
+<td width="110" valign="middle" align="right">
+</td>
+<td valign="top" align="left">
+<table class="actionsTable">
+<tbody>
+<tr class="actionsTable">
+<td class="actionsTable">
+<div class="smallText">
+<a id="aProfileSendMsg" href="http://www.youtube.com/inbox?to_users=YouTube&amp;action_compose=1">
+<img src="//s.ytimg.com/yt/img/pixel-vfl73.gif" id="profileSendMsg" class="icnProperties" alt="Send Message">Send Message</a>
+</div>
+<div class="smallText">
+<a id="aProfileFwdMember" href="#" onclick="toggleDisplay('sharing_opt'); return false;">
+<img src="//s.ytimg.com/yt/img/pixel-vfl73.gif" id="profileFwdMember" class="icnProperties" alt="Share Channel">Share Channel</a>
+</div>
+<div class="smallText">
+</div>
+<div class="smallText">
+<a id="addToIGoogle" href="http://www.google.com/ig/adde?moduleurl=youtube.xml&amp;up_channel=YouTube&amp;bpig=1&amp;source=ytch" style="text-decoration: none">
+<img src="//s.ytimg.com/yt/img/igoogle-vfl31114.gif" class="icnIGoogle"><u>Add to iGoogle</u></a>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr>
+<td colspan="2">
+<div class="alignC" style="font-size: 12px; margin-bottom: 3px">
+<a id="user-connect-vanity-url" href="${data.header.url}">${data.header.url}</a></div>
+</td>
+</tr>
+<tr>
+<td colspan="2">
+<div class="share-box" id="sharing_opt" style="display: none;">
+<div class="box-title" style="float: left">
+<div class="title-text">Sharing Options</div>
+<div class="close-link hand" onclick="hideDiv('sharing_opt');"> (close) </div>
+</div>
+<div style="padding: 0 5px;">There are 3 ways to share this channel.</div>
+<div style="padding: 15px 5px 0 5px;">1. Copy &amp; Paste this link into an email or instant message.
+<form name="urlForm">
+<input name="video_link" type="text" value="http://www.youtube.com/YouTube" class="vidURLField" onclick="javascript:document.urlForm.video_link.focus();document.urlForm.video_link.select();" readonly="true" size="35" style="width:255px">
+</form>
+</div>
+<div style="padding-top: 15px; padding-left: 5px;">
+2. Send this channel using your computer's email program.
+<a href="https://web.archive.org/web/20090609053526/mailto:/?subject=You%20have%20received%20a%20YouTube%20channel%21&amp;body=http%3A//www.youtube.com/YouTube">Click to send!</a>
+</div>
+<div style="padding: 15px 0 5px 5px;">3. <a href="/web/20090609053526/http://www.youtube.com/login?next=/user/YouTube">Sign in</a> to have YouTube send this video.</div>
+</div>
+</td>
+<td>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="igoogleEmbed">
+<div>Embed This Channel:</div>
+<div class="profile-box embedInput" id="embed_display" onclick="displayAndSelectEmbedCode()" style="display: none;">&lt;script src="http://www.gmodules.com/ig/ifr?url=http://www.google.com/ig/modules/youtube.xml&amp;amp;up_channel=YouTube&amp;amp;container=youtube&amp;amp;w=320&amp;amp;h=390&amp;amp;title=&amp;amp;border=%23ffffff%7C3px%2C1px+solid+%23999999&amp;amp;output=js"&gt;&lt;/script&gt;</div>
+<div class="profile-box embedInput" style="" id="embed_input_div">
+<input type="text" id="embed_input" value="<script src=&quot;http://www.gmodules.com/ig/ifr?url=http://www.google.com/ig/modules/youtube.xml&amp;amp;up_channel=YouTube&amp;amp;container=youtube&amp;amp;w=320&amp;amp;h=390&amp;amp;title=&amp;amp;border=%23ffffff%7C3px%2C1px+solid+%23999999&amp;amp;output=js&quot;></script>" onclick="displayAndSelectEmbedCode()" readonly=""></div>
+</div>
+<div class="clear"></div>
+</div>
+<div class="box-bg"></div>
+</div>`;
+                    }
+                },
+                mainCon: {
+                    userFeatured: (data) => {
+                        return `<div class="profileEmbedVideo" id="user_featured">
+<div id="profile-player-div">
+</div>
+<script type="text/javascript">
+var swfArgs = {"el": "profilepage", "BASE_YT_URL": "https://web.archive.org/web/20090609053526/http://www.youtube.com/", "iv_allow_external_links": 1, "iv_storage_server": "https://web.archive.org/web/20090609053526/http://www.google.com/reviews/y/", "rs": "1", "ss": "1", "iv_module": "https://web.archive.org/web/20090609053526/http://s.ytimg.com/yt/swf/iv_module-vfl97100.swf", "video_id": "YZsMgrxGaMA", "l": 1602, "sk": "Lca8SIZeGn-Y2DgJIDvvn8FvtgWFupcIC", "fmt_map": "35/640000/9/0/115,34/0/9/0/115,5/0/7/0/0", "vq": null, "t": "vjVQa1PpcFPay5dnEQSWJoNjhZX631p1fhKtiXUwpOw=", "hl": "en", "plid": "AARr47nU67ILcwn5", "keywords": "Michael%2CBuckley%2CWHATTHEBUCKSHOW%2CYouTube%2Csuccess%2Ctips", "cr": "ES", "sn": "1"};
+var swfUrl = canPlayV9Swf() ? 'https://web.archive.org/web/20090609053526/http://s.ytimg.com/yt/swf/watch-vfl101887.swf' : 'https://web.archive.org/web/20090609053526/http://s.ytimg.com/yt/swf/watch_v8-vfl101887.swf';
+var watchGamUrl = null;
+var watchDCUrl = null;
+var watchIsPlayingAll = false;
+var watchSetWmode = false;
+var useWmodeDirect = false;
+var ad_eurl = null;
+writeMoviePlayer("profile-player-div");
+</script>
+<center>
+<div class="profile-box profileEmbedVideoInfo" style="margin: 10px 0px 15px 0px;">
+<div class="box-body">
+<div class="box-fg">
+<div class="vtitle">
+<strong>
+<a href="https://www.youtube.com/watch?v=YZsMgrxGaMA">
+Michael Buckley's Secrets to YouTube Success
+</a>
+</strong>
+</div>
+<div class="vfacets">
+From:
+<a href="/web/20090609053526/http://www.youtube.com/user/YouTube" title="YouTube">YouTube</a>
+<br>
+Views: 80,402
+<br>
+Comments:
+<a href="/web/20090609053526/http://www.youtube.com/comment_servlet?all_comments&amp;v=YZsMgrxGaMA">403</a>
+</div>
+</div>
+<div class="box-bg"></div>
+</div>
+</div>
+</center>
+</div>`;
+                    },
+                    userVideos: {
+                        Main: (data) => {
+                            console.debug(data)
+                            return `<div class="profile-box" id="user_videos">
+<div class="box-head">
+<div class="box-fg">
+<div class="headerTitleRight floatR">
+<form name="subscribeToUsernameBox" method="post" action="/web/20090609053526/http://www.youtube.com/subscription_center">
+<input type="hidden" name="add_user" value="YouTube">
+<a href="javascript: document.subscribeToUsernameBox.submit();">Subscribe to ${data.header.name}'s videos</a>
+<input name="session_token" type="hidden" value="5z8Lu3StZ1ExUvqOM9y9LQqyzBp8MTI0NDYxMjEyNg=="></form>
+</div>
+<div class="headerTitle  channel-box-title" id="user_videos-head">
+Videos (<a href="${data.header.url}/videos" class="headersSmall" name="channel-box-item-count"></a>)
+</div>
+<div class="clear"></div>
+</div>
+<div class="box-bg"></div>
+</div>
+<div class="box-body" id="user_videos-body">
+<div class="box-fg">
+<div style="padding:5px;">
+<div class="floatR" style="margin: 5px 5px 5px 0;">
+<form method="get" action="/web/20090609053526/http://www.youtube.com/profile">
+<input type="hidden" name="user" value="YouTube">
+<input type="hidden" name="view" value="videos">
+<input id="user_videos-query" type="text" onkeyup="&quot;top.goog.i18n.bidi.setDirAttribute(event,this)&quot;" name="query" maxlength="128" value="">
+<input type="submit" value="Search">
+</form>
+</div>
+</div>
+<div class="clear"></div>
+<div id="videosPofileVideos">
+<div id="user-videos-max-details"></div>
+<div class="grid-view">
+</div>
+<div style="font-size: 12px; text-align: right; margin-top: 7px;">
+<b>
+<a name="channel-box-see-all" href="/web/20090609053526/http://www.youtube.com/profile?user=YouTube&amp;view=videos">
+see all
+</a>
+</b>
+</div>
+</div>
+<div class="clear"></div>
+</div>
+<div class="box-bg"></div>
+</div>
+</div>`;
+                        },
+                        videos: (data) => {
+                            return `<div class="video-cell" style="width:32.6%">
+<div class="video-entry">
+<div class="v120WideEntry">
+<div class="v120WrapperOuter">
+<div class="v120WrapperInner">
+<a id="video-url-${data.id}" href="https://www.youtube.com/watch?v=${data.id}&amp;feature=channel_page" rel="nofollow">
+<img title="${data.title}" src="${data.thumbnail}" class="vimg120" qlicon="${data.id}" alt="${data.title}">
+</a>
+<div id="quicklist-icon-${data.id}" class="addtoQL90">
+<a id="add-to-quicklist-${data.id}" href="#" ql="${data.id}" title="Add Video to QuickList">
+<button class="master-sprite QLIconImg" title="" onclick="clicked_add_icon(this, this.parentNode.getAttribute('ql'), 0, 'https://web.archive.org/web/20090609053526/http://i2.ytimg.com/vi/YZsMgrxGaMA/default.jpg', 'Michael Buckley\'s Secrets to YouTube Success');return false;" onmouseover="mouseOverQuickAdd(this)" onmouseout="mouseOutQuickAdd(this)" onmousedown="urchinTracker('/Events/profile/QuickList+AddTo')"></button></a>
+<div class="hid quicklist-inlist">
+<a id="add-to-quicklist-${data.id}" href="#" ql="${data.id}" title="Add Video to QuickList"></a>
+<a href="/web/20090609053526/http://www.youtube.com/watch_queue?all">Added</a>
+</div>
+</div>
+<div class="video-time">
+<span id="video-run-time-${data.id}">${data.time}</span>
+</div>
+</div>
+</div>
+</div>
+<div class="video-main-content" id="video-main-content-${data.id}">
+<div class="video-title">
+<div class="video-short-title">
+<span id="translated_short_prefix_${data.id}" style="font-size: 10px;" class="hid">[TRANSLATED]</span>
+<a id="video-short-title-${data.id}" href="https://www.youtube.com/watch?v=${data.id}&amp;feature=channel_page" title="${data.title}" rel="nofollow">${data.title}</a>
+</div>
+<div class="video-long-title">
+<span id="translated_long_prefix_${data.id}" style="font-size: 10px;" class="hid">[TRANSLATED]</span>
+<a id="video-long-title-${data.id}" href="https://www.youtube.com/watch?v=${data.id}&amp;feature=channel_page" title="${data.title}" rel="nofollow">${data.title}</a>
+</div>
+</div>
+<div id="video-description-${data.id}" class="video-description">
+
+</div>
+<div class="video-facets">
+<span id="video-average-rating-${data.id}" class="video-rating-list video-rating-with-caps">
+<div>
+<button class="master-sprite ratingCapsVS-left" title=""></button>
+<button class="master-sprite ratingCapsVS ratingCapsVS-5.0" title="5.0"></button>
+<button class="master-sprite ratingCapsVS-right" title=""></button>
+</div>
+</span>
+<span id="video-added-time-${data.id}" class="video-date-added">${data.upload}</span>
+<span id="video-num-views-${data.id}" class="video-view-count">${data.views}</span>
+<span id="video-average-rating-${data.id}" class="video-rating-grid video-rating-with-caps">
+<div>
+<button class="master-sprite ratingCapsVS-left" title=""></button>
+<button class="master-sprite ratingCapsVS ratingCapsVS-5.0" title="5.0"></button>
+<button class="master-sprite ratingCapsVS-right" title=""></button>
+</div>
+</span>
+</div>
+</div>
+<div class="video-clear-list-left"></div>
+</div>
+</div>`;
+                        }
+                    }
                 }
             }
         },
@@ -2625,7 +2954,6 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
             },
             content: (data) => {
                 try {
-                    console.debug(data);
                     return data.tabRenderer.content?.richGridRenderer?.contents || data.tabRenderer.content?.sectionListRenderer?.contents;
                 } catch {
                     return {error: 404};
@@ -2736,8 +3064,6 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                 for (const snippet in _description) {
                     description += _description[snippet].text;
                 }
-
-                console.debug(data);
 
                 return {
                     id: data.channelId,
@@ -3161,12 +3487,15 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
         },
         getCurrentChannelTab: () => {
             let mode = document.cosmicCat.Storage.get("channel_mode").value;
-            if (mode == "3") {
-                return window.location.pathname.split("/")[document.cosmicCat.Channels.isUsertag() ? 2 : 3];
+            switch (mode) {
+                case "1":
+                case "3":
+                    mode = window.location.pathname.split("/")[document.cosmicCat.Channels.isUsertag() ? 2 : 3];
+                    break;
+                case "2":
+                    mode = window.location.hash.length > 1 && window.location.hash.slice(1).split("/")[1] == "p" ? "playlists" : "videos" || window.location.pathname.split("/")[3];
             }
-            if (mode == "2") {
-                return window.location.hash.length > 1 && window.location.hash.slice(1).split("/")[1] == "p" ? "playlists" : "videos" || window.location.pathname.split("/")[3];
-            }
+            return mode;
         },
         getNaviHash: () => { return (document.cosmicCat.Channels.getCurrentChannelTab() == "playlists" ? "p" : "u"); },
         isCurrentChannelTab: (params) => {
@@ -4356,7 +4685,8 @@ document.cosmicCat.Utils.waitForElm("ytd-app").then(async (e) => {
     if (window.location.pathname.split("/")[1].match(/channel|user|^c{1}$/i) || document.cosmicCat.Channels.isUsertag()) {
         let style = {
             3: ["//s.ytimg.com/yts/cssbin/www-channels3-vflIpog6R.css", "//s.ytimg.com/yts/cssbin/www-watch-inlineedit-vflg-l3kd.css"],
-            2: ["//s.ytimg.com/yt/cssbin/www-refresh-vflzVUPsm.css", "//s.ytimg.com/yt/cssbin/www-the-rest-vflNb6rAI.css", "//s.ytimg.com/yt/cssbin/www-channel_new-vflrWkVe_.css"]
+            2: ["//s.ytimg.com/yt/cssbin/www-refresh-vflzVUPsm.css", "//s.ytimg.com/yt/cssbin/www-the-rest-vflNb6rAI.css", "//s.ytimg.com/yt/cssbin/www-channel_new-vflrWkVe_.css"],
+            1: ["//ciulinuwu.github.io/lib/www-channel-vfl101267.css"]
         };
         let boop = style[document.cosmicCat.Storage.get("channel_mode").value];
         for (let i = 0; i < boop.length; i++) {
@@ -4601,9 +4931,9 @@ ${OBJ_FOOTER}
         }
         await document.cosmicCat.Utils.waitForElm2().then(async () => {
             if (document.cosmicCat.Channels.isChannelsPage()) return;
-            (!/^videos|playlists$/g.test(window.location.pathname.split("/").splice(document.cosmicCat.Channels.isUsertag() ? 2 : 3).join("/"))) && window.location.replace(window.location.pathname.split("/").slice(0, document.cosmicCat.Channels.isUsertag() ? 2 : 3).join("/") + "/videos");
             await new Promise((a,b) => setTimeout(a, 1000));
             if (!ytInitialData?.header?.c4TabbedHeaderRenderer) return;
+            (!/^videos|playlists$/g.test(window.location.pathname.split("/").splice(document.cosmicCat.Channels.isUsertag() ? 2 : 3).join("/"))) && window.location.replace(window.location.pathname.split("/").slice(0, document.cosmicCat.Channels.isUsertag() ? 2 : 3).join("/") + "/videos");
             let revision = document.cosmicCat.Storage.get("channel_mode").value;
             const naviHash = document.cosmicCat.Channels.getNaviHash();
 
@@ -4630,6 +4960,10 @@ ${OBJ_FOOTER}
                 "Channels2": {
                     "contentList": ".scrollbox-page",
                     "contentListAddr": "playlistNavigator.Content.PlayPanel.Holder"
+                },
+                "Channels1": {
+                    "contentList": "#user_videos .grid-view",
+                    "contentListAddr": "mainCon.userVideos"
                 }
             };
 
@@ -4654,8 +4988,14 @@ ${OBJ_FOOTER}
             data.content = (data.content.length == 0) && await document.cosmicCat.Ajax.Fetch(`https://www.youtube.com${window.location.pathname.split("/").slice(0, -1).join("/")}/${tab}`, document.cosmicCat.Channels._Data[tab.charAt(0).toUpperCase() + tab.slice(1)]) || data.content;
 
             try {
+                // shit doesn't work >:c
+                //document.cosmicCat.Ajax.post("/youtubei/v1/creator/get_creator_channels", `"channelIds":["${data.header.id}"],"mask":{"channelId":true,"contentOwnerAssociation":{"all":true},"features":{"all":true},"metric":{"all":true},"monetizationDetails":{"all":true},"monetizationStatus":true,"permissions":{"all":true},"settings":{"coreSettings":{"featureCountry":true}}}`)
+                (revision == "Channels1") && (document.querySelector("[name^=\"channel-box-item-count\"]").innerText = data.content.length);
+            } catch(err) {}
+
+            try {
                 for (let i = 0; i < data.content.length; i++) {
-                    document.cosmicCat.pageRenderer.add(list[revision].contentList, list[revision].contentListAddr.split('.').reduce((o,i)=> o[i]||"", document.cosmicCat.Template.Channel[revision])[document.cosmicCat.Channels.getCurrentChannelTab()](data.content[i]));
+                    document.cosmicCat.pageRenderer.add(list[revision].contentList, list[revision].contentListAddr.split('.').reduce((o,i)=> o[i]||"", document.cosmicCat.Template.Channel[revision])[document.cosmicCat.Channels.getCurrentChannelTab()](data.content[i], data.content.length));
                 }
             } catch(err) {
                 console.error("[Channels] Failed to parse local content data:\n", err);
