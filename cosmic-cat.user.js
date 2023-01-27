@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.9
+// @version      0.6.10
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://raw.githubusercontent.com/ciulinuwu/cosmic-cat/main/cosmic-cat.user.js
@@ -376,7 +376,7 @@ ${document.cosmicCat.Template.Buttons.Subscribe(data.header.id)}
 <div class="upper-right-section">
 <div class="header-stats">
 <div class="stat-entry">
-<span class="stat-value">${data?.info?.subs?.split(" ")?.[0]}</span>
+<span class="stat-value">${data?.info?.subs}</span>
 <span class="stat-name">subscribers</span>
 </div>
 <div class="stat-entry">
@@ -1082,7 +1082,6 @@ ${fields}
 ${document.cosmicCat.Template.Channel.Channels1.sideCon.userPro(data)}
 ${document.cosmicCat.Template.Channel.Channels1.sideCon.userConn(data)}
 </div>
-</div>
 <div id="profile-main-content">
 ${document.cosmicCat.Template.Channel.Channels1.mainCon.userVideos.Main(data)}
 </div>
@@ -1091,107 +1090,103 @@ ${document.cosmicCat.Template.Channel.Channels1.mainCon.userVideos.Main(data)}
                 },
                 sideCon: {
                     userPro: (data) => {
-                        return `<div class="profile-box profile-highlightbox" id="user_profile">
+                        return `<div class="profile-box profile-highlightbox">
 <div class="box-head">
 <div class="box-fg">
 <div class="headerTitleEdit">
 <div class="headerTitleRight">
+<script type="text/javascript">
+var watchUsername = 'YouTube';
+var subscribeaxc = '';
+var isLoggedIn =  false ;
+</script>
 <div id="subscribeDiv">
-<a class="yt-button yt-button-urgent" id="user-profile-subscribe-button" style="" href="#" onclick="subscribe(watchUsername, 'username', subscribeaxc, true, true); return false;">
-<span>Subscribe</span>
+<a class="action-button" onclick="subscribe(watchUsername, subscribeaxc, true); urchinTracker('/Events/SUB_click/Profile/YouTube'); return false;" title="subscribe to YouTube's videos">
+<span class="action-button-leftcap"></span>
+<span class="action-button-text">Subscribe</span>
+<span class="action-button-rightcap"></span>
 </a>
 </div>
 <div id="unsubscribeDiv" class="hid">
-<a class="yt-button" id="user-profile-unsubscribe-button" style="" href="#" onclick="unsubscribe(watchUsername, 'username', subscribeaxc); return false;">
-<span>Unsubscribe</span>
+<a class="action-button inactive" onclick="unsubscribe(watchUsername, subscribeaxc); return false;">
+<span class="action-button-leftcap"></span>
+<span class="action-button-text">Unsubscribe</span>
+<span class="action-button-rightcap"></span>
 </a>
 </div>
 </div>
-<div class="headerTitleLeft">
-<span id="user-profile-title">${data.header.name}'s YouTube Channel</span>
-</div>
+<div class="headerTitleLeft">YouTube Channel</div>
 </div>
 </div>
 <div class="box-bg"></div>
 </div>
 <div class="box-body">
 <div class="box-fg">
-<div id="subscribeLoginInvite" style="border: 1px solid rgb(153, 153, 153); padding: 5px; margin-bottom: 5px; background-color: #fff; display: none;">
-<div style="border: 1px solid rgb(204, 204, 204); padding: 4px; background: #eee; text-align: center;">
-<strong>Want to Subscribe?</strong><br>
-<a href="/web/20090609053526/http://www.youtube.com/login?next=/user/YouTube">Sign In</a> or <a href="/web/20090609053526/http://www.youtube.com/signup?next=/user/YouTube">Sign Up</a> now!
-</div>
-</div>
-<div id="subscribeMessage" style="margin-bottom: 5px; display: none;"></div>
-<div id="user-profile-image" class="floatL">
+<div id="subscribeMessage">Please login to perform this operation.</div>
+<div class="hid">See related Channels</div>
+<div class="floatL">
 <div class="user-thumb-xlarge">
-<div>
-<img id="" src="${data.header.avatar}" alt="">
-</div>
+<img src="${data.header.avatar}" alt="${data.header.name}">
 </div>
 </div>
 <div style="float:left;margin-left:5px;width:180px;">
 <div class="largeTitles">
-<strong id="user-profile-username">${data.header.name}</strong>
+<strong>${data.header.name}</strong>
 </div>
-<div style="padding-top: 3px;">
-<div class="smallText">Joined: <strong id="user-profile-member-since">${data.info.fields.joined}</strong></div>
-<div class="smallText">Subscribers: <strong id="user-profile-subscriber-count">${data.header.subscriberCount}</strong></div>
-<div class="smallText">Channel Views: <strong id="user-profile-viewed-count">${data.info.fields.views}</strong></div>
+<div class="padT3">
+<div class="smallText">Joined: <strong>${data.info.fields.joined}</strong></div>
+<div class="smallText">Subscribers: <strong>${data.header.subscriberCount}</strong></div>
+<div class="smallText">Channel Views: <strong>${data.info.fields.views}</strong></div>
 </div>
 </div>
 <div style="clear:both"></div>
-<div id="user-profile-channel-desc" style="padding: 6px 0px 8px 0px;">
-${data.info.fields.description}
-</div>
-<div class="profileAssets" style="padding-top: 5px;">
 <br>
+<div class="padT5 profileAssets">
+<span class="smallText">City:</span> <strong>San Bruno, CA</strong>
+<br>
+<img src="//www.youtube.com/img/flags/en_US_globe.gif" class="currentFlag" width="17">
 <br>
 </div>
+<div class="flaggingText">
+<a href="http://www.youtube.com/flag_user?username=YouTube&amp;action=report_profile_image" onclick="javascript:getSimpleXR('/flag_user?username=YouTube&amp;action=report_profile_image&amp;format=xml', showConfMsg, this);return false;">Report</a> profile image violation</div>
 </div>
 <div class="box-bg"></div>
 </div>
 </div>`;
                     },
                     userConn: (data) => {
-                        return `<div class="profile-box" id="user_connect">
+                        return `<div class="profile-box">
 <div class="box-head">
 <div class="box-fg">
-<div class="headerTitleRight floatR">
-</div>
-<div class="headerTitle channel-box-title" id="user_connect-head">
-Connect with ${data.header.name}
-</div>
-<div class="clear"></div>
+<div class="headerTitle">Connect with YouTube</div>
 </div>
 <div class="box-bg"></div>
 </div>
-<div class="box-body" id="user_connect-body">
+<div class="box-body">
 <div class="box-fg">
-<table class="connectTable" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table width="100%" cellspacing="0" cellpadding="3" border="0">
 <tbody>
 <tr>
-<td width="110" valign="middle" align="right">
-</td>
+<td width="110" valign="middle" align="right"></td>
 <td valign="top" align="left">
 <table class="actionsTable">
 <tbody>
 <tr class="actionsTable">
 <td class="actionsTable">
 <div class="smallText">
-<a id="aProfileSendMsg" href="http://www.youtube.com/inbox?to_users=YouTube&amp;action_compose=1">
+<a id="aProfileSendMsg" href="https://www.youtube.com/outbox?to_user=YouTube">
 <img src="//s.ytimg.com/yt/img/pixel-vfl73.gif" id="profileSendMsg" class="icnProperties" alt="Send Message">Send Message</a>
 </div>
 <div class="smallText">
-<a id="aProfileFwdMember" href="#" onclick="toggleDisplay('sharing_opt'); return false;">
+<a id="aProfileAddComment" href="https://www.youtube.com/profile_comment_post?user=YouTube">
+<img src="//s.ytimg.com/yt/img/pixel-vfl73.gif" id="profileAddComment" class="icnProperties" alt="Add Comment">Add Comment</a>
+</div>
+<div class="smallText">
+<a id="aProfileFwdMember" href="javascript:share_profile()">
 <img src="//s.ytimg.com/yt/img/pixel-vfl73.gif" id="profileFwdMember" class="icnProperties" alt="Share Channel">Share Channel</a>
 </div>
 <div class="smallText">
 </div>
-<div class="smallText">
-<a id="addToIGoogle" href="http://www.google.com/ig/adde?moduleurl=youtube.xml&amp;up_channel=YouTube&amp;bpig=1&amp;source=ytch" style="text-decoration: none">
-<img src="//s.ytimg.com/yt/img/igoogle-vfl31114.gif" class="icnIGoogle"><u>Add to iGoogle</u></a>
-</div>
 </td>
 </tr>
 </tbody>
@@ -1200,44 +1195,14 @@ Connect with ${data.header.name}
 </tr>
 <tr>
 <td colspan="2">
-<div class="alignC" style="font-size: 12px; margin-bottom: 3px">
-<a id="user-connect-vanity-url" href="${data.header.url}">${data.header.url}</a></div>
+<div class="marB3 alignC">
+<a href="http://www.youtube.com/YouTube">http://www.youtube.com/YouTube</a></div>
 </td>
 </tr>
-<tr>
-<td colspan="2">
-<div class="share-box" id="sharing_opt" style="display: none;">
-<div class="box-title" style="float: left">
-<div class="title-text">Sharing Options</div>
-<div class="close-link hand" onclick="hideDiv('sharing_opt');"> (close) </div>
-</div>
-<div style="padding: 0 5px;">There are 3 ways to share this channel.</div>
-<div style="padding: 15px 5px 0 5px;">1. Copy &amp; Paste this link into an email or instant message.
-<form name="urlForm">
-<input name="video_link" type="text" value="http://www.youtube.com/YouTube" class="vidURLField" onclick="javascript:document.urlForm.video_link.focus();document.urlForm.video_link.select();" readonly="true" size="35" style="width:255px">
-</form>
-</div>
-<div style="padding-top: 15px; padding-left: 5px;">
-2. Send this channel using your computer's email program.
-<a href="https://web.archive.org/web/20090609053526/mailto:/?subject=You%20have%20received%20a%20YouTube%20channel%21&amp;body=http%3A//www.youtube.com/YouTube">Click to send!</a>
-</div>
-<div style="padding: 15px 0 5px 5px;">3. <a href="/web/20090609053526/http://www.youtube.com/login?next=/user/YouTube">Sign in</a> to have YouTube send this video.</div>
-</div>
-</td>
-<td>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="igoogleEmbed">
-<div>Embed This Channel:</div>
-<div class="profile-box embedInput" id="embed_display" onclick="displayAndSelectEmbedCode()" style="display: none;">&lt;script src="http://www.gmodules.com/ig/ifr?url=http://www.google.com/ig/modules/youtube.xml&amp;amp;up_channel=YouTube&amp;amp;container=youtube&amp;amp;w=320&amp;amp;h=390&amp;amp;title=&amp;amp;border=%23ffffff%7C3px%2C1px+solid+%23999999&amp;amp;output=js"&gt;&lt;/script&gt;</div>
-<div class="profile-box embedInput" style="" id="embed_input_div">
-<input type="text" id="embed_input" value="<script src=&quot;http://www.gmodules.com/ig/ifr?url=http://www.google.com/ig/modules/youtube.xml&amp;amp;up_channel=YouTube&amp;amp;container=youtube&amp;amp;w=320&amp;amp;h=390&amp;amp;title=&amp;amp;border=%23ffffff%7C3px%2C1px+solid+%23999999&amp;amp;output=js&quot;></script>" onclick="displayAndSelectEmbedCode()" readonly=""></div>
-</div>
-<div class="clear"></div>
+</tbody></table>
 </div>
 <div class="box-bg"></div>
+</div>
 </div>`;
                     }
                 },
@@ -1286,55 +1251,72 @@ Comments:
                     },
                     userVideos: {
                         Main: (data) => {
-                            console.debug(data)
-                            return `<div class="profile-box" id="user_videos">
+                            return `<div class="profile-box">
 <div class="box-head">
 <div class="box-fg">
-<div class="headerTitleRight floatR">
-<form name="subscribeToUsernameBox" method="post" action="/web/20090609053526/http://www.youtube.com/subscription_center">
-<input type="hidden" name="add_user" value="YouTube">
-<a href="javascript: document.subscribeToUsernameBox.submit();">Subscribe to ${data.header.name}'s videos</a>
-<input name="session_token" type="hidden" value="5z8Lu3StZ1ExUvqOM9y9LQqyzBp8MTI0NDYxMjEyNg=="></form>
+<div class="headerTitle">
+<div class="headerTitleRight">
 </div>
-<div class="headerTitle  channel-box-title" id="user_videos-head">
-Videos (<a href="${data.header.url}/videos" class="headersSmall" name="channel-box-item-count"></a>)
+<span>Videos (<a href="/web/20080612190422/http://www.youtube.com/profile_videos?user=YouTube" class="headersSmall">34</a>)</span>
 </div>
-<div class="clear"></div>
 </div>
 <div class="box-bg"></div>
 </div>
-<div class="box-body" id="user_videos-body">
+<div class="box-body">
 <div class="box-fg">
-<div style="padding:5px;">
-<div class="floatR" style="margin: 5px 5px 5px 0;">
-<form method="get" action="/web/20090609053526/http://www.youtube.com/profile">
-<input type="hidden" name="user" value="YouTube">
-<input type="hidden" name="view" value="videos">
-<input id="user_videos-query" type="text" onkeyup="&quot;top.goog.i18n.bidi.setDirAttribute(event,this)&quot;" name="query" maxlength="128" value="">
-<input type="submit" value="Search">
-</form>
-</div>
-</div>
+<div style="padding: 3px;">
 <div class="clear"></div>
-<div id="videosPofileVideos">
-<div id="user-videos-max-details"></div>
-<div class="grid-view">
 </div>
-<div style="font-size: 12px; text-align: right; margin-top: 7px;">
-<b>
-<a name="channel-box-see-all" href="/web/20090609053526/http://www.youtube.com/profile?user=YouTube&amp;view=videos">
-see all
-</a>
-</b>
+<div id="profileVideos" style="margin-left:12px;text-align: center;">
+<table height="121" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td class="alignTop padTsm">
+<img src="//s.ytimg.com/yt/img/pixel-vfl73.gif" class="btn_vscroll_lt_18x106 hand" onclick="fadeOldImage('profile_videos','4');shiftLeft('profile_videos')" id="vbrol"></td>
+<td style="padding-top:4px">
+<table style="background-color: XXXXXX;" width="500" height="121" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td style="border-bottom:none;" id="vids">
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td class="alignTop padTsm">
+<img src="//s.ytimg.com/yt/img/pixel-vfl73.gif" class="btn_vscroll_rt_18x106 hand" onclick="fadeOldImage('profile_videos','4');shiftRight('profile_videos');" id="vbror"></td>
+</tr>
+</tbody>
+</table>
 </div>
+<div id="loadingDiv" class="marT18 alignC" style="display:none;height:500px;">
+<br><br>
+<img src="//s.ytimg.com/yt/img/icn_loading_animated-vfl24663.gif">
+<br><br>
 </div>
-<div class="clear"></div>
 </div>
 <div class="box-bg"></div>
 </div>
 </div>`;
                         },
                         videos: (data) => {
+                            return `<div class="videobarthumbnail_block" id="div_profile_videos_0">
+<center>
+<div class="video-thumb-medium">
+<a id="href_profile_videos_0" href="https://www.youtube.com/watch?v=${data.id}">
+<img id="img_profile_videos_0" src="https://i.ytimg.com/vi/${data.id}/default.jpg" onload="opacity('img_profile_videos_0', 80, 100, 800);" style="opacity: 1;">
+</a>
+</div>
+<div id="title1_profile_videos_0" class="xsmallText grayText padB3">
+<a href="https://www.youtube.com/watch?v=${data.id}" title="${data.title}">${data.title}</a>
+</div>
+<div id="title2_profile_videos_0" class="xsmallText grayText padB3">
+<span style="color: #333">${data.time}</span>
+</div>
+</center>
+</div>`;
+                        },
+                        ovideos: (data) => {
                             return `<div class="video-cell" style="width:32.6%">
 <div class="video-entry">
 <div class="v120WideEntry">
@@ -2895,6 +2877,22 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
         }
     },
     Utils: {
+        toNumber: (arg) => {
+            var a;
+            try {
+                a=arg.match(/\d/g);
+                a=a.join("");
+                a=document.cosmicCat.Utils.parseNumber(a);
+            }catch{}
+            return a;
+        },
+        parseNumber: (arg) => {
+            try {
+                return arg.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+            } catch {
+                return arg;
+            }
+        },
         whatPage: (arg) => {
             let _a = window.location.pathname.split("/")[1];
 
@@ -2962,10 +2960,14 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
         },
         addStyle: (a) => {
             try {
+                var c;
+                try {
+                    c=a.split("/www")[1].split("-").slice(0, -1).join("-")
+                } catch {}
                 var b = document.createElement("link");
                 b.setAttribute("rel", "stylesheet");
                 b.setAttribute("href", a);
-                b.setAttribute("id", `www${a.split("/www")[1].split("-").slice(0, -1).join("-")}-css`);
+                b.setAttribute("id", `www${c}-css`);
                 document.head.append(b);
             } catch(err) {
                 console.error(`[addStyle] Function must have an argument!:\n`, err);
@@ -3071,10 +3073,10 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                     url: data.canonicalChannelUrl || data.navigationEndpoint?.browseEndpoint?.canonicalBaseUrl,
                     avatar: data.avatar?.thumbnails?.[0]?.url || data.thumbnail?.thumbnails?.[0]?.url,
                     links: data.primaryLinks,
-                    subscriberCount: data.subscriberCountText?.simpleText,
+                    subscriberCount: document.cosmicCat.Utils.toNumber(data.subscriberCountText?.simpleText),
                     videos: data.videoCountText?.runs?.[1] && (data.videoCountText?.runs?.[0].text + data.videoCountText?.runs?.[1].text),
                     fields: {
-                        views: data.viewCountText?.simpleText?.split(" ")?.[0] || "0",
+                        views: document.cosmicCat.Utils.toNumber(data.viewCountText?.simpleText) || "0",
                         joined: data.joinedDateText?.runs?.[1]?.text,
                         country: data.country?.simpleText,
                         description: (data.description?.simpleText || description).replace(/(?:\r\n|\r|\n)/g, "<br/>")
@@ -3106,7 +3108,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                         icon : da.channelThumbnailSupportedRenderers?.channelThumbnailWithLinkRenderer?.thumbnail?.thumbnails?.[0]?.url
                     },
                     time: da.thumbnailOverlays?.find(c => c.thumbnailOverlayTimeStatusRenderer)?.thumbnailOverlayTimeStatusRenderer.text.simpleText || da.thumbnailOverlays?.find(c => c.thumbnailOverlayTimeStatusRenderer)?.thumbnailOverlayTimeStatusRenderer?.text?.runs?.[0]?.text || da.lengthText?.simpleText || "LIVE",
-                    views: da.viewCount?.videoViewCountRenderer?.viewCount?.simpleText || da.viewCountText?.simpleText || da.viewCountText?.runs?.[0]?.text + da.viewCountText?.runs?.[1]?.text || da.videoDetails?.viewCount || "",
+                    views: document.cosmicCat.Utils.toNumber(da.viewCount?.videoViewCountRenderer?.viewCount?.simpleText || da.viewCountText?.simpleText || da.viewCountText?.runs?.[0]?.text + da.viewCountText?.runs?.[1]?.text || da.videoDetails?.viewCount || ""),
                     title: da.title?.simpleText || da.title?.runs?.[0]?.text || da.videoDetails?.title || "Fallback title",
                     id: da.videoDetails?.videoId || da.videoId,
                     description: description,
@@ -3128,7 +3130,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                         number: data.videoCountShortText?.simpleText,
                         text: data.videoCountText?.runs?.[1] ? data.videoCountText.runs[0].text + data.videoCountText.runs[1].text : data.videoCountText?.runs?.[0]?.text || data.numVideosText?.runs?.[0]?.text
                     },
-                    views: data.viewCountText?.simpleText,
+                    views: document.cosmicCat.Utils.toNumber(data.viewCountText?.simpleText),
                     owner: {
                         name: data.ownerText?.runs?.[0]?.text || data.longBylineText?.runs?.[0]?.text,
                         url: data.ownerText?.runs?.[0]?.navigationEndpoint?.browseEndpoint?.canonicalBaseUrl || data.longBylineText?.runs?.[0]?.navigationEndpoint?.browseEndpoint?.canonicalBaseUrl,
@@ -3619,7 +3621,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                     result = document.cosmicCat.Utils.Sort.channelData(contents);
 
                     try {
-                        result.subs = data.header.c4TabbedHeaderRenderer.subscriberCountText.simpleText || data.subs.simpleText;
+                        result.subs = document.cosmicCat.Utils.toNumber(data.header.c4TabbedHeaderRenderer.subscriberCountText.simpleText || data.subs.simpleText);
                     } catch(err) {
                         console.error("[Channels] Something went wrong with sorting subscriber count:\n", err);
                     }
@@ -4686,7 +4688,7 @@ document.cosmicCat.Utils.waitForElm("ytd-app").then(async (e) => {
         let style = {
             3: ["//s.ytimg.com/yts/cssbin/www-channels3-vflIpog6R.css", "//s.ytimg.com/yts/cssbin/www-watch-inlineedit-vflg-l3kd.css"],
             2: ["//s.ytimg.com/yt/cssbin/www-refresh-vflzVUPsm.css", "//s.ytimg.com/yt/cssbin/www-the-rest-vflNb6rAI.css", "//s.ytimg.com/yt/cssbin/www-channel_new-vflrWkVe_.css"],
-            1: ["//ciulinuwu.github.io/lib/www-channel-vfl101267.css"]
+            1: ["//ciulinuwu.github.io/lib/www-channel.css", "//ciulinuwu.github.io/lib/base_all-vfl42963.css"]
         };
         let boop = style[document.cosmicCat.Storage.get("channel_mode").value];
         for (let i = 0; i < boop.length; i++) {
@@ -4962,7 +4964,7 @@ ${OBJ_FOOTER}
                     "contentListAddr": "playlistNavigator.Content.PlayPanel.Holder"
                 },
                 "Channels1": {
-                    "contentList": "#user_videos .grid-view",
+                    "contentList": "#profileVideos [style=\"border-bottom:none;\"]",
                     "contentListAddr": "mainCon.userVideos"
                 }
             };
