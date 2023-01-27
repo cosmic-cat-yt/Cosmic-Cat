@@ -1,16 +1,16 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.11
+// @version      0.6.12
 // @description  Broadcast Yourself
 // @author       CiulinUwU
-// @updateURL    https://raw.githubusercontent.com/ciulinuwu/cosmic-cat/main/cosmic-cat.user.js
-// @downloadURL  https://raw.githubusercontent.com/ciulinuwu/cosmic-cat/main/cosmic-cat.user.js
+// @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
+// @downloadURL  https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
 // @match        https://www.youtube.com/*
 // @exclude      https://www.youtube.com/embed/*
 // @icon         https://www.google.com/s2/favicons?domain=youtube.com
-// @require      https://github.com/ciulinuwu/cosmic-cat/raw/main/modules/yabai_component.js
-// @require      https://github.com/ciulinuwu/cosmic-cat/raw/main/modules/open_uix_components.js
+// @require      https://github.com/thistlecafe/cosmic-cat/raw/main/modules/yabai_component.js
+// @require      https://github.com/thistlecafe/cosmic-cat/raw/main/modules/open_uix_components.js
 // @require      https://code.jquery.com/jquery-3.6.1.min.js
 // @grant unsafeWindow
 // @grant GM_addStyle
@@ -2880,9 +2880,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
         toNumber: (arg) => {
             var a;
             try {
-                a=arg.match(/\d/g);
-                a=a.join("");
-                a=document.cosmicCat.Utils.parseNumber(a);
+                a=document.cosmicCat.Utils.parseNumber(arg.match(/\d/g).join(""));
             }catch{}
             return a;
         },
