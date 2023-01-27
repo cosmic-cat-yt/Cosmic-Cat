@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.10
+// @version      0.6.11
 // @description  Broadcast Yourself
 // @author       CiulinUwU
 // @updateURL    https://raw.githubusercontent.com/ciulinuwu/cosmic-cat/main/cosmic-cat.user.js
@@ -2252,7 +2252,7 @@ ${options}
 Channel revision: <select class="cosmic-cat-settings" id="channelMode" data-action="toggleChannelMode" data-storage="channel_mode" title="Set channel layout">
 <option value="3">3.0</option>
 <option value="2">2.0</option>
-<option value="1" disabled="">1.0</option>
+<option value="1">1.0</option>
 </select>
 </div>
 </div>
@@ -2576,7 +2576,7 @@ ${document.cosmicCat.Template.Watch.Content.mainCon.sideBar.Main(data)}
 <div id="watch-actions">
 <div id="watch-actions-right">
 <span class="watch-view-count">
-<strong>${data.primary.views}</strong>
+<strong>${document.cosmicCat.Utils.toNumber(data.primary.views)}</strong>
 </span>
 <button onclick=";return false;" type="button" id="watch-insight-button" class="yt-uix-tooltip yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip yt-uix-button-empty" role="button" title="Show video statistics">
 <span class="yt-uix-button-icon-wrapper">
@@ -3108,7 +3108,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                         icon : da.channelThumbnailSupportedRenderers?.channelThumbnailWithLinkRenderer?.thumbnail?.thumbnails?.[0]?.url
                     },
                     time: da.thumbnailOverlays?.find(c => c.thumbnailOverlayTimeStatusRenderer)?.thumbnailOverlayTimeStatusRenderer.text.simpleText || da.thumbnailOverlays?.find(c => c.thumbnailOverlayTimeStatusRenderer)?.thumbnailOverlayTimeStatusRenderer?.text?.runs?.[0]?.text || da.lengthText?.simpleText || "LIVE",
-                    views: document.cosmicCat.Utils.toNumber(da.viewCount?.videoViewCountRenderer?.viewCount?.simpleText || da.viewCountText?.simpleText || da.viewCountText?.runs?.[0]?.text + da.viewCountText?.runs?.[1]?.text || da.videoDetails?.viewCount || ""),
+                    views: da.viewCount?.videoViewCountRenderer?.viewCount?.simpleText || da.viewCountText?.simpleText || da.viewCountText?.runs?.[0]?.text + da.viewCountText?.runs?.[1]?.text || da.videoDetails?.viewCount || "",
                     title: da.title?.simpleText || da.title?.runs?.[0]?.text || da.videoDetails?.title || "Fallback title",
                     id: da.videoDetails?.videoId || da.videoId,
                     description: description,
