@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.12
+// @version      0.6.13
 // @description  Broadcast Yourself
-// @author       CiulinUwU
+// @author       Emiri Floarea (ciulinuwu)
 // @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
 // @downloadURL  https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
 // @match        https://www.youtube.com/*
@@ -532,7 +532,7 @@ ${sideThumbs}
                         return `<div class="secondary-pane">
 <div class="user-profile channel-module yt-uix-c3-module-container">
 <div class="module-view profile-view-module" data-owner-external-id="BR8-60-B28hp2BmDPdntcQ">
-<h2>${localizeString("channels.3.body.secondaryPane.userProfile.about", data)}</h2>
+<h2>${localizeString("channels.3.body.secondaryPane.userProfile.about", data?.info?.name)}</h2>
 ${document.cosmicCat.Template.Channel.Channels3.secondaryPane.firstSection.Main(data)}
 ${document.cosmicCat.Template.Channel.Channels3.secondaryPane.createdBySection.Main(data)}
 </div>
@@ -560,7 +560,7 @@ ${document.cosmicCat.Template.Channel.Channels3.secondaryPane.createdBySection.M
                     createdBySection: {
                         Main: (data) => {
                             return `<div class="section created-by-section">
-<div class="user-profile-item">${localizeString("channels.3.body.secondaryPane.userProfile.createdBy.by", data.header)}</div>
+<div class="user-profile-item">${localizeString("channels.3.body.secondaryPane.userProfile.createdBy.by", data.header?.name)}</div>
 <ul>
 ${document.cosmicCat.Template.Channel.Channels3.secondaryPane.createdBySection.Item(data.info)}
 </ul>
@@ -1392,6 +1392,7 @@ ${document.cosmicCat.Template.Playlist.Content(data)}
 </div>`;
             },
             Header: (data) => {
+                console.log(data);
                 return `<div id="branded-page-header-container" class="ytg-wide">
 <div id="branded-page-header" class="ytg-wide ytg-box">
 <a class="profile-thumb" href="${data.header.owner.url}">
@@ -1422,7 +1423,7 @@ ${document.cosmicCat.Template.Playlist.Content(data)}
 <div class="playlist-reference">
 <h1 title="${data.header.title}">${data.header.title}</h1>
 <p class="channel-author-attribution">
-${localizeString("playlists.header.channelAuthor", data.header)}
+${localizeString("playlists.header.channelAuthor", data.header?.owner)}
 </p>
 </div>
 <span id="play-all-button">
@@ -1516,7 +1517,7 @@ ${document.cosmicCat.Template.Buttons.addTo(data.id)}
 </h3>
 <p class="video-details">
 <span class="video-owner">
-${localizeString("playlists.body.primaryPane.items.video.by", data)}
+${localizeString("playlists.body.primaryPane.items.video.by", data?.owner?.name)}
 </span>
 <span class="video-view-count">${data.views}</span>
 </p>
@@ -1531,7 +1532,7 @@ ${localizeString("playlists.body.primaryPane.items.video.by", data)}
                 Main: (data) => {
                     return `<div class="secondary-pane">
 <div class="channel-module">
-<h2>${localizeString("playlists.body.secondaryPane.aboutSection.about", data.header)}</h2>
+<h2>${localizeString("playlists.body.secondaryPane.aboutSection.about", data.header?.name || data.header?.title)}</h2>
 <p>${data.header.description}</p>
 </div>
 <hr class="yt-horizontal-rule">
@@ -1539,13 +1540,12 @@ ${document.cosmicCat.Template.Playlist.secondaryPane.aboutSection(data)}
 </div>`;
                 },
                 aboutSection: (data) => {
-                    console.debug(data);
                     return `<div class="channel-module">
 <div class="playlist-creator-info">
-<h2>${localizeString("playlists.body.secondaryPane.aboutSection.about", data.creatorInfo)}</h2>
+<h2>${localizeString("playlists.body.secondaryPane.aboutSection.about", data.creatorInfo?.name || data.creatorInfo?.title)}</h2>
 <p>${data.creatorInfo.fields.description}</p>
 <div class="creator-links">
-<a href="https://www.youtube.com/channel/${data.creatorInfo.id}/playlists">${localizeString("playlists.body.secondaryPane.aboutSection.creatorLinks.playlists", data)}</a>
+<a href="https://www.youtube.com/channel/${data.creatorInfo.id}/playlists">${localizeString("playlists.body.secondaryPane.aboutSection.creatorLinks.playlists", data?.creatorInfo?.name)}</a>
 <a href="https://www.youtube.com/channel/${data.creatorInfo.id}/videos">${localizeString("playlists.body.secondaryPane.aboutSection.creatorLinks.videos")}</a>
 </div>
 <div class="creator-stats">
@@ -1646,7 +1646,7 @@ ${badges}
 <span class="metadata-separator">•</span>
 <span class="viewcount">${videoData.views}</span>
 </p>
-<p><span class="username-prepend">${localizeString("watch.by", videoData)}</span></p>
+<p><span class="username-prepend">${localizeString("watch.by", videoData?.owner?.name)}</span></p>
 </div>
 </div>
 </div>
@@ -2107,7 +2107,7 @@ ${localizeString("global.loading.main")}
 <div class="feed-item-main">
 <div class="feed-item-header">
 <span class="feed-item-actions-line">
-${localizeString("home.feed.uploadedavideo", data)} <span class="feed-item-time">${data.upload}</span>
+${localizeString("home.feed.uploadedavideo", data?.owner)} <span class="feed-item-time">${data.upload}</span>
 </span>
 </div>
 <div class="feed-item-content-wrapper clearfix context-data-item" data-context-item-actionverb="uploaded" data-context-item-title="Steam for Linux a Bad Idea? - This Week in Linux Gaming" data-context-item-type="video" data-context-item-time="5:21" data-context-item-user="nixiedoeslinux" data-context-item-id="7LVtbTurdCk" data-context-item-views="25,816 views" data-context-item-actionuser="nixiedoeslinux">
@@ -2726,7 +2726,7 @@ ${document.cosmicCat.Template.Comments.Main(data)}
 ${document.cosmicCat.Template.Buttons.addTo(videoData.id)}
 </span>
 <span dir="ltr" class="title" title="${videoData.title}">${videoData.title}</span>
-<span class="stat attribution">${localizeString("watch.by", videoData)}</span>
+<span class="stat attribution">${localizeString("watch.by", videoData?.owner.name)}</span>
 <span class="stat view-count">${videoData.views}</span>
 </a>
 </li>`;
@@ -2881,7 +2881,9 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
             var a;
             try {
                 a=document.cosmicCat.Utils.parseNumber(arg.match(/\d/g).join(""));
-            }catch{}
+            } catch {
+                a="0";
+            }
             return a;
         },
         parseNumber: (arg) => {
@@ -2896,8 +2898,6 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
 
             switch (true) {
                 case /channel|user|^c{1}$/.test(_a):
-                    _a = (arg == 0) ? "Channels" : document.cosmicCat.Utils.whatChannel();
-                    break;
                 case /@/.test(_a):
                     _a = (arg == 0) ? "Channels" : document.cosmicCat.Utils.whatChannel();
             }
@@ -4555,16 +4555,16 @@ const localizeString = (varr, DOM) => {
             i18n = i18n.replace(/%r/g, `<span id="eow-date" class="watch-video-date">${DOM?.primary.upload}</span>`);
             break;
         case "home.feed.uploadedavideo":
-            i18n = i18n.replace(/%s/g, `<span class="feed-item-owner"><a href="${DOM?.owner.url}" class="yt-uix-sessionlink yt-user-name" dir="ltr">${DOM?.owner.name}</a></span>`);
+            i18n = i18n.replace(/%s/g, `<span class="feed-item-owner"><a href="${DOM?.url}" class="yt-uix-sessionlink yt-user-name" dir="ltr">${DOM?.name}</a></span>`);
             break;
         case "watch.from":
             i18n = i18n.replace(/%s/g, `<span id="playnav-curvideo-channel-name"><a href="${window.location.href}">${DOM}</a></span>`);
             break;
         case "home.feed.islive":
-            i18n = i18n.replace(/%s/g, `<span class="feed-item-owner"><a href="${DOM?.owner?.url}" class="yt-uix-sessionlink yt-user-name" dir="ltr">${DOM?.owner?.name}</a></span>`);
+            i18n = i18n.replace(/%s/g, `<span class="feed-item-owner"><a href="${DOM?.url}" class="yt-uix-sessionlink yt-user-name" dir="ltr">${DOM?.name}</a></span>`);
             break;
         case "watch.by":
-            i18n = i18n.replace(/%s/g, `<span class="yt-user-name" dir="ltr">${DOM?.owner?.name}</span>`);
+            i18n = i18n.replace(/%s/g, `<span class="yt-user-name" dir="ltr">${DOM}</span>`);
             break;
         case "search.channels.by":
             i18n = i18n.replace(/%s/g, `<a href="https://www.youtube.com${DOM?.url}" class="yt-uix-sessionlink yt-user-name" dir="ltr">${DOM?.name}</a>`);
@@ -4574,26 +4574,26 @@ const localizeString = (varr, DOM) => {
             i18n = i18n.replace(/%r/g, `<span class="dislikes"></span>`);
             break;
         case "playlists.body.primaryPane.items.video.by":
-            i18n = i18n.replace(/%s/g, `${DOM?.owner?.name}`);
+            i18n = i18n.replace(/%s/g, `${DOM}`);
             break;
         case "search.playlists.by":
-            i18n = i18n.replace(/%s/g, `<a href="${DOM?.owner?.url}" class="yt-user-name" dir="ltr">${DOM?.owner?.name}</a>`);
+            i18n = i18n.replace(/%s/g, `<a href="${DOM?.url}" class="yt-user-name" dir="ltr">${DOM?.name}</a>`);
             break;
         case "playlists.body.secondaryPane.aboutSection.about":
-            i18n = i18n.replace(/%s/g, `${DOM?.name || DOM?.title}`);
+            i18n = i18n.replace(/%s/g, `${DOM}`);
             break;
         case "playlists.body.secondaryPane.aboutSection.creatorLinks.playlists":
             i18n = i18n.replace(/%s/g, `All`);
-            i18n = i18n.replace(/%r/g, `${DOM?.creatorInfo.name}`);
+            i18n = i18n.replace(/%r/g, `${DOM}`);
             break;
         case "playlists.header.channelAuthor":
-            i18n = i18n.replace(/%s/g, `<a href="${DOM?.owner?.url}">${DOM?.owner?.name}</a>`);
+            i18n = i18n.replace(/%s/g, `<a href="${DOM?.url}">${DOM?.name}</a>`);
             break;
         case "channels.3.body.secondaryPane.userProfile.about":
-            i18n = i18n.replace(/%s/g, `${DOM?.info?.name}`);
+            i18n = i18n.replace(/%s/g, `${DOM}`);
             break;
         case "channels.3.body.secondaryPane.userProfile.createdBy.by":
-            i18n = i18n.replace(/%s/g, `<span class="yt-user-name" dir="ltr">${DOM?.name}</span>`);
+            i18n = i18n.replace(/%s/g, `<span class="yt-user-name" dir="ltr">${DOM}</span>`);
             break;
         case "watch.comments.charactersremain":
             i18n = i18n.replace(/%s/g, `<span class="comments-remaining-count" data-max-count="500">500</span>`);
