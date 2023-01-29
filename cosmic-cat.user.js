@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.13
+// @version      0.6.14
 // @description  Broadcast Yourself
 // @author       Emiri Floarea (ciulinuwu)
 // @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
@@ -1069,6 +1069,8 @@ ${fields}
                 }
             },
             Channels1: {
+                // forgot to finish this
+                // accidentally kept the option enabled, whoops.
                 Main: (data) => {
                     return `<div id="baseDiv">
 <div class="profileTitleLinks">
@@ -2252,7 +2254,7 @@ ${options}
 Channel revision: <select class="cosmic-cat-settings" id="channelMode" data-action="toggleChannelMode" data-storage="channel_mode" title="Set channel layout">
 <option value="3">3.0</option>
 <option value="2">2.0</option>
-<option value="1">1.0</option>
+<option value="1" disabled="">1.0</option>
 </select>
 </div>
 </div>
@@ -2628,7 +2630,9 @@ ${document.cosmicCat.Template.Buttons.LikeDis(data)}
 <div id="watch-error-string" class="yt-alert-content"></div>
 </div>
 </div>
-<div id="watch-actions-share" class="watch-actions-panel hid"></div>
+<div id="watch-actions-share" class="watch-actions-panel hid">
+${document.cosmicCat.Template.Watch.Content.mainCon.panel.Share(data)}
+</div>
 <div id="watch-actions-Ajax" class="watch-actions-panel hid"></div>
 <div class="close">
 <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="close-button" onclick="document.cosmicCat.toggleElm()">
@@ -2683,6 +2687,148 @@ ${localizeString("stats.likesdislikes")}
 </div>
 </div>
 ${document.cosmicCat.Template.Comments.Main(data)}
+</div>`;
+                        },
+                        Share: (data) => {
+                            console.log(data);
+                            return `<div id="watch-actions-share-panel" class="" style="">
+<div class="share-panel">
+<div class="share-option-container ytg-box">
+<div class="share-panel-buttons yt-uix-expander yt-uix-expander-collapsed">
+<span class="share-panel-main-buttons">
+<button type="button" class="share-panel-embed yt-uix-button yt-uix-button-default" onclick=";return false;" role="button">
+<span class="yt-uix-button-content">Embed </span>
+</button><button type="button" class="share-panel-email yt-uix-button yt-uix-button-default" onclick=";return false;" role="button">
+<span class="yt-uix-button-content">Email </span>
+</button>
+</span>
+</div>
+<div class="share-panel-url-container">
+<span class=" yt-uix-form-input-container yt-uix-form-input-text-container yt-uix-form-input-non-empty">
+<input class="yt-uix-form-input-text share-panel-url" name="share_url" value="http://youtu.be/${data.alternative.id}" data-video-id="${data.alternative.id}">
+</span>
+<div class="share-panel-url-options yt-uix-expander yt-uix-expander-collapsed">
+<div class="yt-uix-expander-head">
+<a class="share-panel-show-url-options">
+<span class="collapsed-message">Options<img class="arrow" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt=""></span>
+<span class="expanded-message">Close<img class="arrow" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt=""></span>
+</a>
+</div>
+<ul class="yt-uix-expander-body share-options">
+<li>
+<label>
+<input class="share-panel-start-at" type="checkbox"> Start at:
+</label>
+<input type="text" value="0:00" class="yt-uix-form-input-text share-panel-start-at-time">
+</li>
+<li>
+<label>
+<input class="share-panel-long-url" type="checkbox"> Long link
+</label>
+</li>
+</ul>
+</div>
+</div>
+<div class="share-panel-services yt-uix-expander yt-uix-expander-collapsed clearfix">
+<ul class="share-group ytg-box">
+<li>
+<button onclick="window.open(&quot;http:\/\/www.facebook.com\/dialog\/feed?app_id=87741124305\u0026link=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DjNQXAC9IVRw%26feature%3Dshare\u0026display=popup\u0026redirect_uri=https%3A%2F%2Fwww.youtube.com%2Ffacebook_redirect&quot;, {'height': 306,'width': 650,'scrollbars': true});return false;" data-service-name="FACEBOOK" title="Share to Facebook" class="yt-uix-tooltip share-service-button">
+<img src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="Facebook" class="share-service-icon share-service-icon-facebook">
+<span>Facebook</span>
+</button>
+</li>
+<li>
+<button onclick="window.open(&quot;http:\/\/twitter.com\/intent\/tweet?url=http%3A%2F%2Fyoutu.be%2FjNQXAC9IVRw\u0026text=Me+at+the+zoo%3A\u0026via=youtube\u0026related=Youtube%2CYouTubeTrends%2CYTCreators&quot;, {'height': 650,'width': 1024,'scrollbars': true});return false;" data-service-name="TWITTER" title="Share to Twitter" class="yt-uix-tooltip share-service-button">
+<img src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="Twitter" class="share-service-icon share-service-icon-twitter">
+<span>Twitter</span>
+</button>
+</li>
+<li>
+<button onclick="window.open(&quot;https:\/\/plus.google.com\/share?url=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DjNQXAC9IVRw%26feature%3Dshare\u0026source=yt\u0026hl=en&quot;, {'height': 620,'width': 620,'scrollbars': true});return false;" data-service-name="GOOGLEPLUS" title="Share to Google+" class="yt-uix-tooltip share-service-button">
+<img src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="Google+" class="share-service-icon share-service-icon-googleplus">
+<span>Google+</span>
+</button>
+</li>
+</ul>
+<div class="yt-uix-expander-head clearfix">
+<a class="share-panel-show-more">
+<span class="collapsed-message">More<img class="arrow" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt=""></span>
+<span class="expanded-message">Less<img class="arrow" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt=""></span>
+</a>
+</div>
+<div class="yt-uix-expander-body share-options-secondary">
+<div class="secondary">
+<div class="share-groups">
+<ul>
+<li>
+<button onclick="window.open(&quot;http:\/\/www.tumblr.com\/share?v=3\u0026u=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DjNQXAC9IVRw%26feature%3Dshare&quot;, {'height': 650,'width': 1024,'scrollbars': true});return false;" data-service-name="TUMBLR" class="share-service-button">
+<img src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="tumblr." class="share-service-icon share-service-icon-tumblr">
+<span>tumblr.</span>
+</button>
+<span>tumblr.</span>
+</li>
+<li>
+<button onclick="window.open(&quot; http:\/\/pinterest.com\/pin\/create\/button\/?url=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DjNQXAC9IVRw%26feature%3Dshare\u0026description=Me+at+the+zoo\u0026is_video=true\u0026media=http%3A%2F%2Fi3.ytimg.com%2Fvi%2FjNQXAC9IVRw%2Fhqdefault.jpg&quot;, {'height': 650,'width': 1024,'scrollbars': true});return false;" data-service-name="PINTEREST" class="share-service-button">
+<img src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="pinterest" class="share-service-icon share-service-icon-pinterest">
+<span>pinterest</span>
+</button>
+<span>pinterest</span>
+</li>
+<li>
+<button onclick="window.open(&quot;http:\/\/www.blogger.com\/blog-this.g?n=Me+at+the+zoo\u0026source=youtube\u0026b=%3Ciframe+width%3D%22459%22+height%3D%22344%22+src%3D%22%2F%2Fwww.youtube.com%2Fembed%2FjNQXAC9IVRw%22+frameborder%3D%220%22+allowfullscreen%3E%3C%2Fiframe%3E\u0026eurl=http%3A%2F%2Fi3.ytimg.com%2Fvi%2FjNQXAC9IVRw%2Fhqdefault.jpg&quot;, {'height': 468,'width': 768,'scrollbars': true});return false;" data-service-name="BLOGGER" class="share-service-button">
+<img src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="Blogger" class="share-service-icon share-service-icon-blogger">
+<span>Blogger</span>
+</button>
+<span>Blogger</span>
+</li>
+<li>
+<button onclick="window.open(&quot;http:\/\/www.stumbleupon.com\/submit?url=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DjNQXAC9IVRw%26feature%3Dshare\u0026title=Me+at+the+zoo&quot;, {'height': 650,'width': 1024,'scrollbars': true});return false;" data-service-name="STUMBLEUPON" class="share-service-button">
+<img src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="StumbleUpon" class="share-service-icon share-service-icon-stumbleupon">
+<span>StumbleUpon</span>
+</button>
+<span>StumbleUpon</span>
+</li>
+</ul>
+<ul>
+<li>
+<button onclick="window.open(&quot;http:\/\/www.linkedin.com\/shareArticle?url=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DjNQXAC9IVRw%26feature%3Dshare\u0026title=Me+at+the+zoo\u0026summary=The+first+video+on+YouTube%2C+uploaded+at+8%3A27+P.M.+on+Saturday+April+23rd%2C+2005.+The+video+was+shot+by+Yakov+Lapitsky+at+the+San+Diego+Zoo.%0A%0AThis+video+is+published+under+the+Creative+Commons+Attribution+license%3A+http%3A%2F%2Fcreativecommons.org%2Flicenses%2Fby%2F3.0%2Flegalcode\u0026source=Youtube&quot;, {'height': 650,'width': 1024,'scrollbars': true});return false;" data-service-name="LINKEDIN" class="share-service-button">
+<img src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="LinkedIn" class="share-service-icon share-service-icon-linkedin">
+<span>LinkedIn</span>
+</button>
+<span>LinkedIn</span>
+</li>
+<li>
+<button onclick="window.open(&quot;http:\/\/www.myspace.com\/Modules\/PostTo\/Pages\/?t=Me+at+the+zoo\u0026u=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DjNQXAC9IVRw%26feature%3Dshare\u0026l=1&quot;, {'height': 650,'width': 1024,'scrollbars': true});return false;" data-service-name="MYSPACE" class="share-service-button">
+<img src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="Myspace" class="share-service-icon share-service-icon-myspace">
+<span>Myspace</span>
+</button>
+<span>Myspace</span>
+</li>
+<li>
+<button onclick="window.open(&quot;http:\/\/reddit.com\/submit?url=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DjNQXAC9IVRw%26feature%3Dshare\u0026title=Me+at+the+zoo&quot;, {'height': 650,'width': 1024,'scrollbars': true});return false;" data-service-name="REDDIT" class="share-service-button">
+<img src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="reddit" class="share-service-icon share-service-icon-reddit">
+<span>reddit</span>
+</button>
+<span>reddit</span>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="share-panel-embed-container hid">
+<div>${localizeString("global.loading.main")}</div>
+</div>
+<div class="share-panel-email-container hid" data-disabled="true">
+<strong>
+<a href="">Sign in</a> now!
+</strong>
+</div>
+</div>
+<span class="share-panel-hangout">
+<img src="//ssl.gstatic.com/s2/oz/images/stars/hangout/1/gplus-hangout-24x100-normal.png" alt="Video call" class="share-panel-hangout-button" title="Watch with your friends.">
+</span>
+ </div>
 </div>`;
                         }
                     },
@@ -3759,6 +3905,13 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
             });
         }
     },
+    Animations: {
+        start: (a, b) => {
+            // motivation dropped before i got to write more
+            // also this is probably a bad way to do animations
+            b.classList.add(a);
+        }
+    },
     watch: {
         Suggestions: {
             load: async () => {
@@ -3830,6 +3983,10 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                 } catch(err) {
                     console.error("[Watch] Failed to un/like video:", err);
                 }
+            },
+            share: (a, b) => {
+                document.cosmicCat.Animations.start("transitioning", document.querySelector("#watch-actions-area-container"));
+                console.log(a);
             }
         },
         watch5: {
@@ -4547,8 +4704,15 @@ function Ciulinations() {
 
 const localizeString = (varr, DOM) => {
     const lang = Ciulinations().getTranslation();
-    let i18n = varr.split('.').reduce((o,i)=> o[i]||"", lang.json) || "<\bno i18n string>";
+    var i18n;
+    try {
+        i18n = varr.split('.').reduce((o,i)=> o[i]||"", lang.json) || "<\bno i18n string>";
+    } catch {
+        // Attempt to refetch missing translations.
+        Ciulinations().setTranslation("en");
+    }
 
+    // really need to get rid of this and simplify the process.
     switch (varr) {
         case "watch.uploaderinfo":
             i18n = i18n.replace(/%s/g, `<a href="https://www.youtube.com${DOM?.secondary.owner.url}" class="yt-uix-sessionlink yt-user-name author" rel="author" dir="ltr">${DOM?.secondary.owner.name}</a>`);
