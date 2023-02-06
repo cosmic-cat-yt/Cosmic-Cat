@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.14
+// @version      0.6.15
 // @description  Broadcast Yourself
 // @author       Emiri Floarea (ciulinuwu)
 // @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
@@ -139,17 +139,30 @@ document.cosmicCat = {
             }
 
             if(BOOL_LOGIN == true) {
-                let popup = isLoggedIn.data.actions[0].getMultiPageMenuAction.menu.multiPageMenuRenderer.sections[0].accountSectionListRenderer;
-                let accountItem = popup.contents[0].accountItemSectionRenderer.contents.find(a => a.accountItem.isSelected == true)?.accountItem;
-                let google = popup.header.googleAccountHeaderRenderer;
-                document.cosmicCat.data.loggedin = true;
-                document.cosmicCat.Storage.add("accountInfo", {
-                    name: accountItem.accountName.simpleText,
-                    pfp: accountItem.accountPhoto.thumbnails[0].url,
-                    link: accountItem.navigationEndpoint,
-                    email: google.email.simpleText
-                });
+                document.cosmicCat.Account.updateLogin(isLoggedIn);
             }
+        },
+        updateLogin: (isLoggedIn) => {
+            let popup = isLoggedIn.data.actions[0].getMultiPageMenuAction.menu.multiPageMenuRenderer.sections[0].accountSectionListRenderer;
+            let accountItem = popup.contents[0].accountItemSectionRenderer.contents.find(a => a.accountItem.isSelected == true)?.accountItem;
+            let google = popup.header.googleAccountHeaderRenderer;
+            document.cosmicCat.data.loggedin = true;
+            document.cosmicCat.Storage.add("accountInfo", {
+                name: accountItem.accountName.simpleText,
+                pfp: accountItem.accountPhoto.thumbnails[0].url,
+                link: accountItem.navigationEndpoint,
+                email: google.email.simpleText
+            });
+        },
+        checkLogin: () => {
+            fetch("/getAccountSwitcherEndpoint").then(re => re.text()).then(re => {
+                var a = JSON.parse(re.slice(5));
+                var b = a.data.actions[0].getMultiPageMenuAction.menu.multiPageMenuRenderer.sections[0].accountSectionListRenderer;
+
+                if (document.cosmicCat.Storage.get("accountInfo").value.name !== b.contents[0].accountItemSectionRenderer.contents.find(a => a.accountItem.isSelected == true)?.accountItem.accountName.simpleText) {
+                    document.cosmicCat.Account.updateLogin(a);
+                }
+            }).catch(err => console.error(err));
         },
         isLoggedIn: () => {
             if (!document.cosmicCat.Utils.getCookie("SAPISID") && document.cosmicCat.Storage.get("accountInfo").exists) {
@@ -2345,7 +2358,6 @@ text-shadow : none;
         },
         Buttons: {
             Subscribe: (data) => {
-                console.debug(data);
                 const l = {
                     watch: () => {
                         return `<div class="yt-subscription-button-hovercard yt-uix-hovercard" data-card-class="watch-subscription-card">
@@ -3336,9 +3348,20 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
             if (!api) return this.abort();
 
             try {
+                var session = "";
+
+                try {
+                    session = api.onResponseReceivedEndpoints[0].reloadContinuationItemsCommand.continuationItems[0].commentsHeaderRenderer.createRenderer.commentSimpleboxRenderer.submitButton.buttonRenderer.serviceEndpoint.createCommentEndpoint.createCommentParams;
+                } catch(err) {
+                    try {
+                        session = api.onResponseReceivedEndpoints[0].reloadContinuationItemsCommand.continuationItems[0].commentsHeaderRenderer.createRenderer.commentSimpleboxRenderer.submitButton.buttonRenderer.serviceEndpoint.channelCreationServiceEndpoint.zeroStepChannelCreationParams.zeroStepCreateCommentParams.createCommentParams;
+                    } catch(err) {
+                        throw new Error(err);
+                    }
+                }
                 if(api.responseContext.mainAppWebResponseContext.loggedOut == false && document.querySelector("#session").getAttribute("data-yes") !== "yes") {
                     document.querySelector("#session").setAttribute("data-yes", "yes");
-                    document.querySelector("#session").value = api.onResponseReceivedEndpoints[0].reloadContinuationItemsCommand.continuationItems[0].commentsHeaderRenderer.createRenderer.commentSimpleboxRenderer.submitButton.buttonRenderer.serviceEndpoint.createCommentEndpoint.createCommentParams;
+                    document.querySelector("#session").value = session;
                 }
             } catch(err) {
                 console.error("[Comments] Couldn't check if user is logged in or out:", err);
@@ -4572,12 +4595,14 @@ margin-left:16px
         },
         handleSubscribeButton: async (a, b) => {
             let classn = "";
-            let d = classn ? a.dataset.subscriptionValue : a.parentElement.dataset.subscriptionValue;
+
+            let d = a.dataset.subscriptionValue;
             let c = (a.classList.contains("subscribed") || a.classList.contains("yt-subscription-button-green")) ? "unsubscribe" : "subscribe";
 
             switch(document.cosmicCat.Utils.whatPage()) {
                 case "channels2":
                     classn = ".subscription-container";
+                    d = a.parentElement.dataset.subscriptionValue;
                     break;
                 case "watch":
                 case "channels3":
@@ -4588,9 +4613,10 @@ margin-left:16px
             }
 
             try {
-                await document.cosmicCat.Ajax.post(`/youtubei/v1/subscription/${c}`, `channelIds: ["${d}"]`);
-                document.cosmicCat.Channels.toggleSubscribe();
-                document.cosmicCat.pageRenderer.replace(classn, document.cosmicCat.Template.Buttons.Subscribe(d));
+                document.cosmicCat.Ajax.post(`/youtubei/v1/subscription/${c}`, `channelIds: ["${d}"]`).then(() => {
+                    document.cosmicCat.Channels.toggleSubscribe();
+                    document.cosmicCat.pageRenderer.replace(classn, document.cosmicCat.Template.Buttons.Subscribe(d));
+                });
             } catch(err) {
                 console.error(`[Subscribe] Something went wrong with subscribing to ${d}:\n`, err);
             }
@@ -4610,6 +4636,8 @@ margin-left:16px
 };
 
 document.cosmicCat.Storage.init();
+
+document.cosmicCat.Account.checkLogin();
 
 const OBJ_STYLE_DARK = `* {--dark-noise: url(${document.cosmicCat.data.darkNoiseBg}); --shadow-color: #110f0f; --nero-color-primary: #201e1e; --nero-color-secondary: #242323; --gray-color: #a2a2a2; --silver-color: #bfbfbf; --night-rider-color: #2f2f2f; --white-color: #fff; --black-color: #000;}
 body, #masthead-container
@@ -5045,9 +5073,13 @@ ${OBJ_FOOTER}
                 }
 
                 if (ytInitialData.contents.twoColumnWatchNextResults?.results?.results?.contents?.filter(b => b.itemSectionRenderer)[1]) {
-                    document.cosmicCat.toggleElm("#comments-view");
-                    let con = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.filter(b => b.itemSectionRenderer)[1].itemSectionRenderer.contents[0].continuationItemRenderer.continuationEndpoint.continuationCommand.token;
-                    document.cosmicCat.Comments.init(con);
+                    try {
+                        document.cosmicCat.toggleElm("#comments-view");
+                        let con = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.filter(b => b.itemSectionRenderer)[1].itemSectionRenderer.contents[0].continuationItemRenderer.continuationEndpoint.continuationCommand.token;
+                        document.cosmicCat.Comments.init(con);
+                    } catch(err) {
+                        console.error("[Comments] Failed to load the comments section.\n\nUseful errors, if any:", err);
+                    }
                 }
 
                 if (!data.alternative.id) {
@@ -5065,7 +5097,8 @@ ${OBJ_FOOTER}
                     if(comm.length < 1) return;
 
                     document.cosmicCat.Ajax.post("/youtubei/v1/comment/create_comment", `createCommentParams: "${document.querySelector("input#session").value}", commentText: "${document.cosmicCat.Utils.escapeHtml(comm)}"`).then(async api => {
-                        if(api.actionResult.status == "STATUS_SUCCEEDED") {
+
+                        if(api?.actionResult?.status == "STATUS_SUCCEEDED") {
                             let re = api.actions[0].runAttestationCommand.ids;
 
                             let comments = document.querySelector("ul.comment-list.all");
