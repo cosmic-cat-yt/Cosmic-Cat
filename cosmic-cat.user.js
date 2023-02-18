@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.16
+// @version      0.6.17
 // @description  Broadcast Yourself
 // @author       Emiri Floarea (ciulinuwu)
 // @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
@@ -1601,10 +1601,10 @@ ${document.cosmicCat.Template.Buttons.Subscribe(data.creatorInfo.id)}
 </div>
 <div id="search-footer-box" class="searchFooterBox">
 <div class="yt-uix-pager" role="navigation">
-<a href="/web/20121031234035/http://www.youtube.com/results?page=1" id="next-btn" class="yt-uix-button yt-uix-sessionlink yt-uix-pager-button yt-uix-button-toggled yt-uix-button-default" data-sessionlink="" data-page="1" aria-label="Go to page 1">
+<a href="/web/20121031234035/http://www.youtube.com/results?page=1" class="yt-uix-button yt-uix-sessionlink yt-uix-pager-button yt-uix-button-toggled yt-uix-button-default" data-sessionlink="" data-page="1" aria-label="Go to page 1">
 <span class="yt-uix-button-content">1</span>
 </a>
-<a class="yt-uix-button yt-uix-sessionlink yt-uix-pager-button yt-uix-button-default" data-sessionlink="" onclick="document.cosmicCat.Search.next(this.getAttribute('data-token'), this.getAttribute('data-page'))" data-token="" data-page="2">
+<a class="yt-uix-button yt-uix-sessionlink yt-uix-pager-button yt-uix-button-default" id="next-btn" data-sessionlink="" onclick="document.cosmicCat.Search.next(this.getAttribute('data-token'), this.getAttribute('data-page'))" data-token="${ytInitialData.contents.twoColumnSearchResultsRenderer?.primaryContents?.sectionListRenderer?.contents?.[1]?.continuationItemRenderer?.continuationEndpoint?.continuationCommand?.token}" data-page="2">
 <span class="yt-uix-button-content">Next »</span>
 </a>
 </div>
@@ -2743,19 +2743,19 @@ ${document.cosmicCat.Template.Comments.Main(data)}
 <div class="share-panel-services yt-uix-expander yt-uix-expander-collapsed clearfix">
 <ul class="share-group ytg-box">
 <li>
-<button onclick="window.open(&quot;http:\/\/www.facebook.com\/dialog\/feed?app_id=87741124305\u0026link=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DjNQXAC9IVRw%26feature%3Dshare\u0026display=popup\u0026redirect_uri=https%3A%2F%2Fwww.youtube.com%2Ffacebook_redirect&quot;, {'height': 306,'width': 650,'scrollbars': true});return false;" data-service-name="FACEBOOK" title="Share to Facebook" class="yt-uix-tooltip share-service-button">
+<button onclick="window.open(&quot;http:\/\/www.facebook.com\/dialog\/feed?app_id=87741124305\u0026link=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D${data.alternative.id}%26feature%3Dshare\u0026display=popup\u0026redirect_uri=https%3A%2F%2Fwww.youtube.com%2Ffacebook_redirect&quot;, {'height': 306,'width': 650,'scrollbars': true});return false;" data-service-name="FACEBOOK" title="Share to Facebook" class="yt-uix-tooltip share-service-button">
 <img src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="Facebook" class="share-service-icon share-service-icon-facebook">
 <span>Facebook</span>
 </button>
 </li>
 <li>
-<button onclick="window.open(&quot;http:\/\/twitter.com\/intent\/tweet?url=http%3A%2F%2Fyoutu.be%2FjNQXAC9IVRw\u0026text=Me+at+the+zoo%3A\u0026via=youtube\u0026related=Youtube%2CYouTubeTrends%2CYTCreators&quot;, {'height': 650,'width': 1024,'scrollbars': true});return false;" data-service-name="TWITTER" title="Share to Twitter" class="yt-uix-tooltip share-service-button">
+<button onclick="window.open(&quot;http:\/\/twitter.com\/intent\/tweet?url=http%3A%2F%2Fyoutu.be%2F${data.alternative.id}\u0026text=${data.alternative.title}%3A\u0026via=youtube\u0026related=Youtube%2CYouTubeTrends%2CYTCreators&quot;, {'height': 650,'width': 1024,'scrollbars': true});return false;" data-service-name="TWITTER" title="Share to Twitter" class="yt-uix-tooltip share-service-button">
 <img src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="Twitter" class="share-service-icon share-service-icon-twitter">
 <span>Twitter</span>
 </button>
 </li>
 <li>
-<button onclick="window.open(&quot;https:\/\/plus.google.com\/share?url=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DjNQXAC9IVRw%26feature%3Dshare\u0026source=yt\u0026hl=en&quot;, {'height': 620,'width': 620,'scrollbars': true});return false;" data-service-name="GOOGLEPLUS" title="Share to Google+" class="yt-uix-tooltip share-service-button">
+<button onclick="window.open(&quot;https:\/\/plus.google.com\/share?url=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D${data.alternative.id}%26feature%3Dshare\u0026source=yt\u0026hl=en&quot;, {'height': 620,'width': 620,'scrollbars': true});return false;" data-service-name="GOOGLEPLUS" title="Share to Google+" class="yt-uix-tooltip share-service-button">
 <img src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="Google+" class="share-service-icon share-service-icon-googleplus">
 <span>Google+</span>
 </button>
@@ -2772,28 +2772,28 @@ ${document.cosmicCat.Template.Comments.Main(data)}
 <div class="share-groups">
 <ul>
 <li>
-<button onclick="window.open(&quot;http:\/\/www.tumblr.com\/share?v=3\u0026u=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DjNQXAC9IVRw%26feature%3Dshare&quot;, {'height': 650,'width': 1024,'scrollbars': true});return false;" data-service-name="TUMBLR" class="share-service-button">
+<button onclick="window.open(&quot;http:\/\/www.tumblr.com\/share?v=3\u0026u=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D${data.alternative.id}%26feature%3Dshare&quot;, {'height': 650,'width': 1024,'scrollbars': true});return false;" data-service-name="TUMBLR" class="share-service-button">
 <img src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="tumblr." class="share-service-icon share-service-icon-tumblr">
 <span>tumblr.</span>
 </button>
 <span>tumblr.</span>
 </li>
 <li>
-<button onclick="window.open(&quot; http:\/\/pinterest.com\/pin\/create\/button\/?url=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DjNQXAC9IVRw%26feature%3Dshare\u0026description=Me+at+the+zoo\u0026is_video=true\u0026media=http%3A%2F%2Fi3.ytimg.com%2Fvi%2FjNQXAC9IVRw%2Fhqdefault.jpg&quot;, {'height': 650,'width': 1024,'scrollbars': true});return false;" data-service-name="PINTEREST" class="share-service-button">
+<button onclick="window.open(&quot; http:\/\/pinterest.com\/pin\/create\/button\/?url=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D${data.alternative.id}%26feature%3Dshare\u0026description=${data.alternative.title}\u0026is_video=true\u0026media=http%3A%2F%2Fi3.ytimg.com%2Fvi%2F${data.alternative.id}%2Fhqdefault.jpg&quot;, {'height': 650,'width': 1024,'scrollbars': true});return false;" data-service-name="PINTEREST" class="share-service-button">
 <img src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="pinterest" class="share-service-icon share-service-icon-pinterest">
 <span>pinterest</span>
 </button>
 <span>pinterest</span>
 </li>
 <li>
-<button onclick="window.open(&quot;http:\/\/www.blogger.com\/blog-this.g?n=Me+at+the+zoo\u0026source=youtube\u0026b=%3Ciframe+width%3D%22459%22+height%3D%22344%22+src%3D%22%2F%2Fwww.youtube.com%2Fembed%2FjNQXAC9IVRw%22+frameborder%3D%220%22+allowfullscreen%3E%3C%2Fiframe%3E\u0026eurl=http%3A%2F%2Fi3.ytimg.com%2Fvi%2FjNQXAC9IVRw%2Fhqdefault.jpg&quot;, {'height': 468,'width': 768,'scrollbars': true});return false;" data-service-name="BLOGGER" class="share-service-button">
+<button onclick="window.open(&quot;http:\/\/www.blogger.com\/blog-this.g?n=Me+at+the+zoo\u0026source=youtube\u0026b=%3Ciframe+width%3D%22459%22+height%3D%22344%22+src%3D%22%2F%2Fwww.youtube.com%2Fembed%2F${data.alternative.id}%22+frameborder%3D%220%22+allowfullscreen%3E%3C%2Fiframe%3E\u0026eurl=http%3A%2F%2Fi3.ytimg.com%2Fvi%2F${data.alternative.id}%2Fhqdefault.jpg&quot;, {'height': 468,'width': 768,'scrollbars': true});return false;" data-service-name="BLOGGER" class="share-service-button">
 <img src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="Blogger" class="share-service-icon share-service-icon-blogger">
 <span>Blogger</span>
 </button>
 <span>Blogger</span>
 </li>
 <li>
-<button onclick="window.open(&quot;http:\/\/www.stumbleupon.com\/submit?url=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DjNQXAC9IVRw%26feature%3Dshare\u0026title=Me+at+the+zoo&quot;, {'height': 650,'width': 1024,'scrollbars': true});return false;" data-service-name="STUMBLEUPON" class="share-service-button">
+<button onclick="window.open(&quot;http:\/\/www.stumbleupon.com\/submit?url=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D${data.alternative.id}%26feature%3Dshare\u0026title=${data.alternative.title}&quot;, {'height': 650,'width': 1024,'scrollbars': true});return false;" data-service-name="STUMBLEUPON" class="share-service-button">
 <img src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="StumbleUpon" class="share-service-icon share-service-icon-stumbleupon">
 <span>StumbleUpon</span>
 </button>
@@ -2802,21 +2802,21 @@ ${document.cosmicCat.Template.Comments.Main(data)}
 </ul>
 <ul>
 <li>
-<button onclick="window.open(&quot;http:\/\/www.linkedin.com\/shareArticle?url=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DjNQXAC9IVRw%26feature%3Dshare\u0026title=Me+at+the+zoo\u0026summary=The+first+video+on+YouTube%2C+uploaded+at+8%3A27+P.M.+on+Saturday+April+23rd%2C+2005.+The+video+was+shot+by+Yakov+Lapitsky+at+the+San+Diego+Zoo.%0A%0AThis+video+is+published+under+the+Creative+Commons+Attribution+license%3A+http%3A%2F%2Fcreativecommons.org%2Flicenses%2Fby%2F3.0%2Flegalcode\u0026source=Youtube&quot;, {'height': 650,'width': 1024,'scrollbars': true});return false;" data-service-name="LINKEDIN" class="share-service-button">
+<button onclick="window.open(&quot;http:\/\/www.linkedin.com\/shareArticle?url=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D${data.alternative.id}%26feature%3Dshare\u0026title=${data.alternative.title}\u0026summary=The+first+video+on+YouTube%2C+uploaded+at+8%3A27+P.M.+on+Saturday+April+23rd%2C+2005.+The+video+was+shot+by+Yakov+Lapitsky+at+the+San+Diego+Zoo.%0A%0AThis+video+is+published+under+the+Creative+Commons+Attribution+license%3A+http%3A%2F%2Fcreativecommons.org%2Flicenses%2Fby%2F3.0%2Flegalcode\u0026source=Youtube&quot;, {'height': 650,'width': 1024,'scrollbars': true});return false;" data-service-name="LINKEDIN" class="share-service-button">
 <img src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="LinkedIn" class="share-service-icon share-service-icon-linkedin">
 <span>LinkedIn</span>
 </button>
 <span>LinkedIn</span>
 </li>
 <li>
-<button onclick="window.open(&quot;http:\/\/www.myspace.com\/Modules\/PostTo\/Pages\/?t=Me+at+the+zoo\u0026u=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DjNQXAC9IVRw%26feature%3Dshare\u0026l=1&quot;, {'height': 650,'width': 1024,'scrollbars': true});return false;" data-service-name="MYSPACE" class="share-service-button">
+<button onclick="window.open(&quot;http:\/\/www.myspace.com\/Modules\/PostTo\/Pages\/?t=${data.alternative.title}\u0026u=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D${data.alternative.id}%26feature%3Dshare\u0026l=1&quot;, {'height': 650,'width': 1024,'scrollbars': true});return false;" data-service-name="MYSPACE" class="share-service-button">
 <img src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="Myspace" class="share-service-icon share-service-icon-myspace">
 <span>Myspace</span>
 </button>
 <span>Myspace</span>
 </li>
 <li>
-<button onclick="window.open(&quot;http:\/\/reddit.com\/submit?url=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DjNQXAC9IVRw%26feature%3Dshare\u0026title=Me+at+the+zoo&quot;, {'height': 650,'width': 1024,'scrollbars': true});return false;" data-service-name="REDDIT" class="share-service-button">
+<button onclick="window.open(&quot;http:\/\/reddit.com\/submit?url=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D${data.alternative.id}%26feature%3Dshare\u0026title=${data.alternative.title}&quot;, {'height': 650,'width': 1024,'scrollbars': true});return false;" data-service-name="REDDIT" class="share-service-button">
 <img src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="reddit" class="share-service-icon share-service-icon-reddit">
 <span>reddit</span>
 </button>
@@ -3339,6 +3339,50 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
             }
         }
     },
+    Pagination: {
+        sortDataIntoArray: function (api) {
+            let obj = [];
+
+            try {
+                obj = api?.[0].appendContinuationItemsAction.continuationItems;
+            } catch {
+                obj = api?.[1]?.reloadContinuationItemsCommand.continuationItems;
+            }
+
+            return obj;
+        },
+        nextNumberButton: function(continuation, number, type) {
+            number = Number(number);
+            commCount = number;
+            let ana = () => {
+                document.querySelector(".yt-uix-button-toggled").classList.remove("yt-uix-button-toggled");
+                document.querySelector(`[data-page='${number}']`).classList.add("yt-uix-button-toggled");
+                let ded = document.querySelector("#next-btn");
+                ded.setAttribute("data-page", number + 1);
+            };
+            if (document.querySelector(`.yt-pp[data-page='${number}']`)) {
+                ana();
+            } else {
+                if (number !== 0) {
+                    let abc = document.querySelector(".yt-uix-pager");
+                    let bcd = document.querySelector(".yt-uix-button-toggled");
+                    let def = document.createElement("a");
+                    let ded = document.querySelector("#next-btn");
+                    def.setAttribute("class", "yt-uix-button yt-uix-sessionlink yt-uix-pager-button yt-uix-button-toggled yt-uix-button-default yt-pp");
+                    def.setAttribute("data-page", number);
+                    def.setAttribute("onclick", `document.cosmicCat.${type}.next(this.getAttribute('data-token'), this.getAttribute('data-page'))`);
+                    def.setAttribute("aria-label", `Go to page ${number}`);
+                    def.setAttribute("data-token", continuation);
+                    def.innerHTML = `<span class="yt-uix-button-content">${number}</span>`;
+                    ded.setAttribute("data-page", commCount + 1);
+                    if (bcd) {
+                        bcd.classList.remove("yt-uix-button-toggled");
+                    }
+                    abc.insertBefore(def, document.querySelector("#next-btn"));
+                }
+            }
+        }
+    },
     Comments: {
         init: async function (continuation) {
             if (!continuation) return document.cosmicCat.toggleElm("#comments-view");
@@ -3367,7 +3411,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
             }
 
             const sortMenuTokens = this.sortMenuTokens(api);
-            let sortedCommentsArray = this.sortCommentsIntoArray(api);
+            let sortedCommentsArray = document.cosmicCat.Pagination.sortDataIntoArray(api.onResponseReceivedEndpoints);
 
             if (!sortedCommentsArray) return this.abort();
 
@@ -3387,11 +3431,11 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
             let api = await document.cosmicCat.Ajax.post("/youtubei/v1/next", `continuation: "${continuation}"`);
             if (!api) return this.abort();
 
-            let sortedCommentsArray = this.sortCommentsIntoArray(api);
+            let sortedCommentsArray = document.cosmicCat.Pagination.sortDataIntoArray(api.onResponseReceivedEndpoints);
 
             const comments = this.sortComments(sortedCommentsArray, "all");
 
-            this.nextNumberButton(continuation, 1);
+            document.cosmicCat.Pagination.nextNumberButton(continuation, 1, "Comments");
 
             document.querySelector(".comment-list.all").innerHTML = comments.result;
 
@@ -3421,53 +3465,11 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
 
             return result;
         },
-        sortCommentsIntoArray: function (api) {
-            let obj = [];
-
-            try {
-                obj = api.onResponseReceivedEndpoints[0]?.appendContinuationItemsAction.continuationItems;
-            } catch {
-                obj = api.onResponseReceivedEndpoints[1]?.reloadContinuationItemsCommand.continuationItems;
-            }
-
-            return obj;
-        },
         sortMenuTokens: function (obj) {
             return {
                 top: obj.onResponseReceivedEndpoints[0].reloadContinuationItemsCommand.continuationItems[0].commentsHeaderRenderer.sortMenu.sortFilterSubMenuRenderer.subMenuItems[0].serviceEndpoint.continuationCommand.token,
                 newest: obj.onResponseReceivedEndpoints[0].reloadContinuationItemsCommand.continuationItems[0].commentsHeaderRenderer.sortMenu.sortFilterSubMenuRenderer.subMenuItems[1].serviceEndpoint.continuationCommand.token
             };
-        },
-        nextNumberButton: function(continuation, number) {
-            number = Number(number);
-            commCount = number;
-            let ana = () => {
-                document.querySelector(".yt-uix-button-toggled").classList.remove("yt-uix-button-toggled");
-                document.querySelector(`[data-page='${number}']`).classList.add("yt-uix-button-toggled");
-                let ded = document.querySelector("#next-btn");
-                ded.setAttribute("data-page", number + 1);
-            };
-            if (document.querySelector(`.yt-pp[data-page='${number}']`)) {
-                ana();
-            } else {
-                if (number !== 0) {
-                    let abc = document.querySelector(".yt-uix-pager");
-                    let bcd = document.querySelector(".yt-uix-button-toggled");
-                    let def = document.createElement("a");
-                    let ded = document.querySelector("#next-btn");
-                    def.setAttribute("class", "yt-uix-button yt-uix-sessionlink yt-uix-pager-button yt-uix-button-toggled yt-uix-button-default yt-pp");
-                    def.setAttribute("data-page", number);
-                    def.setAttribute("onclick", "document.cosmicCat.Comments.next(this.getAttribute('data-token'), this.getAttribute('data-page'))");
-                    def.setAttribute("aria-label", `Go to page ${number}`);
-                    def.setAttribute("data-token", continuation);
-                    def.innerHTML = `<span class="yt-uix-button-content">${number}</span>`;
-                    ded.setAttribute("data-page", commCount + 1);
-                    if (bcd) {
-                        bcd.classList.remove("yt-uix-button-toggled");
-                    }
-                    abc.insertBefore(def, document.querySelector("#next-btn"));
-                }
-            }
         },
         next: async function (continuation, number) {
             if (!continuation) return document.cosmicCat.toggleElm("#next-btn");
@@ -3476,11 +3478,11 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
             let api = await document.cosmicCat.Ajax.post("/youtubei/v1/next", `continuation: "${continuation}"`);
             if (!api) return this.abort();
 
-            let sortedCommentsArray = this.sortCommentsIntoArray(api);
+            let sortedCommentsArray = document.cosmicCat.Pagination.sortDataIntoArray(api.onResponseReceivedEndpoints);
 
             const comments = this.sortComments(sortedCommentsArray, "all");
 
-            this.nextNumberButton(continuation, number);
+            document.cosmicCat.Pagination.nextNumberButton(continuation, number, "Comments");
 
             document.querySelector(".comment-list.all").innerHTML = comments.result;
 
@@ -3535,54 +3537,6 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
 
             return result;
         },
-        sortResultsIntoArray: function (api) {
-            let obj = [];
-
-            try {
-                obj = api.onResponseReceivedCommands[0]?.appendContinuationItemsAction.continuationItems;
-            } catch {
-                obj = api.onResponseReceivedCommands[1]?.reloadContinuationItemsCommand.continuationItems;
-            }
-
-            return obj;
-        },
-        sortMenuTokens: function (obj) {
-            return {
-                top: obj.onResponseReceivedEndpoints[0].reloadContinuationItemsCommand.continuationItems[0].commentsHeaderRenderer.sortMenu.sortFilterSubMenuRenderer.subMenuItems[0].serviceEndpoint.continuationCommand.token,
-                newest: obj.onResponseReceivedEndpoints[0].reloadContinuationItemsCommand.continuationItems[0].commentsHeaderRenderer.sortMenu.sortFilterSubMenuRenderer.subMenuItems[1].serviceEndpoint.continuationCommand.token
-            };
-        },
-        nextNumberButton: function(continuation, number) {
-            number = Number(number);
-            commCount = number;
-            let ana = () => {
-                document.querySelector(".yt-uix-button-toggled").classList.remove("yt-uix-button-toggled");
-                document.querySelector(`[data-page='${number}']`).classList.add("yt-uix-button-toggled");
-                let ded = document.querySelector("#next-btn");
-                ded.setAttribute("data-page", number + 1);
-            };
-            if (document.querySelector(`.yt-pp[data-page='${number}']`)) {
-                ana();
-            } else {
-                if (number !== 0) {
-                    let abc = document.querySelector(".yt-uix-pager");
-                    let bcd = document.querySelector(".yt-uix-button-toggled");
-                    let def = document.createElement("a");
-                    let ded = document.querySelector("#next-btn");
-                    def.setAttribute("class", "yt-uix-button yt-uix-sessionlink yt-uix-pager-button yt-uix-button-toggled yt-uix-button-default yt-pp");
-                    def.setAttribute("data-page", number);
-                    def.setAttribute("onclick", "document.cosmicCat.Search.next(this.getAttribute('data-token'), this.getAttribute('data-page'))");
-                    def.setAttribute("aria-label", `Go to page ${number}`);
-                    def.setAttribute("data-token", continuation);
-                    def.innerHTML = `<span class="yt-uix-button-content">${number}</span>`;
-                    ded.setAttribute("data-page", commCount + 1);
-                    if (bcd) {
-                        bcd.classList.remove("yt-uix-button-toggled");
-                    }
-                    abc.insertBefore(def, document.querySelector("#next-btn"));
-                }
-            }
-        },
         next: async function (continuation, number) {
             if (!continuation) return document.cosmicCat.toggleElm("#next-btn");
             //document.cosmicCat.toggleElm("#loading");
@@ -3590,18 +3544,35 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
             let api = await document.cosmicCat.Ajax.post("/youtubei/v1/search", `continuation: "${continuation}"`);
             if (!api) return this.abort();
 
-            let sortedResultsArray = this.sortResultsIntoArray(api);
+            let sortedResultsArray = document.cosmicCat.Pagination.sortDataIntoArray(api.onResponseReceivedCommands);
 
             const comments = this.sortResults(sortedResultsArray);
 
-            this.nextNumberButton(continuation, number);
+            document.cosmicCat.Pagination.nextNumberButton(continuation, number, "Search");
 
             document.querySelector("#search-results").innerHTML = comments.result;
-
-            document.cosmicCat.toggleElm("#comments-loading");
         }
     },
     Channels: {
+        Channels3: {
+            Pagination: {
+                next: async function (continuation, number) {
+                    if (!continuation) return document.cosmicCat.toggleElm("#next-btn");
+                    //document.cosmicCat.toggleElm("#loading");
+
+                    let api = await document.cosmicCat.Ajax.post("/youtubei/v1/search", `continuation: "${continuation}"`);
+                    if (!api) return this.abort();
+
+                    let sortedResultsArray = document.cosmicCat.Pagination.sortDataIntoArray(api.onResponseReceivedCommands);
+
+                    const comments = this.sortResults(sortedResultsArray);
+
+                    document.cosmicCat.Pagination.nextNumberButton(continuation, number, "Search");
+
+                    document.querySelector("#search-results").innerHTML = comments.result;
+                }
+            }
+        },
         playnav: {
             selectTab: async (a, b) => {
                 let channel = window.location.pathname.split("/")[2];
