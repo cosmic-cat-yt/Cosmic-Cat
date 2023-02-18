@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.15
+// @version      0.6.16
 // @description  Broadcast Yourself
 // @author       Emiri Floarea (ciulinuwu)
 // @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
@@ -1157,7 +1157,6 @@ var isLoggedIn =  false ;
 <div style="clear:both"></div>
 <br>
 <div class="padT5 profileAssets">
-<span class="smallText">City:</span> <strong>San Bruno, CA</strong>
 <br>
 <img src="//www.youtube.com/img/flags/en_US_globe.gif" class="currentFlag" width="17">
 <br>
@@ -1211,7 +1210,7 @@ var isLoggedIn =  false ;
 <tr>
 <td colspan="2">
 <div class="marB3 alignC">
-<a href="http://www.youtube.com/YouTube">http://www.youtube.com/YouTube</a></div>
+<a href="http://www.youtube.com/YouTube">http://www.youtube.com/${document.cosmicCat.Utils.getCurrentPage()}</a></div>
 </td>
 </tr>
 </tbody></table>
@@ -2647,7 +2646,7 @@ ${document.cosmicCat.Template.Watch.Content.mainCon.panel.Share(data)}
 </div>
 <div id="watch-actions-Ajax" class="watch-actions-panel hid"></div>
 <div class="close">
-<img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="close-button" onclick="document.cosmicCat.toggleElm()">
+<img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="close-button" onclick="document.cosmicCat.toggleElm('#watch-actions-area-container')">
 </div>
 </div>
 </div>
@@ -4008,7 +4007,10 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                 }
             },
             share: (a, b) => {
-                document.cosmicCat.Animations.start("transitioning", document.querySelector("#watch-actions-area-container"));
+                document.querySelector("#watch-actions-area-container").classList.remove("hid");
+                document.querySelector("#watch-actions-share").classList.remove("hid");
+                // unfinished
+                // document.cosmicCat.Animations.start("transitioning", document.querySelector("#watch-actions-area-container"));
                 console.log(a);
             }
         },
