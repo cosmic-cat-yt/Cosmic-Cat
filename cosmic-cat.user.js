@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.17
+// @version      0.6.18
 // @description  Broadcast Yourself
 // @author       Emiri Floarea (ciulinuwu)
 // @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
@@ -1210,7 +1210,7 @@ var isLoggedIn =  false ;
 <tr>
 <td colspan="2">
 <div class="marB3 alignC">
-<a href="http://www.youtube.com/YouTube">http://www.youtube.com/${document.cosmicCat.Utils.getCurrentPage()}</a></div>
+<a href="http://www.youtube.com/YouTube">http://www.youtube.com/</a></div>
 </td>
 </tr>
 </tbody></table>
@@ -2749,7 +2749,7 @@ ${document.cosmicCat.Template.Comments.Main(data)}
 </button>
 </li>
 <li>
-<button onclick="window.open(&quot;http:\/\/twitter.com\/intent\/tweet?url=http%3A%2F%2Fyoutu.be%2F${data.alternative.id}\u0026text=${data.alternative.title}%3A\u0026via=youtube\u0026related=Youtube%2CYouTubeTrends%2CYTCreators&quot;, {'height': 650,'width': 1024,'scrollbars': true});return false;" data-service-name="TWITTER" title="Share to Twitter" class="yt-uix-tooltip share-service-button">
+<button onclick="window.open(&quot;http:\/\/twitter.com\/intent\/tweet?url=http%3A%2F%2Fyoutu.be%2F${data.alternative.id}\u0026text=${encodeURIComponent(data.alternative.title)}%3A\u0026via=youtube\u0026related=Youtube%2CYouTubeTrends%2CYTCreators&quot;, {'height': 650,'width': 1024,'scrollbars': true});return false;" data-service-name="TWITTER" title="Share to Twitter" class="yt-uix-tooltip share-service-button">
 <img src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="Twitter" class="share-service-icon share-service-icon-twitter">
 <span>Twitter</span>
 </button>
@@ -2779,7 +2779,7 @@ ${document.cosmicCat.Template.Comments.Main(data)}
 <span>tumblr.</span>
 </li>
 <li>
-<button onclick="window.open(&quot; http:\/\/pinterest.com\/pin\/create\/button\/?url=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D${data.alternative.id}%26feature%3Dshare\u0026description=${data.alternative.title}\u0026is_video=true\u0026media=http%3A%2F%2Fi3.ytimg.com%2Fvi%2F${data.alternative.id}%2Fhqdefault.jpg&quot;, {'height': 650,'width': 1024,'scrollbars': true});return false;" data-service-name="PINTEREST" class="share-service-button">
+<button onclick="window.open(&quot; http:\/\/pinterest.com\/pin\/create\/button\/?url=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D${data.alternative.id}%26feature%3Dshare\u0026description=${encodeURIComponent(data.alternative.title)}\u0026is_video=true\u0026media=http%3A%2F%2Fi3.ytimg.com%2Fvi%2F${data.alternative.id}%2Fhqdefault.jpg&quot;, {'height': 650,'width': 1024,'scrollbars': true});return false;" data-service-name="PINTEREST" class="share-service-button">
 <img src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="pinterest" class="share-service-icon share-service-icon-pinterest">
 <span>pinterest</span>
 </button>
@@ -2793,7 +2793,7 @@ ${document.cosmicCat.Template.Comments.Main(data)}
 <span>Blogger</span>
 </li>
 <li>
-<button onclick="window.open(&quot;http:\/\/www.stumbleupon.com\/submit?url=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D${data.alternative.id}%26feature%3Dshare\u0026title=${data.alternative.title}&quot;, {'height': 650,'width': 1024,'scrollbars': true});return false;" data-service-name="STUMBLEUPON" class="share-service-button">
+<button onclick="window.open(&quot;http:\/\/www.stumbleupon.com\/submit?url=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D${data.alternative.id}%26feature%3Dshare\u0026title=${encodeURIComponent(data.alternative.title)}&quot;, {'height': 650,'width': 1024,'scrollbars': true});return false;" data-service-name="STUMBLEUPON" class="share-service-button">
 <img src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="StumbleUpon" class="share-service-icon share-service-icon-stumbleupon">
 <span>StumbleUpon</span>
 </button>
@@ -2802,21 +2802,21 @@ ${document.cosmicCat.Template.Comments.Main(data)}
 </ul>
 <ul>
 <li>
-<button onclick="window.open(&quot;http:\/\/www.linkedin.com\/shareArticle?url=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D${data.alternative.id}%26feature%3Dshare\u0026title=${data.alternative.title}\u0026summary=The+first+video+on+YouTube%2C+uploaded+at+8%3A27+P.M.+on+Saturday+April+23rd%2C+2005.+The+video+was+shot+by+Yakov+Lapitsky+at+the+San+Diego+Zoo.%0A%0AThis+video+is+published+under+the+Creative+Commons+Attribution+license%3A+http%3A%2F%2Fcreativecommons.org%2Flicenses%2Fby%2F3.0%2Flegalcode\u0026source=Youtube&quot;, {'height': 650,'width': 1024,'scrollbars': true});return false;" data-service-name="LINKEDIN" class="share-service-button">
+<button onclick="window.open(&quot;http:\/\/www.linkedin.com\/shareArticle?url=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D${data.alternative.id}%26feature%3Dshare\u0026title=${encodeURIComponent(data.alternative.title)}\u0026summary=The+first+video+on+YouTube%2C+uploaded+at+8%3A27+P.M.+on+Saturday+April+23rd%2C+2005.+The+video+was+shot+by+Yakov+Lapitsky+at+the+San+Diego+Zoo.%0A%0AThis+video+is+published+under+the+Creative+Commons+Attribution+license%3A+http%3A%2F%2Fcreativecommons.org%2Flicenses%2Fby%2F3.0%2Flegalcode\u0026source=Youtube&quot;, {'height': 650,'width': 1024,'scrollbars': true});return false;" data-service-name="LINKEDIN" class="share-service-button">
 <img src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="LinkedIn" class="share-service-icon share-service-icon-linkedin">
 <span>LinkedIn</span>
 </button>
 <span>LinkedIn</span>
 </li>
 <li>
-<button onclick="window.open(&quot;http:\/\/www.myspace.com\/Modules\/PostTo\/Pages\/?t=${data.alternative.title}\u0026u=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D${data.alternative.id}%26feature%3Dshare\u0026l=1&quot;, {'height': 650,'width': 1024,'scrollbars': true});return false;" data-service-name="MYSPACE" class="share-service-button">
+<button onclick="window.open(&quot;http:\/\/www.myspace.com\/Modules\/PostTo\/Pages\/?t=${encodeURIComponent(data.alternative.title)}\u0026u=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D${data.alternative.id}%26feature%3Dshare\u0026l=1&quot;, {'height': 650,'width': 1024,'scrollbars': true});return false;" data-service-name="MYSPACE" class="share-service-button">
 <img src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="Myspace" class="share-service-icon share-service-icon-myspace">
 <span>Myspace</span>
 </button>
 <span>Myspace</span>
 </li>
 <li>
-<button onclick="window.open(&quot;http:\/\/reddit.com\/submit?url=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D${data.alternative.id}%26feature%3Dshare\u0026title=${data.alternative.title}&quot;, {'height': 650,'width': 1024,'scrollbars': true});return false;" data-service-name="REDDIT" class="share-service-button">
+<button onclick="window.open(&quot;http:\/\/reddit.com\/submit?url=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D${data.alternative.id}%26feature%3Dshare\u0026title=${encodeURIComponent(data.alternative.title)}&quot;, {'height': 650,'width': 1024,'scrollbars': true});return false;" data-service-name="REDDIT" class="share-service-button">
 <img src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="reddit" class="share-service-icon share-service-icon-reddit">
 <span>reddit</span>
 </button>
@@ -3573,6 +3573,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                 }
             }
         },
+        Channels2: {},
         playnav: {
             selectTab: async (a, b) => {
                 let channel = window.location.pathname.split("/")[2];
