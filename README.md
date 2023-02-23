@@ -1,7 +1,6 @@
 # Cosmic Cat UserScript
 [![playground](https://discordapp.com/api/guilds/1058727079136464977/widget.png?style=shield)](https://discord.gg/NSUgUJdMQa)
 
-The UserScript that aims to restore YouTube's 2012 layout!
 ## Screenshots
 ![0](https://ciulinuwu.github.io/@PromotionalImages/cosmic-cat/0.jpg)
 
@@ -9,9 +8,9 @@ The UserScript that aims to restore YouTube's 2012 layout!
 - Get **Tampermonkey** for your Browser: https://www.tampermonkey.net<br/>
 - Click here to open up the install prompt (requires **Tampermonkey**): [cosmic-cat.user.js](https://github.com/ciulinuwu/cosmic-cat/raw/main/cosmic-cat.user.js)
 
-## Contributing
-If something doesn't work as intended, please fill a report through the [**Issues**](https://github.com/ciulinuwu/cosmic-cat/issues/new/choose) tab.</br></br>
-If you want to contribute to this project, please read [Contributing Guidelines](https://github.com/ciulinuwu/cosmic-cat/blob/master/CONTRIBUTING.md) before doing so.
+## Contribution
+Cosmic Cat is early in development. If you encounter any problems while using Cosmic Cat, [please make an issue](https://github.com/thistlecafe/cosmic-cat/issues/new?template=bug-issue.yml).<br/></br>
+We also welcome contributions to the project! Please see [CONTRIBUTING.md](https://github.com/thistlecafe/cosmic-cat/blob/main/CONTRIBUTING.md)!
  
 ##
 **YouTube is a trademark of Google LLC.** (don't sue me please)
