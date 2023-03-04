@@ -8,7 +8,7 @@
 - Get **Tampermonkey** for your Browser: https://www.tampermonkey.net<br/>
 - Click here to open up the install prompt (requires **Tampermonkey**): [cosmic-cat.user.js](https://github.com/ciulinuwu/cosmic-cat/raw/main/cosmic-cat.user.js)
 
-## Contribution
+## Contributing
 Cosmic Cat is early in development. If you encounter any problems while using Cosmic Cat, [please make an issue](https://github.com/thistlecafe/cosmic-cat/issues/new?template=bug-issue.yml).<br/></br>
 We also welcome contributions to the project! Please see [CONTRIBUTING.md](https://github.com/thistlecafe/cosmic-cat/blob/main/CONTRIBUTING.md)!
  
