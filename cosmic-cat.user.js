@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.19
+// @version      0.6.20
 // @description  Broadcast Yourself
 // @author       Emiri Floarea (ciulinuwu)
 // @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
@@ -39,12 +39,24 @@ function error(a) {
     return console.error(`[Cosmic Cat]`, a);
 }
 
+    console.log(GM_info.script.version)
+
 GM_registerMenuCommand("Open (settings)", () => window.location.replace("/cosmic_cat"));
 
-var BOOL_LOGIN;
-var BOOL_SUBSCRIBE;
-var startTime = new Date().getTime();
-var commCount = 1;
+var BOOL_LOGIN,
+    BOOL_SUBSCRIBE,
+    update = !1,
+    startTime = new Date().getTime(),
+    commCount = 1;
+
+
+// Check for updates here, because Tampermonkey's "Auto-updater" is SHIT!
+!(function(){
+    fetch("https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js").then(a => a.text()).then(a => {
+        (GM_info.script.version !== (a.substr(parseInt(a.search("@version") + 14)).substr(0, parseInt(a.search("@version") - 86)))) && (update = !0);
+    });
+})();
+
 document.cosmicCat = {
     data: {
         version: 20230122,
