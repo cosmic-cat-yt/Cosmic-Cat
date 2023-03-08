@@ -51,11 +51,9 @@ var BOOL_LOGIN,
 
 
 // Check for updates here, because Tampermonkey's "Auto-updater" is SHIT!
-!(function(){
-    fetch("https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js").then(a => a.text()).then(a => {
-        (GM_info.script.version !== (a.substr(parseInt(a.search("@version") + 14)).substr(0, parseInt(a.search("@version") - 86)))) && (update = !0);
-    });
-})();
+fetch("https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js").then(a => a.text()).then(a => {
+    (GM_info.script.version !== (a.substr(parseInt(a.search("@version") + 14)).substr(0, parseInt(a.search("@version") - 86)))) && (update = !0);
+});
 
 document.cosmicCat = {
     data: {
@@ -4999,7 +4997,9 @@ ${OBJ_FOOTER}
         document.cosmicCat.pageRenderer.set("#masthead-user", OBJ_USER);
         document.cosmicCat.pageRenderer.add("#masthead-container", OBJ_MASTH);
 
-        (update == !0) && document.cosmicCat.Alert(0, "An update is available to Cosmic Cat! <a href=\"https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js\">Click to prompt update.</a>");
+        document.cosmicCat.Utils.waitForElm2().then(() => {
+            (!0 === update) && document.cosmicCat.Alert(0, "An update is available to Cosmic Cat! <a href=\"https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js\">Click to prompt update.</a>");
+        });
 
         (() => {
             try {
