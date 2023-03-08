@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.18
+// @version      0.6.19
 // @description  Broadcast Yourself
 // @author       Emiri Floarea (ciulinuwu)
 // @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
@@ -342,7 +342,7 @@ ${document.cosmicCat.Template.Buttons.addTo(data.id)}
 <span class="metadata-separator">|</span>
 <span class="video-date-added">${data.upload}</span>
 </div>
-<a href="${data.owner?.url}" class="yt-uix-sessionlink yt-user-name" data-sessionlink="" dir="ltr">${data.owner?.name}</a>
+<a href="${data.owner?.url}/videos" class="yt-uix-sessionlink yt-user-name" data-sessionlink="" dir="ltr">${data.owner?.name}</a>
 </div>
 </div>
 </div>`;
@@ -393,7 +393,7 @@ ${document.cosmicCat.Template.Buttons.Subscribe(data.header.id)}
 <span class="stat-name">subscribers</span>
 </div>
 <div class="stat-entry">
-<span class="stat-value">${data.info.fields.views}</span>
+<span class="stat-value">${data?.info?.fields?.views}</span>
 <span class="stat-name">video views</span>
 </div>
 </div>
@@ -459,7 +459,16 @@ ${document.cosmicCat.Template.Buttons.Subscribe(data.header.id)}
 </div>
 <ul class="channels-browse-content-grid clearfix channels-browse-gutter-padding context-data-container">
 </ul>
+<div class="channels-browse-gutter-padding"></div>
 </div>
+</div>`;
+                    },
+                    Navigation: () => {
+                        return `<div class="yt-uix-pager" role="navigation">
+<a class="yt-uix-button yt-uix-sessionlink yt-uix-pager-page-num yt-uix-pager-button yt-uix-button-toggled yt-uix-button-default" data-page="1" aria-label="Go to page 1" data-sessionlink="ei=CPyLrL_cnbICFRgJIQod5QyJsA%3D%3D">
+<span class="yt-uix-button-content">1</span></a>&nbsp;
+<a class="yt-uix-button yt-uix-sessionlink yt-uix-pager-next yt-uix-pager-button yt-uix-button-default" data-page="2" id="next-btn" onclick="document.cosmicCat.Channels.Channels3.Pagination.next(this.getAttribute('data-token'), this.getAttribute('data-page'))" data-sessionlink="ei=CPyLrL_cnbICFRgJIQod5QyJsA%3D%3D">
+<span class="yt-uix-button-content">Next »</span></a>
 </div>`;
                     },
                     listItem: {
@@ -2106,7 +2115,7 @@ ${localizeString("global.loading.main")}
                     return `<li>
 <div class="feed-item-container first" data-channel-key="${data.owner.id}">
 <div class="feed-author-bubble-container">
-<a href="${data.owner.url}" class="feed-author-bubble">
+<a href="${data.owner.url}/videos" class="feed-author-bubble">
 <span class="feed-item-author">
 <span class="video-thumb ux-thumb yt-thumb-square-28">
 <span class="yt-thumb-clip">
@@ -2129,7 +2138,7 @@ ${localizeString("home.feed.uploadedavideo", data?.owner)} <span class="feed-ite
 <a class="ux-thumb-wrap contains-addto yt-uix-contextlink yt-uix-sessionlink" href="/watch?v=${data.id}">
 <span class="video-thumb ux-thumb yt-thumb-default-185">
 <span class="yt-thumb-clip"><span class="yt-thumb-clip-inner">
-<img src="//i2.ytimg.com/vi/${data.id}/hqdefault.jpg" alt="Thumbnail" width="185"><span class="vertical-align"></span>
+<img src="${data.thumbnail}" alt="Thumbnail" width="185"><span class="vertical-align"></span>
 </span>
 </span>
 </span>
@@ -2580,7 +2589,12 @@ ${document.cosmicCat.Template.Watch.Content.mainCon.sideBar.Main(data)}
 <div style="visibility: hidden; height: 0px; padding: 0px; overflow: hidden;">
 <div id="baseDiv"></div>
 </div>
-</div>`;
+</div>
+<style>
+.yt-thumb-default-120 img {
+width: 120px;
+}
+</style>`;
                     },
                     panel: {
                         Main: (data) => {
@@ -2589,7 +2603,7 @@ ${document.cosmicCat.Template.Watch.Content.mainCon.sideBar.Main(data)}
 <div id="watch-actions">
 <div id="watch-actions-right">
 <span class="watch-view-count">
-<strong>${document.cosmicCat.Utils.toNumber(data.primary.views)}</strong>
+<strong>${document.cosmicCat.Utils.parseNumber(data.primary.views.split(" ")[0])}</strong>
 </span>
 <button onclick=";return false;" type="button" id="watch-insight-button" class="yt-uix-tooltip yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip yt-uix-button-empty" role="button" title="Show video statistics">
 <span class="yt-uix-button-icon-wrapper">
@@ -2875,7 +2889,7 @@ ${document.cosmicCat.Template.Comments.Main(data)}
 <span class="video-thumb ux-thumb yt-thumb-default-120">
 <span class="yt-thumb-clip">
 <span class="yt-thumb-clip-inner">
-<img src="//i1.ytimg.com/vi/${videoData.id}/default.jpg" alt="Thumbnail"><span class="vertical-align"></span>
+<img src="${videoData.thumbnail}" alt="Thumbnail"><span class="vertical-align"></span>
 </span>
 </span>
 </span>
@@ -3034,14 +3048,29 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
         }
     },
     Utils: {
-        toNumber: (arg) => {
-            var a;
-            try {
-                a=document.cosmicCat.Utils.parseNumber(arg.match(/\d/g).join(""));
-            } catch {
-                a="0";
+        deabreviateCnt: (e) => {
+            if (e) {
+                var t,
+                    n,
+                    a = 0;
+                if (
+                    ("M" == e.charAt(e.length - 1) && (a = 1),
+                     "K" == e.charAt(e.length - 1) && (a = 2),
+                     0 != a)
+                )
+                    1 == a && ((t = "000,000"), (n = "M")),
+                        2 == a && ((t = "000"), (n = "K")),
+                        (e =
+                         -1 != e.indexOf(".")
+                         ? e.split(".")[0] +
+                         "," +
+                         e.split(".")[1].split(n)[0].slice(0, 2) +
+                         t.slice(e.split(".")[1].split(n)[0].length, t.length)
+                         : e.substring(0, e.length - 1) + "," + t);
+                return e;
             }
-            return a;
+
+            return null;
         },
         parseNumber: (arg) => {
             try {
@@ -3211,6 +3240,18 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                     class: params
                 };
             },
+        convertDescription: ($description) => {
+            // WIP
+            if (!$description.commandRuns) {
+                return {
+                    "runs": [
+                        {
+                            "text": $description.content
+                        }
+                    ]
+                };
+            }
+        },
         Sort: {
             channelData: (data) => {
                 if (!data) return {};
@@ -3228,10 +3269,10 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                     url: data.canonicalChannelUrl || data.navigationEndpoint?.browseEndpoint?.canonicalBaseUrl,
                     avatar: data.avatar?.thumbnails?.[0]?.url || data.thumbnail?.thumbnails?.[0]?.url,
                     links: data.primaryLinks,
-                    subscriberCount: document.cosmicCat.Utils.toNumber(data.subscriberCountText?.simpleText),
+                    subscriberCount: document.cosmicCat.Utils.deabreviateCnt(data.subscriberCountText?.simpleText?.split(" ")?.[0]),
                     videos: data.videoCountText?.runs?.[1] && (data.videoCountText?.runs?.[0].text + data.videoCountText?.runs?.[1].text),
                     fields: {
-                        views: document.cosmicCat.Utils.toNumber(data.viewCountText?.simpleText) || "0",
+                        views: document.cosmicCat.Utils.deabreviateCnt(data.viewCountText?.simpleText?.split(" ")?.[0]) || "0",
                         joined: data.joinedDateText?.runs?.[1]?.text,
                         country: data.country?.simpleText,
                         description: (data.description?.simpleText || description).replace(/(?:\r\n|\r|\n)/g, "<br/>")
@@ -3242,6 +3283,8 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                 if (!da) return {};
 
                 let _description = da.detailedMetadataSnippets?.[0]?.snippetText?.runs || da.descriptionSnippet?.runs || da.description?.runs || da.videoDetails?.shortDescription || [];
+
+                if(da.attributedDescription) _description = document.cosmicCat.Utils.convertDescription(da.attributedDescription);
 
                 let description = "";
                 for (const snippet in _description) {
@@ -3254,6 +3297,13 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                 }
 
                 description = description.replace(/(?:\r\n|\r|\n)/g, '<br/>');
+
+                var thumbnail = da.thumbnail?.thumbnails?.[0]?.url;
+
+                if(3==(new Date).getMonth() && 1==(new Date).getDate()) {
+                    var pool = "https://pbs.twimg.com/media/FFY5UtZXIAUxeYa?format=jpg&name=4096x4096 https://d.furaffinity.net/art/cathythecactus/1650670817/1650670817.cathythecactus_untitled147_20220422203244.jpg https://d.furaffinity.net/art/chipchell/1637725170/1628259771.chipchell_morbidlyobeselesbian.png https://d.furaffinity.net/art/sxfpantera/1649809391/1649809389.sxfpantera_pyrocynical_cs_2_part_apr_part_2_low_res.png https://d.furaffinity.net/art/garowo/1660377831/1660377831.garowo_pyrocynical.jpg https://d.furaffinity.net/art/slimescumbag/1663530187/1663530187.slimescumbag_fc7xsokakaamcwr.jpg https://preview.redd.it/jswmaiz157a81.jpg?width=640&crop=smart&auto=webp&s=8cda3b2e5429704b179f67ab3ff97a68d7387e2a https://preview.redd.it/morbidly-obese-furry-pyro-v0-yl3p4e3g5xw81.jpg?width=640&crop=smart&auto=webp&s=1b7a2c50b1cf661a2e4f068f8d29634e666672aa https://i.ytimg.com/vi/OJhbbY_R3Yo/maxresdefault.jpg".split(" ");
+                    thumbnail = pool[Math.floor(Math.random()*pool.length)]
+                };
 
                 return {
                     owner: {
@@ -3269,7 +3319,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                     description: description,
                     upload: da.dateText?.simpleText || da.publishedTimeText?.simpleText|| da.publishedTimeText?.runs?.[0]?.text || da.microformat?.playerMicroformatRenderer?.publishDate || "",
                     badges: da.badges || [],
-                    thumbnail: da.thumbnail?.thumbnails?.[0]?.url,
+                    thumbnail: thumbnail,
                     tags: da.videoDetails?.keywords || [],
                     category: (window.location.pathname.split("/")[1] == "watch") ? ytInitialPlayerResponse?.microformat?.playerMicroformatRenderer?.category : ""
                 };
@@ -3285,7 +3335,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                         number: data.videoCountShortText?.simpleText,
                         text: data.videoCountText?.runs?.[1] ? data.videoCountText.runs[0].text + data.videoCountText.runs[1].text : data.videoCountText?.runs?.[0]?.text || data.numVideosText?.runs?.[0]?.text
                     },
-                    views: document.cosmicCat.Utils.toNumber(data.viewCountText?.simpleText),
+                    views: document.cosmicCat.Utils.deabreviateCnt(data.viewCountText?.simpleText?.split(" ")?.[0]),
                     owner: {
                         name: data.ownerText?.runs?.[0]?.text || data.longBylineText?.runs?.[0]?.text,
                         url: data.ownerText?.runs?.[0]?.navigationEndpoint?.browseEndpoint?.canonicalBaseUrl || data.longBylineText?.runs?.[0]?.navigationEndpoint?.browseEndpoint?.canonicalBaseUrl,
@@ -3556,20 +3606,44 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
     Channels: {
         Channels3: {
             Pagination: {
+                load: async function () {
+                    document.getElementsByClassName("channels-browse-gutter-padding")[2].innerHTML = document.cosmicCat.Template.Channel.Channels3.primaryPane.Navigation();
+
+                    try {
+                        document.querySelector("#next-btn").setAttribute("data-token", document.cosmicCat.Utils.browseTabs.content(document.cosmicCat.Utils.browseTabs.find(ytInitialData, "videos")).find(a => a.continuationItemRenderer).continuationItemRenderer.continuationEndpoint.continuationCommand.token);
+                    } catch(e) {}
+                },
                 next: async function (continuation, number) {
                     if (!continuation) return document.cosmicCat.toggleElm("#next-btn");
-                    //document.cosmicCat.toggleElm("#loading");
 
-                    let api = await document.cosmicCat.Ajax.post("/youtubei/v1/search", `continuation: "${continuation}"`);
+                    let api = await document.cosmicCat.Ajax.post("/youtubei/v1/browse", `continuation: "${continuation}"`);
                     if (!api) return this.abort();
 
-                    let sortedResultsArray = document.cosmicCat.Pagination.sortDataIntoArray(api.onResponseReceivedCommands);
+                    let sortedResultsArray = document.cosmicCat.Pagination.sortDataIntoArray(api.onResponseReceivedActions);
 
                     const comments = this.sortResults(sortedResultsArray);
 
-                    document.cosmicCat.Pagination.nextNumberButton(continuation, number, "Search");
+                    document.cosmicCat.Pagination.nextNumberButton(continuation, number, "Channels.Channels3.Pagination");
 
-                    document.querySelector("#search-results").innerHTML = comments.result;
+                    document.querySelector(".channels-browse-content-grid").innerHTML = comments.result;
+                },
+                sortResults: function (params, am) {
+                    let result = {result: "", con: ""};
+                    for (let i = 0; i < params.length; i++) {
+                        if (params[i].richItemRenderer?.content?.videoRenderer) {
+                            let c = document.cosmicCat.Utils.Sort.videoData(params[i].richItemRenderer.content.videoRenderer);
+                            result.result += document.cosmicCat.Template.Channel.Channels3.primaryPane.listItem.videos(c);
+                        }
+                    }
+
+                    const aaaa = document.querySelector("#next-btn");
+                    if (aaaa.classList.contains("hid")) {
+                        document.cosmicCat.toggleElm("#next-btn");
+                    }
+                    aaaa.setAttribute("data-token", params.find(a => a.continuationItemRenderer).continuationItemRenderer.continuationEndpoint.continuationCommand.token);
+                    result.con += `${params.find(a => a.continuationItemRenderer).continuationItemRenderer.continuationEndpoint.continuationCommand.token}`;
+
+                    return result;
                 }
             }
         },
@@ -3759,7 +3833,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                     result = document.cosmicCat.Utils.Sort.channelData(contents);
 
                     try {
-                        result.subs = document.cosmicCat.Utils.toNumber(data.header.c4TabbedHeaderRenderer.subscriberCountText.simpleText || data.subs.simpleText);
+                        result.subs = document.cosmicCat.Utils.deabreviateCnt(data.header.c4TabbedHeaderRenderer.subscriberCountText.simpleText?.split(" ")?.[0] || data.subs.simpleText?.split(" ")?.[0]);
                     } catch(err) {
                         console.error("[Channels] Something went wrong with sorting subscriber count:\n", err);
                     }
@@ -4717,11 +4791,11 @@ const localizeString = (varr, DOM) => {
     // really need to get rid of this and simplify the process.
     switch (varr) {
         case "watch.uploaderinfo":
-            i18n = i18n.replace(/%s/g, `<a href="https://www.youtube.com${DOM?.secondary.owner.url}" class="yt-uix-sessionlink yt-user-name author" rel="author" dir="ltr">${DOM?.secondary.owner.name}</a>`);
+            i18n = i18n.replace(/%s/g, `<a href="https://www.youtube.com${DOM?.secondary.owner.url}/videos" class="yt-uix-sessionlink yt-user-name author" rel="author" dir="ltr">${DOM?.secondary.owner.name}</a>`);
             i18n = i18n.replace(/%r/g, `<span id="eow-date" class="watch-video-date">${DOM?.primary.upload}</span>`);
             break;
         case "home.feed.uploadedavideo":
-            i18n = i18n.replace(/%s/g, `<span class="feed-item-owner"><a href="${DOM?.url}" class="yt-uix-sessionlink yt-user-name" dir="ltr">${DOM?.name}</a></span>`);
+            i18n = i18n.replace(/%s/g, `<span class="feed-item-owner"><a href="${DOM?.url}/videos" class="yt-uix-sessionlink yt-user-name" dir="ltr">${DOM?.name}</a></span>`);
             break;
         case "watch.from":
             i18n = i18n.replace(/%s/g, `<span id="playnav-curvideo-channel-name"><a href="${window.location.href}">${DOM}</a></span>`);
@@ -5070,7 +5144,7 @@ ${OBJ_FOOTER}
                     let comm = document.querySelector(".comments-textarea").value;
                     if(comm.length < 1) return;
 
-                    document.cosmicCat.Ajax.post("/youtubei/v1/comment/create_comment", `createCommentParams: "${document.querySelector("input#session").value}", commentText: "${document.cosmicCat.Utils.escapeHtml(comm)}"`).then(async api => {
+                    document.cosmicCat.Ajax.post("/youtubei/v1/comment/create_comment", `createCommentParams: "${document.querySelector("input#session").value}", commentText: "${comm}"`).then(async api => {
 
                         if(api?.actionResult?.status == "STATUS_SUCCEEDED") {
                             let re = api.actions[0].runAttestationCommand.ids;
@@ -5082,7 +5156,7 @@ ${OBJ_FOOTER}
                             comment.setAttribute("data-id", re[0].commentId);
                             comment.setAttribute("data-score", "-1");
 
-                            let json = {authorText: {simpleText: document.cosmicCat.Storage.get("accountInfo").value.name}, commentId: re[0].commentId, contentText: {runs: [{text: document.cosmicCat.Utils.escapeHtml(comm)}]}, publishedTimeText: {runs: [{text: "Just now"}]}, authorEndpoint: {browseEndpoint: {canonicalBaseUrl: document.cosmicCat.Storage.get("accountInfo").value.link}}};
+                            let json = {authorText: {simpleText: document.cosmicCat.Storage.get("accountInfo").value.name}, commentId: re[0].commentId, contentText: {runs: [{text: comm}]}, publishedTimeText: {runs: [{text: "Just now"}]}, authorEndpoint: {browseEndpoint: {canonicalBaseUrl: document.cosmicCat.Storage.get("accountInfo").value.link}}};
                             let newc = document.cosmicCat.Template.Comments.Comment(document.cosmicCat.Utils.Sort.commentData(json));
 
                             comment.innerHTML = newc;
@@ -5174,6 +5248,10 @@ ${OBJ_FOOTER}
 
             (revision == "Channels2") && (document.querySelector("#playnav-play-loading").style.display = "none");
 
+            (revision == "Channels3" && data.content.length == 30) && (
+                document.cosmicCat.Channels.Channels3.Pagination.load()
+            );
+
             document.cosmicCat.Utils.waitForElm("#video-player").then(() => {
                 document.cosmicCat.player.Create();
             });
@@ -5217,7 +5295,7 @@ ${OBJ_FOOTER}
             });
         }
         if(window.location.pathname.split("/")[1].match(/playlist/i)) {
-            await document.cosmicCat.Utils.waitForElm("[rel=\"alternate\"").then(async () => {
+            await document.cosmicCat.Utils.waitForElm("[id=\"watch-page-skeleton\"").then(async () => {
                 let data = {
                     header: document.cosmicCat.Playlists.Local.Header(),
                     content: document.cosmicCat.Playlists.Local.Videos()
