@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.20
+// @version      0.6.21
 // @description  Broadcast Yourself
 // @author       Emiri Floarea (ciulinuwu)
 // @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
@@ -5003,12 +5003,17 @@ ${OBJ_FOOTER}
 
         (() => {
             try {
-                yt.www?.masthead?.searchbox?.init();
+                yt.www.masthead.searchbox.init();
             } catch(err) {
                 try {
-                    setTimeout(() => yt.www?.masthead?.searchbox?.init(), 1000);
+                    setTimeout(() => yt.www.masthead.searchbox.init(), 1000);
                 } catch(err) {
-                    console.error("[Searchbox] Couldn't init!\n", err);
+                    console.error("[Searchbox] Couldn't init!\n", err, "\nTrying again one last time.");
+                    try {
+                        setTimeout(() => yt.www.masthead.searchbox.init(), 1000);
+                    } catch(err) {
+                        console.error("[Searchbox] Couldn't init!\n", err);
+                    }
                 }
                 console.error("[Searchbox] Couldn't init!\n", err, "\nTrying again in 1 second.");
             }
