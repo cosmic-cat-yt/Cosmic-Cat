@@ -4999,6 +4999,8 @@ ${OBJ_FOOTER}
         document.cosmicCat.pageRenderer.set("#masthead-user", OBJ_USER);
         document.cosmicCat.pageRenderer.add("#masthead-container", OBJ_MASTH);
 
+        (update == !0) && document.cosmicCat.Alert(0, "An update is available to Cosmic Cat! <a href=\"https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js\">Click to prompt update.</a>");
+
         (() => {
             try {
                 yt.www?.masthead?.searchbox?.init();
