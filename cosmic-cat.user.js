@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.22
+// @version      0.6.23
 // @description  Broadcast Yourself
 // @author       Emiri Floarea (ciulinuwu)
 // @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
@@ -3006,8 +3006,7 @@ ${localizeString("stats.likesdislikes")}
 </div>
 </div>
 </div>
-${document.cosmicCat.Template.Comments.Main(data)}
-</div>`;
+${document.cosmicCat.Template.Comments.Main(data)}`;
                         },
                         Share: (data) => {
                             console.log(data);
@@ -5393,6 +5392,8 @@ ${OBJ_FOOTER}
 
                 document.cosmicCat.pageRenderer.set("#content-container", document.cosmicCat.Template.Watch.Content.Main(data));
 
+                document.querySelector("#page").classList.add("watch");
+
                 fetch("https://returnyoutubedislikeapi.com/Votes?videoId=" + data.alternative.id)
                     .then((response) => response.json())
                     .then((result) => {
@@ -5411,7 +5412,7 @@ ${OBJ_FOOTER}
                         document.cosmicCat.pageRenderer.add("#eow-tags", document.cosmicCat.Template.Watch.Content.tag(data, i));
                     }
                 } catch(err) {
-                    console.error(err);
+                    console.error("[Watch] Failed to load video tags.\n", err);
                 }
 
                 try {
@@ -5426,7 +5427,7 @@ ${OBJ_FOOTER}
                         }
                     }
                 } catch(err) {
-                    console.error(err);
+                    console.error("[Playlists] No playlist loaded. Ignoring error.\n", err);
                 }
 
                 try {
@@ -5442,7 +5443,7 @@ ${OBJ_FOOTER}
                         }
                     }
                 } catch(err) {
-                    console.error(err);
+                    console.error("[Watch] Failed to load suggestions.\n", err);
                 }
 
                 try {
