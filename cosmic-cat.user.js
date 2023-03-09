@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.21
+// @version      0.6.22
 // @description  Broadcast Yourself
 // @author       Emiri Floarea (ciulinuwu)
 // @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
@@ -39,8 +39,6 @@ function error(a) {
     return console.error(`[Cosmic Cat]`, a);
 }
 
-    console.log(GM_info.script.version)
-
 GM_registerMenuCommand("Open (settings)", () => window.location.replace("/cosmic_cat"));
 
 var BOOL_LOGIN,
@@ -52,7 +50,10 @@ var BOOL_LOGIN,
 
 // Check for updates here, because Tampermonkey's "Auto-updater" is SHIT!
 fetch("https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js").then(a => a.text()).then(a => {
-    (GM_info.script.version !== (a.substr(parseInt(a.search("@version") + 14)).substr(0, parseInt(a.search("@version") - 86)))) && (update = !0);
+    var b = (a.substr(parseInt(a.search("@version") + 14)).substr(0, parseInt(a.search("@version") - 86)));
+    (GM_info.script.version !== b) && (update = !0);
+
+    console.debug("[Updater] Current version:", GM_info.script.version, "|", "New version:", b);
 });
 
 document.cosmicCat = {
@@ -533,7 +534,7 @@ ${document.cosmicCat.Template.Buttons.addTo(data.id)}
 <span class="sidebar sidebar-height-109">
 <span class="video-count-wrapper">
 <span class="video-count-block">
-<span class="count-label">${data.videos.number}</span>
+<span class="count-label">${data.videos.totalNumber}</span>
 <span class="text-label">videos</span>
 </span>
 </span>
@@ -2467,6 +2468,290 @@ text-shadow : none;
         },
         Watch: {
             Content: {
+                playlistBar: {
+                    Main: (data) => {
+                        return `<div id="playlist-bar" class="active autoplay-on shuffle-off max" data-list-id="${data.id}" data-list-type="PL" data-index-offset="0" data-video-ids="" data-list-length="47" data-masked="True" data-video-url="/watch?v=&amp;feature=BFa&amp;list=${data.id}">
+${document.cosmicCat.Template.Watch.Content.playlistBar.barBar(data)}
+${document.cosmicCat.Template.Watch.Content.playlistBar.barTray.Main(data)}
+</div>`;
+                    },
+                    aMain: () => {
+                        return `<div id="playlist-bar" class="active autoplay-on shuffle-off max" data-list-id="2D5ACE7F76092751" data-list-type="PL" data-index-offset="0" data-video-ids="" data-list-length="47" data-masked="True" data-video-url="/watch?v=&amp;feature=BFa&amp;list=PL2D5ACE7F76092751">
+<iframe id="playlist-bar-mask" src="javascript:&quot;&quot;" allow="autoplay 'self'; fullscreen 'self'" data-ruffle-polyfilled="" frameborder="0"></iframe>
+<div id="playlist-bar-bar-container">
+<div id="playlist-bar-bar">
+<div class="yt-alert yt-alert-naked yt-alert-success hid" id="playlist-bar-notifications">
+<div class="yt-alert-icon">
+<img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="icon master-sprite" alt="Alert icon">
+</div>
+<div class="yt-alert-content" role="alert"></div>
+</div>
+<span id="playlist-bar-info">
+<span class="playlist-bar-active playlist-bar-group">
+<button onclick=";return false;" title="Previous video" type="button" id="playlist-bar-prev-button" class="yt-uix-tooltip yt-uix-tooltip-masked yt-uix-button yt-uix-button-default yt-uix-tooltip yt-uix-button-empty" role="button">
+<span class="yt-uix-button-icon-wrapper">
+<img class="yt-uix-button-icon yt-uix-button-icon-playlist-bar-prev" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Previous video"><span class="yt-valign-trick"></span>
+</span>
+</button>
+<span class="playlist-bar-count">
+<span class="playing-index">18</span> / <span class="item-count">47</span>
+</span>
+<button type="button" class="yt-uix-tooltip yt-uix-tooltip-masked yt-uix-button yt-uix-button-default yt-uix-button-empty" onclick=";return false;" id="playlist-bar-next-button" role="button" data-tooltip-text="Next video">
+<span class="yt-uix-button-icon-wrapper">
+<img class="yt-uix-button-icon yt-uix-button-icon-playlist-bar-next" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""><span class="yt-valign-trick"></span>
+</span>
+</button>
+</span>
+<span class="playlist-bar-active playlist-bar-group">
+<button type="button" class="yt-uix-tooltip yt-uix-tooltip-masked yt-uix-button-toggled yt-uix-button yt-uix-button-default yt-uix-button-empty" onclick=";return false;" id="playlist-bar-autoplay-button" data-button-toggle="true" role="button" data-tooltip-text="Turn autoplay off"><span class="yt-uix-button-icon-wrapper"><img class="yt-uix-button-icon yt-uix-button-icon-playlist-bar-autoplay" src="//web.archive.org/web/20120805130558im_/https://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""><span class="yt-valign-trick"></span></span></button><button type="button" class="yt-uix-tooltip yt-uix-tooltip-masked  yt-uix-button yt-uix-button-default yt-uix-button-empty" onclick=";return false;" id="playlist-bar-shuffle-button" data-button-toggle="true" role="button" data-tooltip-text="Turn shuffle on"><span class="yt-uix-button-icon-wrapper"><img class="yt-uix-button-icon yt-uix-button-icon-playlist-bar-shuffle" src="//web.archive.org/web/20120805130558im_/https://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""><span class="yt-valign-trick"></span></span></button></span><span class="playlist-bar-passive playlist-bar-group"><button onclick=";return false;" title="Play videos" type="button" id="playlist-bar-play-button" class="yt-uix-tooltip yt-uix-tooltip-masked  yt-uix-button yt-uix-button-default yt-uix-tooltip yt-uix-button-empty" role="button"><span class="yt-uix-button-icon-wrapper"><img class="yt-uix-button-icon yt-uix-button-icon-playlist-bar-play" src="//web.archive.org/web/20120805130558im_/https://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Play videos"><span class="yt-valign-trick"></span></span></button><span class="playlist-bar-count"><span class="item-count">47</span></span></span><span id="playlist-bar-title" class="yt-uix-button-group"><button href="/web/20120805130558mp_/https://www.youtube.com/playlist?list=PL2D5ACE7F76092751" onclick=";window.location.href=this.getAttribute('href');return false;" title="More information about this playlist" type="button" class="yt-uix-tooltip yt-uix-tooltip-masked start playlist-title yt-uix-button yt-uix-button-default yt-uix-tooltip" role="button"><span class="yt-uix-button-content">Official 10 hour playlist </span></button><button href="/web/20120805130558mp_/https://www.youtube.com/user/TehN1ppe?feature=BF" type="button" class="yt-uix-tooltip yt-uix-tooltip-masked end yt-uix-button yt-uix-button-default" onclick=";window.location.href=this.getAttribute('href');return false;" role="button"><span class="yt-uix-button-content">  <span class="video-thumb ux-thumb yt-thumb-square-23 "><span class="yt-thumb-clip"><span class="yt-thumb-clip-inner"><img src="https://web.archive.org/web/20120805130558im_/https://i1.ytimg.com/i/xHoFjiQvDUvFXJTpXzKYQw/1.jpg?v=c0308b" alt="Thumbnail" width="23"><span class="vertical-align"></span></span></span></span>
+<span class="yt-user-name" dir="ltr">TehN1ppe</span>
+</span>
+</button>
+</span>
+</span>
+<a id="playlist-bar-lists-back" href="#">Return to active list</a>
+<span id="playlist-bar-controls">
+<span class="playlist-bar-group">
+<button type="button" class="yt-uix-tooltip yt-uix-tooltip-masked yt-uix-button yt-uix-button-text yt-uix-button-empty" onclick=";return false;" id="playlist-bar-toggle-button" role="button" data-tooltip-text="Hide playlist">
+<span class="yt-uix-button-icon-wrapper">
+<img class="yt-uix-button-icon yt-uix-button-icon-playlist-bar-toggle" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""><span class="yt-valign-trick"></span>
+</span>
+</button>
+</span>
+<span class="playlist-bar-group">
+<button type="button" class="yt-uix-tooltip yt-uix-tooltip-masked yt-uix-button-reverse flip yt-uix-button yt-uix-button-text" onclick=";return false;" data-button-menu-id="playlist-bar-options-menu" data-button-has-sibling-menu="true" role="button"><span class="yt-uix-button-content">Options </span><img class="yt-uix-button-arrow" src="//web.archive.org/web/20120805130558im_/https://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""></button></span></span>      </div>
+</div>
+<div id="playlist-bar-tray-container">
+<div id="playlist-bar-tray" class="yt-uix-slider yt-uix-slider-fluid" data-slider-offset="-4284">
+<button class="yt-uix-button playlist-bar-tray-button yt-uix-button-default yt-uix-slider-prev" onclick="return false;"><img class="yt-uix-slider-prev-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Previous video"></button>
+<button class="yt-uix-button playlist-bar-tray-button yt-uix-button-default yt-uix-slider-next" onclick="return false;"><img class="yt-uix-slider-next-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Next video"></button>
+<div class="yt-uix-slider-body">
+<div id="playlist-bar-tray-content" class="yt-uix-slider-slide" style="left: -4284px;">
+<ol class="video-list">
+<li class="playlist-bar-item yt-uix-slider-slide-unit loading" data-video-id="8ZcmTl_1ER8">
+<a href="https://www.youtube.com/watch?v=8ZcmTl_1ER8&amp;feature=BFa&amp;list=PL2D5ACE7F76092751" title="" class="yt-uix-sessionlink" data-sessionlink="ei=CLKl0-DG0LECFRGNfAodf1H5ZA%3D%3D&amp;feature=BFa">
+<span class="video-thumb ux-thumb yt-thumb-default-106">
+<span class="yt-thumb-clip">
+<span class="yt-thumb-clip-inner">
+<img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="" data-thumb-manual="true" data-thumb="//i4.ytimg.com/vi/8ZcmTl_1ER8/default.jpg" width="106"><span class="vertical-align"></span>
+</span>
+</span>
+</span>
+<span class="screen"></span>
+<span class="count"><strong>1</strong></span><span class="play"><img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif"></span><span class="yt-uix-button yt-uix-button-default delete"><img class="yt-uix-button-icon-playlist-bar-delete" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Delete"></span><span class="now-playing">Now playing</span><span dir="ltr" class="title"><span>  <span class="uploader">by </span>
+</span>
+</span>
+<span class="dragger"></span>
+</a>
+</li>
+</ol>
+<ol id="playlist-bar-help">
+<li class="empty playlist-bar-help-message">Your queue is empty. Add videos to your queue using this button: <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="addto-button-help"><br> or <a href="https://web.archive.org/web/20120805130558/https://accounts.google.com/ServiceLogin?uilel=3&amp;service=youtube&amp;passive=true&amp;continue=https%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26feature%3Dplaylist%26nomobiletemp%3D1%26hl%3Den_US%26next%3D%252Fwatch%253Fv%253DJikPgxdmpJY%2526playnext%253D1%2526list%253DPL2D5ACE7F76092751%2526feature%253Dresults_main&amp;hl=en_US&amp;ltmpl=sso">sign in</a> to load a different list.</li>
+</ol>
+</div>
+<div class="yt-uix-slider-shade-left"></div>
+<div class="yt-uix-slider-shade-right"></div>
+</div>
+</div>
+<div id="playlist-bar-save"></div>
+<div id="playlist-bar-lists" class="dark-lolz"></div>
+<div id="playlist-bar-loading">
+<img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Loading..."><span id="playlist-bar-loading-message">Loading...</span><span id="playlist-bar-saving-message" class="hid">Saving...</span>
+</div>
+<div id="playlist-bar-template" style="display: none;" data-video-thumb-url="//i4.ytimg.com/vi/__video_encrypted_id__/default.jpg">
+<!--<li class="playlist-bar-item yt-uix-slider-slide-unit __classes__" data-video-id="__video_encrypted_id__">
+<a href="__video_url__" title="__video_title__" class="yt-uix-sessionlink" data-sessionlink="ei=CLKl0-DG0LECFRGNfAodf1H5ZA%3D%3D&amp;feature=BFa">
+<span class="video-thumb ux-thumb yt-thumb-default-106 ">
+<span class="yt-thumb-clip">
+<span class="yt-thumb-clip-inner">
+<img src="https://s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="__video_title__" data-thumb-manual="true" data-thumb="__video_thumb_url__" width="106" ><span class="vertical-align"></span>
+</span>
+</span>
+</span>
+<span class="screen"></span>
+<span class="count"><strong>__list_position__</strong></span><span class="play"><img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif"></span><span class="yt-uix-button yt-uix-button-default delete"><img class="yt-uix-button-icon-playlist-bar-delete" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Delete"></span><span class="now-playing">Now playing</span><span dir="ltr" class="title"><span>__video_title__  <span class="uploader">by __video_display_name__</span>
+</span>
+</span>
+<span class="dragger"></span>
+</a>
+</li>-->
+</div>
+<div id="playlist-bar-next-up-template" style="display: none;">
+<!--<div class="playlist-bar-next-thumb">
+<span class="video-thumb ux-thumb yt-thumb-default-74">
+<span class="yt-thumb-clip"><span class="yt-thumb-clip-inner">
+<img src="//i4.ytimg.com/vi/__video_encrypted_id__/default.jpg" alt="Thumbnail" width="74"><span class="vertical-align"></span>
+</span>
+</span>
+</span>
+</div>-->
+</div>
+</div>
+<div id="playlist-bar-options-menu" class="hid active">
+<ul class="playlist-bar-passive-menu">
+<li>
+<span class="yt-uix-button-menu-item" data-action="show-active">Return to: Official 10 hour playlist</span>
+</li>
+</ul>
+<div id="playlist-bar-extras-menu">
+<ul>
+<li>
+<span class="yt-uix-button-menu-item" onclick="window.location.href='/playlist?list=PL2D5ACE7F76092751'">More information about this playlist</span>
+</li>
+</ul>
+</div>
+<ul>
+<li>
+<span class="yt-uix-button-menu-item" onclick="window.location.href='//support.google.com/youtube/bin/answer.py?answer=146749&amp;hl=en-US'">Learn more</span>
+</li>
+</ul>
+</div>
+</div>`;
+                    },
+                    barBar: (data) => {
+                        return `<div id="playlist-bar-bar-container">
+<div id="playlist-bar-bar">
+<div class="yt-alert yt-alert-naked yt-alert-success hid" id="playlist-bar-notifications">
+<div class="yt-alert-icon">
+<img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="icon master-sprite" alt="Alert icon">
+</div>
+<div class="yt-alert-content" role="alert"></div>
+</div>
+<span id="playlist-bar-info">
+<span class="playlist-bar-active playlist-bar-group">
+<button onclick=";return false;" title="Previous video" type="button" id="playlist-bar-prev-button" class="yt-uix-tooltip yt-uix-tooltip-masked yt-uix-button yt-uix-button-default yt-uix-tooltip yt-uix-button-empty" role="button">
+<span class="yt-uix-button-icon-wrapper">
+<img class="yt-uix-button-icon yt-uix-button-icon-playlist-bar-prev" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Previous video"><span class="yt-valign-trick"></span>
+</span>
+</button>
+<span class="playlist-bar-count">
+<span class="playing-index">${data.videos.runs[0].text}</span> / <span class="item-count">${data.videos.runs[2].text}</span>
+</span>
+<button type="button" class="yt-uix-tooltip yt-uix-tooltip-masked yt-uix-button yt-uix-button-default yt-uix-button-empty" onclick=";return false;" id="playlist-bar-next-button" role="button" data-tooltip-text="Next video">
+<span class="yt-uix-button-icon-wrapper">
+<img class="yt-uix-button-icon yt-uix-button-icon-playlist-bar-next" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""><span class="yt-valign-trick"></span>
+</span>
+</button>
+</span>
+<span class="playlist-bar-active playlist-bar-group">
+<button type="button" class="yt-uix-tooltip yt-uix-tooltip-masked yt-uix-button-toggled yt-uix-button yt-uix-button-default yt-uix-button-empty" onclick=";return false;" id="playlist-bar-autoplay-button" data-button-toggle="true" role="button" data-tooltip-text="Turn autoplay off">
+<span class="yt-uix-button-icon-wrapper">
+<img class="yt-uix-button-icon yt-uix-button-icon-playlist-bar-autoplay" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""><span class="yt-valign-trick"></span>
+</span>
+</button>
+<button type="button" class="yt-uix-tooltip yt-uix-tooltip-masked yt-uix-button yt-uix-button-default yt-uix-button-empty" onclick=";return false;" id="playlist-bar-shuffle-button" data-button-toggle="true" role="button" data-tooltip-text="Turn shuffle on">
+<span class="yt-uix-button-icon-wrapper">
+<img class="yt-uix-button-icon yt-uix-button-icon-playlist-bar-shuffle" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""><span class="yt-valign-trick"></span>
+</span>
+</button>
+</span>
+<span class="playlist-bar-passive playlist-bar-group">
+<button onclick=";return false;" title="Play videos" type="button" id="playlist-bar-play-button" class="yt-uix-tooltip yt-uix-tooltip-masked yt-uix-button yt-uix-button-default yt-uix-tooltip yt-uix-button-empty" role="button">
+<span class="yt-uix-button-icon-wrapper">
+<img class="yt-uix-button-icon yt-uix-button-icon-playlist-bar-play" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Play videos"><span class="yt-valign-trick"></span>
+</span>
+</button>
+<span class="playlist-bar-count">
+<span class="item-count">47</span>
+</span>
+</span>
+<span id="playlist-bar-title" class="yt-uix-button-group">
+<button href="https://www.youtube.com/playlist?list=${data.id}" onclick=";window.location.href=this.getAttribute('href');return false;" title="More information about this playlist" type="button" class="yt-uix-tooltip yt-uix-tooltip-masked start playlist-title yt-uix-button yt-uix-button-default yt-uix-tooltip" role="button">
+<span class="yt-uix-button-content">${data.title}</span>
+</button><button href="${data.owner.url}" type="button" class="yt-uix-tooltip yt-uix-tooltip-masked end yt-uix-button yt-uix-button-default" onclick=";window.location.href=this.getAttribute('href');return false;" role="button">
+<span class="yt-uix-button-content">
+<span class="video-thumb ux-thumb yt-thumb-square-23">
+<span class="yt-thumb-clip">
+<span class="yt-thumb-clip-inner">
+<img src="" alt="Thumbnail" width="23"><span class="vertical-align"></span>
+</span>
+</span>
+</span>
+<span class="yt-user-name" dir="ltr">${data.owner.name}</span>
+</span>
+</button>
+</span>
+</span>
+<a id="playlist-bar-lists-back" href="#">Return to active list</a>
+<span id="playlist-bar-controls">
+<span class="playlist-bar-group">
+<button type="button" class="yt-uix-tooltip yt-uix-tooltip-masked yt-uix-button yt-uix-button-text yt-uix-button-empty" onclick=";return false;" id="playlist-bar-toggle-button" role="button" data-tooltip-text="Hide playlist">
+<span class="yt-uix-button-icon-wrapper">
+<img class="yt-uix-button-icon yt-uix-button-icon-playlist-bar-toggle" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""><span class="yt-valign-trick"></span>
+</span>
+</button>
+</span>
+<span class="playlist-bar-group">
+<button type="button" class="yt-uix-tooltip yt-uix-tooltip-masked yt-uix-button-reverse flip yt-uix-button yt-uix-button-text" onclick=";return false;" data-button-menu-id="playlist-bar-options-menu" data-button-has-sibling-menu="true" role="button"><span class="yt-uix-button-content">Options </span><img class="yt-uix-button-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt=""></button>
+</span>
+</span>
+</div>
+</div>`;
+                    },
+                    barTray: {
+                        Main: () => {
+                            return `<div id="playlist-bar-tray-container">
+<div id="playlist-bar-tray" class="yt-uix-slider yt-uix-slider-fluid" data-slider-offset="-4284">
+<button class="yt-uix-button playlist-bar-tray-button yt-uix-button-default yt-uix-slider-prev" onclick="return false;"><img class="yt-uix-slider-prev-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Previous video"></button>
+<button class="yt-uix-button playlist-bar-tray-button yt-uix-button-default yt-uix-slider-next" onclick="return false;"><img class="yt-uix-slider-next-arrow" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Next video"></button>
+${document.cosmicCat.Template.Watch.Content.playlistBar.barTray.Body()}
+</div>
+
+<div id="playlist-bar-save"></div>
+
+<div id="playlist-bar-lists" class="dark-lolz"></div>
+
+${document.cosmicCat.Template.Watch.Content.playlistBar.barTray.Loading()}
+</div>`;
+                        },
+                        Body: () => {
+                            return `<div class="yt-uix-slider-body">
+${document.cosmicCat.Template.Watch.Content.playlistBar.barTray.trayContent.Content()}
+<div class="yt-uix-slider-shade-left"></div>
+<div class="yt-uix-slider-shade-right"></div>
+</div>`;
+                        },
+                        Loading: () => {
+                            return `<div id="playlist-bar-loading">
+<img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Loading..."><span id="playlist-bar-loading-message">Loading...</span><span id="playlist-bar-saving-message" class="hid">Saving...</span>
+</div>`;
+                        },
+                        trayContent: {
+                            Content: () => {
+                                return `<div id="playlist-bar-tray-content" class="yt-uix-slider-slide" style="left: 0px;">
+<ol class="video-list"></ol>
+<ol id="playlist-bar-help">
+<li class="empty playlist-bar-help-message">Your queue is empty. Add videos to your queue using this button: <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="addto-button-help"><br> or <a href="">sign in</a> to load a different list.</li>
+</ol>
+</div>`;
+                            },
+                            video: (data, pl) => {
+                                return `<li class="playlist-bar-item yt-uix-slider-slide-unit" data-video-id="${data.id}">
+<a href="https://www.youtube.com/watch?v=${data.id}&amp;feature=BFa&amp;list=${pl.id}" title="" class="yt-uix-sessionlink" data-sessionlink="ei=CLKl0-DG0LECFRGNfAodf1H5ZA%3D%3D&amp;feature=BFa">
+<span class="video-thumb ux-thumb yt-thumb-default-106">
+<span class="yt-thumb-clip">
+<span class="yt-thumb-clip-inner">
+<img src="${data.thumbnail}" alt="" data-thumb-manual="true" data-thumb="${data.thumbnail}" width="106"><span class="vertical-align"></span>
+</span>
+</span>
+</span>
+<span class="screen"></span>
+<span class="count"><strong>1</strong></span>
+<span class="play"><img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif"></span>
+<span class="yt-uix-button yt-uix-button-default delete">
+<img class="yt-uix-button-icon-playlist-bar-delete" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="Delete"></span>
+<span class="now-playing">Now playing</span>
+<span dir="ltr" class="title">${data.title}<span>
+<span class="uploader">by ${data.owner.name}</span>
+</span>
+</span>
+<span class="dragger"></span>
+</a>
+</li>`;
+                            }
+                        }
+                    }
+                },
                 metadata: (videoData) => {
                     return `<link itemprop="url" href="http://www.youtube.com/watch?v=${videoData.primary.id}">
 <meta itemprop="name" content="${videoData.primary.title}">
@@ -3336,16 +3621,22 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
             },
             playlistData: (data) => {
                 if (!data) return {};
+                console.log(data);
+
+                let views = data.viewCountText?.simpleText?.split(" ")?.[0];
 
                 return {
                     id: data.playlistId,
-                    title: data.title?.runs?.[0]?.text || data.title?.simpleText,
+                    title: data.title?.runs?.[0]?.text || data.title?.simpleText || data.title,
                     description: data.descriptionText?.simpleText || "",
+                    currentIndex: data.currentIndex,
                     videos: {
-                        number: data.videoCountShortText?.simpleText,
-                        text: data.videoCountText?.runs?.[1] ? data.videoCountText.runs[0].text + data.videoCountText.runs[1].text : data.videoCountText?.runs?.[0]?.text || data.numVideosText?.runs?.[0]?.text
+                        totalNumber: data.videoCountShortText?.simpleText || data.totalVideos,
+                        text: data.videoCountText?.runs?.[1] ? data.videoCountText.runs[0].text + data.videoCountText.runs[1].text : data.videoCountText?.runs?.[0]?.text || data.numVideosText?.runs?.[0]?.text,
+                        runs: data.videoCountText?.runs,
+                        videos: data.contents
                     },
-                    views: document.cosmicCat.Utils.deabreviateCnt(data.viewCountText?.simpleText?.split(" ")?.[0]),
+                    views: document.cosmicCat.Utils.deabreviateCnt(parseInt(views?.replace(/,/g, "")) ? views : "0"),
                     owner: {
                         name: data.ownerText?.runs?.[0]?.text || data.longBylineText?.runs?.[0]?.text,
                         url: data.ownerText?.runs?.[0]?.navigationEndpoint?.browseEndpoint?.canonicalBaseUrl || data.longBylineText?.runs?.[0]?.navigationEndpoint?.browseEndpoint?.canonicalBaseUrl,
@@ -3355,7 +3646,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                     thumbnail: data.thumbnail?.thumbnails?.[0]?.url || data.thumbnailRenderer?.playlistVideoThumbnailRenderer?.thumbnail?.thumbnails?.[0]?.url,
                     rawThumbnail: data.thumbnail || {thumbnails: data.thumbnailRenderer?.playlistVideoThumbnailRenderer?.thumbnail},
                     sidethumbs: data.sidebarThumbnails || data.thumbnails || [{thumbnails: (data.thumbnail?.thumbnails || data.thumbnail)}],
-                    url: data.navigationEndpoint?.commandMetadata?.webCommandMetadata?.url
+                    url: data.navigationEndpoint?.commandMetadata?.webCommandMetadata?.url || data.endpoint?.commandMetadata?.webCommandMetadata?.url
                 };
             },
             homeFeedData: (data) => {
@@ -5124,6 +5415,21 @@ ${OBJ_FOOTER}
                 }
 
                 try {
+                    if (ytInitialData.contents.twoColumnWatchNextResults.playlist.playlist) {
+                        let data = document.cosmicCat.Utils.Sort.playlistData(ytInitialData.contents.twoColumnWatchNextResults.playlist.playlist)
+                        document.cosmicCat.pageRenderer.add("#page", document.cosmicCat.Template.Watch.Content.playlistBar.Main(
+                            data)
+                        );
+
+                        for (let i = 0; i < data.videos.videos.length; i++) {
+                            document.cosmicCat.pageRenderer.add("ol.video-list", document.cosmicCat.Template.Watch.Content.playlistBar.barTray.trayContent.video(document.cosmicCat.Utils.Sort.videoData(data.videos.videos[i].playlistPanelVideoRenderer), data));
+                        }
+                    }
+                } catch(err) {
+                    console.error(err);
+                }
+
+                try {
                     const obj_sug = ytInitialData.contents.twoColumnWatchNextResults.secondaryResults?.secondaryResults?.results?.[1]?.itemSectionRenderer?.contents || ytInitialData.contents.twoColumnWatchNextResults.secondaryResults?.secondaryResults?.results;
 
                     for (let i = 0; i < obj_sug.length; i++) {
@@ -5139,14 +5445,14 @@ ${OBJ_FOOTER}
                     console.error(err);
                 }
 
-                if (ytInitialData.contents.twoColumnWatchNextResults?.results?.results?.contents?.filter(b => b.itemSectionRenderer)[1]) {
-                    try {
+                try {
+                    if (ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.filter(b => b.itemSectionRenderer)[1]) {
                         document.cosmicCat.toggleElm("#comments-view");
                         let con = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.filter(b => b.itemSectionRenderer)[1].itemSectionRenderer.contents[0].continuationItemRenderer.continuationEndpoint.continuationCommand.token;
                         document.cosmicCat.Comments.init(con);
-                    } catch(err) {
-                        console.error("[Comments] Failed to load the comments section.\n\nUseful errors, if any:", err);
                     }
+                } catch(err) {
+                    console.error("[Comments] Failed to load the comments section.\n\nUseful errors, if any:", err);
                 }
 
                 if (!data.alternative.id) {
