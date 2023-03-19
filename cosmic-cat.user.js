@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.24
+// @version      0.6.25
 // @description  Broadcast Yourself
 // @author       Emiri Floarea (ciulinuwu)
 // @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
@@ -58,9 +58,9 @@ fetch("https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.
 
 document.cosmicCat = {
     data: {
-        version: 20230122,
+        version: 20230319,
         loggedin: false,
-        homeCategories: ["technoblade", "trending", "popular", "music", "live", "gadgets", "news", "sports", "education", "howto"],
+        homeCategories: ["trending", "popular", "music", "live", "gadgets", "news", "sports", "education", "howto"],
         darkyoutubelogo: "data:image/png;base64,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",
         i18nfolder: "https://raw.githubusercontent.com/ciulinuwu/ciulinations/main/i18n/",
         darkNoiseBg: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJUAAACVBAMAAACjjKV8AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAtUExURRQUFBYWFhgYGBISEhERERUVFRcXFxAQEBMTEw8PDxsbGxkZGQ4ODhoaGg0NDc3ZmeMAAAAJcEhZcwAADsMAAA7DAcdvqGQAABBgSURBVGje7VlRb9tYev1o8ko3SAegTFHiYncBeRxnHPSFskSZg/SBiixFg8ECl6auxDQdgLIsW4Ppgx1biYApiktTV2YwWCCDmSxStC/tL0g6k+wUfZntAu1ri+4W87r/pNek6cFmM0kG6EsBPx8fi7z3+853zkeQKtW6fn2GJ1VuSDnraGeCuSRHDAlgc+vjfwLJkprxET6cn1QbO2sd5MW8pKSM5vY+W0SGy9TRoHGdgT1WFj2sOkHPiqslcnWsVl3bRq4pADZCNCSyH90wT4/Mr2uuTe5ghdx6dM4YO6GSQy0/KozhhQsAyJEQUaCgwpjOd0/nESI12WI9AUA0KVnolhzWTtg/qLN4L2j2B3XiWsOUoVJwpALkqN/pzromyD9d4bJZ8wWzt/lc7qsaM476SG4LINbH89ZJCeD2vLDg8qMjqqcsmjKyH219SqyhZMKkp9Xqf/9oa8H0Zyb0qiFvTujoGwUJwPTmJaNn7Pr9Gjvh6wdz2UUcek7bSxm1D/5F6U6ku5r4d4ZBIA40UqkeMbZGTGV8Bcbt7g1dUmVFAP2I80nNUmdlg7vruNK784SbNplVWcpYkss2XqIydMijXI8AoupYUldxiF3XrQcGcR5sVSUSoTNAs8Zs7K4TlRVHVTnK4QWigZUL11IGKSyZscp1XetIXAGocZCn45WFmdPBmpWdru8+cK1PaCgAZBrmPbWCCV+F/vrjk7y0S3xS0FAtZWz2t40RDIk8CI8VziCy4t8PJHfZUmrkRcHTS+1THeBRZArgdyYede0JaYuDu6nm7gYYMdL8NwU9Thn0QC+skpZ1dahX3V0C80Y4GOMnvPsL8bSqG2llts1WUTMWADkwOrpUeofxm9QMxZ/a+sJoDsLgNGXcJw/j3vw7cTzIqFYPQJ9dk2x80vwItvJHNZje+6k4KYzItgBkciT3dMN3w3s6FMxV6XGxEJ3kOsYwZWgsvqb/p+I8qJn5wcpTwDIaueaBetYG4o6qwRb/5K4aK6oAdsKmkwfckJWpi0AGYC4gQnpfySnD0vLSWd+NZC6XFAfcm7JujBw6k4wHkRMfgdXd+u607M8EUAyHeWveku+ROKosHutqq9UtU7xi8pThLupowAqnszo+NWUCfH3JQx4lZX9rM+ulY3Sw4gugB1X/JKaGz5HKFhJasofziMcDv5YyTGpRaTpvHaS9BD3a/Cxrlr2B1Z74ij8esxgJgFfXimbNDUwye2V7/bMR9v0te2VvfNTri5o4XutyLLe9Pf674G+UJdUrEPCryDg5A5z8iLtdieKoFv318a06asdKLz7eH6cMwuq0Mfmok//WWUFVFXoBtVq/tFUf5/c1UjROzVOju6rtvSsAO3aDTKNiP55q3G77uC4zPWX07P8OEWP3DxOJAzjDRoo0/xVs7P0gKb//bKS5y8/5+9szv2nzVspomI7xQSBfnyRKyuBMl7JDfqNgvXQtbM2R9Xid90TdhCMCRtceiM6LYh4tuMtj4mIcqGR1IQCfT6PsrmZrJGditY7mXNE2U8ZMHK0d+/YkvWpAsoX6rqopbaKeeF6bhhx1Vog1EYDU87zr14ItyPuVUyTlPn7oETpEUpOmDDouSOYWlfCaVae+CodYXcN2rKBjXCtyiZg76nDYMJyiAG68oJXl5wU+OlJ8es/SBwQCv/iOrbZTBoli5gycqNolupyrgKhB2fG7pFmbkTcW59bmCYURhOeMixdOzq0CC3+57EIDeZhR/OUE66wLw0AbxAIwwrl5sDC7uaWchI8Lc3+7NwyHOGwNUsZUlQNqxog87LDQByDcajuuVu0sNnI5THTjpHow/mql7Qugq+3Xnm2FBt7T4gXjkr6n7RQ2PbJKU0YPFWrFyagSBFxyxXMdNL9oyUS/E/nLVCv6BtFcVxZXrwigMwZMT8KVWc30C5WnTdag8qZuADtnmJZEn1jhmltth1zMITGXkcHjU9f25m89sHnKyOq6S1TbBjGHePRZJi4vlU+0cPP89l1x+0PplXL0tNotqUf+lpleBpCiTlQSESOSO9MTfEDUvSePRcmpAsjqR1ZxYUX7Iq6DHB7eLx9JQcqQELak2KzvJ+UHMJ/3uzm6zCUsdST2vnpzsrOxwqRqLIAt6sXaOBlY+eOWqmOTUDfn1vp+ysjmXWDIn8svGLhdVpiPdT1ny5BOKFTjdlwYCaDs1rpePpzvxg5U2+N8bq3iHM1s66CZMoyO65IRM1E6EqFYVNW1cIR+YtowDK3hbesL1VvGRBVAwaT+bzy8+LntyOGn0faoH8c+Y+0CSRlLfsl0v5BZztD6xSMC4rnJZDmdwK99IalTU20ziAPal88ZFwM8bIiRr4IQZci0V58rkl9lyoK8nVpLtnRqBaTu+o6jR0Inio5UQX82Nvo6YkrV0dvvkitd2/srAeBx0efihWZggLuvzil8pbrqEwjDlLEM5N9dPiQ+tIqS8CZqLoZMG9rFOBxbcc5hftU8A4aw8evw5K7Vt3AknWzfCqeev/K9msi5lVxJG84VtxuXPAISjxvqzBm5nlXz7lPV0NU1C6SlmQBq7j54ZuE7tGXQkfE/q7w0ifuiuku5lDHMz3OWXvOszbErhQTqj2hxT4xJf325TNWJ/l9Dtl56CgtNAIWealiw/bOclDScpauNgUNuKz+pp4ysX6duLvyopIJwjr5mr1/5TT5evMFSwrmu9yp2ysjGwjCZkgFEgdnNXDhmTWBmf71YhIMz4DZVCZiAhZRThD40M/+Q+XYWp02d2g8AIQ89Le4l4+mPVcCbUxY5tpRNwU9LVavw5773+D0+TxnZdHuUDFEGQvHUcykMfqQUbpxL4R6cSeGqqK+nEzkzWajVCkm52Q6PN93fCgChZn2D8x+0ZabVdDk3ypVe3dalA5Aa8KsDVJN+znrNdve0cz8zCQJ45DueDuP0yt0lUUHqe8zwI6uUMrKKKSYeA+BEw3RyWBqUW2OO4w38sesq9Xo4JQLI/NVU60EsLaQ5PWCU9BqhnjL6p4Xx4XHDT+2Z+n+bFYrWvYocX70dqJ1KoJ42jTZf6xglVQDZzPLCfohiL9/PVzmrL1h5OWW8Czb7+r6k7CQjT2hhfI36ReENhjP/ls6lWbU3lFUXWwLwhGWKJ+QO93OW0bxqLm+M7UPbsBQrZdCwGw8WZT5f8UlZ6IRov0bWZVfQHFVJznvbvtyLeYCFRwvSS4I+b1rZe8vJe/dKvH+TOQKoIbs55M1Fm49svL59ih1L9QnaUmjKOD82/Wly0AyEELupQk9OfpxC23Cu0PGqUOg7VbjMtZe59jLXXubay1x7mWsvc+1lrr3MtZe59jLXXubay1x7mWv/X+faItPdrJIi1Y3fu9WLe3DfpgIgcc1u/MfWqtPz2atqTwvSU8GJv62AEHSSZC107eu3V/qUkYQ7sv1hNwl3IiLXppM5yMU+Odh5ZRjTwbO9OCxZxViaanVuzoxON2Vko66Cdh76lQPI3d0oaFNryRKmZUP1G0cHiWlZLQugSDn2emHj6GaxW2CLoR1PRGbsDxsrKeOi0VdQtL8JsOYbTmMFUYpuodqhy7CSuRff6BzG1ZAOw9uUPHHb6zd016eMw9xhKUPeUanoqYqXmB8HbFQQJpQiPvgDJvU592Hqi2A80AXgF/DHt1CXyEGjrJq10ckKKoxdplajlGEhSnz6tyqXu13KANwg2jrOFhPf/9kfsACanlBVWj0wrWhB8TQSljSXlz0RMFLG7VaymBDhTJLFYAD0hHKhZYkrQWpEjZO2VVKMBRcAG7lz9Stp9bp3qoURaWU9E6+lDIJJ6kqSlhM/5MYXJZoE5cBdrDHwqQAaqN9vOl/zINc6wSUh6F3aX+9JF7YjKVFUrYRnQTkHIMJg6VyG3FenRENkeQczIzDaA4woak0K58KV6Z6R6J5QSk0ZZVnzLe3gRTrdXEvV00/yB4GSbptZIr6Bs21POH0gAHtpSdlfj1Sz3LINsrz0cobOZuByuiwCdLdQ16hpddzBs+i0vxiAZUZ8/WF0BoR6m2Nz6B6/iHPTd/rNoclCpfVN81rKaFqe3Bvrnxr2dDI+EP5e2E6unW57zl/YL/tRuSOjuEEe1iMCrN/SSDNcNlewPjlnGK49XavLv41EmZbLAQgVh5rctejHztob5F1/tuevkefdoltJGbJZj2j/yyWayBwDcZ3VwASF0x0OzEfKzyrOnWwhkkPGjg+Ik7ERBXS8W7za7cOuXQlTRlYmJNmnfAsiuiaZdleDyY/JtGeMs0y71zRzqWkwQRxoPfOWrz/pwTNfamCtNKh25ymjmXhLA5o9n0Q5FQqmV88897aZClGpjbgkgGyP9EMuPdOxabKGEs09bjvZjmwiHWYj7622aqj9d7En83w6MdnZcUN2qiJxKx6yW89g/OJt7iFrV5zstUQeEgK+uL1Gi1wM2B9U9mtfk1ZULeiTwFuNXc5SBt69R92ui9K1HQORx/1yefjALEnotUGdqFUIlwvv22llnjGywqYbOx3FATCK0x6Lo3mXDdJAGs73jcjQ+wKgV3hx++RzqnMfE7yFM012t1JGF8f2VowOU0lX4T55eNF1WMWtUegP5/qshC+WbpHzQ31aSGpBLzvJzk4FYZ155pB/xJo2YWS74WqaZSB+Yt6dL6cdH9dx0vGyh+1tAdBnWjf77Q8nbJ/8frekYaxu3UwZWRn7yaMzEF7dHCzp8TZbc15p4uPFnqKPj9pI62f754GTMrLdTra+Fve8m20sX1sAr9hxtiZ6XpoPiZaaARCT+n42kAuEyrRhkQaJ3mqEZ159qCNieQGIzOZ3zpe05GoVFa4wbFyEOatHFngMrss3i/2gUb1Nbo0jND5nzD9JlrT+NMmCjyAHD53MpcYyU0X+jJW56coCONusKCxXkqxZPA5XYqOVxyOFBZmvzRYzE2ZL0GYgMjFkbfN26f/7Rsu23aZmxN12ALF4hyyz6NnAK1+rfSKA9BxGVB7jWmJlXlr4XBxjMi8PgLyfr2XZLTzPbsqsaUwEYLmv/2qRVU1a2CqcJfUskP+RaL5FhEf5KP06EVbHR0UGIsetZyH7tQHPuFD3i1guQrbPdjGaJ8PBhFOufZUFH9VIFsu9+S/iw6kALnY/2bB/KSpljqOQegUQZtE2OrRk92r4T11klhDxaUtfFP8VU5dKhzsbRsoI52N3xFtmnBQtg5VvAy3blAEe1j5Art6UIoLOgDfs1mooXL6qGHKQRH0C4v+Ts03F9hp8+Sc/XMOM/yMN7OeO3otrcY59twyGEtuQMrLVSPPDp5zqBJBH/bE6602fSeabN5fZdjZlZOYqXe6qZznk89nJgUwMJ7KuW5OYx1hx9YsVUnwjsCZNJ5J8arVKiGy6I2upmTLK8XtgSXNcS/KNeC679U02qXDN/2ULFvW3nW2ZFYXkmw2AGJ7kbPuuC0/4Nt+qiDm30n29Dtm63+wuJGsi7MpB81G2FA1+5FI0ixXXkx0NgN6X42xDtbpyUTH4LwXwWU+i3chmk3fCisS60cs7rYhb37pbsNhO7l0FX7NJZkLCWvIxi5enWv/5GQCeFOVXloDjV9qWLH4ZmjUrO87/AvEAih+h+dAFAAAAAElFTkSuQmCC",
@@ -400,11 +400,11 @@ ${document.cosmicCat.Template.Buttons.Subscribe(data.header.id)}
 <div class="upper-right-section">
 <div class="header-stats">
 <div class="stat-entry">
-<span class="stat-value">${data?.info?.subs}</span>
+<span class="stat-value">${data?.info?.subs || data?.header?.subscriberCount}</span>
 <span class="stat-name">subscribers</span>
 </div>
 <div class="stat-entry">
-<span class="stat-value">${data?.info?.fields?.views}</span>
+<span class="stat-value">${data?.info?.fields?.views || data?.header?.fields?.views}</span>
 <span class="stat-name">video views</span>
 </div>
 </div>
@@ -567,7 +567,7 @@ ${sideThumbs}
                         return `<div class="secondary-pane">
 <div class="user-profile channel-module yt-uix-c3-module-container">
 <div class="module-view profile-view-module" data-owner-external-id="BR8-60-B28hp2BmDPdntcQ">
-<h2>${localizeString("channels.3.body.secondaryPane.userProfile.about", data?.info?.name)}</h2>
+<h2>${localizeString("channels.3.body.secondaryPane.userProfile.about", data?.header?.name)}</h2>
 ${document.cosmicCat.Template.Channel.Channels3.secondaryPane.firstSection.Main(data)}
 ${document.cosmicCat.Template.Channel.Channels3.secondaryPane.createdBySection.Main(data)}
 </div>
@@ -577,7 +577,7 @@ ${document.cosmicCat.Template.Channel.Channels3.secondaryPane.createdBySection.M
                         Main: (data) => {
                             return `<div class="section first">
 <div class="user-profile-item profile-description">
-<p>${data.info.fields.description}</p>
+<p>${data?.info?.fields?.description}</p>
 </div>
 <div class="user-profile-item profile-socials">
 </div>
@@ -1428,7 +1428,6 @@ ${document.cosmicCat.Template.Playlist.Content(data)}
 </div>`;
             },
             Header: (data) => {
-                console.log(data);
                 return `<div id="branded-page-header-container" class="ytg-wide">
 <div id="branded-page-header" class="ytg-wide ytg-box">
 <a class="profile-thumb" href="${data.header.owner.url}">
@@ -1446,7 +1445,7 @@ ${document.cosmicCat.Template.Playlist.Content(data)}
 <div class="header-stats ytg-box">
 <ul>
 <li class="stat-entry first">
-<span class="stat-value">${data.header.videos.text?.split(" ")?.[0]}</span>
+<span class="stat-value">${data.header.videos?.text?.split(" ")?.[0]}</span>
 <span class="stat-name">videos</span>
 </li>
 <li class="stat-entry">
@@ -1458,9 +1457,11 @@ ${document.cosmicCat.Template.Playlist.Content(data)}
 </div>
 <div class="playlist-reference">
 <h1 title="${data.header.title}">${data.header.title}</h1>
+${data.creatorInfo?.id ? `
 <p class="channel-author-attribution">
 ${localizeString("playlists.header.channelAuthor", data.header?.owner)}
 </p>
+` : ""}
 </div>
 <span id="play-all-button">
 <a class="yt-playall-link yt-playall-link-dark yt-uix-sessionlink" href="https://www.youtube.com/watch?v=${data.content[0].id}&list=${data.header.id}" data-sessionlink="el">
@@ -1572,24 +1573,24 @@ ${localizeString("playlists.body.primaryPane.items.video.by", data?.owner?.name)
 <p>${data.header.description}</p>
 </div>
 <hr class="yt-horizontal-rule">
-${document.cosmicCat.Template.Playlist.secondaryPane.aboutSection(data)}
+${data.creatorInfo?.id ? document.cosmicCat.Template.Playlist.secondaryPane.aboutSection(data) : ""}
 </div>`;
                 },
                 aboutSection: (data) => {
                     return `<div class="channel-module">
 <div class="playlist-creator-info">
 <h2>${localizeString("playlists.body.secondaryPane.aboutSection.about", data.creatorInfo?.name || data.creatorInfo?.title)}</h2>
-<p>${data.creatorInfo.fields.description}</p>
+<p>${data.creatorInfo?.fields?.description}</p>
 <div class="creator-links">
 <a href="https://www.youtube.com/channel/${data.creatorInfo.id}/playlists">${localizeString("playlists.body.secondaryPane.aboutSection.creatorLinks.playlists", data?.creatorInfo?.name)}</a>
 <a href="https://www.youtube.com/channel/${data.creatorInfo.id}/videos">${localizeString("playlists.body.secondaryPane.aboutSection.creatorLinks.videos")}</a>
 </div>
 <div class="creator-stats">
-<p>${data.creatorInfo.fields.views} views</p>
-<p>${data.creatorInfo.subs}</p>
+<p>${data.creatorInfo?.fields?.views} views</p>
+<p>${data.creatorInfo?.subs}</p>
 </div>
 <div class="enable-fancy-subscribe-button">
-${document.cosmicCat.Template.Buttons.Subscribe(data.creatorInfo.id)}
+${document.cosmicCat.Template.Buttons.Subscribe(data.creatorInfo?.id)}
 </span>
 </div>
 <div class="yt-horizontal-rule"><span class="first"></span><span class="second"></span><span class="third"></span></div>
@@ -3503,40 +3504,36 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
         listCategories: (params) => {
                 var href = "";
 
-                switch (params) {
-                    case "trending":
+                switch (true) {
+                    case /trending/.test(params):
                         href = "/feed/trending";
                         break;
-                    case "popular":
+                    case /popular/.test(params):
                         href = "/channel/UCF0pVplsI8R5kcAqgtoRqoA";
                         break;
-                    case "music":
+                    case /music/.test(params):
                         href = "/channel/UC-9-kyTW8ZkZNDHQJ6FgpwQ";
                         break;
-                    case "live":
+                    case /live/.test(params):
                         href = "/channel/UC4R8DWoMoI7CAwX8_LjQHig";
                         break;
-                    case "gadgets":
+                    case /gadgets|gaming/.test(params):
                         href = "/gaming";
                         break;
-                    case "news":
+                    case /news/.test(params):
                         href = "/channel/UCYfdidRxbB8Qhf0Nx7ioOYw";
                         break;
-                    case "sports":
+                    case /sports/.test(params):
                         href = "/channel/UCEgdi0XIXXZ-qJOFPf4JSKw";
                         break;
-                    case "education":
+                    case /education/.test(params):
                         href = "/channel/UCtFRv9O2AHqOZjjynzrv-xg";
                         break;
-                    case "howto":
+                    case /howto/.test(params):
                         href = "/channel/UCrpQ4p1Ql_hG8rKXIKM1MOQ";
-                        break;
-                    case "technoblade":
-                        href = "/c/technoblade";
-                        break;
                 }
                 return {
-                    name: (params == "technoblade") ? "Technoblade" : localizeString("guide." + params),
+                    name: localizeString("guide." + params),
                     href: href,
                     class: params
                 };
@@ -3595,9 +3592,9 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                     id: data.channelId,
                     name: data.title?.simpleText || data.title,
                     url: data.canonicalChannelUrl || data.navigationEndpoint?.browseEndpoint?.canonicalBaseUrl,
-                    avatar: data.avatar?.thumbnails?.[0]?.url || data.thumbnail?.thumbnails?.[0]?.url,
+                    avatar: data.avatar?.thumbnails?.[0]?.url || data.thumbnail?.thumbnails?.[0]?.url || data.boxArt?.thumbnails?.[0]?.url,
                     links: data.primaryLinks,
-                    subscriberCount: document.cosmicCat.Utils.deabreviateCnt(data.subscriberCountText?.simpleText?.split(" ")?.[0] || "0"),
+                    subscriberCount: document.cosmicCat.Utils.deabreviateCnt(data.subscriberCountText?.simpleText?.split(" ")?.[0] || data.subtitle?.simpleText?.split(" ")?.[0] || "0"),
                     videos: data.videoCountText?.runs?.[1] && (data.videoCountText?.runs?.[0].text + data.videoCountText?.runs?.[1].text),
                     fields: {
                         views: document.cosmicCat.Utils.deabreviateCnt(data.viewCountText?.simpleText?.split(" ")?.[0]) || "0",
@@ -3660,7 +3657,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                 return {
                     id: data.playlistId,
                     title: data.title?.runs?.[0]?.text || data.title?.simpleText || data.title,
-                    description: data.descriptionText?.simpleText || "",
+                    description: data.descriptionText?.simpleText || data.subtitle?.simpleText || "",
                     currentIndex: data.currentIndex,
                     videos: {
                         totalNumber: data.videoCountShortText?.simpleText || data.totalVideos || data.videoCount,
@@ -4002,7 +3999,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
             }
         },
         isChannelsPage: () => {
-            return (window.location.href.match(/cosmic_cat/) || !window.location.href.match(/channel|user|^c{1}$/i) && !document.cosmicCat.Channels.isUsertag());
+            return (window.location.href.match(/channel|user|^c{1}$/i) || document.cosmicCat.Channels.isUsertag());
         },
         checkIfSubscribed: () => {
             try {
@@ -4079,7 +4076,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
         Local: {
             Header: () => {
                 try {
-                    return document.cosmicCat.Utils.Sort.channelData(ytInitialData.header.c4TabbedHeaderRenderer);
+                    return document.cosmicCat.Utils.Sort.channelData(ytInitialData.header?.c4TabbedHeaderRenderer || ytInitialData.header?.carouselHeaderRenderer?.contents?.[0]?.topicChannelDetailsRenderer || ytInitialData.header?.carouselHeaderRenderer?.contents?.[1]?.topicChannelDetailsRenderer || ytInitialData.header?.interactiveTabbedHeaderRenderer);
                 } catch(err) {
                     console.error("[Channels] Something went wrong with sorting channel data:\n", err);
                 }
@@ -5268,7 +5265,7 @@ document.cosmicCat.Utils.waitForElm("ytd-app").then(async (e) => {
     document.cosmicCat.Utils.addStyle("//s.ytimg.com/yts/cssbin/www-core-vfleLhVpH.css");
 
     if (window.location.pathname == "/") {document.cosmicCat.Utils.addStyle("//s.ytimg.com/yts/cssbin/www-guide-vfljovH6N.css");}
-    if (window.location.pathname.split("/")[1].match(/channel|user|^c{1}$/i) || document.cosmicCat.Channels.isUsertag()) {
+    if (document.cosmicCat.Channels.isChannelsPage()) {
         let style = {
             3: ["//s.ytimg.com/yts/cssbin/www-channels3-vflIpog6R.css", "//s.ytimg.com/yts/cssbin/www-watch-inlineedit-vflg-l3kd.css"],
             2: ["//s.ytimg.com/yt/cssbin/www-refresh-vflzVUPsm.css", "//s.ytimg.com/yt/cssbin/www-the-rest-vflNb6rAI.css", "//s.ytimg.com/yt/cssbin/www-channel_new-vflrWkVe_.css"],
@@ -5545,88 +5542,88 @@ ${OBJ_FOOTER}
         if(window.location.pathname.split("/")[1].match(/shorts/i)) {
             window.location.href = "https://www.youtube.com/watch?v=" + window.location.pathname.split("/")[2];
         }
-        await document.cosmicCat.Utils.waitForElm2().then(async () => {
-            if (document.cosmicCat.Channels.isChannelsPage()) return;
-            await new Promise((a,b) => setTimeout(a, 1000));
-            if (!ytInitialData?.header?.c4TabbedHeaderRenderer) return;
+        if(document.cosmicCat.Channels.isChannelsPage()) {
             (!/^videos|playlists$/g.test(window.location.pathname.split("/").splice(document.cosmicCat.Channels.isUsertag() ? 2 : 3).join("/"))) && window.location.replace(window.location.pathname.split("/").slice(0, document.cosmicCat.Channels.isUsertag() ? 2 : 3).join("/") + "/videos");
-            let revision = document.cosmicCat.Storage.get("channel_mode").value;
-            const naviHash = document.cosmicCat.Channels.getNaviHash();
+            await document.cosmicCat.Utils.waitForElm2().then(async () => {
+                //if (!ytData?.header?.c4TabbedHeaderRenderer) return;
+                let revision = document.cosmicCat.Storage.get("channel_mode").value;
+                const naviHash = document.cosmicCat.Channels.getNaviHash();
 
-            (revision == "2" && /playlists/.test(window.location.pathname.split("/").splice(2).join("/"))) && window.location.replace(window.location.pathname.split("/").slice(0,2).join("/") + "/videos");
+                (revision == "2" && /playlists/.test(window.location.pathname.split("/").splice(2).join("/"))) && window.location.replace(window.location.pathname.split("/").slice(0,2).join("/") + "/videos");
 
-            let data = {
-                info: await document.cosmicCat.Ajax.Fetch(`https://www.youtube.com${window.location.pathname.split("/").slice(0, -1).join("/")}/about`, document.cosmicCat.Channels._Data.Info),
-                header: document.cosmicCat.Channels.Local.Header(),
-                content: document.cosmicCat.Channels.Local.Videos() || document.cosmicCat.Channels.Local.Playlists()
-            };
+                let data = {
+                    info: await document.cosmicCat.Ajax.Fetch(`https://www.youtube.com${window.location.pathname.split("/").slice(0, -1).join("/")}/about`, document.cosmicCat.Channels._Data.Info),
+                    header: document.cosmicCat.Channels.Local.Header(),
+                    content: document.cosmicCat.Channels.Local.Videos() || document.cosmicCat.Channels.Local.Playlists()
+                };
 
-            document.head.querySelector("title").innerText = `${data.info.name}'s ${localizeString("global.channel")} - YouTube`;
+                document.head.querySelector("title").innerText = `${data.header.name}'s ${localizeString("global.channel")} - YouTube`;
 
-            revision = "Channels" + document.cosmicCat.Storage.get("channel_mode").value;
-            const tab = document.cosmicCat.Channels.getCurrentChannelTab();
+                revision = "Channels" + document.cosmicCat.Storage.get("channel_mode").value;
+                const tab = document.cosmicCat.Channels.getCurrentChannelTab();
 
-            document.cosmicCat.pageRenderer.set("#content-container", document.cosmicCat.Template.Channel[revision].Main(data));
+                document.cosmicCat.pageRenderer.set("#content-container", document.cosmicCat.Template.Channel[revision].Main(data));
 
-            const list = {
-                "Channels3": {
-                    "contentList": ".channels-browse-content-grid",
-                    "contentListAddr": "primaryPane.listItem"
-                },
-                "Channels2": {
-                    "contentList": ".scrollbox-page",
-                    "contentListAddr": "playlistNavigator.Content.PlayPanel.Holder"
-                },
-                "Channels1": {
-                    "contentList": "#profileVideos [style=\"border-bottom:none;\"]",
-                    "contentListAddr": "mainCon.userVideos"
-                }
-            };
-
-            (revision == "Channels2") && document.cosmicCat.pageRenderer.add("body", document.cosmicCat.Template.Channel.Channels2.Stylesheet());
-            (revision == "Channels2") && document.cosmicCat.Channels.load2Modules(data.info);
-
-            if (revision == "Channels3") {
-                document.cosmicCat.pageRenderer.add(".tab-content-body", document.cosmicCat.Template.Channel.Channels3.primaryPane.Main(data));
-                document.cosmicCat.pageRenderer.add(".tab-content-body", document.cosmicCat.Template.Channel.Channels3.secondaryPane.Main(data));
-            }
-
-            try {
-                if (revision == "Channels3") {
-                    for (let i = 0; i < data.info?.links?.length; i++) {
-                        document.cosmicCat.pageRenderer.add(".profile-socials", document.cosmicCat.Template.Channel.Channels3.secondaryPane.firstSection.socialLink(data.info.links[i]));
+                const list = {
+                    "Channels3": {
+                        "contentList": ".channels-browse-content-grid",
+                        "contentListAddr": "primaryPane.listItem"
+                    },
+                    "Channels2": {
+                        "contentList": ".scrollbox-page",
+                        "contentListAddr": "playlistNavigator.Content.PlayPanel.Holder"
+                    },
+                    "Channels1": {
+                        "contentList": "#profileVideos [style=\"border-bottom:none;\"]",
+                        "contentListAddr": "mainCon.userVideos"
                     }
+                };
+
+                (revision == "Channels2") && document.cosmicCat.pageRenderer.add("body", document.cosmicCat.Template.Channel.Channels2.Stylesheet());
+                (revision == "Channels2") && document.cosmicCat.Channels.load2Modules(data.info);
+
+                if (revision == "Channels3") {
+                    document.cosmicCat.pageRenderer.add(".tab-content-body", document.cosmicCat.Template.Channel.Channels3.primaryPane.Main(data));
+                    document.cosmicCat.pageRenderer.add(".tab-content-body", document.cosmicCat.Template.Channel.Channels3.secondaryPane.Main(data));
                 }
-            } catch(err) {
-                console.error("[Channels] Failed to parse social links:\n, err");
-            }
 
-            data.content = (data.content.length == 0) && await document.cosmicCat.Ajax.Fetch(`https://www.youtube.com${window.location.pathname.split("/").slice(0, -1).join("/")}/${tab}`, document.cosmicCat.Channels._Data[tab.charAt(0).toUpperCase() + tab.slice(1)]) || data.content;
-
-            try {
-                // shit doesn't work >:c
-                //document.cosmicCat.Ajax.post("/youtubei/v1/creator/get_creator_channels", `"channelIds":["${data.header.id}"],"mask":{"channelId":true,"contentOwnerAssociation":{"all":true},"features":{"all":true},"metric":{"all":true},"monetizationDetails":{"all":true},"monetizationStatus":true,"permissions":{"all":true},"settings":{"coreSettings":{"featureCountry":true}}}`)
-                (revision == "Channels1") && (document.querySelector("[name^=\"channel-box-item-count\"]").innerText = data.content.length);
-            } catch(err) {}
-
-            try {
-                for (let i = 0; i < data.content.length; i++) {
-                    document.cosmicCat.pageRenderer.add(list[revision].contentList, list[revision].contentListAddr.split('.').reduce((o,i)=> o[i]||"", document.cosmicCat.Template.Channel[revision])[document.cosmicCat.Channels.getCurrentChannelTab()](data.content[i], data.content.length));
+                try {
+                    if (revision == "Channels3") {
+                        for (let i = 0; i < data.info?.links?.length; i++) {
+                            document.cosmicCat.pageRenderer.add(".profile-socials", document.cosmicCat.Template.Channel.Channels3.secondaryPane.firstSection.socialLink(data.info.links[i]));
+                        }
+                    }
+                } catch(err) {
+                    console.error("[Channels] Failed to parse social links:\n, err");
                 }
-            } catch(err) {
-                console.error("[Channels] Failed to parse local content data:\n", err);
-            }
 
-            (revision == "Channels2") && (document.querySelector("#playnav-play-loading").style.display = "none");
+                data.content = (data.content.length == 0) && await document.cosmicCat.Ajax.Fetch(`https://www.youtube.com${window.location.pathname.split("/").slice(0, -1).join("/")}/${tab}`, document.cosmicCat.Channels._Data[tab.charAt(0).toUpperCase() + tab.slice(1)]) || data.content;
 
-            (revision == "Channels3" && data.content.length == 30) && (
-                document.cosmicCat.Channels.Channels3.Pagination.load()
-            );
+                try {
+                    // shit doesn't work >:c
+                    //document.cosmicCat.Ajax.post("/youtubei/v1/creator/get_creator_channels", `"channelIds":["${data.header.id}"],"mask":{"channelId":true,"contentOwnerAssociation":{"all":true},"features":{"all":true},"metric":{"all":true},"monetizationDetails":{"all":true},"monetizationStatus":true,"permissions":{"all":true},"settings":{"coreSettings":{"featureCountry":true}}}`)
+                    (revision == "Channels1") && (document.querySelector("[name^=\"channel-box-item-count\"]").innerText = data.content.length);
+                } catch(err) {}
 
-            document.cosmicCat.Utils.waitForElm("#video-player").then(() => {
-                document.cosmicCat.player.Create();
+                try {
+                    for (let i = 0; i < data.content.length; i++) {
+                        document.cosmicCat.pageRenderer.add(list[revision].contentList, list[revision].contentListAddr.split('.').reduce((o,i)=> o[i]||"", document.cosmicCat.Template.Channel[revision])[document.cosmicCat.Channels.getCurrentChannelTab()](data.content[i], data.content.length));
+                    }
+                } catch(err) {
+                    console.error("[Channels] Failed to parse local content data:\n", err);
+                }
+
+                (revision == "Channels2") && (document.querySelector("#playnav-play-loading").style.display = "none");
+
+                (revision == "Channels3" && data.content.length == 30) && (
+                    document.cosmicCat.Channels.Channels3.Pagination.load()
+                );
+
+                document.cosmicCat.Utils.waitForElm("#video-player").then(() => {
+                    document.cosmicCat.player.Create();
+                });
             });
-        });
+        }
         if(window.location.pathname.split("/")[1].match(/results/i)) {
             document.cosmicCat.Utils.waitForElm("#watch-page-skeleton").then(async () => {
                 var searchpar = document.cosmicCat.Utils.escapeHtml((new URL(document.location)).searchParams.get("search_query"));
@@ -5672,7 +5669,9 @@ ${OBJ_FOOTER}
                     content: document.cosmicCat.Playlists.Local.Videos()
                 };
 
-                data.creatorInfo = await document.cosmicCat.Ajax.Fetch(`https://www.youtube.com/channel/${data?.header?.owner?.id}/about`, document.cosmicCat.Channels._Data.Info);
+                if(data.header.owner.id) {
+                    data.creatorInfo = await document.cosmicCat.Ajax.Fetch(`https://www.youtube.com/channel/${data?.header?.owner?.id}/about`, document.cosmicCat.Channels._Data.Info);
+                }
 
                 document.cosmicCat.pageRenderer.set("#content-container", document.cosmicCat.Template.Playlist.Main(data));
 
