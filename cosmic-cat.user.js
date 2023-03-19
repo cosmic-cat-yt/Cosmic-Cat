@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.23
+// @version      0.6.24
 // @description  Broadcast Yourself
 // @author       Emiri Floarea (ciulinuwu)
 // @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
@@ -517,9 +517,11 @@ ${document.cosmicCat.Template.Buttons.addTo(data.id)}
                         },
                         playlists: (data) => {
                             let sideThumbs = "";
-                            for (let i = 0; i < data.sidethumbs.length; i++) {
-                                sideThumbs += document.cosmicCat.Template.Channel.Channels3.primaryPane.listItem.sidethumb(data.sidethumbs[i]);
-                            }
+                            try {
+                                for (let i = 0; i < data.sidethumbs.length; i++) {
+                                    sideThumbs += document.cosmicCat.Template.Channel.Channels3.primaryPane.listItem.sidethumb(data.sidethumbs[i]);
+                                }
+                            } catch {}
                             return `<li class="channels-content-item">
 <span class="context-data-item" data-context-item-title="${data.title}" data-context-item-count="8 videos" data-context-item-id="PLbpi6ZahtOH5-VjZPSkqc0JI118RXAcGU" data-context-item-type="playlist" data-context-item-videos="[&quot;SNc7vYXqtVg&quot;, &quot;T7SwehyOh3c&quot;, &quot;IQG-xM62tQg&quot;, &quot;c8DaqgMPrmQ&quot;, &quot;f4LhCv7RY4E&quot;]">
 <a href="${data.url}" class="yt-pl-thumb-link yt-uix-contextlink yt-uix-sessionlink" data-sessionlink="ei">
@@ -3421,18 +3423,23 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
             find: (data, param) => {
                 try {
                     return data.contents.twoColumnBrowseResultsRenderer.tabs.find(b =>
-                             b.tabRenderer ?
-                               b.tabRenderer.endpoint.commandMetadata.webCommandMetadata.url.split("/")[2] === param :
-                                 {});
+                       b.tabRenderer.endpoint.commandMetadata.webCommandMetadata.url.split("/")[3] === param
+                    );
                 } catch {
-                    return {error: 404};
+                    try {
+                        return data.contents.twoColumnBrowseResultsRenderer.tabs.find(b =>
+                           b.tabRenderer.endpoint.commandMetadata.webCommandMetadata.url.split("/")[2] === param
+                        );
+                    } catch {
+                        return {};
+                    }
                 }
             },
             content: (data) => {
                 try {
                     return data.tabRenderer.content?.richGridRenderer?.contents || data.tabRenderer.content?.sectionListRenderer?.contents;
                 } catch {
-                    return {error: 404};
+                    return {};
                 }
             }
         },
@@ -3534,17 +3541,44 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                     class: params
                 };
             },
-        convertDescription: ($description) => {
+        convertDescription: (a) => {
             // WIP
-            if (!$description.commandRuns) {
+            if (!a.commandRuns) {
                 return {
                     "runs": [
                         {
-                            "text": $description.content
+                            "text": a.content
                         }
                     ]
                 };
             }
+
+            var runs = [],
+                start = 0;
+
+            for (const run in a.commandRuns) {
+                var beforeText;// ???????? a.content.substr(a.content, start, run.startIndex - start);
+
+                if(beforeText) {
+                    runs[run] = {
+                        text: beforeText
+                    };
+                }
+
+                var text = "",
+                    endpoint; // Look into it - a.commandRuns[run]?.onTop?.innertubeCommand;
+
+                runs[run] = {
+                    "text": text,
+                    "navigationEndpoint": endpoint
+                };
+
+                start = a.commandRuns[run].startIndex + run.length;
+            }
+
+            return {
+                "runs": runs
+            };
         },
         Sort: {
             channelData: (data) => {
@@ -3563,7 +3597,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                     url: data.canonicalChannelUrl || data.navigationEndpoint?.browseEndpoint?.canonicalBaseUrl,
                     avatar: data.avatar?.thumbnails?.[0]?.url || data.thumbnail?.thumbnails?.[0]?.url,
                     links: data.primaryLinks,
-                    subscriberCount: document.cosmicCat.Utils.deabreviateCnt(data.subscriberCountText?.simpleText?.split(" ")?.[0]),
+                    subscriberCount: document.cosmicCat.Utils.deabreviateCnt(data.subscriberCountText?.simpleText?.split(" ")?.[0] || "0"),
                     videos: data.videoCountText?.runs?.[1] && (data.videoCountText?.runs?.[0].text + data.videoCountText?.runs?.[1].text),
                     fields: {
                         views: document.cosmicCat.Utils.deabreviateCnt(data.viewCountText?.simpleText?.split(" ")?.[0]) || "0",
@@ -3578,7 +3612,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
 
                 let _description = da.detailedMetadataSnippets?.[0]?.snippetText?.runs || da.descriptionSnippet?.runs || da.description?.runs || da.videoDetails?.shortDescription || [];
 
-                if(da.attributedDescription) _description = document.cosmicCat.Utils.convertDescription(da.attributedDescription);
+                if(da.attributedDescription) _description = document.cosmicCat.Utils.convertDescription(da.attributedDescription)?.runs;
 
                 let description = "";
                 for (const snippet in _description) {
@@ -3620,7 +3654,6 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
             },
             playlistData: (data) => {
                 if (!data) return {};
-                console.log(data);
 
                 let views = data.viewCountText?.simpleText?.split(" ")?.[0];
 
@@ -3630,7 +3663,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                     description: data.descriptionText?.simpleText || "",
                     currentIndex: data.currentIndex,
                     videos: {
-                        totalNumber: data.videoCountShortText?.simpleText || data.totalVideos,
+                        totalNumber: data.videoCountShortText?.simpleText || data.totalVideos || data.videoCount,
                         text: data.videoCountText?.runs?.[1] ? data.videoCountText.runs[0].text + data.videoCountText.runs[1].text : data.videoCountText?.runs?.[0]?.text || data.numVideosText?.runs?.[0]?.text,
                         runs: data.videoCountText?.runs,
                         videos: data.contents
@@ -4088,31 +4121,44 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
 
                 try {
                     let tab = document.cosmicCat.Utils.browseTabs.find(data, "playlists");
-                    let contents = document.cosmicCat.Utils.browseTabs.content(tab)[0];
+                    let content = document.cosmicCat.Utils.browseTabs.content(tab),
+                        contents = [];
 
-                    try {
-                        contents = contents.shelfRenderer.content.horizontalListRenderer.items;
-                    } catch {
+                    for (const i in content) {
                         try {
-                            contents = contents.gridRenderer.items;
+                            contents.push(content[i].shelfRenderer.content.horizontalListRenderer.items);
                         } catch {
                             try {
-                                contents = contents.itemSectionRenderer.contents[0].shelfRenderer.content.horizontalListRenderer.items;
+                                contents.push(content[i].gridRenderer.items);
                             } catch {
                                 try {
-                                    contents = contents.itemSectionRenderer.contents[0].gridRenderer.items;
+                                    contents.push(content[i].itemSectionRenderer.contents[0].shelfRenderer.content.horizontalListRenderer.items);
                                 } catch {
-                                    throw Error("Channel has no playlists, or data is stored in a location thats not programmed into the script.");
+                                    try {
+                                        contents.push(content[i].itemSectionRenderer.contents[0].gridRenderer.items);
+                                    } catch {
+                                        try {
+                                            contents.push(content[i].itemSectionRenderer.contents[0].shelfRenderer.content.expandedShelfContentsRenderer.items);
+                                        } catch {
+                                            throw Error("No playlists were found.");
+                                        }
+                                    }
                                 }
                             }
                         }
-                    }
+                    };
 
                     if (!contents) throw Error();
 
+                    try {
+                        contents = [...contents[0], ...contents[1]];
+                    } catch {
+                        contents = [...contents[0]];
+                    }
+
                     for (let i = 0; i < contents.length; i++) {
                         if (!contents[i].continuationItemRenderer) {
-                            result[i] = document.cosmicCat.Utils.Sort.playlistData(contents[i].gridPlaylistRenderer);
+                            result[i] = document.cosmicCat.Utils.Sort.playlistData(contents[i].gridPlaylistRenderer || contents[i].playlistRenderer);
                         }
                     }
                 } catch(err) {
@@ -4133,7 +4179,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                     result = document.cosmicCat.Utils.Sort.channelData(contents);
 
                     try {
-                        result.subs = document.cosmicCat.Utils.deabreviateCnt(data.header.c4TabbedHeaderRenderer.subscriberCountText.simpleText?.split(" ")?.[0] || data.subs.simpleText?.split(" ")?.[0]);
+                        result.subs = document.cosmicCat.Utils.deabreviateCnt(data.header.c4TabbedHeaderRenderer?.subscriberCountText?.simpleText?.split(" ")?.[0] || data.subs?.simpleText?.split(" ")?.[0] || "0");
                     } catch(err) {
                         console.error("[Channels] Something went wrong with sorting subscriber count:\n", err);
                     }
@@ -5288,7 +5334,7 @@ ${OBJ_FOOTER}
         document.cosmicCat.pageRenderer.add("#masthead-container", OBJ_MASTH);
 
         document.cosmicCat.Utils.waitForElm2().then(() => {
-            (!0 === update) && document.cosmicCat.Alert(0, "An update is available to Cosmic Cat! <a href=\"https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js\">Click to prompt update.</a>");
+            (!0 === update) && document.cosmicCat.Alert(0, "An update is available to Cosmic Cat! <a href=\"https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js\">Click to install it.</a>");
         });
 
         (() => {
@@ -5471,8 +5517,7 @@ ${OBJ_FOOTER}
                     if(comm.length < 1) return;
 
                     document.cosmicCat.Ajax.post("/youtubei/v1/comment/create_comment", `createCommentParams: "${document.querySelector("input#session").value}", commentText: "${comm}"`).then(async api => {
-
-                        if(api?.actionResult?.status == "STATUS_SUCCEEDED") {
+                        if(api.actionResult.status == "STATUS_SUCCEEDED") {
                             let re = api.actions[0].runAttestationCommand.ids;
 
                             let comments = document.querySelector("ul.comment-list.all");
