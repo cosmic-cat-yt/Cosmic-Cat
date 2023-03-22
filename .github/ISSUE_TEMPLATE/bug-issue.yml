@@ -6,9 +6,8 @@ body:
       value: |
         # Bug report
 
-        * If you do not provide the necessary information required, your issue will be discarded and closed.
-        * Please take your time to write a detailed issue.
-
+        * If you fail to provide the necessary information, we cannot assist you. Please make sure to complete the form properly to help us understand your issue.
+  
   - type: dropdown
     attributes:
       label: Type
