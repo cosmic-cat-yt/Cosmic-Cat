@@ -6,10 +6,8 @@ body:
       value: |
         # Bug report
 
-        * All fields must be filled.
-        * Please provide as much detail in each field as possible.
-        * Note that if you do not respond to requests made by the developer within 7-days, your issue will be closed.
-        * Do not waste developer's time with low effort reports or spam.
+        * If you do not provide the necessary information required, your issue will be discarded and closed.
+        * Please take your time to write a detailed issue.
 
   - type: dropdown
     attributes:
