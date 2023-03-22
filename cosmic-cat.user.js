@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.26
+// @version      0.6.27
 // @description  Broadcast Yourself
 // @author       Emiri Floarea (ciulinuwu)
 // @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
@@ -3504,12 +3504,66 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
 </div>
 </li>`;
             },
+        },
+        supportedBrowsers: {
+            Main: () => {
+                return `<div id="content">
+<div class="ytg-wide">
+</div>
+<div id="marketing-header" class="supported-browsers ytg-base">
+<div class="ytg-wide ytg-box">
+<div class="ytg-3col">
+<h2>Oops, your web browser will be unsupported soon.</h2>
+<p>YouTube works with a wide range of browsers. However, if you'd like to use many of our latest and greatest features, please upgrade to a modern, fully supported browser.</p>
+<p>Find the latest versions of our supported browsers below.</p>
+<p>
+<button href="/" type="button" class=" yt-uix-button yt-uix-button-default" onclick=";window.location.href=this.getAttribute('href');return false;" role="button">
+<span class="yt-uix-button-content">No thanks </span>
+</button>
+</p>
+</div>
+<div class="ytg-3col ytg-last">
+<img src="//s.ytimg.com/yts/img/marketing/browsers/mr-meh-vflAEr4Cy.png" style="_background: none;filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='//s.ytimg.com/yts/img/marketing/browsers/mr-meh-vflAEr4Cy.png',sizingMethod='scale');" alt="Browser illustration" align="top">
+</div>
+</div>
+</div>
+<div id="marketing-content" class="supported-browsers ytg-base ytg-box">
+<div class="ytg-wide">
+<h2>Get the latest</h2>
+<div class="col yt-grid-4 yt-tile-static ">
+<h3>
+<a onmousedown="yt.tracking.track('browserupgrade_page', 'browser=chrome')" href="https://www.google.com/chrome/index.html?brand=CHNY&amp;utm_campaign=en&amp;utm_source=en-et-youtube&amp;utm_medium=et">
+<img src="//s.ytimg.com/yts/img/marketing/browsers/chrome-vflbrSn5t.png" alt="">Chrome
+</a>
+</h3>
+<p>by Google</p>
+</div>
+<div class="col yt-grid-4 yt-tile-static ">
+<h3>
+<a onmousedown="yt.tracking.track('browserupgrade_page', 'browser=firefox')" href="https://www.mozilla.com/?from=sfx&amp;uid=267821&amp;t=449">
+<img src="//s.ytimg.com/yts/img/marketing/browsers/firefox-vflkT4oSN.png" alt="">Firefox
+</a>
+</h3>
+<p>by Mozilla</p>
+</div>
+<div class="col yt-grid-4 yt-tile-static last">
+<h3>
+<a onmousedown="yt.tracking.track('browserupgrade_page', 'browser=safari')" href="https://web.archive.org/web/20121029090305/http://www.apple.com/safari/">
+<img src="//s.ytimg.com/yts/img/marketing/browsers/safari-vflIOoRbM.png" alt="">Safari
+</a>
+</h3>
+<p>by Apple</p>
+</div>
+</div>
+</div>
+</div>`;
+            }
         }
     },
     toggleElm: function (params) {
         const elm = document.querySelector(params);
 
-        if (!params) return Error("toggleElm", params + "is not a valid HTMLElement");
+        if (!params) return console.error("toggleElm", params + "is not a valid HTMLElement");
         console.debug("toggleElm", "toggled", params);
 
         if (elm.classList.contains("hid")) {
@@ -3798,13 +3852,6 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
 
                 description = description.replace(/(?:\r\n|\r|\n)/g, '<br/>');
 
-                var thumbnail = da.thumbnail?.thumbnails?.[0]?.url;
-
-                if(3==(new Date).getMonth() && 1==(new Date).getDate()) {
-                    var pool = "https://pbs.twimg.com/media/FFY5UtZXIAUxeYa?format=jpg&name=4096x4096 https://d.furaffinity.net/art/cathythecactus/1650670817/1650670817.cathythecactus_untitled147_20220422203244.jpg https://d.furaffinity.net/art/chipchell/1637725170/1628259771.chipchell_morbidlyobeselesbian.png https://d.furaffinity.net/art/sxfpantera/1649809391/1649809389.sxfpantera_pyrocynical_cs_2_part_apr_part_2_low_res.png https://d.furaffinity.net/art/garowo/1660377831/1660377831.garowo_pyrocynical.jpg https://d.furaffinity.net/art/slimescumbag/1663530187/1663530187.slimescumbag_fc7xsokakaamcwr.jpg https://preview.redd.it/jswmaiz157a81.jpg?width=640&crop=smart&auto=webp&s=8cda3b2e5429704b179f67ab3ff97a68d7387e2a https://preview.redd.it/morbidly-obese-furry-pyro-v0-yl3p4e3g5xw81.jpg?width=640&crop=smart&auto=webp&s=1b7a2c50b1cf661a2e4f068f8d29634e666672aa https://i.ytimg.com/vi/OJhbbY_R3Yo/maxresdefault.jpg".split(" ");
-                    thumbnail = pool[Math.floor(Math.random()*pool.length)]
-                };
-
                 return {
                     owner: {
                         name: da.owner?.videoOwnerRenderer?.title?.runs?.[0]?.text || da.bylineText?.runs?.[0]?.text || da.shortBylineText?.runs?.[0]?.text || da.ownerText?.runs?.[0]?.text || da.videoDetails?.author || da.owner?.videoOwnerRenderer?.title?.runs?.[0]?.text,
@@ -3819,7 +3866,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                     description: description,
                     upload: da.dateText?.simpleText || da.publishedTimeText?.simpleText|| da.publishedTimeText?.runs?.[0]?.text || da.microformat?.playerMicroformatRenderer?.publishDate || "",
                     badges: da.badges || [],
-                    thumbnail: thumbnail,
+                    thumbnail: da.thumbnail?.thumbnails?.[0]?.url,
                     tags: da.videoDetails?.keywords || [],
                     category: (window.location.pathname.split("/")[1] == "watch") ? ytInitialPlayerResponse?.microformat?.playerMicroformatRenderer?.category : ""
                 };
@@ -5660,8 +5707,8 @@ ${OBJ_FOOTER}
             }
         }
         if(window.location.pathname.split("/")[1].match(/watch/i)) {
-            await document.cosmicCat.Utils.waitForElm2().then(async () => {
-                await new Promise((a,b) => setTimeout(a, 500));
+            document.cosmicCat.Utils.waitForElm2().then(async () => {
+                await new Promise((a,b) => setTimeout(a, 100));
                 let data = {
                     primary: document.cosmicCat.Utils.Sort.videoData(ytInitialData.contents.twoColumnWatchNextResults.results?.results?.contents[0]?.videoPrimaryInfoRenderer),
                     secondary: document.cosmicCat.Utils.Sort.videoData(ytInitialData.contents.twoColumnWatchNextResults.results?.results?.contents[1]?.videoSecondaryInfoRenderer),
@@ -5816,8 +5863,8 @@ ${OBJ_FOOTER}
                     }
                 };
 
-                (revision == "Channels2") && document.cosmicCat.pageRenderer.add("body", document.cosmicCat.Template.Channel.Channels2.Stylesheet());
-                (revision == "Channels2") && document.cosmicCat.Channels.load2Modules(data.info);
+                (revision == "Channels2") && (document.cosmicCat.pageRenderer.add("body", document.cosmicCat.Template.Channel.Channels2.Stylesheet()),
++                    document.cosmicCat.Channels.load2Modules(data.info));
 
                 if (revision == "Channels3") {
                     try {
@@ -5838,11 +5885,13 @@ ${OBJ_FOOTER}
                         console.error("[Channels] Failed to parse social links:\n, err");
                     }
 
-                    try {
-                        var a = document.cosmicCat.Utils.Sort.videoData(ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents.find(a => a.itemSectionRenderer.contents[0].channelVideoPlayerRenderer).itemSectionRenderer.contents[0].channelVideoPlayerRenderer);
-                        document.cosmicCat.pageRenderer.add(".primary-pane", document.cosmicCat.Template.Channel.Channels3.primaryPane.featured.featuredVideo(a, data.header));
-                        console.log(a);
-                    } catch {}
+                    if (document.cosmicCat.Channels.isCurrentChannelTab("featured")) {
+                        try {
+                            var a = document.cosmicCat.Utils.Sort.videoData(ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents.find(a => a.itemSectionRenderer.contents[0].channelVideoPlayerRenderer).itemSectionRenderer.contents[0].channelVideoPlayerRenderer);
+                            document.cosmicCat.pageRenderer.add(".primary-pane", document.cosmicCat.Template.Channel.Channels3.primaryPane.featured.featuredVideo(a, data.header));
+                            console.log(a);
+                        } catch {}
+                    }
                 }
 
                 data.content = (data.content.length == 0) && await document.cosmicCat.Ajax.Fetch(`https://www.youtube.com${window.location.pathname.split("/").slice(0, -1).join("/")}/${tab}`, document.cosmicCat.Channels._Data[tab.charAt(0).toUpperCase() + tab.slice(1)]) || data.content;
