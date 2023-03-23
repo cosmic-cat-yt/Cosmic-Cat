@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.27
+// @version      0.6.28
 // @description  Broadcast Yourself
 // @author       Emiri Floarea (ciulinuwu)
 // @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
@@ -46,15 +46,6 @@ var BOOL_LOGIN,
     update = !1,
     startTime = new Date().getTime(),
     commCount = 1;
-
-
-// Check for updates here, because Tampermonkey's "Auto-updater" is SHIT!
-fetch("https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js").then(a => a.text()).then(a => {
-    var b = (a.substr(parseInt(a.search("@version") + 14)).substr(0, parseInt(a.search("@version") - 86)));
-    (GM_info.script.version !== b) && (update = !0);
-
-    console.debug("[Updater] Current version:", GM_info.script.version, "|", "New version:", b);
-});
 
 document.cosmicCat = {
     data: {
@@ -353,7 +344,7 @@ ${document.cosmicCat.Template.Buttons.addTo(data.id)}
 <span class="metadata-separator">|</span>
 <span class="video-date-added">${data.upload}</span>
 </div>
-<a href="${data.owner?.url}/videos" class="yt-uix-sessionlink yt-user-name" data-sessionlink="" dir="ltr">${data.owner?.name}</a>
+<a href="${data.owner?.url}/featured" class="yt-uix-sessionlink yt-user-name" data-sessionlink="" dir="ltr">${data.owner?.name}</a>
 </div>
 </div>
 </div>`;
@@ -793,12 +784,22 @@ ${document.cosmicCat.Template.Channel.Channels3.secondaryPane.createdBySection.I
             },
             Channels2: {
                 Main: (data) => {
-                    return `<div id="channel-body" style="background-color: rgb(204, 204, 204)" class="jsloaded">
+                    return `<div id="channel-body" class="jsloaded">
 <div id="channel-base-div">
 ${document.cosmicCat.Template.Channel.Channels2.playlistNavigator.Main(data)}
 ${document.cosmicCat.Template.Channel.Channels2.moduleContainer.Main(data)}
 </div>
-</div>`;
+</div>
+${data.header.bannerBg ? `
+<style>
+#channel-body {
+background-color: rgb(204, 204, 204);
+background-image: url(${data.header.bannerBg});
+background-repeat: no-repeat;
+background-position: center top;
+}
+</style>
+` : ""}`;
                 },
                 playlistNavigator: {
                     Main: (data) => {
@@ -2303,7 +2304,7 @@ ${localizeString("global.loading.main")}
                     return `<li>
 <div class="feed-item-container first" data-channel-key="${data.owner.id}">
 <div class="feed-author-bubble-container">
-<a href="${data.owner.url}/videos" class="feed-author-bubble">
+<a href="${data.owner.url}/featured" class="feed-author-bubble">
 <span class="feed-item-author">
 <span class="video-thumb ux-thumb yt-thumb-square-28">
 <span class="yt-thumb-clip">
@@ -3029,7 +3030,7 @@ ${data.primary.title}
 </h1>
 <div id="watch-headline-user-info">
 <span class="yt-uix-button-group">
-<button href="${data.secondary.owner.url}/videos?feature=watch" type="button" class="start yt-uix-button yt-uix-button-default" onclick=";window.location.href=this.getAttribute('href');return false;" role="button">
+<button href="${data.secondary.owner.url}/featured?feature=watch" type="button" class="start yt-uix-button yt-uix-button-default" onclick=";window.location.href=this.getAttribute('href');return false;" role="button">
 <span class="yt-uix-button-content">${data.secondary.owner.name}</span>
 </button>${document.cosmicCat.Template.Buttons.Subscribe(data.alternative.owner.id)}
 </span>
@@ -3145,7 +3146,7 @@ ${document.cosmicCat.Template.Watch.Content.mainCon.panel.Share(data)}
 </div>
 <div id="watch-description-extras">
 <h4>${localizeString("watch.watchInfo.category")}</h4>
-<p id="eow-category"><a href="//www.youtube.com/videos">${data.primary.category}</a></p>
+<p id="eow-category"><a href="//www.youtube.com/featured">${data.primary.category}</a></p>
 <h4 class="${(data.alternative.tags.length == 0 ? "hid" : "")}">${localizeString("watch.watchInfo.tags")}</h4>
 <ul id="eow-tags" class="watch-info-tag-list ${(data.alternative.tags.length == 0 ? "hid" : "")}">
 
@@ -5416,11 +5417,11 @@ const localizeString = (varr, DOM) => {
     // really need to get rid of this and simplify the process.
     switch (varr) {
         case "watch.uploaderinfo":
-            i18n = i18n.replace(/%s/g, `<a href="https://www.youtube.com${DOM?.secondary.owner.url}/videos" class="yt-uix-sessionlink yt-user-name author" rel="author" dir="ltr">${DOM?.secondary.owner.name}</a>`);
+            i18n = i18n.replace(/%s/g, `<a href="https://www.youtube.com${DOM?.secondary.owner.url}/featured" class="yt-uix-sessionlink yt-user-name author" rel="author" dir="ltr">${DOM?.secondary.owner.name}</a>`);
             i18n = i18n.replace(/%r/g, `<span id="eow-date" class="watch-video-date">${DOM?.primary.upload}</span>`);
             break;
         case "home.feed.uploadedavideo":
-            i18n = i18n.replace(/%s/g, `<span class="feed-item-owner"><a href="${DOM?.url}/videos" class="yt-uix-sessionlink yt-user-name" dir="ltr">${DOM?.name}</a></span>`);
+            i18n = i18n.replace(/%s/g, `<span class="feed-item-owner"><a href="${DOM?.url}/featured" class="yt-uix-sessionlink yt-user-name" dir="ltr">${DOM?.name}</a></span>`);
             break;
         case "watch.from":
             i18n = i18n.replace(/%s/g, `<span id="playnav-curvideo-channel-name"><a href="${window.location.href}">${DOM}</a></span>`);
@@ -5573,6 +5574,14 @@ document.cosmicCat.Utils.waitForElm("ytd-app").then(async (e) => {
 
         document.querySelector("head").append(p);
     }
+
+    // Check for updates here, because Tampermonkey's "Auto-updater" is SHIT!
+    fetch("https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js").then(a => a.text()).then(a => {
+        var b = (a.substr(parseInt(a.search("@version") + 14)).substr(0, parseInt(a.search("@version") - 86)));
+        (GM_info.script.version !== b) && (update = !0);
+
+        console.debug("[Updater] Current version:", GM_info.script.version, "|", "New version:", b);
+    });
 
     setTimeout(async function () {
         document.querySelector("body").setAttribute("ythtmlloaded", "");
