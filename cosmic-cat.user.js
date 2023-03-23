@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.28
+// @version      0.6.29
 // @description  Broadcast Yourself
 // @author       Emiri Floarea (ciulinuwu)
 // @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
@@ -290,9 +290,9 @@ ${localizeString("global.loading.main")}
             Subnav: {
                 Main: () => {
                     let items = "";
-                    let a = ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs;//ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].destinationShelfRenderer.destinationButtons;
+                    let a = ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs;
                     for (let i = 0; i < a.length; i++) {
-                        items += document.cosmicCat.Template.Browse.Subnav.navItem(a[i].tabRenderer.title);//destinationButtonRenderer.label.simpleText);
+                        items += document.cosmicCat.Template.Browse.Subnav.navItem(a[i].tabRenderer.title);
                     }
                     return `<div id="masthead-subnav" class="yt-nav yt-nav-dark">
 <ul>${items}</ul>
@@ -4357,7 +4357,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                     if (!contents) throw Error();
 
                     for (let i = 0; i < contents.length; i++) {
-                        if (!contents[i].continuationItemRenderer) { // will be kept for if YT reverts change
+                        if (!contents[i].continuationItemRenderer) {
                             result[i] = document.cosmicCat.Utils.Sort.videoData(contents[i].richItemRenderer.content.videoRenderer);
                         }
                     }
@@ -5547,7 +5547,7 @@ document.cosmicCat.Utils.waitForElm("ytd-app").then(async (e) => {
     document.cosmicCat.Utils.addStyle("//s.ytimg.com/yts/cssbin/www-player-vfluwFMix.css");
     document.cosmicCat.Utils.addStyle("//s.ytimg.com/yts/cssbin/www-core-vfleLhVpH.css");
 
-    if (window.location.pathname == "/") {document.cosmicCat.Utils.addStyle("//s.ytimg.com/yts/cssbin/www-guide-vfljovH6N.css");}
+    if (window.location.pathname == "/" || window.location.pathname == "/feed/subscriptions") {document.cosmicCat.Utils.addStyle("//s.ytimg.com/yts/cssbin/www-guide-vfljovH6N.css");}
     if (document.cosmicCat.Channels.isChannelsPage()) {
         let style = {
             3: ["//s.ytimg.com/yts/cssbin/www-channels3-vflIpog6R.css", "//s.ytimg.com/yts/cssbin/www-watch-inlineedit-vflg-l3kd.css"],
@@ -5666,7 +5666,7 @@ ${OBJ_FOOTER}
 
             document.documentElement.setAttribute("transition", "");
         }
-        if(window.location.pathname == "/") {
+        if(window.location.pathname == "/" || window.location.pathname == "/feed/subscriptions") {
             document.cosmicCat.pageRenderer.set("#content-container", document.cosmicCat.Template.Homepage.Main());
 
             let guidebuilder = "";
@@ -5693,7 +5693,7 @@ ${OBJ_FOOTER}
             }
 
             try {
-                if (window.location.search == "?c=subscriptions") {
+                if (window.location.pathname == "/feed/subscriptions") {
                     document.cosmicCat.Home.Feed.load(document.querySelector("[data-feed-name='subscriptions']"));
                 } else {
                     document.cosmicCat.Home.Feed.load(document.querySelector(`[data-feed-name='${document.cosmicCat.Storage.get("greeting_feed").value}']`));
