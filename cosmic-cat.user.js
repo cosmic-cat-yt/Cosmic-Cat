@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.29
+// @version      0.6.30
 // @description  Broadcast Yourself
-// @author       Emiri Floarea (ciulinuwu)
+// @author       Thistle Café, Cosmic Cat Maintainers
 // @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
 // @downloadURL  https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
 // @match        https://www.youtube.com/*
 // @exclude      https://www.youtube.com/embed/*
-// @icon         https://www.google.com/s2/favicons?domain=youtube.com
+// @icon         https://github.com/thistlecafe/cosmic-cat-branding/raw/main/icon.png
 // @require      https://github.com/thistlecafe/cosmic-cat/raw/main/modules/yabai_component.js
 // @require      https://github.com/thistlecafe/cosmic-cat/raw/main/modules/open_uix_components.js
 // @require      https://code.jquery.com/jquery-3.6.1.min.js
@@ -32,12 +32,6 @@
 
 (async () => {
 'use strict';
-function debug(a) {
-    return console.debug(`[Cosmic Cat]`, a);
-}
-function error(a) {
-    return console.error(`[Cosmic Cat]`, a);
-}
 
 GM_registerMenuCommand("Open (settings)", () => window.location.replace("/cosmic_cat"));
 
@@ -49,7 +43,7 @@ var BOOL_LOGIN,
 
 document.cosmicCat = {
     data: {
-        version: 20230320,
+        version: 1,
         loggedin: false,
         homeCategories: ["trending", "popular", "music", "live", "gadgets", "news", "sports", "education", "howto"],
         darkyoutubelogo: "data:image/png;base64,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",
@@ -400,14 +394,14 @@ ${document.cosmicCat.Template.Buttons.Subscribe(data.header.id)}
 </div>
 <div class="upper-right-section">
 <div class="header-stats">
-<div class="stat-entry">
+${document.cosmicCat.Channels.isOwner() ? `<a href="https://studio.youtube.com/channel/${data.header.id}/analytics/tab-overview/period-default" class="stat-entry">`: `<div class="stat-entry">`}
 <span class="stat-value">${data?.info?.subs || data?.header?.subscriberCount}</span>
 <span class="stat-name">subscribers</span>
-</div>
-<div class="stat-entry">
+${document.cosmicCat.Channels.isOwner() ? `</a>`: `</div>>`}
+${document.cosmicCat.Channels.isOwner() ? `<a href="https://studio.youtube.com/channel/${data.header.id}/analytics/tab-overview/period-default" class="stat-entry">`: `<div class="stat-entry">`}
 <span class="stat-value">${data?.info?.fields?.views || data?.header?.fields?.views}</span>
 <span class="stat-name">video views</span>
-</div>
+${document.cosmicCat.Channels.isOwner() ? `</a>`: `</div>>`}
 </div>
 <span class="valign-shim"></span>
 </div>
@@ -2393,6 +2387,13 @@ ${document.cosmicCat.Template.Buttons.addTo(data.id)}
 </span><span class="display-name">Channel</span>
 </a>
 </li>
+<li class="guide-item-container">
+<a class="guide-item" data-feed-name="player">
+<span class="thumb">
+<img class="system-icon system" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
+</span><span class="display-name">Player</span>
+</a>
+</li>
 </ul>
 </div>
 </div>
@@ -2404,6 +2405,7 @@ Things may not work as intended.</div>
 ${document.cosmicCat.Template.Settings.Feeds.General()}
 ${document.cosmicCat.Template.Settings.Feeds.Home()}
 ${document.cosmicCat.Template.Settings.Feeds.Channel()}
+${document.cosmicCat.Template.Settings.Feeds.Player()}
 </div>
 <div id="feed-background" style="width: 790px;"></div>
 </div>
@@ -2419,7 +2421,6 @@ ${document.cosmicCat.Template.Settings.Feeds.Channel()}
 <div class="feed-item-container">
 <div class="feed-item-main">
 <label title="Enable/disable dark theme">Dark theme: <input type="checkbox" ${document.cosmicCat.Storage.get("dark").value == "1" ? "checked" : ""} id="darkTheme" data-action="toggleDarkTheme" data-storage="dark" class="cosmic-cat-settings ios-switch" /><div class="switch"></div></label>
-<label title="Enable/disable iframe player">iFrame Player: <input type="checkbox" ${document.cosmicCat.Storage.get("iframe").value == "1" ? "checked" : ""} id="iframe" data-storage="iframe" class="cosmic-cat-settings ios-switch" /><div class="switch"></div></label>
 </div>
 </div>
 </li>
@@ -2466,6 +2467,23 @@ Channel revision: <select class="cosmic-cat-settings" id="channelMode" data-acti
 <option value="2">2.0</option>
 <option value="1" disabled="">1.0</option>
 </select>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>`;
+                },
+                Player: () => {
+                    return `<div id="feed-main-player" class="individual-feed hid">
+<div class="feed-container">
+<div class="feed-page">
+<ul class="array" style="user-select: none;">
+<li>
+<div class="feed-item-container">
+<div class="feed-item-main">
+<label title="Enable/disable iframe player">iFrame Player: <input type="checkbox" ${document.cosmicCat.Storage.get("iframe").value == "1" ? "checked" : ""} id="iframe" data-storage="iframe" class="cosmic-cat-settings ios-switch" /><div class="switch"></div></label>
 </div>
 </div>
 </li>
@@ -3853,6 +3871,8 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
 
                 description = description.replace(/(?:\r\n|\r|\n)/g, '<br/>');
 
+                console.log(da);
+
                 return {
                     owner: {
                         name: da.owner?.videoOwnerRenderer?.title?.runs?.[0]?.text || da.bylineText?.runs?.[0]?.text || da.shortBylineText?.runs?.[0]?.text || da.ownerText?.runs?.[0]?.text || da.videoDetails?.author || da.owner?.videoOwnerRenderer?.title?.runs?.[0]?.text,
@@ -3861,11 +3881,11 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                         icon : da.channelThumbnailSupportedRenderers?.channelThumbnailWithLinkRenderer?.thumbnail?.thumbnails?.[0]?.url
                     },
                     time: da.thumbnailOverlays?.find(c => c.thumbnailOverlayTimeStatusRenderer)?.thumbnailOverlayTimeStatusRenderer.text.simpleText || da.thumbnailOverlays?.find(c => c.thumbnailOverlayTimeStatusRenderer)?.thumbnailOverlayTimeStatusRenderer?.text?.runs?.[0]?.text || da.lengthText?.simpleText || "LIVE",
-                    views: da.viewCount?.videoViewCountRenderer?.viewCount?.simpleText || da.viewCountText?.simpleText || da.viewCountText?.runs?.[0]?.text + da.viewCountText?.runs?.[1]?.text || da.videoDetails?.viewCount || "",
+                    views: da.viewCount?.videoViewCountRenderer?.viewCount?.simpleText || da.viewCountText?.simpleText || da.viewCountText?.runs?.[0]?.text + da.viewCountText?.runs?.[1]?.text || da.videoDetails?.viewCount || document.cosmicCat.Utils.deabreviateCnt(da.metadataText?.simpleText?.split(" · ")?.[0]?.split(" ")?.[0]) + " views" || "",
                     title: da.title?.simpleText || da.title?.runs?.[0]?.text || da.videoDetails?.title || "Fallback title",
                     id: da.videoDetails?.videoId || da.videoId,
                     description: description,
-                    upload: da.dateText?.simpleText || da.publishedTimeText?.simpleText|| da.publishedTimeText?.runs?.[0]?.text || da.microformat?.playerMicroformatRenderer?.publishDate || "",
+                    upload: da.dateText?.simpleText || da.publishedTimeText?.simpleText|| da.publishedTimeText?.runs?.[0]?.text || da.microformat?.playerMicroformatRenderer?.publishDate || da.metadataText?.simpleText?.split(" · ")?.[1] || "",
                     badges: da.badges || [],
                     thumbnail: da.thumbnail?.thumbnails?.[0]?.url,
                     tags: da.videoDetails?.keywords || [],
@@ -4263,12 +4283,18 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
             try {
                 if(document.cosmicCat.Channels.isChannelsPage()) {
                     try {
+                        console.debug(ytInitialData.header.c4TabbedHeaderRenderer.subscribeButton);
                         ytInitialData.header.c4TabbedHeaderRenderer.subscribeButton.subscribeButtonRenderer.subscribed = ytInitialData.header.c4TabbedHeaderRenderer.subscribeButton.subscribeButtonRenderer.subscribed ? false : true;
                     } catch {
-                        ytInitialData.header.carouselHeaderRenderer.contents.find(a => a.topicChannelDetailsRenderer).topicChannelDetailsRenderer.subscribeButton.subscribeButtonRenderer.subscribed = ytInitialData.header.carouselHeaderRenderer.contents.find(a => a.topicChannelDetailsRenderer).topicChannelDetailsRenderer.subscribeButton.subscribeButtonRenderer.subscribed ? false : true;
+                        try {
+                            ytInitialData.header.carouselHeaderRenderer.contents.find(a => a.topicChannelDetailsRenderer).topicChannelDetailsRenderer.subscribeButton.subscribeButtonRenderer.subscribed = ytInitialData.header.carouselHeaderRenderer.contents.find(a => a.topicChannelDetailsRenderer).topicChannelDetailsRenderer.subscribeButton.subscribeButtonRenderer.subscribed ? false : true;
+                        } catch(err) {
+                            console.error("[toggleSubscribe]:", err);
+                        }
                     }
                 }
                 if(window.location.pathname.split("/")[1].match(/watch/i)) {
+                    console.debug(ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.find(a => a.videoSecondaryInfoRenderer).videoSecondaryInfoRenderer.subscribeButton);
                     ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.find(a => a.videoSecondaryInfoRenderer).videoSecondaryInfoRenderer.subscribeButton.subscribeButtonRenderer.subscribed = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.find(a => a.videoSecondaryInfoRenderer).videoSecondaryInfoRenderer.subscribeButton.subscribeButtonRenderer.subscribed ? false : true;
                 }
             } catch(err) {
@@ -4849,7 +4875,7 @@ view_count: ytInitialPlayerResponse.videoDetails.viewCount
 },
 assets: {
   css: "//s.ytimg.com/yts/cssbin/www-player-vfluwFMix.css",
-  js: "//ciulinuwu.github.io/lib/html5player.js",
+  js: "//thistlecafe.github.io/cosmic-cat/html5player.js",
   html: "//cdn.discordapp.com/attachments/996734304560353332/1018500227629592656/html5_player_template.html"
 },
 attrs: {
@@ -4894,7 +4920,7 @@ messages: {
                 }
                 deez.config.args.url_encoded_fmt_stream_map = n;
                 const player = document.createElement("script");
-                player.src = "//ciulinuwu.github.io/lib/html5player.js";
+                player.src = "//thistlecafe.github.io/cosmic-cat/html5player.js";
                 player.id = "loaded";
                 document.body.appendChild(player);
                 const ass = document.createElement("style");
@@ -5175,17 +5201,16 @@ margin-left:16px
     },
     Storage: {
         init: () => {
-            const STORAGE = localStorage.getItem("ciulinfig");
+            const STORAGE = localStorage.getItem("cosmic-cat-config");
             console.debug("Storage.init", STORAGE);
 
             if(!STORAGE) return document.cosmicCat.Storage.build();
-            if(JSON.parse(STORAGE).storageVer !== document.cosmicCat.data.version) return document.cosmicCat.Storage.build();
 
             console.info("Storage.init", "storage has init.");
         },
         build: () => {
             const obj = {
-                "storageVer": document.cosmicCat.data.version,
+                "storageVer": "0",
                 "lang": "en",
                 "dark": "0",
                 "i18n": {},
@@ -5194,10 +5219,10 @@ margin-left:16px
                 "channel_mode": "3",
                 "greeting_feed": "youtube"
             };
-            localStorage.setItem("ciulinfig", JSON.stringify(obj));
+            localStorage.setItem("cosmic-cat-config", JSON.stringify(obj));
         },
         get: (a) => {
-            const STORAGE = JSON.parse(localStorage.getItem("ciulinfig"));
+            const STORAGE = JSON.parse(localStorage.getItem("cosmic-cat-config"));
 
             return {
                 name: a,
@@ -5206,15 +5231,15 @@ margin-left:16px
             };
         },
         add: (a, b) => {
-            let obj = JSON.parse(localStorage.getItem("ciulinfig"));
+            let obj = JSON.parse(localStorage.getItem("cosmic-cat-config"));
             obj[a] = b;
             console.debug("Storage.add", obj[a]);
-            localStorage.setItem("ciulinfig", JSON.stringify(obj));
+            localStorage.setItem("cosmic-cat-config", JSON.stringify(obj));
         },
         remove: (a) => {
-            const STORAGE = JSON.parse(localStorage.getItem("ciulinfig"));
+            const STORAGE = JSON.parse(localStorage.getItem("cosmic-cat-config"));
             delete STORAGE[a];
-            localStorage.setItem("ciulinfig", JSON.stringify(STORAGE));
+            localStorage.setItem("cosmic-cat-config", JSON.stringify(STORAGE));
         }
     },
     pageRenderer: {
@@ -5277,8 +5302,11 @@ margin-left:16px
                     classn = ".enable-fancy-subscribe-button";
             }
 
+            console.debug("[handleSubscribeButton]:", d, c);
+
             try {
-                document.cosmicCat.Ajax.post(`/youtubei/v1/subscription/${c}`, `channelIds: ["${d}"]`).then(() => {
+                document.cosmicCat.Ajax.post(`/youtubei/v1/subscription/${c}`, `channelIds: ["${d}"]`).then((a) => {
+                    console.debug("[handleSubscribeButton]:", a);
                     document.cosmicCat.Channels.toggleSubscribe();
                     document.cosmicCat.pageRenderer.replace(classn, document.cosmicCat.Template.Buttons.Subscribe(d));
                 });
@@ -5371,7 +5399,7 @@ img#logo
 {border-top-color: var(--black-color) !important; border-bottom-color: var(--nero-color-primary) !important;}
 `;
 
-function Ciulinations() {
+function _i18n() {
     const obj = {
         setTranslation: function (params) {
             return fetch(document.cosmicCat.data.i18nfolder + `${params}.json`)
@@ -5382,7 +5410,7 @@ function Ciulinations() {
                 return true;
             })
                 .catch((error) => {
-                alert(params + " is not translated yet.\n\nContribute: https://github.com/ciulinuwu/ciulinations");
+                alert(params + " is not translated yet.\n\nContribute: https://github.com/thistlecafe/cosmic-cat-i18n");
                 console.error(error, "reverting to fallback.");
                 return false;
                 //document.cosmicCat.func.addToStorage("i18n", this.useFallback());
@@ -5405,13 +5433,13 @@ function Ciulinations() {
 }
 
 const localizeString = (varr, DOM) => {
-    const lang = Ciulinations().getTranslation();
+    const lang = _i18n().getTranslation();
     var i18n;
     try {
         i18n = varr.split('.').reduce((o,i)=> o[i]||"", lang.json) || "<\bno i18n string>";
     } catch {
         // Attempt to refetch missing translations.
-        Ciulinations().setTranslation("en");
+        _i18n().setTranslation("en");
     }
 
     // really need to get rid of this and simplify the process.
@@ -5552,7 +5580,7 @@ document.cosmicCat.Utils.waitForElm("ytd-app").then(async (e) => {
         let style = {
             3: ["//s.ytimg.com/yts/cssbin/www-channels3-vflIpog6R.css", "//s.ytimg.com/yts/cssbin/www-watch-inlineedit-vflg-l3kd.css"],
             2: ["//s.ytimg.com/yt/cssbin/www-refresh-vflzVUPsm.css", "//s.ytimg.com/yt/cssbin/www-the-rest-vflNb6rAI.css", "//s.ytimg.com/yt/cssbin/www-channel_new-vflrWkVe_.css"],
-            1: ["//ciulinuwu.github.io/lib/www-channel.css", "//ciulinuwu.github.io/lib/base_all-vfl42963.css"]
+            1: ["//thistlecafe.github.io/cosmic-cat/www-channel.css", "//thistlecafe.github.io/cosmic-cat/base_all-vfl42963.css"]
         };
         let boop = style[document.cosmicCat.Storage.get("channel_mode").value];
         for (let i = 0; i < boop.length; i++) {
@@ -5582,6 +5610,13 @@ document.cosmicCat.Utils.waitForElm("ytd-app").then(async (e) => {
 
         console.debug("[Updater] Current version:", GM_info.script.version, "|", "New version:", b);
     });
+
+    fetch("https://raw.githubusercontent.com/thistlecafe/cosmic-cat-i18n/main/version.json").then(a => a.json()).then(a => {
+        (document.cosmicCat.Storage.get("storageVer").value !== a.version) && (
+            document.cosmicCat.Storage.add("storageVer", a.version),
+            _i18n().setTranslation(document.cosmicCat.Storage.get("lang").value)
+        )
+    }).catch(err => console.error(err));
 
     setTimeout(async function () {
         document.querySelector("body").setAttribute("ythtmlloaded", "");
@@ -5761,7 +5796,7 @@ ${OBJ_FOOTER}
                         }
                     }
                 } catch(err) {
-                    console.error("[Playlists] No playlist loaded. Ignoring error.\n", err);
+                    console.debug("[Playlists] No playlist loaded.");
                 }
 
                 try {
