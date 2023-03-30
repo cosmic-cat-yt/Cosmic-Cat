@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.30
+// @version      0.6.31
 // @description  Broadcast Yourself
 // @author       Thistle Café, Cosmic Cat Maintainers
 // @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
@@ -126,7 +126,7 @@ document.cosmicCat = {
             return `SAPISIDHASH ${TIMESTAMP}_${digest}`;
         },
         fetch: async () => {
-            let isLoggedIn = await fetch("/getAccountSwitcherEndpoint").then(re => re.text()).then(re => {return JSON.parse(re.slice(5));}).catch(err => error(err));
+            let isLoggedIn = await fetch("/getAccountSwitcherEndpoint").then(re => re.text()).then(re => {return JSON.parse(re.slice(5));}).catch(err => console.error("[Accounts] Failed to fetch account data:\n", err));
 
             try {
                 BOOL_LOGIN = !isLoggedIn.ok;
