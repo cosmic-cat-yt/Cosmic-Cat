@@ -1,12 +1,9 @@
 # Cosmic Cat UserScript
 <p align="center">
-    <img src="https://user-images.githubusercontent.com/79811506/223890659-f0645806-b2ac-405e-bded-a8fe6bd54f44.png" alt="Cosmic Cat Banner">
+    <img src="https://github.com/thistlecafe/cosmic-cat-branding/blob/main/banner.png?raw=true" alt="Cosmic Cat Banner">
 </p>
 
 [![playground](https://discordapp.com/api/guilds/1058727079136464977/widget.png?style=shield)](https://discord.gg/NSUgUJdMQa) ![](https://img.shields.io/badge/version-0.6.x-purple?style=flat-square)
-
-## Screenshots
-![0](https://ciulinuwu.github.io/@PromotionalImages/cosmic-cat/0.jpg)
 
 ## Installation
 - Get **Tampermonkey** for your browser: https://www.tampermonkey.net<br/>
@@ -22,4 +19,4 @@ We also welcome contributions to the project! Please see [CONTRIBUTING.md](https
 | [ReturnYouTubeDislike](https://github.com/Anarios/return-youtube-dislike) | [Anarios](https://github.com/Anarios) |
 | YabaiComponent, OpenUix, Description Sort Code | [Taniko Yamamoto](https://github.com/YukisCoffee) |
 | Vorapis V3 Player, Several Utils functions | [Reprety](https://github.com/VORAPIS) |
-| Cosmic Cat Banner | [UnderscoreAngel](https://github.com/UnderscoreAngel) |
+| Cosmic Cat Banner | [travy-patty](https://github.com/travy-patty) |
