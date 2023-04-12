@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.35
+// @version      0.6.36
 // @description  Broadcast Yourself
 // @author       Thistle Café, Cosmic Cat Maintainers
 // @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
@@ -174,14 +174,14 @@ document.cosmicCat = {
         }
     },
     Ajax: {
-        post: async (url, params) => {
+        post: async (url, params, name, version) => {
             let Authorization = "";
             params = params ? params + "," : "";
 
             //"context": {\r\n\t\t"client": {\r\n\t\t\t"clientName": "ANDROID",\r\n\t\t\t"clientVersion": "15.02",\r\n\t\t\t"hl": "en"\r\n\t\t}\r\n\t}}
             // ???????????? WTF
 
-            let body = `{${params} context: {client: {"clientName": "WEB", "clientVersion": "2.20230331.00.00", "hl": "en"}}}`;
+            let body = `{${params} context: {client: {"clientName": "${name}", "clientVersion": "${version}", "hl": "en"}}}`;
 
             // Check if logged in
             if (document.cosmicCat.Utils.getCookie("SAPISID")) {
@@ -3715,7 +3715,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
             },
             content: (data) => {
                 try {
-                    return data.tabRenderer.content?.richGridRenderer?.contents || data.tabRenderer.content?.sectionListRenderer?.contents;
+                    return data.sectionListRenderer?.contents || data.tabRenderer.content?.richGridRenderer?.contents || data.tabRenderer.content?.sectionListRenderer?.contents;
                 } catch {
                     return {};
                 }
@@ -3903,8 +3903,6 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
 
                 description = description.replace(/(?:\r\n|\r|\n)/g, '<br/>');
 
-                console.log(da);
-
                 return {
                     owner: {
                         name: da.owner?.videoOwnerRenderer?.title?.runs?.[0]?.text || da.bylineText?.runs?.[0]?.text || da.shortBylineText?.runs?.[0]?.text || da.ownerText?.runs?.[0]?.text || da.videoDetails?.author || da.owner?.videoOwnerRenderer?.title?.runs?.[0]?.text,
@@ -4064,7 +4062,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
         init: async function (continuation) {
             if (!continuation) return document.cosmicCat.toggleElm("#comments-view");
 
-            let api = await document.cosmicCat.Ajax.post("/youtubei/v1/next", `continuation: "${continuation}"`);
+            let api = await document.cosmicCat.Ajax.post("/youtubei/v1/next", `continuation: "${continuation}"`, "WEB", "2.20230331.00.00");
             if (!api) return this.abort();
 
             try {
@@ -4105,7 +4103,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
         load: async function (continuation) {
             if (!continuation) return document.cosmicCat.toggleElm("#next-btn");
 
-            let api = await document.cosmicCat.Ajax.post("/youtubei/v1/next", `continuation: "${continuation}"`);
+            let api = await document.cosmicCat.Ajax.post("/youtubei/v1/next", `continuation: "${continuation}"`, "WEB", "2.20230331.00.00");
             if (!api) return this.abort();
 
             let sortedCommentsArray = document.cosmicCat.Pagination.sortDataIntoArray(api.onResponseReceivedEndpoints);
@@ -4152,7 +4150,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
             if (!continuation) return document.cosmicCat.toggleElm("#next-btn");
             document.cosmicCat.toggleElm("#comments-loading");
 
-            let api = await document.cosmicCat.Ajax.post("/youtubei/v1/next", `continuation: "${continuation}"`);
+            let api = await document.cosmicCat.Ajax.post("/youtubei/v1/next", `continuation: "${continuation}"`, "WEB", "2.20230331.00.00");
             if (!api) return this.abort();
 
             let sortedCommentsArray = document.cosmicCat.Pagination.sortDataIntoArray(api.onResponseReceivedEndpoints);
@@ -4218,7 +4216,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
             if (!continuation) return document.cosmicCat.toggleElm("#next-btn");
             //document.cosmicCat.toggleElm("#loading");
 
-            let api = await document.cosmicCat.Ajax.post("/youtubei/v1/search", `continuation: "${continuation}"`);
+            let api = await document.cosmicCat.Ajax.post("/youtubei/v1/search", `continuation: "${continuation}"`, "WEB", "2.20230331.00.00");
             if (!api) return this.abort();
 
             let sortedResultsArray = document.cosmicCat.Pagination.sortDataIntoArray(api.onResponseReceivedCommands);
@@ -4243,7 +4241,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                 next: async function (continuation, number) {
                     if (!continuation) return document.cosmicCat.toggleElm("#next-btn");
 
-                    let api = await document.cosmicCat.Ajax.post("/youtubei/v1/browse", `continuation: "${continuation}"`);
+                    let api = await document.cosmicCat.Ajax.post("/youtubei/v1/browse", `continuation: "${continuation}"`, "WEB", "2.20230331.00.00");
                     if (!api) return this.abort();
 
                     let sortedResultsArray = document.cosmicCat.Pagination.sortDataIntoArray(api.onResponseReceivedActions);
@@ -4296,7 +4294,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
             }
         },
         isChannelsPage: () => {
-            return (window.location.pathname.match(/channel|user|^c{1}$/i) || document.cosmicCat.Channels.isUsertag()) ? true : false;
+            return (window.location.pathname.split("/")[1].match(/channel|user/i) || (window.location.pathname.substr(1, 2) === "c/") || document.cosmicCat.Channels.isUsertag()) ? true : false;
         },
         checkIfSubscribed: () => {
             try {
@@ -4341,7 +4339,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
             switch (mode) {
                 case "1":
                 case "3":
-                    mode = window.location.pathname.split("/")[document.cosmicCat.Channels.isUsertag() ? 2 : 3];
+                    mode = window.location.search.substr(1, 5) === "query" ? "search" : window.location.pathname.split("/")[document.cosmicCat.Channels.isUsertag() ? 2 : 3];
                     break;
                 case "2":
                     mode = window.location.hash.length > 1 && window.location.hash.slice(1).split("/")[1] == "p" ? "playlists" : "videos" || window.location.pathname.split("/")[3];
@@ -4388,6 +4386,11 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                     console.error("[Channels] Something went wrong with sorting channel data:\n", err);
                 }
             },
+            SearchResults: () => {
+                if (window.location.search.substr(1, 5) !== "query") return false;
+
+                return document.cosmicCat.Channels._Data.SearchResults(ytInitialData);
+            },
             Videos: () => {
                 if (document.cosmicCat.Channels.getCurrentChannelTab() !== "videos") return false;
 
@@ -4405,6 +4408,28 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
             }
         },
         _Data: {
+            SearchResults: (data) => {
+                let result = [];
+
+                try {
+                    let tab = data.contents.twoColumnBrowseResultsRenderer.tabs.find(a => a.expandableTabRenderer).expandableTabRenderer.content;
+                    let contents = document.cosmicCat.Utils.browseTabs.content(tab);
+
+                    console.log(contents)
+
+                    if (!contents) throw Error();
+
+                    for (let i = 0; i < contents.length; i++) {
+                        if (!contents[i].continuationItemRenderer) {
+                            result[i] = document.cosmicCat.Utils.Sort.videoData(contents[i].itemSectionRenderer.contents[0].videoRenderer);
+                        }
+                    }
+                } catch(err) {
+                    console.error("[Channels] Something went wrong with sorting channel search results:\n", err);
+                }
+
+                return result;
+            },
             Videos: (data) => {
                 let result = [];
 
@@ -4569,7 +4594,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
 
                 document.cosmicCat.Ajax.Fetch(params.dataset.feedUrl, document.cosmicCat.Home.Feed.newFeed);
             },
-            newFeed: async (ytData) => {
+            newFeed: async (ytData, a) => {
                 console.debug(ytData);
                 try {
                     let tabs = ytData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content;
@@ -4665,7 +4690,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
 
                 toggleElms();
 
-                document.cosmicCat.Ajax.post("/youtubei/v1/next", `continuation: "${document.cosmicCat.data.tokenSlot1}"`).then(api => {
+                document.cosmicCat.Ajax.post("/youtubei/v1/next", `continuation: "${document.cosmicCat.data.tokenSlot1}"`, "WEB", "2.20230331.00.00").then(api => {
                     let collection = api?.onResponseReceivedEndpoints?.[0]?.appendContinuationItemsAction?.continuationItems || [];
 
                     for (let i = 0; i < collection.length; i++) {
@@ -4690,13 +4715,13 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
 
                 if (document.cosmicCat.watch.isVideoLiked()) {
                     a.classList.remove("liked");
-                    document.cosmicCat.Ajax.post("/youtubei/v1/like/removelike", `target:{videoId: "${ytInitialPlayerResponse.videoDetails.videoId}"}`);
+                    document.cosmicCat.Ajax.post("/youtubei/v1/like/removelike", `target:{videoId: "${ytInitialPlayerResponse.videoDetails.videoId}"}`, "WEB", "2.20230331.00.00");
                 } else {
                     if (document.cosmicCat.watch.isVideoDisliked()) {
                         document.querySelector("#watch-unlike").classList.remove("unliked");
                     }
                     a.classList.add("liked");
-                    document.cosmicCat.Ajax.post("/youtubei/v1/like/like", `target:{videoId: "${ytInitialPlayerResponse.videoDetails.videoId}"}`);
+                    document.cosmicCat.Ajax.post("/youtubei/v1/like/like", `target:{videoId: "${ytInitialPlayerResponse.videoDetails.videoId}"}`, "WEB", "2.20230331.00.00");
                 }
 
                 try {
@@ -4712,13 +4737,13 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
 
                 if (document.cosmicCat.watch.isVideoDisliked()) {
                     a.classList.remove("unliked");
-                    document.cosmicCat.Ajax.post("/youtubei/v1/like/removelike", `target:{videoId: "${ytInitialPlayerResponse.videoDetails.videoId}"}`);
+                    document.cosmicCat.Ajax.post("/youtubei/v1/like/removelike", `target:{videoId: "${ytInitialPlayerResponse.videoDetails.videoId}"}`, "WEB", "2.20230331.00.00");
                 } else {
                     if (document.cosmicCat.watch.isVideoLiked()) {
                         document.querySelector("#watch-like").classList.remove("liked");
                     }
                     a.classList.add("unliked");
-                    document.cosmicCat.Ajax.post("/youtubei/v1/like/dislike", `target:{videoId: "${ytInitialPlayerResponse.videoDetails.videoId}"}`);
+                    document.cosmicCat.Ajax.post("/youtubei/v1/like/dislike", `target:{videoId: "${ytInitialPlayerResponse.videoDetails.videoId}"}`, "WEB", "2.20230331.00.00");
                 }
 
                 try {
@@ -5299,9 +5324,6 @@ margin-left:16px
                 //document.cosmicCat.pageRenderer.error();
                 console.error(`[pageRenderer]: "${this.original}" does not exist\n`, err);
             }
-        },
-        render: (b) => {
-            document.cosmicCat[document.cosmicCat.Utils.whatPage(0)].Renderer.render(b);
         }
     },
     Actions: {
@@ -5314,13 +5336,13 @@ margin-left:16px
             let d = a.dataset.subscriptionValue;
             let c = (a.classList.contains("subscribed") || a.classList.contains("yt-subscription-button-green")) ? "unsubscribe" : "subscribe";
 
-            switch(document.cosmicCat.Utils.whatPage()) {
+            switch(document.cosmicCat.Utils.currentPage()) {
                 case "channels2":
                     classn = ".subscription-container";
                     d = a.parentElement.dataset.subscriptionValue;
                     break;
                 case "watch":
-                case "channels3":
+                case "channels":
                     classn = ".yt-subscription-button-hovercard";
                     break;
                 case "playlist":
@@ -5330,7 +5352,7 @@ margin-left:16px
             console.debug("[handleSubscribeButton]:", d, c);
 
             try {
-                document.cosmicCat.Ajax.post(`/youtubei/v1/subscription/${c}`, `channelIds: ["${d}"]`).then((a) => {
+                document.cosmicCat.Ajax.post(`/youtubei/v1/subscription/${c}`, `channelIds: ["${d}"]`, "WEB", "2.20230331.00.00").then((a) => {
                     console.debug("[handleSubscribeButton]:", a);
                     document.cosmicCat.Channels.toggleSubscribe();
                     document.cosmicCat.pageRenderer.replace(classn, document.cosmicCat.Template.Buttons.Subscribe(d));
@@ -5352,7 +5374,7 @@ margin-left:16px
     },
     picker: {
         load: (a, b) => {
-            document.cosmicCat.Ajax.post(`/youtubei/v1/account/account_menu`).then((a) => {
+            document.cosmicCat.Ajax.post(`/youtubei/v1/account/account_menu`, "WEB", "2.20230331.00.00").then((a) => {
                 var c = a.actions[0].openPopupAction.popup.multiPageMenuRenderer.sections[2].multiPageMenuSectionRenderer.items.find(a => a?.compactLinkRenderer?.icon?.iconType);
                 console.log(c);
             });
@@ -5394,7 +5416,15 @@ margin-left:16px
                 if (window.location.pathname == "/feed/subscriptions") {
                     document.cosmicCat.Home.Feed.load(document.querySelector("[data-feed-name='subscriptions']"));
                 } else {
-                    document.cosmicCat.Home.Feed.load(document.querySelector(`[data-feed-name='${document.cosmicCat.Storage.get("greeting_feed").value}']`));
+                    if (document.cosmicCat.Storage.get("greeting_feed").value == "youtube") {
+                        $(document).ready(function(){
+                            document.cosmicCat.Home.Feed.newFeed(ytInitialData);
+                            document.cosmicCat.toggleElm("#feed-loading-template");
+                            document.cosmicCat.toggleElm("#feed-main-youtube");
+                        });
+                    } else {
+                        document.cosmicCat.Home.Feed.load(document.querySelector(`[data-feed-name='${document.cosmicCat.Storage.get("greeting_feed").value}']`));
+                    }
                 }
             } catch(err) {
                 console.error("[Home] Could not load feed data:\n", err);
@@ -5415,7 +5445,7 @@ margin-left:16px
             }
         },
         watch: () => {
-            document.cosmicCat.Utils.waitForElm2().then(async () => {
+            $(document).ready(function(){
                 let data = {
                     primary: document.cosmicCat.Utils.Sort.videoData(ytInitialData.contents.twoColumnWatchNextResults.results?.results?.contents[0]?.videoPrimaryInfoRenderer),
                     secondary: document.cosmicCat.Utils.Sort.videoData(ytInitialData.contents.twoColumnWatchNextResults.results?.results?.contents[1]?.videoSecondaryInfoRenderer),
@@ -5504,7 +5534,7 @@ margin-left:16px
                     let comm = document.querySelector(".comments-textarea").value;
                     if(comm.length < 1) return;
 
-                    document.cosmicCat.Ajax.post("/youtubei/v1/comment/create_comment", `createCommentParams: "${document.querySelector("input#session").value}", commentText: "${comm}"`).then(async api => {
+                    document.cosmicCat.Ajax.post("/youtubei/v1/comment/create_comment", `createCommentParams: "${document.querySelector("input#session").value}", commentText: "${comm}"`, "WEB", "2.20230331.00.00").then(async api => {
                         if(api.actionResult.status == "STATUS_SUCCEEDED") {
                             let re = api.actions[0].runAttestationCommand.ids;
 
@@ -5523,7 +5553,7 @@ margin-left:16px
 
                             document.cosmicCat.Comments.Form.uninit();
 
-                            await document.cosmicCat.Ajax.post("/youtubei/v1/att/get", `engagementType: "ENGAGEMENT_TYPE_COMMENT_POST", ids: ${JSON.stringify(re)}`);
+                            await document.cosmicCat.Ajax.post("/youtubei/v1/att/get", `engagementType: "ENGAGEMENT_TYPE_COMMENT_POST", ids: ${JSON.stringify(re)}`, "WEB", "2.20230331.00.00");
                         }
                     });
                     return false;
@@ -5535,8 +5565,7 @@ margin-left:16px
         },
         channels: () => {
             (!/^featured|videos|playlists|community$/g.test(window.location.pathname.split("/").splice(document.cosmicCat.Channels.isUsertag() ? 2 : 3).join("/"))) && window.location.replace(window.location.pathname.split("/").slice(0, document.cosmicCat.Channels.isUsertag() ? 2 : 3).join("/") + "/featured");
-            document.cosmicCat.Utils.waitForElm2().then(async () => {
-                //if (!ytData?.header?.c4TabbedHeaderRenderer) return;
+            $(document).ready(async function(){
                 let revision = document.cosmicCat.Storage.get("channel_mode").value;
                 const naviHash = document.cosmicCat.Channels.getNaviHash();
 
@@ -5547,7 +5576,7 @@ margin-left:16px
                 let data = {
                     info: await document.cosmicCat.Ajax.Fetch(`https://www.youtube.com${window.location.pathname.split("/").slice(0, -1).join("/")}/about`, document.cosmicCat.Channels._Data.Info),
                     header: document.cosmicCat.Channels.Local.Header(),
-                    content: document.cosmicCat.Channels.Local.Videos() || document.cosmicCat.Channels.Local.Playlists() || document.cosmicCat.Channels.Local.Community()
+                    content: document.cosmicCat.Channels.Local.SearchResults() || document.cosmicCat.Channels.Local.Videos() || document.cosmicCat.Channels.Local.Playlists() || document.cosmicCat.Channels.Local.Community()
                 };
 
                 document.head.querySelector("title").innerText = `${data.header.name}'s ${localizeString("global.channel")} - YouTube`;
@@ -5623,11 +5652,11 @@ margin-left:16px
                     }
                 }
 
-                data.content = (data.content.length == 0) && await document.cosmicCat.Ajax.Fetch(`https://www.youtube.com${window.location.pathname.split("/").slice(0, -1).join("/")}/${tab}`, document.cosmicCat.Channels._Data[tab.charAt(0).toUpperCase() + tab.slice(1)]) || data.content;
+                // data.content = (data.content.length == 0) && await document.cosmicCat.Ajax.Fetch(`https://www.youtube.com${window.location.pathname.split("/").slice(0, -1).join("/")}/${tab}`, document.cosmicCat.Channels._Data[tab.charAt(0).toUpperCase() + tab.slice(1)]) || data.content;
 
                 try {
-                    // shit doesn't work >:c
-                    //document.cosmicCat.Ajax.post("/youtubei/v1/creator/get_creator_channels", `"channelIds":["${data.header.id}"],"mask":{"channelId":true,"contentOwnerAssociation":{"all":true},"features":{"all":true},"metric":{"all":true},"monetizationDetails":{"all":true},"monetizationStatus":true,"permissions":{"all":true},"settings":{"coreSettings":{"featureCountry":true}}}`)
+                    //
+                    //document.cosmicCat.Ajax.post("/youtubei/v1/creator/get_creator_channels", `"channelIds":["${data.header.id}"],"mask":{"channelId":true,"title":true,"metric":{"all":true}}`, "62", "1.20211213.02.00")
                     (revision == "Channels1") && (document.querySelector("[name^=\"channel-box-item-count\"]").innerText = data.content.length);
                 } catch(err) {}
 
@@ -5651,7 +5680,7 @@ margin-left:16px
             });
         },
         playlist: () => {
-            document.cosmicCat.Utils.waitForElm("[id=\"watch-page-skeleton\"").then(async () => {
+            $(document).ready(async function(){
                 let data = {
                     header: document.cosmicCat.Playlists.Local.Header(),
                     content: document.cosmicCat.Playlists.Local.Videos()
@@ -5673,7 +5702,7 @@ margin-left:16px
             });
         },
         results: () => {
-            document.cosmicCat.Utils.waitForElm("#watch-page-skeleton").then(async () => {
+            $(document).ready(function(){
                 var searchpar = document.cosmicCat.Utils.escapeHtml((new URL(document.location)).searchParams.get("search_query"));
 
                 document.querySelector("#page").classList.add("search-base");
@@ -5714,7 +5743,7 @@ margin-left:16px
             document.body.setAttribute("class", "ytg-old-clearfix guide-feed-v2");
             document.head.querySelector("title").innerText = "Videos - YouTube";
 
-            document.cosmicCat.Utils.waitForElm("#watch-page-skeleton").then(() => {
+            $(document).ready(function(){
                 document.cosmicCat.pageRenderer.set("#content-container", document.cosmicCat.Template.Browse.Main());
 
                 //document.cosmicCat.Alert(1, "This page is under reconstruction!");
@@ -5966,7 +5995,7 @@ document.querySelector("html").removeAttribute("style"),
     document.querySelector("html").removeAttribute("darker-dark-theme"),
     document.querySelector("html").removeAttribute("darker-dark-theme-deprecate");
 
-document.cosmicCat.Utils.waitForElm("head").then(async (e) => {
+document.cosmicCat.Utils.waitForElm("head").then(() => {
     var t = document.createElement("head");
     t.setAttribute("litterbox", "");
     document.querySelector("html").prepend(t);
