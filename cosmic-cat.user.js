@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.33
+// @version      0.6.34
 // @description  Broadcast Yourself
 // @author       Thistle Café, Cosmic Cat Maintainers
 // @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
@@ -4856,7 +4856,7 @@ baseUrl: "https://googleads.g.doubleclick.net/pagead/viewthroughconversion/96298
 cosver: "6.2",
 t: "1",
 oid: "",
-cbrver: yt.config_.INNERTUBE_CONTEXT.client.browserVersion,
+cbrver: "2.20230331.00.00",
 plid: "",
 ptchn: "",
 dash: "1",
@@ -4885,7 +4885,7 @@ hl: "en_US",
 iv3_module: "1",
 sw: "0.1",
 fmt_list: "22/1280x720/9/0/115,18/640x360/9/0/115,17/256x144/99/1/0",
-cbr: yt.config_.INNERTUBE_CONTEXT.client.browserName,
+cbr: "WEB",
 ytfocHistoryEnabled: "0",
 referrer: "https://www.youtube.com/embed/" + ytInitialPlayerResponse.videoDetails.videoId,
 allow_ratings: "1",
