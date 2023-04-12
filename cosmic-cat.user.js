@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.31
+// @version      0.6.32
 // @description  Broadcast Yourself
 // @author       Thistle Café, Cosmic Cat Maintainers
 // @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
@@ -217,6 +217,26 @@ document.cosmicCat = {
         }
     },
     Template: {
+        errorNotFound: () => {
+            return `<div id="error-page">
+<div id="error-page-content">
+<img id="error-page-illustration" src="//s.ytimg.com/yt/img/image-404-vfl1vwmey.png" alt="">
+<p>We're sorry, the page you requested cannot be found. Try searching for something else.</p>
+<div id="masthead">
+<a id="logo-container" href="https://www.youtube.com/" title="YouTube home">
+<img id="logo" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="YouTube home">
+</a>
+<form id="masthead-search" class="search-form consolidated-form" action="https//www.youtube.com/results" onsubmit="if (_gel('masthead-search-term').value == '') return false;">
+<button class="search-btn-compontent search-button yt-uix-button yt-uix-button-default" onclick="if (_gel('masthead-search-term').value == '') return false; _gel('masthead-search').submit(); return false;;return true;" type="submit" id="search-btn" dir="ltr" tabindex="2" role="button"><span class="yt-uix-button-content">Search </span></button>
+<div id="masthead-search-terms" class="masthead-search-terms-border" dir="ltr">
+<label><input id="masthead-search-term" autocomplete="off" class="search-term" name="search_query" value="" type="text" tabindex="1" onkeyup="goog.i18n.bidi.setDirAttribute(event,this)" title="Search"></label>
+</div>
+</form>
+</div>
+</div>
+<span id="error-page-vertical-align"></span>
+</div>`;
+        },
         Alerts: (param, msg) => {
             let type = "";
 
@@ -412,7 +432,7 @@ ${document.cosmicCat.Channels.isOwner() ? `</a>`: `</div>>`}
 <a href="./featured" class="gh-tab-100" role="tab" aria-selected="${document.cosmicCat.Channels.getCurrentChannelTab("featured") ? "true" : "false"}">${localizeString("channels.3.header.tabs.featured")}</a>
 </li>
 <li role="presentation" ${document.cosmicCat.Channels.getCurrentChannelTab().match(/videos|playlists|community/) ? "class=\"selected\"" : ""}>
-<a href="${document.cosmicCat.Utils.browseTabs.find(ytInitialData, "videos") ? "./videos" : "./playlists"}" class="gh-tab-101" role="tab" aria-selected="${document.cosmicCat.Channels.getCurrentChannelTab().match(/videos|playlists/) ? "true" : "false"}">${localizeString("channels.3.header.tabs.videos")}</a>
+<a href="${document.cosmicCat.Utils.browseTabs.find(ytInitialData, "videos")?.tabRenderer ? "./videos" : "./playlists"}" class="gh-tab-101" role="tab" aria-selected="${document.cosmicCat.Channels.getCurrentChannelTab().match(/videos|playlists/) ? "true" : "false"}">${localizeString("channels.3.header.tabs.videos")}</a>
 </li>
 </ul>
 <form id="channel-search" class="" action="${window.location.pathname}">
@@ -534,17 +554,17 @@ ${document.cosmicCat.Channels.isOwner() ? `</a>`: `</div>>`}
 </div>
 </div>
 <ul>
-${document.cosmicCat.Utils.browseTabs.find(ytInitialData, "videos") ? `
+${document.cosmicCat.Utils.browseTabs.find(ytInitialData, "videos")?.tabRenderer ? `
 <li class="channels-browse-filter ${document.cosmicCat.Channels.isCurrentChannelTab("videos") ? "selected" : ""}">
 <a href="./videos">Uploads</a>
 </li>
 ` : ""}
-${document.cosmicCat.Utils.browseTabs.find(ytInitialData, "playlists") ? `
+${document.cosmicCat.Utils.browseTabs.find(ytInitialData, "playlists")?.tabRenderer ? `
 <li class="channels-browse-filter ${document.cosmicCat.Channels.isCurrentChannelTab("playlists") ? "selected" : ""}">
 <a href="./playlists">Playlists</a>
 </li>
 ` : ""}
-${document.cosmicCat.Utils.browseTabs.find(ytInitialData, "community") ? `
+${document.cosmicCat.Utils.browseTabs.find(ytInitialData, "community")?.tabRenderer ? `
 <li class="channels-browse-filter ${document.cosmicCat.Channels.isCurrentChannelTab("community") ? "selected" : ""}">
 <a href="./community">Feed</a>
 </li>
@@ -2577,7 +2597,7 @@ text-shadow : none;
                     watch: () => {
                         return `<div class="yt-subscription-button-hovercard yt-uix-hovercard" data-card-class="watch-subscription-card">
 <span class="yt-uix-button-context-light yt-uix-button-subscription-container">
-<button onclick=";return false;" type="button" class="yt-subscription-button yt-uix-button yt-uix-button-subscription yt-uix-tooltip yt-subscription-button-js-default end ${document.cosmicCat.Channels.checkIfSubscribed() ? "subscribed hover-enabled" : ""}" data-enable-hovercard="true" data-subscription-value="${data}" data-subscription-feature="${document.cosmicCat.Utils.whatPage()}" data-subscription-type="" data-sessionlink="" data-subscription-initialized="true" role="button">
+<button onclick=";return false;" type="button" class="yt-subscription-button yt-uix-button yt-uix-button-subscription yt-uix-tooltip yt-subscription-button-js-default end ${document.cosmicCat.Channels.checkIfSubscribed() ? "subscribed hover-enabled" : ""}" data-enable-hovercard="true" data-subscription-value="${data}" data-subscription-feature="${document.cosmicCat.Utils.currentPage()}" data-subscription-type="" data-sessionlink="" data-subscription-initialized="true" role="button">
 <span class="yt-uix-button-icon-wrapper">
 <img class="yt-uix-button-icon yt-uix-button-icon-subscribe" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt=""><span class="yt-valign-trick"></span>
 </span><span class="yt-uix-button-content">
@@ -2590,10 +2610,10 @@ text-shadow : none;
 </span>
 </div>`;
                     },
-                    channels3: () => {
+                    channels: () => {
                         return `<div class="yt-subscription-button-hovercard yt-uix-hovercard">
 <span class="yt-uix-button-context-light yt-uix-button-subscription-container">
-<button onclick=";return false;" title="" type="button" class="yt-subscription-button subscription-button-with-recommended-channels yt-uix-button yt-uix-button-subscription yt-uix-tooltip ${document.cosmicCat.Channels.checkIfSubscribed() ? "subscribed hover-enabled" : ""}" data-enable-hovercard="true" data-subscription-value="${data}" data-force-position="" data-position="" data-subscription-feature="${document.cosmicCat.Utils.whatPage()}" data-subscription-type="" role="button">
+<button onclick=";return false;" title="" type="button" class="yt-subscription-button subscription-button-with-recommended-channels yt-uix-button yt-uix-button-subscription yt-uix-tooltip ${document.cosmicCat.Channels.checkIfSubscribed() ? "subscribed hover-enabled" : ""}" data-enable-hovercard="true" data-subscription-value="${data}" data-force-position="" data-position="" data-subscription-feature="${document.cosmicCat.Utils.currentPage()}" data-subscription-type="" role="button">
 <span class="yt-uix-button-icon-wrapper">
 <img class="yt-uix-button-icon yt-uix-button-icon-subscribe" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt=""><span class="yt-valign-trick"></span>
 </span><span class="yt-uix-button-content">
@@ -2624,7 +2644,7 @@ text-shadow : none;
 </span>`;
                     },
                     playlist: () => {
-                        return `<button onclick=";return false;" title="" type="button" class="yt-subscription-button yt-subscription-button-js-default yt-uix-button yt-uix-button-subscription yt-uix-tooltip ${document.cosmicCat.Channels.checkIfSubscribed() ? "subscribed hover-enabled" : ""}" data-subscription-feature="${document.cosmicCat.Utils.whatPage()}" data-sessionlink="" data-subscription-value="${data}" data-subscription-type="" role="button" data-subscription-initialized="true">
+                        return `<button onclick=";return false;" title="" type="button" class="yt-subscription-button yt-subscription-button-js-default yt-uix-button yt-uix-button-subscription yt-uix-tooltip ${document.cosmicCat.Channels.checkIfSubscribed() ? "subscribed hover-enabled" : ""}" data-subscription-feature="${document.cosmicCat.Utils.currentPage()}" data-sessionlink="" data-subscription-value="${data}" data-subscription-type="" role="button" data-subscription-initialized="true">
 <span class="yt-uix-button-icon-wrapper">
 <img class="yt-uix-button-icon yt-uix-button-icon-subscribe" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt=""><span class="yt-valign-trick"></span>
 </span><span class="yt-uix-button-content">
@@ -2639,7 +2659,7 @@ text-shadow : none;
 <span class="yt-uix-button-content">${localizeString("buttons.subscribe.subscribe")}</span>
 </button>`;
 
-                return `${((document.cosmicCat.Channels.isOwner(data)) || document.cosmicCat.watch.isOwner()) ? l_signedout : undefined || l[document.cosmicCat.Utils.whatPage()]()}`;
+                return `${((document.cosmicCat.Channels.isOwner(data)) || document.cosmicCat.watch.isOwner()) ? l_signedout : undefined || l[document.cosmicCat.Utils.currentPage()]()}`;
             },
             LikeDis: (data) => {
                 return `<span id="watch-like-unlike" class="yt-uix-button-group">
@@ -2659,6 +2679,11 @@ text-shadow : none;
 <span class="yt-uix-button-content">
 <img src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="Watch Later">
 </span><img class="yt-uix-button-arrow" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="">
+</button>`;
+            },
+            watchMoreRelated: (data) => {
+                return `<button type="button" id="watch-more-related-button" onclick=";return false;" class=" yt-uix-button yt-uix-button-default" data-button-action="yt.www.watch.watch5.handleLoadMoreRelated" role="button">
+<span class="yt-uix-button-content">${localizeString("buttons.suggestions.loadmoresuggestions")}</span>
 </button>`;
             }
         },
@@ -2956,7 +2981,7 @@ ${document.cosmicCat.Template.Watch.Content.playlistBar.barTray.trayContent.Cont
 <meta itemprop="unlisted" content="False">
 <meta itemprop="paid" content="False">
 <span itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-<link itemprop="url" href="${videoData.secondary.owner.url}">
+<link itemprop="url" href="${videoData.secondary?.owner?.url}">
 </span>
 <link itemprop="thumbnailUrl" href="${videoData.primary.thumbnail}">
 <span itemprop="thumbnail" itemscope="" itemtype="http://schema.org/ImageObject">
@@ -3048,9 +3073,9 @@ ${data.primary.title}
 </h1>
 <div id="watch-headline-user-info">
 <span class="yt-uix-button-group">
-<button href="${data.secondary.owner.url}/featured?feature=watch" type="button" class="start yt-uix-button yt-uix-button-default" onclick=";window.location.href=this.getAttribute('href');return false;" role="button">
-<span class="yt-uix-button-content">${data.secondary.owner.name}</span>
-</button>${document.cosmicCat.Template.Buttons.Subscribe(data.alternative.owner.id)}
+<button href="${data.secondary?.owner?.url}/featured?feature=watch" type="button" class="start yt-uix-button yt-uix-button-default" onclick=";window.location.href=this.getAttribute('href');return false;" role="button">
+<span class="yt-uix-button-content">${data.secondary?.owner?.name}</span>
+</button>${document.cosmicCat.Template.Buttons.Subscribe(data.alternative?.owner?.id)}
 </span>
 </div>
 <div id="watch-more-from-user" class="collapsed">
@@ -3094,7 +3119,7 @@ width: 120px;
 <div id="watch-actions">
 <div id="watch-actions-right">
 <span class="watch-view-count">
-<strong>${document.cosmicCat.Utils.parseNumber(data.primary.views.split(" ")[0])}</strong>
+<strong>${document.cosmicCat.Utils.parseNumber(data.primary?.views?.split(" ")?.[0])}</strong>
 </span>
 <button onclick=";return false;" type="button" id="watch-insight-button" class="yt-uix-tooltip yt-uix-tooltip-reverse yt-uix-button yt-uix-button-default yt-uix-tooltip yt-uix-button-empty" role="button" title="Show video statistics">
 <span class="yt-uix-button-icon-wrapper">
@@ -3360,11 +3385,7 @@ ${document.cosmicCat.Template.Comments.Main(data)}`;
 </ul>
 </div>
 <div class="watch-sidebar-foot">
-<p class="content">
-<button type="button" id="watch-more-related-button" onclick=";return false;" class=" yt-uix-button yt-uix-button-default" data-button-action="yt.www.watch.watch5.handleLoadMoreRelated" role="button">
-<span class="yt-uix-button-content">${localizeString("buttons.suggestions.loadmoresuggestions")}</span>
-</button>
-</p>
+<p class="content"></p>
 </div>
 </div>
 <span class="yt-vertical-rule-main"></span>
@@ -3623,13 +3644,22 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                 return arg;
             }
         },
-        whatPage: (arg) => {
+        currentPage: (arg) => {
             let _a = window.location.pathname.split("/")[1];
 
             switch (true) {
                 case /channel|user|^c{1}$/.test(_a):
                 case /@/.test(_a):
-                    _a = (arg == 0) ? "Channels" : document.cosmicCat.Utils.whatChannel();
+                    _a = "channels";
+                    break;
+                case window.location.pathname === "/" || window.location.pathname === "/feed/subscriptions":
+                    _a = "home";
+                    break;
+                case window.location.pathname === "/feed/explore":
+                    _a = "feedExplore";
+                    break;
+                case window.location.pathname === "/cosmic_cat":
+                    _a = "settings";
             }
 
             return _a;
@@ -3642,7 +3672,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                 try {
                     return JSON.parse(da.split("var ytInitialData = ")[1].split(";</script>")[0]);
                 } catch {
-                    return {error: 404};
+                    return {};
                 }
             });
         },
@@ -3707,12 +3737,14 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
             }
         },
         escapeHtml: (unsafe) => {
-            return unsafe
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
+            try {
+                return unsafe
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            } catch {}
         },
         waitForElm: (e) => {
             return new Promise((t) => {
@@ -3914,7 +3946,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                         url: data.ownerText?.runs?.[0]?.navigationEndpoint?.browseEndpoint?.canonicalBaseUrl || data.longBylineText?.runs?.[0]?.navigationEndpoint?.browseEndpoint?.canonicalBaseUrl,
                         id: data.ownerText?.runs?.[0]?.navigationEndpoint?.browseEndpoint?.browseId || data.longBylineText?.runs?.[0]?.navigationEndpoint?.browseEndpoint?.browseId
                     },
-                    updated: data.publishedTimeText?.simpleText,
+                    updated: data.publishedTimeText?.simpleText || "Updated a long time ago",
                     thumbnail: data.thumbnail?.thumbnails?.[0]?.url || data.thumbnailRenderer?.playlistVideoThumbnailRenderer?.thumbnail?.thumbnails?.[0]?.url,
                     rawThumbnail: data.thumbnail || {thumbnails: data.thumbnailRenderer?.playlistVideoThumbnailRenderer?.thumbnail},
                     sidethumbs: data.sidebarThumbnails || data.thumbnails || [{thumbnails: (data.thumbnail?.thumbnails || data.thumbnail)}],
@@ -4264,7 +4296,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
             }
         },
         isChannelsPage: () => {
-            return (window.location.href.match(/channel|user|^c{1}$/i) || document.cosmicCat.Channels.isUsertag());
+            return (window.location.pathname.match(/channel|user|^c{1}$/i) || document.cosmicCat.Channels.isUsertag()) ? true : false;
         },
         checkIfSubscribed: () => {
             try {
@@ -4302,7 +4334,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
             }
         },
         isUsertag: () => {
-            return !!window.location.href.match(/@/g);
+            return (window.location.pathname.substring(1, 2) === "@");
         },
         getCurrentChannelTab: () => {
             let mode = document.cosmicCat.Storage.get("channel_mode").value;
@@ -4626,28 +4658,28 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
     watch: {
         Suggestions: {
             load: async () => {
-                const token = document.cosmicCat.data.tokenSlot1;
                 let toggleElms = () => {
                     document.cosmicCat.toggleElm("#watch-more-related-button");
                     document.cosmicCat.toggleElm("#watch-more-related");
                 };
-                if(!token) return toggleElms();
-                toggleElms();
-                let api = await document.cosmicCat.Ajax.post("/youtubei/v1/next", `continuation: "${token}"`);
-                let collection = api?.onResponseReceivedEndpoints?.[0]?.appendContinuationItemsAction?.continuationItems || [];
-                if(collection.length == 0) return toggleElms();
 
-                for (let i = 0; i < collection.length; i++) {
-                    if (collection[i].compactVideoRenderer) {
-                        let videoData = document.cosmicCat.Utils.Sort.videoData(collection[i].compactVideoRenderer);
-                        document.cosmicCat.pageRenderer.add("#watch-related", document.cosmicCat.Template.Watch.Content.mainCon.sideBar.suggestedVideo(videoData));
-                    }
-                    if (collection[i].continuationItemRenderer) {
-                        document.cosmicCat.data.tokenSlot1 = collection[i].continuationItemRenderer.continuationEndpoint.continuationCommand.token;
-                    }
-                }
-                if (!collection.at(-1).continuationItemRenderer) return toggleElms();
                 toggleElms();
+
+                document.cosmicCat.Ajax.post("/youtubei/v1/next", `continuation: "${document.cosmicCat.data.tokenSlot1}"`).then(api => {
+                    let collection = api?.onResponseReceivedEndpoints?.[0]?.appendContinuationItemsAction?.continuationItems || [];
+
+                    for (let i = 0; i < collection.length; i++) {
+                        if (collection[i].compactVideoRenderer) {
+                            let videoData = document.cosmicCat.Utils.Sort.videoData(collection[i].compactVideoRenderer);
+                            document.cosmicCat.pageRenderer.add("#watch-related", document.cosmicCat.Template.Watch.Content.mainCon.sideBar.suggestedVideo(videoData));
+                        }
+                        if (collection[i].continuationItemRenderer) {
+                            document.cosmicCat.data.tokenSlot1 = collection[i].continuationItemRenderer.continuationEndpoint.continuationCommand.token;
+                        }
+                    }
+
+                    toggleElms();
+                });
             }
         },
         actions: {
@@ -4721,15 +4753,6 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
         }
     },
     Browse: {
-        Renderer: {
-            render: () => {
-                document.cosmicCat.pageRenderer.set("#content-container", document.cosmicCat.Template.Browse.Main());
-
-                document.cosmicCat.Alert(1, "This page is under reconstruction!");
-
-                document.querySelector(".load-more-pagination").remove();
-            }
-        },
         _Data: (data) => {
             let result = [];
 
@@ -5334,6 +5357,372 @@ margin-left:16px
             console.log(a, b)
         }
     },
+    www: {
+        404: () => {
+            document.cosmicCat.pageRenderer.set("title", "404 Not Found");
+            document.cosmicCat.pageRenderer.set("body", document.cosmicCat.Template.errorNotFound());
+        },
+        home: () => {
+            document.cosmicCat.pageRenderer.set("#content-container", document.cosmicCat.Template.Homepage.Main());
+
+            let guidebuilder = "";
+            let subsbuilder = "";
+
+            if(document.cosmicCat.Storage.get("accountInfo").exists) {
+                guidebuilder = document.cosmicCat.Template.Homepage.Guide.Builder.loggedIn();
+                subsbuilder = document.cosmicCat.Template.Homepage.Guide.Personal();
+            } else {
+                guidebuilder = document.cosmicCat.Template.Homepage.Guide.Builder.loggedOut();
+            }
+
+            document.cosmicCat.pageRenderer.set("#guide-builder-promo", guidebuilder);
+            document.cosmicCat.pageRenderer.set(".guide", subsbuilder);
+            document.cosmicCat.pageRenderer.add(".guide", document.cosmicCat.Template.Homepage.Guide.Categories.Main());
+
+            try {
+                for (let i = 0; i < document.cosmicCat.data.homeCategories.length; i++) {
+                    let caties = document.cosmicCat.Utils.listCategories(document.cosmicCat.data.homeCategories[i]);
+                    document.cosmicCat.pageRenderer.add(".cockie", document.cosmicCat.Template.Homepage.Guide.Categories.Channel(caties));
+                }
+            } catch(err) {
+                console.error("[Home] Could not parse categories:\n", err);
+            }
+
+            try {
+                if (window.location.pathname == "/feed/subscriptions") {
+                    document.cosmicCat.Home.Feed.load(document.querySelector("[data-feed-name='subscriptions']"));
+                } else {
+                    document.cosmicCat.Home.Feed.load(document.querySelector(`[data-feed-name='${document.cosmicCat.Storage.get("greeting_feed").value}']`));
+                }
+            } catch(err) {
+                console.error("[Home] Could not load feed data:\n", err);
+            }
+
+            try {
+                if(document.cosmicCat.Storage.get("accountInfo").exists) {
+                    document.cosmicCat.Subscriptions.getChannelInfo().then(subsarr => {
+                        for (let i = 0; i < subsarr.length; i++) {
+                            document.cosmicCat.pageRenderer.add("#guide-subscriptions", document.cosmicCat.Template.Homepage.Guide.Channel(subsarr[i]));
+                        }
+                    });
+                } else {
+
+                }
+            } catch(err) {
+                console.error("[Home] Could not load subscriptions:\n", err);
+            }
+        },
+        watch: () => {
+            document.cosmicCat.Utils.waitForElm2().then(async () => {
+                let data = {
+                    primary: document.cosmicCat.Utils.Sort.videoData(ytInitialData.contents.twoColumnWatchNextResults.results?.results?.contents[0]?.videoPrimaryInfoRenderer),
+                    secondary: document.cosmicCat.Utils.Sort.videoData(ytInitialData.contents.twoColumnWatchNextResults.results?.results?.contents[1]?.videoSecondaryInfoRenderer),
+                    alternative: document.cosmicCat.Utils.Sort.videoData(ytInitialPlayerResponse)
+                };
+
+                document.cosmicCat.pageRenderer.set("#content-container", document.cosmicCat.Template.Watch.Content.Main(data));
+
+                document.querySelector("#page").classList.add("watch");
+
+                fetch("https://returnyoutubedislikeapi.com/Votes?videoId=" + data.alternative.id)
+                    .then((response) => response.json())
+                    .then((result) => {
+                    var likes = result.likes;
+                    var dislikes = result.dislikes;
+                    var rating = likes + dislikes > 0 ? (likes / (likes + dislikes)) * 100 : 50;
+                    document.querySelector(".video-extras-sparkbar-likes").style.width = rating + "%";
+                    document.querySelector(".likes").innerText = likes.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    document.querySelector(".dislikes").innerText = dislikes.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }).catch((err) => {
+                    console.error("[ReturnYouTubeDislikes] Something went wrong with fetching api:\n", err);
+                });
+
+                try {
+                    for (let i = 0; i < data.alternative.tags.length; i++) {
+                        document.cosmicCat.pageRenderer.add("#eow-tags", document.cosmicCat.Template.Watch.Content.tag(data, i));
+                    }
+                } catch(err) {
+                    console.error("[Watch] Failed to load video tags.\n", err);
+                }
+
+                try {
+                    if (ytInitialData.contents.twoColumnWatchNextResults.playlist.playlist) {
+                        let data = document.cosmicCat.Utils.Sort.playlistData(ytInitialData.contents.twoColumnWatchNextResults.playlist.playlist)
+                        document.cosmicCat.pageRenderer.add("#page", document.cosmicCat.Template.Watch.Content.playlistBar.Main(
+                            data)
+                        );
+
+                        for (let i = 0; i < data.videos.videos.length; i++) {
+                            document.cosmicCat.pageRenderer.add("ol.video-list", document.cosmicCat.Template.Watch.Content.playlistBar.barTray.trayContent.video(document.cosmicCat.Utils.Sort.videoData(data.videos.videos[i].playlistPanelVideoRenderer), data));
+                        }
+                    }
+                } catch(err) {
+                    console.debug("[Playlists] No playlist loaded.");
+                }
+
+                try {
+                    const obj_sug = ytInitialData.contents.twoColumnWatchNextResults.secondaryResults?.secondaryResults?.results?.[1]?.itemSectionRenderer?.contents || ytInitialData.contents.twoColumnWatchNextResults.secondaryResults?.secondaryResults?.results;
+
+                    for (let i = 0; i < obj_sug.length; i++) {
+                        if(obj_sug[i].compactVideoRenderer) {
+                            let videoData = document.cosmicCat.Utils.Sort.videoData(obj_sug[i].compactVideoRenderer);
+                            document.cosmicCat.pageRenderer.add("#watch-related", document.cosmicCat.Template.Watch.Content.mainCon.sideBar.suggestedVideo(videoData));
+                        }
+                        if (obj_sug[i].continuationItemRenderer) {
+                            document.cosmicCat.data.tokenSlot1 = obj_sug[i].continuationItemRenderer.continuationEndpoint.continuationCommand.token;
+
+                            document.cosmicCat.pageRenderer.add(".watch-sidebar-foot p.content", document.cosmicCat.Template.Buttons.watchMoreRelated());
+                        }
+                    }
+                } catch(err) {
+                    console.error("[Watch] Failed to load suggestions.\n", err);
+                }
+
+                try {
+                    if (ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.filter(b => b.itemSectionRenderer)[1]) {
+                        document.cosmicCat.toggleElm("#comments-view");
+                        let con = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.filter(b => b.itemSectionRenderer)[1].itemSectionRenderer.contents[0].continuationItemRenderer.continuationEndpoint.continuationCommand.token;
+                        document.cosmicCat.Comments.init(con);
+                    }
+                } catch(err) {
+                    console.error("[Comments] Failed to load the comments section.\n\nUseful errors, if any:", err);
+                }
+
+                if (!data.alternative.id) {
+                    document.querySelector("#player").remove();
+                }
+
+                document.head.querySelector("title").innerText = `${data.primary.title} - YouTube`;
+
+                document.cosmicCat.player.Create();
+
+                document.querySelector("body").addEventListener("submit", async (e) => {
+                    e.preventDefault();
+
+                    let comm = document.querySelector(".comments-textarea").value;
+                    if(comm.length < 1) return;
+
+                    document.cosmicCat.Ajax.post("/youtubei/v1/comment/create_comment", `createCommentParams: "${document.querySelector("input#session").value}", commentText: "${comm}"`).then(async api => {
+                        if(api.actionResult.status == "STATUS_SUCCEEDED") {
+                            let re = api.actions[0].runAttestationCommand.ids;
+
+                            let comments = document.querySelector("ul.comment-list.all");
+                            let comment = document.createElement("li");
+                            comment.setAttribute("class", "comment yt-tile-default");
+                            comment.setAttribute("data-author-id", re[2].externalChannelId);
+                            comment.setAttribute("data-id", re[0].commentId);
+                            comment.setAttribute("data-score", "-1");
+
+                            let json = {authorText: {simpleText: document.cosmicCat.Storage.get("accountInfo").value.name}, commentId: re[0].commentId, contentText: {runs: [{text: comm}]}, publishedTimeText: {runs: [{text: "Just now"}]}, authorEndpoint: {browseEndpoint: {canonicalBaseUrl: document.cosmicCat.Storage.get("accountInfo").value.link}}};
+                            let newc = document.cosmicCat.Template.Comments.Comment(document.cosmicCat.Utils.Sort.commentData(json));
+
+                            comment.innerHTML = newc;
+                            comments.insertBefore(comment, comments.children[0]);
+
+                            document.cosmicCat.Comments.Form.uninit();
+
+                            await document.cosmicCat.Ajax.post("/youtubei/v1/att/get", `engagementType: "ENGAGEMENT_TYPE_COMMENT_POST", ids: ${JSON.stringify(re)}`);
+                        }
+                    });
+                    return false;
+                });
+            });
+        },
+        shorts: () => {
+            window.location.href = "https://www.youtube.com/watch?v=" + window.location.pathname.split("/")[2];
+        },
+        channels: () => {
+            (!/^featured|videos|playlists|community$/g.test(window.location.pathname.split("/").splice(document.cosmicCat.Channels.isUsertag() ? 2 : 3).join("/"))) && window.location.replace(window.location.pathname.split("/").slice(0, document.cosmicCat.Channels.isUsertag() ? 2 : 3).join("/") + "/featured");
+            document.cosmicCat.Utils.waitForElm2().then(async () => {
+                //if (!ytData?.header?.c4TabbedHeaderRenderer) return;
+                let revision = document.cosmicCat.Storage.get("channel_mode").value;
+                const naviHash = document.cosmicCat.Channels.getNaviHash();
+
+                (revision == "3") && document.querySelector("#page").setAttribute("class", "branded-page channel");
+
+                (revision == "2" && /playlists/.test(window.location.pathname.split("/").splice(2).join("/"))) && window.location.replace(window.location.pathname.split("/").slice(0,2).join("/") + "/videos");
+
+                let data = {
+                    info: await document.cosmicCat.Ajax.Fetch(`https://www.youtube.com${window.location.pathname.split("/").slice(0, -1).join("/")}/about`, document.cosmicCat.Channels._Data.Info),
+                    header: document.cosmicCat.Channels.Local.Header(),
+                    content: document.cosmicCat.Channels.Local.Videos() || document.cosmicCat.Channels.Local.Playlists() || document.cosmicCat.Channels.Local.Community()
+                };
+
+                document.head.querySelector("title").innerText = `${data.header.name}'s ${localizeString("global.channel")} - YouTube`;
+
+                revision = "Channels" + document.cosmicCat.Storage.get("channel_mode").value;
+                const tab = document.cosmicCat.Channels.getCurrentChannelTab();
+
+                document.cosmicCat.pageRenderer.set("#content-container", document.cosmicCat.Template.Channel[revision].Main(data));
+
+                const list = {
+                    "Channels3": {
+                        "contentList": ".channels-browse-content-grid",
+                        "contentListAddr": "primaryPane.browseVideos.listItem"
+                    },
+                    "Channels2": {
+                        "contentList": ".scrollbox-page",
+                        "contentListAddr": "playlistNavigator.Content.PlayPanel.Holder"
+                    },
+                    "Channels1": {
+                        "contentList": "#profileVideos [style=\"border-bottom:none;\"]",
+                        "contentListAddr": "mainCon.userVideos"
+                    }
+                };
+
+                (revision == "Channels2") && (document.cosmicCat.pageRenderer.add("body", document.cosmicCat.Template.Channel.Channels2.Stylesheet()),
+                                              document.cosmicCat.Channels.load2Modules(data.info));
+
+                if (revision == "Channels3") {
+                    try {
+                        document.cosmicCat.pageRenderer.add(".tab-content-body", document.cosmicCat.Template.Channel.Channels3.primaryPane[
+                            document.cosmicCat.Channels.isCurrentChannelTab("featured") ? "featured" : "browseVideos"
+                        ].Main(data));
+                    } catch {}
+
+                    try {
+                        document.cosmicCat.pageRenderer.add(".tab-content-body", document.cosmicCat.Template.Channel.Channels3.secondaryPane.Main(data));
+                    } catch {}
+
+                    try {
+                        for (let i = 0; i < data.info?.links?.length; i++) {
+                            document.cosmicCat.pageRenderer.add(".profile-socials", document.cosmicCat.Template.Channel.Channels3.secondaryPane.firstSection.socialLink(data.info.links[i]));
+                        }
+                    } catch(err) {
+                        console.error("[Channels] Failed to parse social links:\n, err");
+                    }
+
+                    if (document.cosmicCat.Channels.isCurrentChannelTab("featured")) {
+                        try {
+                            var a = document.cosmicCat.Utils.Sort.videoData(ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents.find(a => a.itemSectionRenderer.contents[0].channelVideoPlayerRenderer).itemSectionRenderer.contents[0].channelVideoPlayerRenderer);
+                            document.cosmicCat.pageRenderer.add(".primary-pane", document.cosmicCat.Template.Channel.Channels3.primaryPane.featured.featuredVideo(a, data.header));
+                            console.log(a);
+                        } catch {}
+                    }
+                }
+
+                data.content = (data.content.length == 0) && await document.cosmicCat.Ajax.Fetch(`https://www.youtube.com${window.location.pathname.split("/").slice(0, -1).join("/")}/${tab}`, document.cosmicCat.Channels._Data[tab.charAt(0).toUpperCase() + tab.slice(1)]) || data.content;
+
+                try {
+                    // shit doesn't work >:c
+                    //document.cosmicCat.Ajax.post("/youtubei/v1/creator/get_creator_channels", `"channelIds":["${data.header.id}"],"mask":{"channelId":true,"contentOwnerAssociation":{"all":true},"features":{"all":true},"metric":{"all":true},"monetizationDetails":{"all":true},"monetizationStatus":true,"permissions":{"all":true},"settings":{"coreSettings":{"featureCountry":true}}}`)
+                    (revision == "Channels1") && (document.querySelector("[name^=\"channel-box-item-count\"]").innerText = data.content.length);
+                } catch(err) {}
+
+                try {
+                    for (let i = 0; i < data.content.length; i++) {
+                        document.cosmicCat.pageRenderer.add(list[revision].contentList, list[revision].contentListAddr.split('.').reduce((o,i)=> o[i]||"", document.cosmicCat.Template.Channel[revision])[document.cosmicCat.Channels.getCurrentChannelTab()](data.content[i], data.content.length));
+                    }
+                } catch(err) {
+                    console.error("[Channels] Failed to parse local content data:\n", err);
+                }
+
+                (revision == "Channels2") && (document.querySelector("#playnav-play-loading").style.display = "none");
+
+                (revision == "Channels3" && data.content.length == 30) && (
+                    document.cosmicCat.Channels.Channels3.Pagination.load()
+                );
+
+                document.cosmicCat.Utils.waitForElm("#video-player").then(() => {
+                    document.cosmicCat.player.Create();
+                });
+            });
+        },
+        playlist: () => {
+            document.cosmicCat.Utils.waitForElm("[id=\"watch-page-skeleton\"").then(async () => {
+                let data = {
+                    header: document.cosmicCat.Playlists.Local.Header(),
+                    content: document.cosmicCat.Playlists.Local.Videos()
+                };
+
+                if(data.header.owner.id) {
+                    data.creatorInfo = await document.cosmicCat.Ajax.Fetch(`https://www.youtube.com/channel/${data?.header?.owner?.id}/about`, document.cosmicCat.Channels._Data.Info);
+                }
+
+                document.cosmicCat.pageRenderer.set("#content-container", document.cosmicCat.Template.Playlist.Main(data));
+
+                try {
+                    for (let i = 0; i < data.content.length; i++) {
+                        document.cosmicCat.pageRenderer.add("ol", document.cosmicCat.Template.Playlist.primaryPane.listItem.video(data.content[i], data.header.id, i+1));
+                    }
+                } catch(err) {
+                    console.error("[Playlists] Failed to parse playlist content:\n", err);
+                }
+            });
+        },
+        results: () => {
+            document.cosmicCat.Utils.waitForElm("#watch-page-skeleton").then(async () => {
+                var searchpar = document.cosmicCat.Utils.escapeHtml((new URL(document.location)).searchParams.get("search_query"));
+
+                document.querySelector("#page").classList.add("search-base");
+                var results = ytInitialData?.contents?.twoColumnSearchResultsRenderer?.primaryContents?.sectionListRenderer?.contents[0]?.itemSectionRenderer?.contents || [];
+
+                document.cosmicCat.pageRenderer.set("#content-container", document.cosmicCat.Template.Search.Main(searchpar));
+
+                for(let i = 0; i < results.length; i++) {
+                    if(results[i].videoRenderer) {
+                        let videoData = document.cosmicCat.Utils.Sort.videoData(results[i].videoRenderer);
+                        document.cosmicCat.pageRenderer.add("#search-results", document.cosmicCat.Template.Search.videoRender(videoData));
+                    }
+                    if(results[i].channelRenderer) {
+                        let channelData = document.cosmicCat.Utils.Sort.channelData(results[i].channelRenderer);
+                        document.cosmicCat.pageRenderer.add("#search-results", document.cosmicCat.Template.Search.channelRender(channelData));
+                    }
+                    if(results[i].playlistRenderer) {
+                        let playlistData = document.cosmicCat.Utils.Sort.playlistData(results[i].playlistRenderer);
+                        document.cosmicCat.pageRenderer.add("#search-results", document.cosmicCat.Template.Search.playlistRender(playlistData));
+                    }
+                }
+
+                var a = ytInitialData.contents.twoColumnSearchResultsRenderer.primaryContents.sectionListRenderer.subMenu.searchSubMenuRenderer.groups;
+
+                var temF = (data, b) => document.cosmicCat.Template.Search.dropdownFilter.Con(data, b, searchpar);
+
+                for (const b in a) {
+                    var temC = ``;
+                    for (const c in a[b].searchFilterGroupRenderer.filters) {
+                        temC += temF(a[b]?.searchFilterGroupRenderer?.filters[c]?.searchFilterRenderer?.navigationEndpoint?.searchEndpoint?.params, a[b].searchFilterGroupRenderer.filters[c].searchFilterRenderer.label.simpleText);
+                    }
+
+                    document.cosmicCat.pageRenderer.add("#filter-dropdown", document.cosmicCat.Template.Search.dropdownFilter.Main(a, b, temC));
+                }
+            });
+        },
+        feedExplore: () => {
+            document.body.setAttribute("class", "ytg-old-clearfix guide-feed-v2");
+            document.head.querySelector("title").innerText = "Videos - YouTube";
+
+            document.cosmicCat.Utils.waitForElm("#watch-page-skeleton").then(() => {
+                document.cosmicCat.pageRenderer.set("#content-container", document.cosmicCat.Template.Browse.Main());
+
+                //document.cosmicCat.Alert(1, "This page is under reconstruction!");
+
+                document.querySelector(".load-more-pagination").remove();
+            });
+        },
+        settings: () => {
+            document.querySelector("body").setAttribute("cosmic_cat_settings", "");
+            document.querySelector("body").classList.add("guide-feed-v2");
+
+            document.querySelector("title").innerText = "Cosmic Cat Settings";
+
+            const guidecss = document.createElement("link");
+            guidecss.setAttribute("id", "www-guide");
+            guidecss.setAttribute("rel", "stylesheet");
+            guidecss.setAttribute("href", "//s.ytimg.com/yts/cssbin/www-guide-vfljovH6N.css");
+
+            document.querySelector("head").appendChild(guidecss);
+
+            YabaiComponent.addHandler("input", "cosmic-cat-settings", document.cosmicCat.Actions.handleSettingsButton);
+
+            document.cosmicCat.pageRenderer.set("#content-container", document.cosmicCat.Template.Settings.Main() + document.cosmicCat.Template.Settings.Stylesheet());
+
+            $(document).ready(function() {
+                $("#channelMode").val(document.cosmicCat.Storage.get("channel_mode").value);
+                $("#mainFeed").val(document.cosmicCat.Storage.get("greeting_feed").value);
+            });
+        }
+    },
     null: () => null
 };
 
@@ -5445,7 +5834,7 @@ const localizeString = (varr, DOM) => {
     // really need to get rid of this and simplify the process.
     switch (varr) {
         case "watch.uploaderinfo":
-            i18n = i18n.replace(/%s/g, `<a href="https://www.youtube.com${DOM?.secondary.owner.url}/featured" class="yt-uix-sessionlink yt-user-name author" rel="author" dir="ltr">${DOM?.secondary.owner.name}</a>`);
+            i18n = i18n.replace(/%s/g, `<a href="https://www.youtube.com${DOM?.secondary?.owner?.url}/featured" class="yt-uix-sessionlink yt-user-name author" rel="author" dir="ltr">${DOM?.secondary?.owner?.name}</a>`);
             i18n = i18n.replace(/%r/g, `<span id="eow-date" class="watch-video-date">${DOM?.primary.upload}</span>`);
             break;
         case "home.feed.uploadedavideo":
@@ -5544,10 +5933,16 @@ if ("onbeforescriptexecute" in document) {
     }));
 }
 
-document.cosmicCat.Utils.waitForElm("ytd-app").then(async (e) => {
-    e.remove();
-    document.querySelector("body").setAttribute("ytdataloaded", "");
+document.querySelector("html").removeAttribute("style"),
+    document.querySelector("html").removeAttribute("class"),
+    document.querySelector("html").removeAttribute("dark"),
+    document.querySelector("html").removeAttribute("system-icons"),
+    document.querySelector("html").removeAttribute("typography"),
+    document.querySelector("html").removeAttribute("typography-spacing"),
+    document.querySelector("html").removeAttribute("darker-dark-theme"),
+    document.querySelector("html").removeAttribute("darker-dark-theme-deprecate");
 
+document.cosmicCat.Utils.waitForElm("head").then(async (e) => {
     var t = document.createElement("head");
     t.setAttribute("litterbox", "");
     document.querySelector("html").prepend(t);
@@ -5572,8 +5967,18 @@ document.cosmicCat.Utils.waitForElm("ytd-app").then(async (e) => {
     u.setAttribute("href", "//s.ytimg.com/yt/favicon-refresh-vfldLzJxy.ico");
     document.querySelector("head").append(u);
 
-    document.cosmicCat.Utils.addStyle("//s.ytimg.com/yts/cssbin/www-player-vfluwFMix.css");
+    // Doesn't always load on FF
     document.cosmicCat.Utils.addStyle("//s.ytimg.com/yts/cssbin/www-core-vfleLhVpH.css");
+});
+
+document.cosmicCat.Utils.waitForElm("ytd-app").then(async (e) => {
+    e.remove();
+    document.querySelector("html").setAttribute("dir", "ltr");
+
+    document.querySelector("body").setAttribute("id", "");
+    document.querySelector("body").setAttribute("ytdataloaded", "");
+
+    document.cosmicCat.Utils.addStyle("//s.ytimg.com/yts/cssbin/www-player-vfluwFMix.css");
 
     if (window.location.pathname == "/" || window.location.pathname == "/feed/subscriptions") {document.cosmicCat.Utils.addStyle("//s.ytimg.com/yts/cssbin/www-guide-vfljovH6N.css");}
     if (document.cosmicCat.Channels.isChannelsPage()) {
@@ -5608,7 +6013,7 @@ document.cosmicCat.Utils.waitForElm("ytd-app").then(async (e) => {
         var b = (a.substr(parseInt(a.search("@version") + 14)).substr(0, parseInt(a.search("@version") - 86)));
         (GM_info.script.version !== b) && (update = !0);
 
-        console.debug("[Updater] Current version:", GM_info.script.version, "|", "New version:", b);
+        console.debug("[Updater] Current version:", GM_info.script.version, "|", "GitHub version:", b);
     });
 
     fetch("https://raw.githubusercontent.com/thistlecafe/cosmic-cat-i18n/main/version.json").then(a => a.json()).then(a => {
@@ -5620,7 +6025,6 @@ document.cosmicCat.Utils.waitForElm("ytd-app").then(async (e) => {
 
     setTimeout(async function () {
         document.querySelector("body").setAttribute("ythtmlloaded", "");
-
         if (!document.cosmicCat.Account.isLoggedIn()) {
             await document.cosmicCat.Account.fetch();
         }
@@ -5660,383 +6064,40 @@ ${OBJ_FOOTER}
             (!0 === update) && document.cosmicCat.Alert(0, "An update is available to Cosmic Cat! <a href=\"https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js\">Click to install it.</a>");
         });
 
-        (() => {
+        try {
+            yt.www.masthead.searchbox.init();
+        } catch(err) {
             try {
-                yt.www.masthead.searchbox.init();
+                setTimeout(() => yt.www.masthead.searchbox.init(), 1000);
             } catch(err) {
+                console.error("[Searchbox] Couldn't init!\n", err, "\nTrying again one last time.");
                 try {
                     setTimeout(() => yt.www.masthead.searchbox.init(), 1000);
                 } catch(err) {
-                    console.error("[Searchbox] Couldn't init!\n", err, "\nTrying again one last time.");
-                    try {
-                        setTimeout(() => yt.www.masthead.searchbox.init(), 1000);
-                    } catch(err) {
-                        console.error("[Searchbox] Couldn't init!\n", err);
-                    }
+                    console.error("[Searchbox] Couldn't init!\n", err);
                 }
-                console.error("[Searchbox] Couldn't init!\n", err, "\nTrying again in 1 second.");
             }
-        })();
-        if(window.location.pathname == "/cosmic_cat") {
-            document.querySelector("body").setAttribute("cosmic_cat_settings", "");
-            document.querySelector("body").classList.add("guide-feed-v2");
-
-            document.querySelector("title").innerText = "Cosmic Cat Settings";
-
-            const guidecss = document.createElement("link");
-            guidecss.setAttribute("id", "www-guide");
-            guidecss.setAttribute("rel", "stylesheet");
-            guidecss.setAttribute("href", "//s.ytimg.com/yts/cssbin/www-guide-vfljovH6N.css");
-
-            document.querySelector("head").appendChild(guidecss);
-
-            YabaiComponent.addHandler("input", "cosmic-cat-settings", document.cosmicCat.Actions.handleSettingsButton);
-
-            document.cosmicCat.pageRenderer.set("#content-container", document.cosmicCat.Template.Settings.Main() + document.cosmicCat.Template.Settings.Stylesheet());
-
-            $(document).ready(function() {
-                $("#channelMode").val(document.cosmicCat.Storage.get("channel_mode").value);
-                $("#mainFeed").val(document.cosmicCat.Storage.get("greeting_feed").value);
-            });
-
-            document.documentElement.setAttribute("transition", "");
+            console.error("[Searchbox] Couldn't init!\n", err, "\nTrying again in 1 second.");
         }
-        if(window.location.pathname == "/" || window.location.pathname == "/feed/subscriptions") {
-            document.cosmicCat.pageRenderer.set("#content-container", document.cosmicCat.Template.Homepage.Main());
-
-            let guidebuilder = "";
-            let subsbuilder = "";
-
-            if(document.cosmicCat.Storage.get("accountInfo").exists) {
-                guidebuilder = document.cosmicCat.Template.Homepage.Guide.Builder.loggedIn();
-                subsbuilder = document.cosmicCat.Template.Homepage.Guide.Personal();
-            } else {
-                guidebuilder = document.cosmicCat.Template.Homepage.Guide.Builder.loggedOut();
-            }
-
-            document.cosmicCat.pageRenderer.set("#guide-builder-promo", guidebuilder);
-            document.cosmicCat.pageRenderer.set(".guide", subsbuilder);
-            document.cosmicCat.pageRenderer.add(".guide", document.cosmicCat.Template.Homepage.Guide.Categories.Main());
-
-            try {
-                for (let i = 0; i < document.cosmicCat.data.homeCategories.length; i++) {
-                    let caties = document.cosmicCat.Utils.listCategories(document.cosmicCat.data.homeCategories[i]);
-                    document.cosmicCat.pageRenderer.add(".cockie", document.cosmicCat.Template.Homepage.Guide.Categories.Channel(caties));
-                }
-            } catch(err) {
-                console.error("[Home] Could not parse categories:\n", err);
-            }
-
-            try {
-                if (window.location.pathname == "/feed/subscriptions") {
-                    document.cosmicCat.Home.Feed.load(document.querySelector("[data-feed-name='subscriptions']"));
-                } else {
-                    document.cosmicCat.Home.Feed.load(document.querySelector(`[data-feed-name='${document.cosmicCat.Storage.get("greeting_feed").value}']`));
-                }
-            } catch(err) {
-                console.error("[Home] Could not load feed data:\n", err);
-            }
-
-            try {
-                if(document.cosmicCat.Storage.get("accountInfo").exists) {
-                    let subsarr = await document.cosmicCat.Subscriptions.getChannelInfo();
-                    for (let i = 0; i < subsarr.length; i++) {
-                        document.cosmicCat.pageRenderer.add("#guide-subscriptions", document.cosmicCat.Template.Homepage.Guide.Channel(subsarr[i]));
-                    }
-                } else {
-
-                }
-            } catch(err) {
-                console.error("[Home] Could not load subscriptions:\n", err);
-            }
-        }
-        if(window.location.pathname.split("/")[1].match(/watch/i)) {
-            document.cosmicCat.Utils.waitForElm2().then(async () => {
-                await new Promise((a,b) => setTimeout(a, 100));
-                let data = {
-                    primary: document.cosmicCat.Utils.Sort.videoData(ytInitialData.contents.twoColumnWatchNextResults.results?.results?.contents[0]?.videoPrimaryInfoRenderer),
-                    secondary: document.cosmicCat.Utils.Sort.videoData(ytInitialData.contents.twoColumnWatchNextResults.results?.results?.contents[1]?.videoSecondaryInfoRenderer),
-                    alternative: document.cosmicCat.Utils.Sort.videoData(ytInitialPlayerResponse)
-                };
-
-                document.cosmicCat.pageRenderer.set("#content-container", document.cosmicCat.Template.Watch.Content.Main(data));
-
-                document.querySelector("#page").classList.add("watch");
-
-                fetch("https://returnyoutubedislikeapi.com/Votes?videoId=" + data.alternative.id)
-                    .then((response) => response.json())
-                    .then((result) => {
-                    var likes = result.likes;
-                    var dislikes = result.dislikes;
-                    var rating = likes + dislikes > 0 ? (likes / (likes + dislikes)) * 100 : 50;
-                    document.querySelector(".video-extras-sparkbar-likes").style.width = rating + "%";
-                    document.querySelector(".likes").innerText = likes.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                    document.querySelector(".dislikes").innerText = dislikes.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                }).catch((err) => {
-                    console.error("[ReturnYouTubeDislikes] Something went wrong with fetching api:\n", err);
-                });
-
-                try {
-                    for (let i = 0; i < data.alternative.tags.length; i++) {
-                        document.cosmicCat.pageRenderer.add("#eow-tags", document.cosmicCat.Template.Watch.Content.tag(data, i));
-                    }
-                } catch(err) {
-                    console.error("[Watch] Failed to load video tags.\n", err);
-                }
-
-                try {
-                    if (ytInitialData.contents.twoColumnWatchNextResults.playlist.playlist) {
-                        let data = document.cosmicCat.Utils.Sort.playlistData(ytInitialData.contents.twoColumnWatchNextResults.playlist.playlist)
-                        document.cosmicCat.pageRenderer.add("#page", document.cosmicCat.Template.Watch.Content.playlistBar.Main(
-                            data)
-                        );
-
-                        for (let i = 0; i < data.videos.videos.length; i++) {
-                            document.cosmicCat.pageRenderer.add("ol.video-list", document.cosmicCat.Template.Watch.Content.playlistBar.barTray.trayContent.video(document.cosmicCat.Utils.Sort.videoData(data.videos.videos[i].playlistPanelVideoRenderer), data));
-                        }
-                    }
-                } catch(err) {
-                    console.debug("[Playlists] No playlist loaded.");
-                }
-
-                try {
-                    const obj_sug = ytInitialData.contents.twoColumnWatchNextResults.secondaryResults?.secondaryResults?.results?.[1]?.itemSectionRenderer?.contents || ytInitialData.contents.twoColumnWatchNextResults.secondaryResults?.secondaryResults?.results;
-
-                    for (let i = 0; i < obj_sug.length; i++) {
-                        if(obj_sug[i].compactVideoRenderer) {
-                            let videoData = document.cosmicCat.Utils.Sort.videoData(obj_sug[i].compactVideoRenderer);
-                            document.cosmicCat.pageRenderer.add("#watch-related", document.cosmicCat.Template.Watch.Content.mainCon.sideBar.suggestedVideo(videoData));
-                        }
-                        if (obj_sug[i].continuationItemRenderer) {
-                            document.cosmicCat.data.tokenSlot1 = obj_sug[i].continuationItemRenderer.continuationEndpoint.continuationCommand.token;
-                        }
-                    }
-                } catch(err) {
-                    console.error("[Watch] Failed to load suggestions.\n", err);
-                }
-
-                try {
-                    if (ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.filter(b => b.itemSectionRenderer)[1]) {
-                        document.cosmicCat.toggleElm("#comments-view");
-                        let con = ytInitialData.contents.twoColumnWatchNextResults.results.results.contents.filter(b => b.itemSectionRenderer)[1].itemSectionRenderer.contents[0].continuationItemRenderer.continuationEndpoint.continuationCommand.token;
-                        document.cosmicCat.Comments.init(con);
-                    }
-                } catch(err) {
-                    console.error("[Comments] Failed to load the comments section.\n\nUseful errors, if any:", err);
-                }
-
-                if (!data.alternative.id) {
-                    document.querySelector("#player").remove();
-                }
-
-                document.head.querySelector("title").innerText = `${data.primary.title} - YouTube`;
-
-                document.cosmicCat.player.Create();
-
-                document.querySelector("body").addEventListener("submit", async (e) => {
-                    e.preventDefault();
-
-                    let comm = document.querySelector(".comments-textarea").value;
-                    if(comm.length < 1) return;
-
-                    document.cosmicCat.Ajax.post("/youtubei/v1/comment/create_comment", `createCommentParams: "${document.querySelector("input#session").value}", commentText: "${comm}"`).then(async api => {
-                        if(api.actionResult.status == "STATUS_SUCCEEDED") {
-                            let re = api.actions[0].runAttestationCommand.ids;
-
-                            let comments = document.querySelector("ul.comment-list.all");
-                            let comment = document.createElement("li");
-                            comment.setAttribute("class", "comment yt-tile-default");
-                            comment.setAttribute("data-author-id", re[2].externalChannelId);
-                            comment.setAttribute("data-id", re[0].commentId);
-                            comment.setAttribute("data-score", "-1");
-
-                            let json = {authorText: {simpleText: document.cosmicCat.Storage.get("accountInfo").value.name}, commentId: re[0].commentId, contentText: {runs: [{text: comm}]}, publishedTimeText: {runs: [{text: "Just now"}]}, authorEndpoint: {browseEndpoint: {canonicalBaseUrl: document.cosmicCat.Storage.get("accountInfo").value.link}}};
-                            let newc = document.cosmicCat.Template.Comments.Comment(document.cosmicCat.Utils.Sort.commentData(json));
-
-                            comment.innerHTML = newc;
-                            comments.insertBefore(comment, comments.children[0]);
-
-                            document.cosmicCat.Comments.Form.uninit();
-
-                            await document.cosmicCat.Ajax.post("/youtubei/v1/att/get", `engagementType: "ENGAGEMENT_TYPE_COMMENT_POST", ids: ${JSON.stringify(re)}`);
-                        }
-                    });
-                    return false;
-                });
-            });
-        }
-        if(window.location.pathname.split("/")[1].match(/shorts/i)) {
-            window.location.href = "https://www.youtube.com/watch?v=" + window.location.pathname.split("/")[2];
-        }
-        if(document.cosmicCat.Channels.isChannelsPage()) {
-            (!/^featured|videos|playlists|community$/g.test(window.location.pathname.split("/").splice(document.cosmicCat.Channels.isUsertag() ? 2 : 3).join("/"))) && window.location.replace(window.location.pathname.split("/").slice(0, document.cosmicCat.Channels.isUsertag() ? 2 : 3).join("/") + "/featured");
-            await document.cosmicCat.Utils.waitForElm2().then(async () => {
-                //if (!ytData?.header?.c4TabbedHeaderRenderer) return;
-                let revision = document.cosmicCat.Storage.get("channel_mode").value;
-                const naviHash = document.cosmicCat.Channels.getNaviHash();
-
-                (revision == "3") && document.querySelector("#page").setAttribute("class", "branded-page channel");
-
-                (revision == "2" && /playlists/.test(window.location.pathname.split("/").splice(2).join("/"))) && window.location.replace(window.location.pathname.split("/").slice(0,2).join("/") + "/videos");
-
-                let data = {
-                    info: await document.cosmicCat.Ajax.Fetch(`https://www.youtube.com${window.location.pathname.split("/").slice(0, -1).join("/")}/about`, document.cosmicCat.Channels._Data.Info),
-                    header: document.cosmicCat.Channels.Local.Header(),
-                    content: document.cosmicCat.Channels.Local.Videos() || document.cosmicCat.Channels.Local.Playlists() || document.cosmicCat.Channels.Local.Community()
-                };
-
-                document.head.querySelector("title").innerText = `${data.header.name}'s ${localizeString("global.channel")} - YouTube`;
-
-                revision = "Channels" + document.cosmicCat.Storage.get("channel_mode").value;
-                const tab = document.cosmicCat.Channels.getCurrentChannelTab();
-
-                document.cosmicCat.pageRenderer.set("#content-container", document.cosmicCat.Template.Channel[revision].Main(data));
-
-                const list = {
-                    "Channels3": {
-                        "contentList": ".channels-browse-content-grid",
-                        "contentListAddr": "primaryPane.browseVideos.listItem"
-                    },
-                    "Channels2": {
-                        "contentList": ".scrollbox-page",
-                        "contentListAddr": "playlistNavigator.Content.PlayPanel.Holder"
-                    },
-                    "Channels1": {
-                        "contentList": "#profileVideos [style=\"border-bottom:none;\"]",
-                        "contentListAddr": "mainCon.userVideos"
-                    }
-                };
-
-                (revision == "Channels2") && (document.cosmicCat.pageRenderer.add("body", document.cosmicCat.Template.Channel.Channels2.Stylesheet()),
-+                    document.cosmicCat.Channels.load2Modules(data.info));
-
-                if (revision == "Channels3") {
-                    try {
-                        document.cosmicCat.pageRenderer.add(".tab-content-body", document.cosmicCat.Template.Channel.Channels3.primaryPane[
-                            document.cosmicCat.Channels.isCurrentChannelTab("featured") ? "featured" : "browseVideos"
-                        ].Main(data));
-                    } catch {}
-
-                    try {
-                        document.cosmicCat.pageRenderer.add(".tab-content-body", document.cosmicCat.Template.Channel.Channels3.secondaryPane.Main(data));
-                    } catch {}
-
-                    try {
-                        for (let i = 0; i < data.info?.links?.length; i++) {
-                            document.cosmicCat.pageRenderer.add(".profile-socials", document.cosmicCat.Template.Channel.Channels3.secondaryPane.firstSection.socialLink(data.info.links[i]));
-                        }
-                    } catch(err) {
-                        console.error("[Channels] Failed to parse social links:\n, err");
-                    }
-
-                    if (document.cosmicCat.Channels.isCurrentChannelTab("featured")) {
-                        try {
-                            var a = document.cosmicCat.Utils.Sort.videoData(ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents.find(a => a.itemSectionRenderer.contents[0].channelVideoPlayerRenderer).itemSectionRenderer.contents[0].channelVideoPlayerRenderer);
-                            document.cosmicCat.pageRenderer.add(".primary-pane", document.cosmicCat.Template.Channel.Channels3.primaryPane.featured.featuredVideo(a, data.header));
-                            console.log(a);
-                        } catch {}
-                    }
-                }
-
-                data.content = (data.content.length == 0) && await document.cosmicCat.Ajax.Fetch(`https://www.youtube.com${window.location.pathname.split("/").slice(0, -1).join("/")}/${tab}`, document.cosmicCat.Channels._Data[tab.charAt(0).toUpperCase() + tab.slice(1)]) || data.content;
-
-                try {
-                    // shit doesn't work >:c
-                    //document.cosmicCat.Ajax.post("/youtubei/v1/creator/get_creator_channels", `"channelIds":["${data.header.id}"],"mask":{"channelId":true,"contentOwnerAssociation":{"all":true},"features":{"all":true},"metric":{"all":true},"monetizationDetails":{"all":true},"monetizationStatus":true,"permissions":{"all":true},"settings":{"coreSettings":{"featureCountry":true}}}`)
-                    (revision == "Channels1") && (document.querySelector("[name^=\"channel-box-item-count\"]").innerText = data.content.length);
-                } catch(err) {}
-
-                try {
-                    for (let i = 0; i < data.content.length; i++) {
-                        document.cosmicCat.pageRenderer.add(list[revision].contentList, list[revision].contentListAddr.split('.').reduce((o,i)=> o[i]||"", document.cosmicCat.Template.Channel[revision])[document.cosmicCat.Channels.getCurrentChannelTab()](data.content[i], data.content.length));
-                    }
-                } catch(err) {
-                    console.error("[Channels] Failed to parse local content data:\n", err);
-                }
-
-                (revision == "Channels2") && (document.querySelector("#playnav-play-loading").style.display = "none");
-
-                (revision == "Channels3" && data.content.length == 30) && (
-                    document.cosmicCat.Channels.Channels3.Pagination.load()
-                );
-
-                document.cosmicCat.Utils.waitForElm("#video-player").then(() => {
-                    document.cosmicCat.player.Create();
-                });
-            });
-        }
-        if(window.location.pathname.split("/")[1].match(/results/i)) {
-            document.cosmicCat.Utils.waitForElm("#watch-page-skeleton").then(async () => {
-                var searchpar = document.cosmicCat.Utils.escapeHtml((new URL(document.location)).searchParams.get("search_query"));
-
-                document.querySelector("#page").classList.add("search-base");
-                var results = ytInitialData?.contents?.twoColumnSearchResultsRenderer?.primaryContents?.sectionListRenderer?.contents[0]?.itemSectionRenderer?.contents || [];
-
-                document.cosmicCat.pageRenderer.set("#content-container", document.cosmicCat.Template.Search.Main(searchpar));
-
-                for(let i = 0; i < results.length; i++) {
-                    if(results[i].videoRenderer) {
-                        let videoData = document.cosmicCat.Utils.Sort.videoData(results[i].videoRenderer);
-                        document.cosmicCat.pageRenderer.add("#search-results", document.cosmicCat.Template.Search.videoRender(videoData));
-                    }
-                    if(results[i].channelRenderer) {
-                        let channelData = document.cosmicCat.Utils.Sort.channelData(results[i].channelRenderer);
-                        document.cosmicCat.pageRenderer.add("#search-results", document.cosmicCat.Template.Search.channelRender(channelData));
-                    }
-                    if(results[i].playlistRenderer) {
-                        let playlistData = document.cosmicCat.Utils.Sort.playlistData(results[i].playlistRenderer);
-                        document.cosmicCat.pageRenderer.add("#search-results", document.cosmicCat.Template.Search.playlistRender(playlistData));
-                    }
-                }
-
-                var a = ytInitialData.contents.twoColumnSearchResultsRenderer.primaryContents.sectionListRenderer.subMenu.searchSubMenuRenderer.groups;
-
-                var temF = (data, b) => document.cosmicCat.Template.Search.dropdownFilter.Con(data, b, searchpar);
-
-                for (const b in a) {
-                    var temC = ``;
-                    for (const c in a[b].searchFilterGroupRenderer.filters) {
-                        temC += temF(a[b]?.searchFilterGroupRenderer?.filters[c]?.searchFilterRenderer?.navigationEndpoint?.searchEndpoint?.params, a[b].searchFilterGroupRenderer.filters[c].searchFilterRenderer.label.simpleText);
-                    }
-
-                    document.cosmicCat.pageRenderer.add("#filter-dropdown", document.cosmicCat.Template.Search.dropdownFilter.Main(a, b, temC));
-                }
-            });
-        }
-        if(window.location.pathname.split("/")[1].match(/playlist/i)) {
-            await document.cosmicCat.Utils.waitForElm("[id=\"watch-page-skeleton\"").then(async () => {
-                let data = {
-                    header: document.cosmicCat.Playlists.Local.Header(),
-                    content: document.cosmicCat.Playlists.Local.Videos()
-                };
-
-                if(data.header.owner.id) {
-                    data.creatorInfo = await document.cosmicCat.Ajax.Fetch(`https://www.youtube.com/channel/${data?.header?.owner?.id}/about`, document.cosmicCat.Channels._Data.Info);
-                }
-
-                document.cosmicCat.pageRenderer.set("#content-container", document.cosmicCat.Template.Playlist.Main(data));
-
-                try {
-                    for (let i = 0; i < data.content.length; i++) {
-                        document.cosmicCat.pageRenderer.add("ol", document.cosmicCat.Template.Playlist.primaryPane.listItem.video(data.content[i], data.header.id, i+1));
-                    }
-                } catch(err) {
-                    console.error("[Playlists] Failed to parse playlist content:\n", err);
-                }
-            });
-        }
-        if(window.location.pathname.match(/\/feed\/explore/i)) {
-            document.body.setAttribute("class", "ytg-old-clearfix guide-feed-v2");
-            document.head.querySelector("title").innerText = "Videos - YouTube";
-
-            document.cosmicCat.Utils.waitForElm("#watch-page-skeleton").then(() => {
-                document.cosmicCat.Browse.Renderer.render();
-            });
-        }
-
-        console.info("Loaded page in: ", startTime - new Date().getTime(), "ms" );
     }, 1);
 });
+
+document.cosmicCat.Utils.waitForElm("body[ythtmlloaded]").then(function () {
+    try {
+        document.cosmicCat.www[document.cosmicCat.Utils.currentPage()]();
+    } catch {
+        document.cosmicCat.www["404"]();
+    }
+});
+
+document.cosmicCat.Utils.waitForElm("iframe[src*=error]").then(function () {
+    document.cosmicCat.www["404"]();
+});
+
+document.cosmicCat.Utils.waitForElm(".yt-main").then(function () {
+    document.cosmicCat.www["404"]();
+});
+
 
 // Need to merge handleButton and handleSubscribeButton together
 YabaiComponent.addHandler("click", "yt-uix-button-default", document.cosmicCat.Actions.handleButton);
