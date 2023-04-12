@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.32
+// @version      0.6.33
 // @description  Broadcast Yourself
 // @author       Thistle Café, Cosmic Cat Maintainers
 // @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
@@ -177,11 +177,11 @@ document.cosmicCat = {
         post: async (url, params) => {
             let Authorization = "";
             params = params ? params + "," : "";
-            let click = JSON.stringify(yt.config_.INNERTUBE_CONTEXT.clickTracking),
-                client = JSON.stringify(yt.config_.INNERTUBE_CONTEXT.client),
-                request = JSON.stringify(yt.config_.INNERTUBE_CONTEXT.request),
-                user = JSON.stringify(yt.config_.INNERTUBE_CONTEXT.user);
-            let body = `{${params} context: {clickTracking: ${click}, client: ${client}, clientScreenNonce: "${yt.config_["client-screen-nonce"]}", user: ${user}, androidSdkVersion: "25", request: ${request}}}`;
+
+            //"context": {\r\n\t\t"client": {\r\n\t\t\t"clientName": "ANDROID",\r\n\t\t\t"clientVersion": "15.02",\r\n\t\t\t"hl": "en"\r\n\t\t}\r\n\t}}
+            // ???????????? WTF
+
+            let body = `{${params} context: {client: {"clientName": "WEB", "clientVersion": "2.20230331.00.00", "hl": "en"}}}`;
 
             // Check if logged in
             if (document.cosmicCat.Utils.getCookie("SAPISID")) {
@@ -189,12 +189,12 @@ document.cosmicCat = {
             }
 
             // Fetch
-            const response = await fetch("https://www.youtube.com" + url + "?key=" + yt.config_.INNERTUBE_API_KEY + "&prettyPrint=false", {
+            const response = await fetch("https://www.youtube.com" + url + "?key=AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8&prettyPrint=false", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     "X-Goog-AuthUser": "0",
-                    "X-Goog-Visitor-Id": yt.config_.INNERTUBE_CONTEXT.client.visitorData,
+                    "X-Goog-Visitor-Id": "",
                     "X-Youtube-Client-Version": "17.33",
                     "X-Youtube-Bootstrap-Logged-In": "true",
                     "X-Youtube-Client-Name": "ANDROID",
