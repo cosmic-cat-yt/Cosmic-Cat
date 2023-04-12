@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.34
+// @version      0.6.35
 // @description  Broadcast Yourself
 // @author       Thistle Café, Cosmic Cat Maintainers
 // @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
@@ -5267,7 +5267,9 @@ margin-left:16px
     },
     pageRenderer: {
         error: () => {
-            document.cosmicCat.Alert(2, "Oops! Something went wrong with rendering the page. <a href=''>Click here</a> to refresh the page.");
+            try {
+                document.cosmicCat.Alert(2, "Oops! Something went wrong with rendering the page. <a href=''>Click here</a> to refresh the page.");
+            } catch {}
         },
         set: (selector, html) => {
             this.original = selector;
@@ -5275,16 +5277,16 @@ margin-left:16px
             try {
                 selector = document.querySelector(selector);
                 selector.innerHTML = html;
-            } catch {
-                document.cosmicCat.pageRenderer.error();
-                console.error(`[pageRenderer]: "${selector}" does not exist.`);
+            } catch(err) {
+                //document.cosmicCat.pageRenderer.error();
+                console.error(`[pageRenderer]: "${selector}" does not exist.\n`, err);
             }
         },
         replace: (selector1, selector2) => {
             try {
                 document.querySelector(selector1).outerHTML = selector2;
-            } catch {
-                console.error(`[pageRenderer]: "${selector1}" does not exist.`);
+            } catch(err) {
+                console.error(`[pageRenderer]: "${selector1}" does not exist.\n`, err);
             }
         },
         add: (selector, html) => {
@@ -5293,9 +5295,9 @@ margin-left:16px
             try {
                 selector = document.querySelector(selector);
                 selector.innerHTML += html;
-            } catch {
-                document.cosmicCat.pageRenderer.error();
-                console.error(`[pageRenderer]: "${this.original}" does not exist.`);
+            } catch(err) {
+                //document.cosmicCat.pageRenderer.error();
+                console.error(`[pageRenderer]: "${this.original}" does not exist\n`, err);
             }
         },
         render: (b) => {
@@ -5570,8 +5572,9 @@ margin-left:16px
                     }
                 };
 
-                (revision == "Channels2") && (document.cosmicCat.pageRenderer.add("body", document.cosmicCat.Template.Channel.Channels2.Stylesheet()),
-                                              document.cosmicCat.Channels.load2Modules(data.info));
+                (revision == "Channels2") && (
+                    document.cosmicCat.pageRenderer.add("body", document.cosmicCat.Template.Channel.Channels2.Stylesheet()),
+                    document.cosmicCat.Channels.load2Modules(data.info));
 
                 if (revision == "Channels3") {
                     try {
@@ -5594,9 +5597,28 @@ margin-left:16px
 
                     if (document.cosmicCat.Channels.isCurrentChannelTab("featured")) {
                         try {
-                            var a = document.cosmicCat.Utils.Sort.videoData(ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents.find(a => a.itemSectionRenderer.contents[0].channelVideoPlayerRenderer).itemSectionRenderer.contents[0].channelVideoPlayerRenderer);
-                            document.cosmicCat.pageRenderer.add(".primary-pane", document.cosmicCat.Template.Channel.Channels3.primaryPane.featured.featuredVideo(a, data.header));
+                            var a = ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents.find(
+                                    a => a.itemSectionRenderer.contents[0].channelVideoPlayerRenderer || a.itemSectionRenderer.contents[0].channelFeaturedContentRenderer
+                            );
+
+                            document.cosmicCat.pageRenderer.add(".primary-pane", document.cosmicCat.Template.Channel.Channels3.primaryPane.featured.featuredVideo(
+                                document.cosmicCat.Utils.Sort.videoData(
+                                    a.itemSectionRenderer.contents[0].channelVideoPlayerRenderer || a.itemSectionRenderer.contents[0].channelFeaturedContentRenderer.items[0].videoRenderer
+                                ), data.header)
+                            );
+
                             console.log(a);
+                        } catch {}
+
+                        try {
+                            // ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].shelfRenderer.endpoint.commandMetadata.webCommandMetadata.webPageType
+
+                            /*
+                            var a = ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents;
+                            for (const b in a) {
+                                // Define TYPE
+                            }
+                            */
                         } catch {}
                     }
                 }
@@ -5887,20 +5909,22 @@ const localizeString = (varr, DOM) => {
 };
 
 if(window.location.pathname.match(/\/feed\/explore/i)) {
-    let obj = ["trending", "music", "film", "gaming", "sports"];
-    for (let i = 0; i < obj.length; i++) {
-        Promise.all([
-            document.cosmicCat.Ajax.Fetch(`https://www.youtube.com${document.cosmicCat.Utils.listCategories(obj[i]).href}`, document.cosmicCat.Browse._Data)
-        ]).then(res => {
-            let videos = "";
-            for (let i = 0; i < res[0].length; i++) {
-                videos += document.cosmicCat.Template.Browse.Content.Video(res[0][i]);
-            }
+    document.cosmicCat.Utils.waitForElm("body[ythtmlloaded]").then(function () {
+        let obj = ["trending", "music", "film", "gaming", "sports"];
+        for (let i = 0; i < obj.length; i++) {
+            Promise.all([
+                document.cosmicCat.Ajax.Fetch(`https://www.youtube.com${document.cosmicCat.Utils.listCategories(obj[i]).href}`, document.cosmicCat.Browse._Data)
+            ]).then(res => {
+                let videos = "";
+                for (let i = 0; i < res[0].length; i++) {
+                    videos += document.cosmicCat.Template.Browse.Content.Video(res[0][i]);
+                }
 
-            let categories = document.cosmicCat.Template.Browse.Content.Category(document.cosmicCat.Utils.listCategories(obj[i]), videos);
-            document.cosmicCat.pageRenderer.add("#browse-main-column", categories);
-        });
-    }
+                let categories = document.cosmicCat.Template.Browse.Content.Category(document.cosmicCat.Utils.listCategories(obj[i]), videos);
+                document.cosmicCat.pageRenderer.add("#browse-main-column", categories);
+            });
+        }
+    });
 }
 
 if ("onbeforescriptexecute" in document) {
@@ -6024,7 +6048,6 @@ document.cosmicCat.Utils.waitForElm("ytd-app").then(async (e) => {
     }).catch(err => console.error(err));
 
     setTimeout(async function () {
-        document.querySelector("body").setAttribute("ythtmlloaded", "");
         if (!document.cosmicCat.Account.isLoggedIn()) {
             await document.cosmicCat.Account.fetch();
         }
@@ -6060,6 +6083,8 @@ ${OBJ_FOOTER}
         document.cosmicCat.pageRenderer.set("#masthead-user", OBJ_USER);
         document.cosmicCat.pageRenderer.add("#masthead-container", OBJ_MASTH);
 
+        document.querySelector("body").setAttribute("ythtmlloaded", "");
+
         document.cosmicCat.Utils.waitForElm2().then(() => {
             (!0 === update) && document.cosmicCat.Alert(0, "An update is available to Cosmic Cat! <a href=\"https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js\">Click to install it.</a>");
         });
@@ -6085,7 +6110,8 @@ ${OBJ_FOOTER}
 document.cosmicCat.Utils.waitForElm("body[ythtmlloaded]").then(function () {
     try {
         document.cosmicCat.www[document.cosmicCat.Utils.currentPage()]();
-    } catch {
+    } catch(err) {
+        console.error("[pageRenderer] Either the page does not exist, or a problem has occurred.\n", err);
         document.cosmicCat.www["404"]();
     }
 });
