@@ -3,7 +3,7 @@
     <img src="https://github.com/thistlecafe/cosmic-cat-branding/blob/main/banner.png?raw=true" alt="Cosmic Cat Banner">
 </p>
 
-[![playground](https://discordapp.com/api/guilds/1058727079136464977/widget.png?style=shield)](https://discord.gg/NSUgUJdMQa) ![](https://img.shields.io/badge/version-0.6.x-purple?style=flat-square)
+![](https://img.shields.io/badge/version-0.6.x-purple?style=flat-square)
 
 ## Installation
 - Get **Tampermonkey** for your browser: https://www.tampermonkey.net<br/>
