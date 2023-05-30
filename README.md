@@ -19,4 +19,4 @@ We also welcome contributions to the project! Please see [CONTRIBUTING.md](https
 | [ReturnYouTubeDislike](https://github.com/Anarios/return-youtube-dislike) | [Anarios](https://github.com/Anarios) |
 | YabaiComponent, OpenUix, Description Sort Code | [Taniko Yamamoto](https://github.com/YukisCoffee) |
 | Vorapis V3 Player, Several Utils functions | [Reprety](https://github.com/VORAPIS) |
-| Cosmic Cat Banner | [travy-patty](https://github.com/travy-patty) |
+| Cosmic Cat Banner | [UnderscoreAngel](https://github.com/UnderscoreAngel)</br>[travy-patty](https://github.com/travy-patty) |
