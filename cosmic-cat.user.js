@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.36
+// @version      0.6.37
 // @description  Broadcast Yourself
 // @author       Thistle Café, Cosmic Cat Maintainers
 // @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
@@ -126,7 +126,9 @@ document.cosmicCat = {
             return `SAPISIDHASH ${TIMESTAMP}_${digest}`;
         },
         fetch: async () => {
-            let isLoggedIn = await fetch("/getAccountSwitcherEndpoint").then(re => re.text()).then(re => {return JSON.parse(re.slice(5));}).catch(err => console.error("[Accounts] Failed to fetch account data:\n", err));
+            let isLoggedIn = await fetch("/getAccountSwitcherEndpoint").then(re => re.text()).then(re => {
+                return JSON.parse(re.slice(5));
+            }).catch(err => console.error("[Accounts] Failed to fetch account data:\n", err));
 
             try {
                 BOOL_LOGIN = !isLoggedIn.ok;
@@ -3818,7 +3820,16 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                 };
             },
         convertDescription: (a) => {
-            // WIP
+            // https://github.com/Rehike/Rehike/commit/cdabdd0d951ef3df06905172777efbc1bb34c1d6
+            // Originally written by aubymori in PHP.
+
+            // Still WIP. Do not file issue.
+
+            // Current problems:
+            //
+            // Normal description text is excluded.
+            //
+
             if (!a.commandRuns) {
                 return {
                     "runs": [
@@ -3833,7 +3844,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                 start = 0;
 
             for (const run in a.commandRuns) {
-                var beforeText;// ???????? a.content.substr(a.content, start, run.startIndex - start);
+                var beforeText = a.content.substr(start, run.startIndex - start);
 
                 if(beforeText) {
                     runs[run] = {
@@ -3841,8 +3852,10 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                     };
                 }
 
-                var text = "",
-                    endpoint; // Look into it - a.commandRuns[run]?.onTop?.innertubeCommand;
+                var text = a.content.substr(a.commandRuns[run].startIndex, a.commandRuns[run].length),
+                    endpoint = a.commandRuns[run].onTap.innertubeCommand;
+
+                //console.debug(a.commandRuns[run]);
 
                 runs[run] = {
                     "text": text,
@@ -3850,6 +3863,24 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                 };
 
                 start = a.commandRuns[run].startIndex + run.length;
+            }
+
+            //var lastText = a.content.substr(start);
+            //if (lastText) {
+            //    runs.forEach((element, index) => {
+            //        console.debug(element.text);
+            //        runs[index].text = lastText
+            //    });
+            //}
+
+            for (const run in runs) {
+                 //console.debug(runs[run])
+                //if (runs[run].navigationEndpoint.watchEndpoint) {
+                //    runs[run].text = runs[run].text.substr(
+                //        "https://www.youtube.com" + runs[run].navigationEndpoint.commandMetadata.webCommandMetadata.url,
+                //        0, 37
+                //    );
+                //}
             }
 
             return {
@@ -3889,7 +3920,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
 
                 let _description = da.detailedMetadataSnippets?.[0]?.snippetText?.runs || da.descriptionSnippet?.runs || da.description?.runs || da.videoDetails?.shortDescription || [];
 
-                if(da.attributedDescription) _description = document.cosmicCat.Utils.convertDescription(da.attributedDescription)?.runs;
+                if(da.attributedDescription) _description = [{"text": "Cosmic Cat Developer Note: Support for attributedDescription is still WIP."}];//document.cosmicCat.Utils.convertDescription(da.attributedDescription)?.runs;
 
                 let description = "";
                 for (const snippet in _description) {
@@ -3903,6 +3934,8 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
 
                 description = description.replace(/(?:\r\n|\r|\n)/g, '<br/>');
 
+                console.log(da)
+
                 return {
                     owner: {
                         name: da.owner?.videoOwnerRenderer?.title?.runs?.[0]?.text || da.bylineText?.runs?.[0]?.text || da.shortBylineText?.runs?.[0]?.text || da.ownerText?.runs?.[0]?.text || da.videoDetails?.author || da.owner?.videoOwnerRenderer?.title?.runs?.[0]?.text,
@@ -3911,7 +3944,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                         icon : da.channelThumbnailSupportedRenderers?.channelThumbnailWithLinkRenderer?.thumbnail?.thumbnails?.[0]?.url
                     },
                     time: da.thumbnailOverlays?.find(c => c.thumbnailOverlayTimeStatusRenderer)?.thumbnailOverlayTimeStatusRenderer.text.simpleText || da.thumbnailOverlays?.find(c => c.thumbnailOverlayTimeStatusRenderer)?.thumbnailOverlayTimeStatusRenderer?.text?.runs?.[0]?.text || da.lengthText?.simpleText || "LIVE",
-                    views: da.viewCount?.videoViewCountRenderer?.viewCount?.simpleText || da.viewCountText?.simpleText || da.viewCountText?.runs?.[0]?.text + da.viewCountText?.runs?.[1]?.text || da.videoDetails?.viewCount || document.cosmicCat.Utils.deabreviateCnt(da.metadataText?.simpleText?.split(" · ")?.[0]?.split(" ")?.[0]) + " views" || "",
+                    views: da.viewCount?.videoViewCountRenderer?.viewCount?.simpleText || da.viewCountText?.simpleText || da.viewCountText?.runs?.[0]?.text + da.viewCountText?.runs?.[1]?.text || da.videoDetails?.viewCount || document.cosmicCat.Utils.deabreviateCnt(da.metadataText?.simpleText?.split(" · ")?.[0]?.split(" ")?.[0] || da.videoInfo?.runs?.[0]?.text?.split(" ")?.[0]) + " views" || "",
                     title: da.title?.simpleText || da.title?.runs?.[0]?.text || da.videoDetails?.title || "Fallback title",
                     id: da.videoDetails?.videoId || da.videoId,
                     description: description,
@@ -4236,7 +4269,9 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
 
                     try {
                         document.querySelector("#next-btn").setAttribute("data-token", document.cosmicCat.Utils.browseTabs.content(document.cosmicCat.Utils.browseTabs.find(ytInitialData, "videos")).find(a => a.continuationItemRenderer).continuationItemRenderer.continuationEndpoint.continuationCommand.token);
-                    } catch(e) {}
+                    } catch(e) {
+                        console.error("[Channels] Pagination request failed:\n", e);
+                    }
                 },
                 next: async function (continuation, number) {
                     if (!continuation) return document.cosmicCat.toggleElm("#next-btn");
@@ -5374,7 +5409,7 @@ margin-left:16px
     },
     picker: {
         load: (a, b) => {
-            document.cosmicCat.Ajax.post(`/youtubei/v1/account/account_menu`, "WEB", "2.20230331.00.00").then((a) => {
+            document.cosmicCat.Ajax.post(`/youtubei/v1/account/account_menu`, "", "WEB", "2.20230331.00.00").then((a) => {
                 var c = a.actions[0].openPopupAction.popup.multiPageMenuRenderer.sections[2].multiPageMenuSectionRenderer.items.find(a => a?.compactLinkRenderer?.icon?.iconType);
                 console.log(c);
             });
@@ -5385,6 +5420,7 @@ margin-left:16px
         404: () => {
             document.cosmicCat.pageRenderer.set("title", "404 Not Found");
             document.cosmicCat.pageRenderer.set("body", document.cosmicCat.Template.errorNotFound());
+            console.log(new Date().getTime() - startTime, "ms");
         },
         home: () => {
             document.cosmicCat.pageRenderer.set("#content-container", document.cosmicCat.Template.Homepage.Main());
@@ -5443,6 +5479,7 @@ margin-left:16px
             } catch(err) {
                 console.error("[Home] Could not load subscriptions:\n", err);
             }
+            console.log(new Date().getTime() - startTime, "ms");
         },
         watch: () => {
             $(document).ready(function(){
@@ -5558,6 +5595,7 @@ margin-left:16px
                     });
                     return false;
                 });
+                console.log(new Date().getTime() - startTime, "ms");
             });
         },
         shorts: () => {
@@ -5621,7 +5659,7 @@ margin-left:16px
                             document.cosmicCat.pageRenderer.add(".profile-socials", document.cosmicCat.Template.Channel.Channels3.secondaryPane.firstSection.socialLink(data.info.links[i]));
                         }
                     } catch(err) {
-                        console.error("[Channels] Failed to parse social links:\n, err");
+                        console.error("[Channels] Failed to parse social links:\n", err);
                     }
 
                     if (document.cosmicCat.Channels.isCurrentChannelTab("featured")) {
@@ -5670,13 +5708,15 @@ margin-left:16px
 
                 (revision == "Channels2") && (document.querySelector("#playnav-play-loading").style.display = "none");
 
-                (revision == "Channels3" && data.content.length == 30) && (
+                console.log(data.content.length);
+                (revision == "Channels3" && data.content.length > 29) && (
                     document.cosmicCat.Channels.Channels3.Pagination.load()
                 );
 
                 document.cosmicCat.Utils.waitForElm("#video-player").then(() => {
                     document.cosmicCat.player.Create();
                 });
+                console.log(new Date().getTime() - startTime, "ms");
             });
         },
         playlist: () => {
@@ -5699,6 +5739,7 @@ margin-left:16px
                 } catch(err) {
                     console.error("[Playlists] Failed to parse playlist content:\n", err);
                 }
+                console.log(new Date().getTime() - startTime, "ms");
             });
         },
         results: () => {
@@ -5737,6 +5778,7 @@ margin-left:16px
 
                     document.cosmicCat.pageRenderer.add("#filter-dropdown", document.cosmicCat.Template.Search.dropdownFilter.Main(a, b, temC));
                 }
+                console.log(new Date().getTime() - startTime, "ms");
             });
         },
         feedExplore: () => {
@@ -5749,6 +5791,8 @@ margin-left:16px
                 //document.cosmicCat.Alert(1, "This page is under reconstruction!");
 
                 document.querySelector(".load-more-pagination").remove();
+
+                console.log(new Date().getTime() - startTime, "ms");
             });
         },
         settings: () => {
@@ -5771,6 +5815,8 @@ margin-left:16px
             $(document).ready(function() {
                 $("#channelMode").val(document.cosmicCat.Storage.get("channel_mode").value);
                 $("#mainFeed").val(document.cosmicCat.Storage.get("greeting_feed").value);
+
+                console.log(new Date().getTime() - startTime, "ms");
             });
         }
     },
@@ -5938,7 +5984,7 @@ const localizeString = (varr, DOM) => {
 };
 
 if(window.location.pathname.match(/\/feed\/explore/i)) {
-    document.cosmicCat.Utils.waitForElm("body[ythtmlloaded]").then(function () {
+    document.cosmicCat.Utils.waitForElm("#page").then(function () {
         let obj = ["trending", "music", "film", "gaming", "sports"];
         for (let i = 0; i < obj.length; i++) {
             Promise.all([
@@ -5962,6 +6008,7 @@ if ("onbeforescriptexecute" in document) {
         (t.src.search("base.js") > -1 ||
          t.src.search("desktop_polymer.js") > -1 ||
          t.src.search("network.vflset") > -1 ||
+         t.src.search("desktop_polymer_enable_wil_icons") > -1 ||
          t.src.search("spf") > -1) &&
             (e.preventDefault(), t.remove());
     });
@@ -5976,6 +6023,9 @@ if ("onbeforescriptexecute" in document) {
         e.remove();
     }),
      document.cosmicCat.Utils.waitForElm('script[src*="cast_sender"]').then(function (e) {
+        e.remove();
+    }),
+     document.cosmicCat.Utils.waitForElm('script[src*="desktop_polymer_enable_wil_icons"]').then(function (e) {
         e.remove();
     }),
      document.cosmicCat.Utils.waitForElm('script[src*="network.vflset"]').then(function (e) {
@@ -6143,6 +6193,10 @@ document.cosmicCat.Utils.waitForElm("body[ythtmlloaded]").then(function () {
         console.error("[pageRenderer] Either the page does not exist, or a problem has occurred.\n", err);
         document.cosmicCat.www["404"]();
     }
+});
+
+document.cosmicCat.Utils.waitForElm("#watch-page-skeleton").then(function (a) {
+    a.style.display = "none";
 });
 
 document.cosmicCat.Utils.waitForElm("iframe[src*=error]").then(function () {
