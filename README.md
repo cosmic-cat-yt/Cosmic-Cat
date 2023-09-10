@@ -1,6 +1,9 @@
 # Cosmic Cat UserScript
 <p align="center">
-    <img src="https://github.com/thistlecafe/cosmic-cat-branding/blob/main/banner.png?raw=true" alt="Cosmic Cat Banner">
+    <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="https://github.com/thistlecafe/cosmic-cat-branding/blob/main/banner_light.png?raw=true">
+        <img src="https://github.com/thistlecafe/cosmic-cat-branding/blob/main/banner.png?raw=true" alt="Cosmic Cat Banner">
+    </picture>
 </p>
 
 ![](https://img.shields.io/badge/version-0.6.x-purple?style=flat-square)
