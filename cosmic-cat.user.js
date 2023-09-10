@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.37
+// @version      0.6.38
 // @description  Broadcast Yourself
 // @author       Thistle Café, Cosmic Cat Maintainers
 // @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
@@ -419,11 +419,11 @@ ${document.cosmicCat.Template.Buttons.Subscribe(data.header.id)}
 ${document.cosmicCat.Channels.isOwner() ? `<a href="https://studio.youtube.com/channel/${data.header.id}/analytics/tab-overview/period-default" class="stat-entry">`: `<div class="stat-entry">`}
 <span class="stat-value">${data?.info?.subs || data?.header?.subscriberCount}</span>
 <span class="stat-name">subscribers</span>
-${document.cosmicCat.Channels.isOwner() ? `</a>`: `</div>>`}
+${document.cosmicCat.Channels.isOwner() ? `</a>`: `</div>`}
 ${document.cosmicCat.Channels.isOwner() ? `<a href="https://studio.youtube.com/channel/${data.header.id}/analytics/tab-overview/period-default" class="stat-entry">`: `<div class="stat-entry">`}
 <span class="stat-value">${data?.info?.fields?.views || data?.header?.fields?.views}</span>
 <span class="stat-name">video views</span>
-${document.cosmicCat.Channels.isOwner() ? `</a>`: `</div>>`}
+${document.cosmicCat.Channels.isOwner() ? `</a>`: `</div>`}
 </div>
 <span class="valign-shim"></span>
 </div>
@@ -807,7 +807,7 @@ ${document.cosmicCat.Template.Channel.Channels2.moduleContainer.Main(data)}
 </div>
 </div>
 ${data.header.bannerBg ? `
-<style>
+<style id="custom-branding">
 #channel-body {
 background-color: rgb(204, 204, 204);
 background-image: url(${data.header.bannerBg});
@@ -845,7 +845,7 @@ ${document.cosmicCat.Template.Channel.Channels2.playlistNavigator.Content.Main(d
 </div>
 <div class="channel-title-container">
 <div class="channel-title outer-box-color" id="channel_title" dir="ltr">${data.name}</div>
-<div class="channel-title outer-box-color" style="font-size:11px" id="channel_base_title">${data.name}'s Channel</div>
+<div class="channel-title outer-box-color" style="font-size:11px" id="channel_base_title">${data.tag}'s Channel</div>
 </div>
 <div id="subscribe-buttons">
 ${document.cosmicCat.Template.Buttons.Subscribe(data.id)}
@@ -3865,22 +3865,22 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                 start = a.commandRuns[run].startIndex + run.length;
             }
 
-            //var lastText = a.content.substr(start);
-            //if (lastText) {
-            //    runs.forEach((element, index) => {
-            //        console.debug(element.text);
-            //        runs[index].text = lastText
-            //    });
-            //}
+            var lastText = a.content.substr(start, null);
+            if (lastText) {
+                runs.forEach((element, index) => {
+                    console.debug(element.text);
+                    runs[index].text = lastText
+                });
+            }
 
             for (const run in runs) {
-                 //console.debug(runs[run])
-                //if (runs[run].navigationEndpoint.watchEndpoint) {
-                //    runs[run].text = runs[run].text.substr(
-                //        "https://www.youtube.com" + runs[run].navigationEndpoint.commandMetadata.webCommandMetadata.url,
-                //        0, 37
-                //    );
-                //}
+                console.debug(runs[run])
+                if (runs[run].navigationEndpoint.watchEndpoint) {
+                    runs[run].text = runs[run].text.substr(
+                        //"https://www.youtube.com" + runs[run].navigationEndpoint.commandMetadata.webCommandMetadata.url,
+                        0, 37
+                    );
+                }
             }
 
             return {
@@ -3901,6 +3901,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                 return {
                     id: data.channelId || data.subscribeButton?.subscribeButtonRenderer?.channelId,
                     name: data.title?.simpleText || data.title,
+                    tag: data.channelHandleText?.runs?.[0]?.text?.split("@")?.[1],
                     url: data.canonicalChannelUrl || data.navigationEndpoint?.browseEndpoint?.canonicalBaseUrl,
                     avatar: data.avatar?.thumbnails?.[0]?.url || data.thumbnail?.thumbnails?.[0]?.url || data.boxArt?.thumbnails?.[0]?.url,
                     links: data.primaryLinks,
@@ -3919,7 +3920,6 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                 if (!da) return {};
 
                 let _description = da.detailedMetadataSnippets?.[0]?.snippetText?.runs || da.descriptionSnippet?.runs || da.description?.runs || da.videoDetails?.shortDescription || [];
-
                 if(da.attributedDescription) _description = [{"text": "Cosmic Cat Developer Note: Support for attributedDescription is still WIP."}];//document.cosmicCat.Utils.convertDescription(da.attributedDescription)?.runs;
 
                 let description = "";
@@ -4308,6 +4308,9 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
             }
         },
         Channels2: {},
+        getChannelID: (a) => {
+            return a.split("UC")[1];
+        },
         playnav: {
             selectTab: async (a, b) => {
                 let channel = window.location.pathname.split("/")[2];
@@ -4509,6 +4512,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                                         try {
                                             contents.push(content[i].itemSectionRenderer.contents[0].shelfRenderer.content.expandedShelfContentsRenderer.items);
                                         } catch {
+                                            console.log(content[i]);
                                             throw Error("No playlists were found.");
                                         }
                                     }
@@ -4855,7 +4859,229 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
             return result;
         }
     },
-    player: {
+    vorapisPlayer: {
+        // Implement Vorapis V3's player. (someone save me)
+        // May never be finished because Emiri is too cat-brained to understand v3's source code and overall how to write asynchronous code.
+        getPlayerData: (e) => {},
+        grabPlayerData: async () => {
+            window.location.href.includes("use_legacy_player=1")
+                ? ensureFoo2IsSet().then(function () {
+                (window.innertuberesponse = ytInitialPlayerResponse),
+                    console.log(innertuberesponse);
+
+                try {
+                    (innertuberesponse.streamingData.adaptiveFormats[0].qualityLabel.includes(
+                        "0s"
+                    ) ||
+                     window.location.href.includes("&only_h=1") ||
+                     0 == v3.config.vp9) &&
+                        murderVp();
+                } catch (e) {}
+
+                v3CraftVideoStreams();
+            })
+            : await getPlayerData(mission).then((e) => {
+                window.innertuberesponse = e;
+
+                try {
+                    document.documentElement.setAttribute(
+                        "author",
+                        innertuberesponse.videoDetails.channelId
+                    ),
+                        document.querySelector("body[spftoken]") &&
+                        (document.documentElement.setAttribute(
+                        "spfinitial" + document.body.getAttribute("spftoken"),
+                        ""
+                    ),
+                         innertuberesponse.streamingData || location.reload(),
+                         setTimeout(function () {
+                        document.documentElement.removeAttribute(
+                            "spfinitial" + document.body.getAttribute("spftoken")
+                        );
+                    }, 1e3));
+                } catch (e) {}
+
+                console.log(innertuberesponse);
+
+                try {
+                    (innertuberesponse.streamingData.adaptiveFormats[0].qualityLabel.includes(
+                        "0s"
+                    ) ||
+                     window.location.href.includes("&only_h=1") ||
+                     0 == v3.config.vp9) &&
+                        murderVp();
+                } catch (e) {}
+
+                document.cosmicCat.vorapisPlayer.craftVideoStreams();
+            });
+        },
+        craftVideoStreams: async () => {
+
+        },
+        craftVarYtPlayer: (e) => {
+            const a = {config: {
+                url: "https://s.ytimg.com/yts/swfbin/player-vfl8Mj1Eu/watch_as3.swf",
+                urlV8: "https://s.ytimg.com/yts/swfbin/player-vfl8Mj1Eu/cps.swf",
+                urlV9As2: "https://s.ytimg.com/yts/swfbin/player-vfl8Mj1Eu/cps.swf",
+                args: {
+                    author: ytInitialPlayerResponse.videoDetails.author,
+                    dashmpd: ytInitialPlayerResponse.streamingData.dashManifestUrl,
+                    focEnabled: "1",
+                    adaptive_fmts: "",
+                    account_playback_token: "",
+                    enablecsi: "0",
+                    length_seconds: ytInitialPlayerResponse.videoDetails.lengthSeconds,
+                    ytfocEnabled: "1",
+                    remarketing_url: "",
+                    cos: "Windows",
+                    uid: "",
+                    iv_invideo_url: "",
+                    idpj: "0",
+                    sourceid: "y",
+                    vid: ytInitialPlayerResponse.videoDetails.videoId,
+                    watermark: ",https://s.ytimg.com/yts/img/watermark/youtube_watermark-vflHX6b6E.png,https://s.ytimg.com/yts/img/watermark/youtube_hd_watermark-vflAzLcD6.png",
+                    avg_rating: "",
+                    fexp: "908547,914099,927622,930666,930672,932404,934040,940247,940642,947209,947215,949424,951701,952302,952901,953000,953912,957103,957201,958600",
+                    host_language: "en",
+                    iv_load_policy: "1",
+                    token: "1",
+                    loaderUrl: "https://www.youtube.com/watch?v=" +ytInitialPlayerResponse.videoDetails.videoId,
+                    ptk: "ea",
+                    baseUrl: "https://googleads.g.doubleclick.net/pagead/viewthroughconversion/962985656/",
+                    cosver: "6.2",
+                    t: "1",
+                    oid: "",
+                    cbrver: "2.20230331.00.00",
+                    plid: "",
+                    ptchn: "",
+                    dash: "1",
+                    no_get_video_log: "1",
+                    sdetail: "p:/embed/" + ytInitialPlayerResponse.videoDetails.videoId,
+                    tmi: "1",
+                    storyboard_spec: ytInitialPlayerResponse.storyboards?.playerStoryboardSpecRenderer?.spec || ytInitialPlayerResponse.storyboards?.playerLiveStoryboardSpecRenderer?.spec,
+                    vq: "auto",
+                    atc: "",
+                    of: "",
+                    allow_embed: "1",
+                    url_encoded_fmt_stream_map: "",
+                    aid: "",
+                    ucid: ytInitialPlayerResponse.videoDetails.channelId,
+                    cr: "RO",
+                    timestamp: "1414688781",
+                    iv_module: "https://s.ytimg.com/yts/swfbin/player-vfl8Mj1Eu/iv_module.swf",
+                    rmktEnabled: "1",
+                    probe_url: "https://www.youtube.com/embed/" + ytInitialPlayerResponse.videoDetails.videoId,
+                    video_id: ytInitialPlayerResponse.videoDetails.videoId,
+                    title: ytInitialPlayerResponse.videoDetails.title,
+                    cl: "78766649",
+                    eventid: "",
+                    csi_page_type: "watch,watch7",
+                    hl: "en_US",
+                    iv3_module: "1",
+                    sw: "0.1",
+                    fmt_list: "22/1280x720/9/0/115,18/640x360/9/0/115,17/256x144/99/1/0",
+                    cbr: "WEB",
+                    ytfocHistoryEnabled: "0",
+                    referrer: "https://www.youtube.com/embed/" + ytInitialPlayerResponse.videoDetails.videoId,
+                    allow_ratings: "1",
+                    enablejsapi: 0,
+                    pltype: "content",
+                    keywords: ytInitialPlayerResponse.videoDetails.title,
+                    ldpj: "0",
+                    c: "WEB",
+                    view_count: ytInitialPlayerResponse.videoDetails.viewCount
+                },
+                assets: {
+                    css: "//s.ytimg.com/yts/cssbin/www-player-vfluwFMix.css",
+                    js: "//thistlecafe.github.io/cosmic-cat/html5player.js",
+                    html: "//cdn.discordapp.com/attachments/996734304560353332/1018500227629592656/html5_player_template.html"
+                },
+                attrs: {
+                    id: "movie_player"
+                },
+                params: {
+                    allowfullscreen: "true",
+                    allowscriptaccess: "always",
+                    bgcolor: "#000000"
+                },
+                minVersion: "8.0.0",
+                fallback: null,
+                fallbackMessage: null,
+                html5: !0,
+                disable: {},
+                loaded: !0,
+                messages: {
+                    player_fallback: [
+                        'Adobe Flash Player or an HTML5 supported browser is required for video playback.<br><a href="https://get.adobe.com/flashplayer/">Get the latest Flash Player </a><br><a href="/html5">Learn more about upgrading to an HTML5 browser</a>'
+                    ]
+                }
+            }};
+            (a.config.args.adaptive_fmts = e), (window.ytplayer = a);
+            var n = "";
+
+            if (void 0 === streamingdata.hlsManifestUrl) {
+                try {
+                    for (
+                        i = 0, j = innertuberesponse.streamingData.formats.length;
+                        i < j;
+                        i++
+                    )
+                        (n +=
+                         "fallback_host=" +
+                         innertuberesponse.streamingData.formats[i].url
+                         .split("://")[1]
+                         .split(".com")[0] +
+                         ".com&type=" +
+                         encodeURIComponent(
+                            innertuberesponse.streamingData.formats[i].mimeType
+                        ).replace("%20", "+") +
+                         "&url=" +
+                         encodeURIComponent(innertuberesponse.streamingData.formats[i].url) +
+                         "&quality=" +
+                         innertuberesponse.streamingData.formats[i].quality +
+                         "&itag=" +
+                         innertuberesponse.streamingData.formats[i].itag),
+                            i < parseInt(innertuberesponse.streamingData.formats.length - 1) &&
+                            (n += ",");
+                } catch (e) {
+                    console.log("cound not craft legacy stream url");
+                }
+
+                ytplayer.config.args.url_encoded_fmt_stream_map = n;
+            } else {
+                (ytplayer.config.args.live_chunk_readahead = 0),
+                    (ytplayer.config.args.live_playback = 1),
+                    (ytplayer.config.args.livestream = 0),
+                    (ytplayer.config.args.hlsdvr = 0),
+                    (ytplayer.config.args.hlsvp = streamingdata.hlsManifestUrl),
+                    (ytplayer.config.args.fmt_list = "");
+
+                try {
+                    ytplayer.config.args.live_storyboard_spec =
+                        innertuberesponse.storyboards.playerLiveStoryboardSpecRenderer.spec;
+                } catch (e) {}
+
+                (ytplayer.config.args.instream = !0),
+                    (ytplayer.config.args.instream_long = !0),
+                    (ytplayer.config.args.streaminglib_module = 1),
+                    (ytplayer.config.args.pltype = "contentlive"),
+                    (ytplayer.config.args.ps = "live"),
+                    (ytplayer.config.args.probe_url = ""),
+                    (ytplayer.config.args.enable_cardio = 0),
+                    (ytplayer.config.args.enable_cardio_before_playback = 0);
+            }
+
+            ytInitialPlayerResponse.captions &&
+                (ytInitialPlayerResponse.captions.playerCaptionsTracklistRenderer.captionTracks[0].name.simpleText.includes(
+                "auto-generated"
+            ) ||
+                 (ytplayer.config.args.ttsurl =
+                  ytInitialPlayerResponse.captions.playerCaptionsRenderer.baseUrl)),
+                (ytplayer.config.args.rvs = rvsdata),
+                (datawasloaded = !0),
+                playerwasloaded && !playerwasinvoked && invokePlayer(),
+                console.log("success to load player.");
+        },
         Create: () => {
             if(!ytInitialPlayerResponse.videoDetails) return;
             if(document.cosmicCat.Storage.get("iframe").value == 1) {
@@ -5563,7 +5789,7 @@ margin-left:16px
 
                 document.head.querySelector("title").innerText = `${data.primary.title} - YouTube`;
 
-                document.cosmicCat.player.Create();
+                document.cosmicCat.vorapisPlayer.Create();
 
                 document.querySelector("body").addEventListener("submit", async (e) => {
                     e.preventDefault();
@@ -5639,9 +5865,11 @@ margin-left:16px
                     }
                 };
 
-                (revision == "Channels2") && (
+                if (revision == "Channels2") {
                     document.cosmicCat.pageRenderer.add("body", document.cosmicCat.Template.Channel.Channels2.Stylesheet()),
-                    document.cosmicCat.Channels.load2Modules(data.info));
+                    document.cosmicCat.Channels.load2Modules(data.info),
+                    document.querySelector("#channel-body").setAttribute("style", `background-image: url("https://i2.ytimg.com/bg/${document.cosmicCat.Channels.getChannelID(data.info.id)}/124.jpg")`);
+                }
 
                 if (revision == "Channels3") {
                     try {
@@ -5714,7 +5942,7 @@ margin-left:16px
                 );
 
                 document.cosmicCat.Utils.waitForElm("#video-player").then(() => {
-                    document.cosmicCat.player.Create();
+                    document.cosmicCat.vorapisPlayer.Create();
                 });
                 console.log(new Date().getTime() - startTime, "ms");
             });
@@ -5766,7 +5994,7 @@ margin-left:16px
                     }
                 }
 
-                var a = ytInitialData.contents.twoColumnSearchResultsRenderer.primaryContents.sectionListRenderer.subMenu.searchSubMenuRenderer.groups;
+                var a = ytInitialData.header.searchHeaderRenderer.searchFilterButton.buttonRenderer.command.openPopupAction.popup.searchFilterOptionsDialogRenderer.groups;
 
                 var temF = (data, b) => document.cosmicCat.Template.Search.dropdownFilter.Con(data, b, searchpar);
 
@@ -5929,7 +6157,8 @@ const localizeString = (varr, DOM) => {
     }
 
     // really need to get rid of this and simplify the process.
-    switch (varr) {
+    try {
+        switch (varr) {
         case "watch.uploaderinfo":
             i18n = i18n.replace(/%s/g, `<a href="https://www.youtube.com${DOM?.secondary?.owner?.url}/featured" class="yt-uix-sessionlink yt-user-name author" rel="author" dir="ltr">${DOM?.secondary?.owner?.name}</a>`);
             i18n = i18n.replace(/%r/g, `<span id="eow-date" class="watch-video-date">${DOM?.primary.upload}</span>`);
@@ -5979,6 +6208,7 @@ const localizeString = (varr, DOM) => {
             i18n = i18n.replace(/%s/g, `<span class="comments-remaining-count" data-max-count="500">500</span>`);
             break;
     }
+    } catch {}
 
     return i18n;
 };
