@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.40
+// @version      0.6.41
 // @description  Broadcast Yourself
 // @author       Thistle Café, Cosmic Cat Maintainers
 // @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
@@ -6649,6 +6649,7 @@ if (document.cosmicCat.Utils.currentPage() === "my_vldeos") {
 
     a = document.querySelector("iframe");
     a.parentNode.removeChild(a);
+    (document.cosmicCat.Storage.get("dark").value !== "1") && (document.cosmicCat.Storage.add("dark", "1") && window.location.reload());
 }
 
 document.cosmicCat.Utils.waitForElm("ytd-app").then(async (e) => {
