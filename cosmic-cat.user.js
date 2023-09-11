@@ -2081,7 +2081,7 @@ ${localizeString("search.channels.by", data)}
 <a href="/profile?feature=mhee">${localizeString("personal.mychannel")}</a>
 </li>
 <li class="masthead-expanded-menu-item">
-<a href="/my_videos?feature=mhee">${localizeString("personal.videomanager")}</a>
+<a href="/my_vldeos?feature=mhee">${localizeString("personal.videomanager")}</a>
 </li>
 <li class="masthead-expanded-menu-item">
 <a href="/?c=subscriptions" onclick="document.cosmicCat.load.home_category(document.querySelector('[data-feed-name=subscriptions]')); return false;">${localizeString("personal.subscriptions")}</a>
