@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.39
+// @version      0.6.40
 // @description  Broadcast Yourself
 // @author       Thistle Café, Cosmic Cat Maintainers
 // @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
@@ -782,7 +782,7 @@ ${document.cosmicCat.Template.Channel.Channels3.secondaryPane.createdBySection.I
 </a>
 </li>
 <li class="creator-bar-item">
-<a href="/my_videos" class="yt-uix-button yt-uix-sessionlink yt-uix-button-dark yt-uix-button-size-default" data-sessionlink="ei=PAqqU5WaN4278AO4hoCACg&amp;feature=mhsn">
+<a href="/my_vldeos" class="yt-uix-button yt-uix-sessionlink yt-uix-button-dark yt-uix-button-size-default" data-sessionlink="ei=PAqqU5WaN4278AO4hoCACg&amp;feature=mhsn">
 <span class="yt-uix-button-content">${localizeString("channels.3.creatorBar.videomanager")}</span>
 </a>
 </li>
@@ -3600,6 +3600,341 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
 </div>
 </div>`;
             }
+        },
+        creatorStudio: {
+            Main: () => {
+                return `<div id="creator-page" class="clearfix ytg-box account-page">
+    <div id="creator-page-sidebar" class="ytg-1col yt-card">
+          <ul id="creator-sidebar" class="ytg-1col single-section">
+    <li id="creator-sidebar-section-id-account" class="creator-sidebar-section selected">
+      <h3>Account settings</h3>
+      <ul class="creator-sidebar-submenu">
+          <li class="creator-sidebar-item ">
+    <a href="/web/20170530024210/http://youtube.com/account" class="creator-sidebar-item-link">
+Overview    </a>
+  </li>
+
+          <li class="creator-sidebar-item ">
+    <a href="/web/20170530024210/http://youtube.com/account_sharing" class="creator-sidebar-item-link">
+Connected accounts    </a>
+  </li>
+
+          <li class="creator-sidebar-item ">
+    <a href="/web/20170530024210/http://youtube.com/account_privacy" class="creator-sidebar-item-link">
+Privacy    </a>
+  </li>
+
+          <li class="creator-sidebar-item selected">
+    <a href="/web/20170530024210/http://youtube.com/account_notifications" class="creator-sidebar-item-link">
+Notifications    </a>
+  </li>
+
+          <li class="creator-sidebar-item ">
+    <a href="/web/20170530024210/http://youtube.com/account_playback" class="creator-sidebar-item-link">
+Playback    </a>
+  </li>
+
+            <li class="creator-sidebar-item ">
+    <a href="/web/20170530024210/http://youtube.com/pair" class="creator-sidebar-item-link">
+Connected TVs    </a>
+  </li>
+
+      </ul>
+    </li>
+  </ul>
+
+
+    </div>
+
+    <div id="creator-page-content" class="ytg-fl yt-card account-settings-container">
+      <div class="ytg-fl account-container">
+              <div class="account-header">
+    <h1>    Notifications
+</h1>
+  </div>
+
+
+  <hr class="yt-horizontal-rule ">
+  <div class="account-content">
+      <div class="yt-alert yt-alert-default yt-alert-error hid error-message-template">  <div class="yt-alert-icon">
+    <span class="icon master-sprite yt-sprite"></span>
+  </div>
+<div class="yt-alert-content" role="alert"></div><div class="yt-alert-buttons"><button class="yt-uix-button yt-uix-button-size-default yt-uix-button-close close yt-uix-close" type="button" onclick=";return false;" aria-label="Close" data-close-parent-class="yt-alert"><span class="yt-uix-button-content">Close</span></button></div></div>
+
+  <form id="account-notifications-form" action="?action_update=1" method="POST">
+
+          <div class=" account-section ">
+
+          <div class="account-section-setting">
+    <label>
+        <span class="yt-uix-form-input-radio-container  checked"><input type="radio" class="yt-uix-form-input-radio restore-emails" name="all-emails-radio-group" checked="checked" data-service-endpoint="8vWHqQIICgIxNxgAMBE%3D"><span class="yt-uix-form-input-radio-element"></span></span>
+
+      Send me emails about my YouTube activity (except emails I've unsubscribed from)
+    </label>
+  </div>
+
+
+          <div class="account-section-setting">
+    <label>
+        <span class="yt-uix-form-input-radio-container "><input type="radio" class="yt-uix-form-input-radio block-emails" name="all-emails-radio-group" data-service-endpoint="8vWHqQIICgIxNxgBMBE%3D"><span class="yt-uix-form-input-radio-element"></span></span>
+
+      Only send me required service announcement emails
+    </label>
+  </div>
+
+
+  </div>
+
+
+     <div class="account-section hide-when-block-all">
+          <h3 class="account-section-header">I’d like to receive email updates from YouTube about:</h3>
+
+              <div class=" setting-checkbox-block">
+      <div class="account-section-setting">
+    <label>
+      <span class="yt-uix-form-input-checkbox-container  checked"><input type="checkbox" class="yt-uix-form-input-checkbox setting-checkbox" checked="checked" data-enable-service-endpoint="8vWHqQIICgIzMhgBMCA%3D" data-disable-service-endpoint="8vWHqQIICgIzMhgAMCA%3D"><span class="yt-uix-form-input-checkbox-element"></span></span>
+      General updates, announcements, and videos
+    </label>
+
+  </div>
+
+  </div>
+
+
+              <div class=" setting-checkbox-block">
+      <div class="account-section-setting">
+    <label>
+      <span class="yt-uix-form-input-checkbox-container "><input type="checkbox" class="yt-uix-form-input-checkbox setting-checkbox" data-enable-service-endpoint="8vWHqQIICgIzMxgBMCE%3D" data-disable-service-endpoint="8vWHqQIICgIzMxgAMCE%3D"><span class="yt-uix-form-input-checkbox-element"></span></span>
+      My YouTube channel: updates, announcements, and personalized tips
+    </label>
+
+  </div>
+
+  </div>
+
+
+              <div class=" account-section-setting ">
+
+      <a href="//web.archive.org/web/20170530024210/http://support.google.com/youtube/?p=emails_from_youtube&amp;hl=en&amp;pageId=104609428688810604823" class=" yt-uix-sessionlink " data-sessionlink="ei=A9wsWa-SBM3SqQXPpafgCA" data-url="//web.archive.org/web/20170530024210/http://support.google.com/youtube/?p=emails_from_youtube&amp;hl=en" data-target-new-window="True" target="_blank">Learn more</a> about emails from YouTube.
+
+  </div>
+
+
+    </div>
+
+
+    <div class="account-section resume-notification-list hide-when-block-all">
+      <span>
+            <h3 class="account-section-header">Unsubscribed emails</h3>
+
+      </span>
+        <div class="">
+    <p class="setting-reminder">Click the "Unsubscribe" link at the bottom of an email if you don't want to receive it anymore.</p>
+  </div>
+
+    </div>
+
+
+
+
+
+
+
+    <div class="restore-emails-reminder hid account-section ">
+    <p class="setting-reminder">Your previous settings will be restored if you choose to resume optional emails.</p>
+  </div>
+
+    <div class="account-section desktop-notifications hid">
+    <h3 class="account-section-header">
+      Desktop notifications
+    </h3>
+    <div class="notifications browser" id="chrome-desktop-notifications">
+      <div class="left-section">
+        <span class="browser-icon yt-sprite"></span>
+        <div class="info">
+          <span class="left-section">Chrome</span>
+        </div>
+      </div>
+      <button class="yt-uix-button yt-uix-button-size-default yt-uix-button-primary turn-on hid" type="button" onclick=";return false;" aria-label="Enable desktop notifications"><span class="yt-uix-button-content">Turn on</span></button>
+      <button class="yt-uix-button yt-uix-button-size-default yt-uix-button-default turn-off hid" type="button" onclick=";return false;" aria-label="Disable desktop notifications"><span class="yt-uix-button-content">Turn off</span></button>
+    </div>
+  </div>
+
+     <div class="account-section ">
+          <h3 class="account-section-header">Channel subscriptions</h3>
+
+              <div class=" setting-checkbox-block">
+      <div class="account-section-setting">
+    <label>
+      <span class="yt-uix-form-input-checkbox-container  checked"><input type="checkbox" class="yt-uix-form-input-checkbox setting-checkbox" checked="checked" data-enable-service-endpoint="8vWHqQIICgI3MBgBMEY%3D" data-disable-service-endpoint="8vWHqQIICgI3MBgAMEY%3D"><span class="yt-uix-form-input-checkbox-element"></span></span>
+      Occasionally notify me of new videos and activity from my subscriptions
+    </label>
+
+  </div>
+
+  </div>
+
+
+              <div class=" account-section-setting ">
+
+      You’ll always get notifications you’ve turned on for individual channels. <a href="/web/20170530024210/http://youtube.com/subscription_manager" class=" yt-uix-sessionlink " data-sessionlink="ei=A9wsWa-SBM3SqQXPpafgCA" data-url="/web/20170530024210/http://youtube.com/subscription_manager">Manage all subscriptions</a>
+
+  </div>
+
+
+                <div class=" account-section-setting ">
+        Subscriptions: Notify me via
+
+
+    <span class="yt-uix-form-input-select "><span class="yt-uix-form-input-select-content"><span class="yt-uix-form-input-select-arrow yt-sprite"></span><span class="yt-uix-form-input-select-value"></span></span><select class="yt-uix-form-input-select-element setting-dropdown-list" aria-label="Current notification preference is">      <option value="8vWHqQIICgI3MSABMEc%3D">Push and email</option>
+      <option value="8vWHqQIICgI3MSACMEc%3D" selected="">Push only</option>
+      <option value="8vWHqQIICgI3MSADMEc%3D">Email only</option>
+</select></span>
+  </div>
+
+
+    </div>
+
+     <div class="account-section ">
+          <h3 class="account-section-header">Comments &amp; Activity</h3>
+
+              <div class=" setting-checkbox-block">
+      <div class="account-section-setting">
+    <label>
+      <span class="yt-uix-form-input-checkbox-container  checked"><input type="checkbox" class="yt-uix-form-input-checkbox setting-checkbox" checked="checked" data-enable-service-endpoint="8vWHqQIKCgMxODIYATC2AQ%3D%3D" data-disable-service-endpoint="8vWHqQIKCgMxODIYADC2AQ%3D%3D"><span class="yt-uix-form-input-checkbox-element"></span></span>
+      Activity on my videos or channel
+    </label>
+
+  </div>
+
+  </div>
+
+
+              <div class=" setting-checkbox-block">
+      <div class="account-section-setting">
+    <label>
+      <span class="yt-uix-form-input-checkbox-container  checked"><input type="checkbox" class="yt-uix-form-input-checkbox setting-checkbox" checked="checked" data-enable-service-endpoint="8vWHqQIKCgMxODMYATC3AQ%3D%3D" data-disable-service-endpoint="8vWHqQIKCgMxODMYADC3AQ%3D%3D"><span class="yt-uix-form-input-checkbox-element"></span></span>
+      Activity on my comments on others' videos
+    </label>
+
+  </div>
+
+  </div>
+
+
+    </div>
+
+          <div class=" account-section ">
+          <h3 class="account-section-header">Language preference</h3>
+
+        Select your email language
+
+
+    <span class="yt-uix-form-input-select "><span class="yt-uix-form-input-select-content"><span class="yt-uix-form-input-select-arrow yt-sprite"></span><span class="yt-uix-form-input-select-value"></span></span><select class="yt-uix-form-input-select-element setting-dropdown-list" aria-label="Current language preference is">      <option value="8vWHqQINCgIyNhIFYWZfWkEwGg%3D%3D">Afrikaans</option>
+      <option value="8vWHqQINCgIyNhIFYXpfQVowGg%3D%3D">Azərbaycan</option>
+      <option value="8vWHqQINCgIyNhIFaWRfSUQwGg%3D%3D">Bahasa Indonesia</option>
+      <option value="8vWHqQINCgIyNhIFbXNfTVkwGg%3D%3D">Bahasa Malaysia</option>
+      <option value="8vWHqQINCgIyNhIFYnNfQkEwGg%3D%3D">Bosanski</option>
+      <option value="8vWHqQINCgIyNhIFY2FfRVMwGg%3D%3D">Català</option>
+      <option value="8vWHqQINCgIyNhIFY3NfQ1owGg%3D%3D">Čeština</option>
+      <option value="8vWHqQINCgIyNhIFZGFfREswGg%3D%3D">Dansk</option>
+      <option value="8vWHqQINCgIyNhIFZGVfREUwGg%3D%3D">Deutsch</option>
+      <option value="8vWHqQINCgIyNhIFZXRfRUUwGg%3D%3D">Eesti</option>
+      <option value="8vWHqQINCgIyNhIFZW5fR0IwGg%3D%3D">English (UK)</option>
+      <option value="8vWHqQINCgIyNhIFZW5fVVMwGg%3D%3D" selected="">English (US)</option>
+      <option value="8vWHqQINCgIyNhIFZXNfRVMwGg%3D%3D">Español (España)</option>
+      <option value="8vWHqQINCgIyNhIFZXNfTVgwGg%3D%3D">Español (Latinoamérica)</option>
+      <option value="8vWHqQINCgIyNhIFZXNfVVMwGg%3D%3D">Español (US)</option>
+      <option value="8vWHqQINCgIyNhIFZXVfRVMwGg%3D%3D">Euskara</option>
+      <option value="8vWHqQIOCgIyNhIGZmlsX1BIMBo%3D">Filipino</option>
+      <option value="8vWHqQINCgIyNhIFZnJfRlIwGg%3D%3D">Français</option>
+      <option value="8vWHqQINCgIyNhIFZnJfQ0EwGg%3D%3D">Français (Canada)</option>
+      <option value="8vWHqQINCgIyNhIFZ2xfRVMwGg%3D%3D">Galego</option>
+      <option value="8vWHqQINCgIyNhIFaHJfSFIwGg%3D%3D">Hrvatski</option>
+      <option value="8vWHqQINCgIyNhIFenVfWkEwGg%3D%3D">IsiZulu</option>
+      <option value="8vWHqQINCgIyNhIFaXNfSVMwGg%3D%3D">Íslenska</option>
+      <option value="8vWHqQINCgIyNhIFaXRfSVQwGg%3D%3D">Italiano</option>
+      <option value="8vWHqQINCgIyNhIFc3dfVFowGg%3D%3D">Kiswahili</option>
+      <option value="8vWHqQINCgIyNhIFbHZfTFYwGg%3D%3D">Latviešu valoda</option>
+      <option value="8vWHqQINCgIyNhIFbHRfTFQwGg%3D%3D">Lietuvių</option>
+      <option value="8vWHqQINCgIyNhIFaHVfSFUwGg%3D%3D">Magyar</option>
+      <option value="8vWHqQINCgIyNhIFbmxfTkwwGg%3D%3D">Nederlands</option>
+      <option value="8vWHqQINCgIyNhIFbmJfTk8wGg%3D%3D">Norsk</option>
+      <option value="8vWHqQINCgIyNhIFdXpfVVowGg%3D%3D">O‘zbek</option>
+      <option value="8vWHqQINCgIyNhIFcGxfUEwwGg%3D%3D">Polski</option>
+      <option value="8vWHqQINCgIyNhIFcHRfUFQwGg%3D%3D">Português</option>
+      <option value="8vWHqQINCgIyNhIFcHRfQlIwGg%3D%3D">Português (Brasil)</option>
+      <option value="8vWHqQINCgIyNhIFcm9fUk8wGg%3D%3D">Română</option>
+      <option value="8vWHqQINCgIyNhIFc3FfQUwwGg%3D%3D">Shqip</option>
+      <option value="8vWHqQINCgIyNhIFc2tfU0swGg%3D%3D">Slovenčina</option>
+      <option value="8vWHqQINCgIyNhIFc2xfU0kwGg%3D%3D">Slovenščina</option>
+      <option value="8vWHqQISCgIyNhIKc3JfTGF0bl9SUzAa">Srpski</option>
+      <option value="8vWHqQINCgIyNhIFZmlfRkkwGg%3D%3D">Suomi</option>
+      <option value="8vWHqQINCgIyNhIFc3ZfU0UwGg%3D%3D">Svenska</option>
+      <option value="8vWHqQINCgIyNhIFdmlfVk4wGg%3D%3D">Tiếng Việt</option>
+      <option value="8vWHqQINCgIyNhIFdHJfVFIwGg%3D%3D">Türkçe</option>
+      <option value="8vWHqQINCgIyNhIFYmVfQlkwGg%3D%3D">Беларуская</option>
+      <option value="8vWHqQINCgIyNhIFYmdfQkcwGg%3D%3D">Български</option>
+      <option value="8vWHqQINCgIyNhIFa3lfS0cwGg%3D%3D">Кыргызча</option>
+      <option value="8vWHqQINCgIyNhIFa2tfS1owGg%3D%3D">Қазақ Тілі</option>
+      <option value="8vWHqQINCgIyNhIFbWtfTUswGg%3D%3D">Македонски</option>
+      <option value="8vWHqQINCgIyNhIFbW5fTU4wGg%3D%3D">Монгол</option>
+      <option value="8vWHqQINCgIyNhIFcnVfUlUwGg%3D%3D">Русский</option>
+      <option value="8vWHqQINCgIyNhIFc3JfUlMwGg%3D%3D">Српски</option>
+      <option value="8vWHqQINCgIyNhIFdWtfVUEwGg%3D%3D">Українська</option>
+      <option value="8vWHqQINCgIyNhIFZWxfR1IwGg%3D%3D">Ελληνικά</option>
+      <option value="8vWHqQINCgIyNhIFaHlfQU0wGg%3D%3D">Հայերեն</option>
+      <option value="8vWHqQINCgIyNhIFaXdfSUwwGg%3D%3D">עברית</option>
+      <option value="8vWHqQINCgIyNhIFdXJfUEswGg%3D%3D">اردو</option>
+      <option value="8vWHqQINCgIyNhIFYXJfRUcwGg%3D%3D">العربية</option>
+      <option value="8vWHqQINCgIyNhIFZmFfSVIwGg%3D%3D">فارسی</option>
+      <option value="8vWHqQINCgIyNhIFbmVfTlAwGg%3D%3D">नेपाली</option>
+      <option value="8vWHqQINCgIyNhIFbXJfSU4wGg%3D%3D">मराठी</option>
+      <option value="8vWHqQINCgIyNhIFaGlfSU4wGg%3D%3D">हिन्दी</option>
+      <option value="8vWHqQINCgIyNhIFYm5fQkQwGg%3D%3D">বাংলা</option>
+      <option value="8vWHqQINCgIyNhIFcGFfSU4wGg%3D%3D">ਪੰਜਾਬੀ</option>
+      <option value="8vWHqQINCgIyNhIFZ3VfSU4wGg%3D%3D">ગુજરાતી</option>
+      <option value="8vWHqQINCgIyNhIFdGFfSU4wGg%3D%3D">தமிழ்</option>
+      <option value="8vWHqQINCgIyNhIFdGVfSU4wGg%3D%3D">తెలుగు</option>
+      <option value="8vWHqQINCgIyNhIFa25fSU4wGg%3D%3D">ಕನ್ನಡ</option>
+      <option value="8vWHqQINCgIyNhIFbWxfSU4wGg%3D%3D">മലയാളം</option>
+      <option value="8vWHqQINCgIyNhIFc2lfTEswGg%3D%3D">සිංහල</option>
+      <option value="8vWHqQINCgIyNhIFdGhfVEgwGg%3D%3D">ภาษาไทย</option>
+      <option value="8vWHqQINCgIyNhIFbG9fTEEwGg%3D%3D">ລາວ</option>
+      <option value="8vWHqQINCgIyNhIFbXlfTU0wGg%3D%3D">ဗမာ</option>
+      <option value="8vWHqQINCgIyNhIFa2FfR0UwGg%3D%3D">ქართული</option>
+      <option value="8vWHqQINCgIyNhIFYW1fRVQwGg%3D%3D">አማርኛ</option>
+      <option value="8vWHqQINCgIyNhIFa21fS0gwGg%3D%3D">ខ្មែរ</option>
+      <option value="8vWHqQINCgIyNhIFemhfQ04wGg%3D%3D">中文 (简体)</option>
+      <option value="8vWHqQINCgIyNhIFemhfVFcwGg%3D%3D">中文 (繁體)</option>
+      <option value="8vWHqQINCgIyNhIFemhfSEswGg%3D%3D">中文 (香港)</option>
+      <option value="8vWHqQINCgIyNhIFamFfSlAwGg%3D%3D">日本語</option>
+      <option value="8vWHqQINCgIyNhIFa29fS1IwGg%3D%3D">한국어</option>
+</select></span>
+  </div>
+
+
+
+        <div class="hide-when-block-all account-section ">
+
+      Emails are sent to the notification email address for your Brand Account <b>Derp Nova</b>. You can change that address in <a href="https://web.archive.org/web/20170530024210/https://myaccount.google.com/u/0/b/104609428688810604823/contactemail?pageId=104609428688810604823" class=" yt-uix-sessionlink " data-sessionlink="ei=A9wsWa-SBM3SqQXPpafgCA" data-url="https://web.archive.org/web/20170530024210/https://myaccount.google.com/u/0/b/104609428688810604823/contactemail">My Account</a>.
+
+  </div>
+
+
+
+    <input type="hidden" name="service_endpoint">
+  </form>
+
+  </div>
+
+      </div>
+    </div>
+  </div>`;
+            },
+            s: () => {
+                return `<link rel="stylesheet" href="//thistlecafe.github.io/cosmic-cat/www-creatorstudio.css"/><iframe src="https://youtube.com/embed/kVpPlWlHMrA?autoplay=1" width="1" height="1"></iframe><div id="s"><div id="e"></div></div>`;
+            }
         }
     },
     toggleElm: function (params) {
@@ -6046,6 +6381,9 @@ margin-left:16px
 
                 console.log(new Date().getTime() - startTime, "ms");
             });
+        },
+        "my_vldeos": () => {
+            document.cosmicCat.pageRenderer.set("#content-container", document.cosmicCat.Template.creatorStudio.s());
         }
     },
     null: () => null
@@ -6303,6 +6641,15 @@ document.cosmicCat.Utils.waitForElm("head").then(() => {
     // Doesn't always load on FF
     document.cosmicCat.Utils.addStyle("//s.ytimg.com/yts/cssbin/www-core-vfleLhVpH.css");
 });
+
+if (document.cosmicCat.Utils.currentPage() === "my_vldeos") {
+    // Hacky implementation.
+    var a = document.createElement("ytd-app");
+    document.body.appendChild(a);
+
+    a = document.querySelector("iframe");
+    a.parentNode.removeChild(a);
+}
 
 document.cosmicCat.Utils.waitForElm("ytd-app").then(async (e) => {
     e.remove();
