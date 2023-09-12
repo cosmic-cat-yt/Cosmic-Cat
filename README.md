@@ -9,7 +9,10 @@
 ![](https://img.shields.io/badge/version-0.6.x-purple?style=flat-square)
 
 ## Note
-This project is rarely maintained and therefore not recommended for everyday use. Please use alternatives such as [CustomTube](https://github.com/lightbeam24/customtube) instead.
+This project is rarely maintained and therefore not recommended for everyday use. Please use alternatives such as [CustomTube](https://github.com/lightbeam24/customtube) instead.<br/><br/>
+
+You can access Cosmic Cat settings through the masthead or directly from this link (`youtube.com/cosmic_cat`):<br/>![image](https://github.com/thistlecafe/cosmic-cat/assets/79811506/3cc61d60-b9db-44a6-b8c5-eb858f83db08)
+
 
 ## Installation
 - Get **Tampermonkey** for your browser: https://www.tampermonkey.net<br/>
