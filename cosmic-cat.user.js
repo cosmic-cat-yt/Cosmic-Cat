@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.44
+// @version      0.6.45
 // @description  Broadcast Yourself
 // @author       Thistle Café, Cosmic Cat Maintainers
 // @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
@@ -752,7 +752,7 @@ ${document.cosmicCat.Template.Channel.Channels3.secondaryPane.createdBySection.M
                     createdBySection: {
                         Main: (data) => {
                             return `<div class="section created-by-section">
-<div class="user-profile-item">${localizeString("channels.3.body.secondaryPane.userProfile.createdBy.by", data.header?.name)}</div>
+<div class="user-profile-item">${localizeString("channels.3.body.secondaryPane.userProfile.createdBy.by", data.header?.gameBy || data.header?.tag || data.header?.name)}</div>
 <ul>
 ${document.cosmicCat.Template.Channel.Channels3.secondaryPane.createdBySection.Item(data.info)}
 </ul>
@@ -2416,11 +2416,20 @@ ${document.cosmicCat.Template.Buttons.addTo(data.id)}
 </span><span class="display-name">Player</span>
 </a>
 </li>
+<li class="guide-item-container">
+<a class="guide-item" data-feed-name="credits">
+<span class="thumb">
+<img class="system-icon system" src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="">
+</span><span class="display-name">Credits</span>
+</a>
+</li>
 </ul>
 </div>
 </div>
-<div id="disclaimer">This is in beta.
-Things may not work as intended.</div>
+<div id="disclaimer">Cosmic Cat v${GM_info.script.version}
+
+Made with ♥ by Thistle Café -
+and its contributors.</div>
 </div>
 <div class="guide-background" style="top: 0"></div>
 <div id="feed" style="width: 790px;">
@@ -2428,6 +2437,7 @@ ${document.cosmicCat.Template.Settings.Feeds.General()}
 ${document.cosmicCat.Template.Settings.Feeds.Home()}
 ${document.cosmicCat.Template.Settings.Feeds.Channel()}
 ${document.cosmicCat.Template.Settings.Feeds.Player()}
+${document.cosmicCat.Template.Settings.Feeds.Credits()}
 </div>
 <div id="feed-background" style="width: 790px;"></div>
 </div>
@@ -2513,6 +2523,49 @@ Channel revision: <select class="cosmic-cat-settings" id="channelMode" data-acti
 </div>
 </div>
 </div>`;
+                },
+                Credits: () => {
+                    return `<div id="feed-main-credits" class="individual-feed hid">
+<div class="feed-container">
+<div class="feed-page">
+<pre style="text-align: center;overflow-y: auto;color:white;">
+<h1>Cosmic Cat v${GM_info.script.version}</h1>
+<h3>==== Thistle Café ====</h3>
+Lead Developer -
+<a href="https://github.com/xEm1r1Fl0areax" target="_blank">Emiri Floarea</a>
+
+<h3>==== Contributors / Acknowledgements ====</h3>
+Components from Vorapis v3 & Vorapis v3 Player -
+<a href="https://github.com/VORAPIS" target="_blank">Reprety</a>
+
+Vorapis v3 Player 2012 Skin -
+rlego
+
+YabaiComponent & OpenUix -
+<a href="https://github.com/YukisCoffee" target="_blank">Taniko Yamamoto</a>
+
+Components from Rehike -
+<a href="https://github.com/orgs/Rehike" target="_blank">The Rehike Maintainers</a>
+
+Cosmic Cat Branding -
+<a href="https://github.com/UnderscoreAngel" target="_blank">UnderscoreAngel</a>
+<a href="https://github.com/travy-patty" target="_blank">travy-patty</a>
+
+ReturnYouTubeDislike -
+<a href="https://github.com/Anarios" target="_blank">Dmitrii Selivanov</a>
+
+StackOverflow Code Solutions -
+<a href="https://stackoverflow.com" target="_blank">StackOverflow</a>
+
+<h3>==== Translators ====</h3>
+<a href="https://github.com/VexorionReal" target="_blank">Vexorion Real (Polish)</a>
+
+
+View the rest on Github: <a href="https://github.com/thistlecafe/cosmic-cat">thistlecafe/cosmic-cat</a>
+</pre>
+</div>
+</div>
+</div>`;
                 }
             },
             Stylesheet: () => {
@@ -2525,8 +2578,9 @@ transition: background-color .3s ease;
 text-align: center;
 position: absolute;
 white-space: pre-wrap;
-height: 40px;
+height: 60px;
 bottom: 0;
+width: inherit;
 }
 
 input[type="checkbox"] {
@@ -3910,6 +3964,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                 return {
                     id: data.channelId || data.subscribeButton?.subscribeButtonRenderer?.channelId,
                     name: data.title?.simpleText || data.title,
+                    gameBy: data.metadata?.runs?.[0].text,
                     tag: data.channelHandleText?.runs?.[0]?.text?.split("@")?.[1],
                     url: data.canonicalChannelUrl || data.navigationEndpoint?.browseEndpoint?.canonicalBaseUrl,
                     avatar: data.avatar?.thumbnails?.[0]?.url || data.thumbnail?.thumbnails?.[0]?.url || data.boxArt?.thumbnails?.[0]?.url,
@@ -6107,7 +6162,7 @@ body, #masthead-container
 img#logo
 {background: url(${document.cosmicCat.data.darkyoutubelogo}) !important; background-size: 100px !important;}
 
-#masthead-expanded-loading-message, #search-header h2, .yt-uix-button-content, label, .comment-text, #eow-description, #watch-description-extras, .num-results, #filter-dropdown, .enable-fancy-subscribe-button .yt-uix-button-subscription:hover .yt-uix-button-content, .yt-lockup-content *
+#masthead-expanded-loading-message, #search-header h2, .yt-uix-button-content, label, .comment-text, #eow-description, #watch-description-extras, .num-results, #filter-dropdown, .enable-fancy-subscribe-button .yt-uix-button-subscription:hover .yt-uix-button-content, .yt-lockup-content *, .comments-section strong, #watch-description-extras h4
 {color: var(--white-color) !important}
 
 #masthead-search-terms, #search-btn
