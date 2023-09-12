@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.43
+// @version      0.6.44
 // @description  Broadcast Yourself
 // @author       Thistle Café, Cosmic Cat Maintainers
 // @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
@@ -743,8 +743,8 @@ ${document.cosmicCat.Template.Channel.Channels3.secondaryPane.createdBySection.M
                         },
                         socialLink: (data) => {
                             return `<div class="yt-c3-profile-custom-url field-container">
-<a href="${data.navigationEndpoint.urlEndpoint.url}" rel="me nofollow" target="_blank" title="${data.title.simpleText}" class="yt-uix-redirect-link">
-<img src="${data.icon.thumbnails[0].url}" class="favicon" alt="${data.title.simpleText}"><span class="link-text">${data.title.simpleText}</span>
+<a href="https://${data.link.content}" rel="me nofollow" target="_blank" title="${data.title.content}" class="yt-uix-redirect-link">
+<img src="//www.google.com/s2/favicons?sz=64&domain=${data.link.content?.split("/")?.[0]}" class="favicon" alt="${data.title.simpleText}"><span class="link-text">${data.title.content}</span>
 </a>
 </div>`;
                         }
@@ -3905,13 +3905,15 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                     description += _description[snippet].text;
                 }
 
+                console.log(data);
+
                 return {
                     id: data.channelId || data.subscribeButton?.subscribeButtonRenderer?.channelId,
                     name: data.title?.simpleText || data.title,
                     tag: data.channelHandleText?.runs?.[0]?.text?.split("@")?.[1],
                     url: data.canonicalChannelUrl || data.navigationEndpoint?.browseEndpoint?.canonicalBaseUrl,
                     avatar: data.avatar?.thumbnails?.[0]?.url || data.thumbnail?.thumbnails?.[0]?.url || data.boxArt?.thumbnails?.[0]?.url,
-                    links: data.primaryLinks,
+                    links: data.links,
                     bannerBg: data.tvBanner?.thumbnails?.[4]?.url,
                     subscriberCount: document.cosmicCat.Utils.deabreviateCnt(data.subscriberCountText?.simpleText?.split(" ")?.[0] || data.subtitle?.simpleText?.split(" ")?.[0] || "0"),
                     videos: data.videoCountText?.runs?.[1] && (data.videoCountText?.runs?.[0].text + data.videoCountText?.runs?.[1].text),
@@ -5891,7 +5893,7 @@ margin-left:16px
 
                     try {
                         for (let i = 0; i < data.info?.links?.length; i++) {
-                            document.cosmicCat.pageRenderer.add(".profile-socials", document.cosmicCat.Template.Channel.Channels3.secondaryPane.firstSection.socialLink(data.info.links[i]));
+                            document.cosmicCat.pageRenderer.add(".profile-socials", document.cosmicCat.Template.Channel.Channels3.secondaryPane.firstSection.socialLink(data.info.links[i].channelExternalLinkViewModel));
                         }
                     } catch(err) {
                         console.error("[Channels] Failed to parse social links:\n", err);
