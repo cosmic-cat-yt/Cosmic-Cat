@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.45
+// @version      0.6.46
 // @description  Broadcast Yourself
 // @author       Thistle Café, Cosmic Cat Maintainers
 // @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
@@ -3884,13 +3884,6 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
             // https://github.com/Rehike/Rehike/commit/cdabdd0d951ef3df06905172777efbc1bb34c1d6
             // Originally written by aubymori in PHP.
 
-            // Still WIP. Do not file issue.
-
-            // Current problems:
-            //
-            // Normal description text is excluded.
-            //
-
             if (!a.commandRuns) {
                 return {
                     "runs": [
@@ -3904,48 +3897,42 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
             var runs = [],
                 start = 0;
 
-            for (const run in a.commandRuns) {
+            for (var i = 0; i < a.commandRuns.length; i++) {
+                var run = a.commandRuns[i];
                 var beforeText = a.content.substr(start, run.startIndex - start);
 
                 if(beforeText) {
-                    runs[run] = {
+                    runs.push({
                         text: beforeText
-                    };
+                    });
                 }
 
-                var text = a.content.substr(a.commandRuns[run].startIndex, a.commandRuns[run].length),
-                    endpoint = a.commandRuns[run].onTap.innertubeCommand;
+                var text = a.content.substring(run.startIndex, run.startIndex + run.length),
+                    endpoint = run.onTap.innertubeCommand;
 
-                //console.debug(a.commandRuns[run]);
+                runs.push({
+                    text: text,
+                    navigationEndpoint: endpoint
+                });
 
-                runs[run] = {
-                    "text": text,
-                    "navigationEndpoint": endpoint
-                };
-
-                start = a.commandRuns[run].startIndex + run.length;
+                start = run.startIndex + run.length;
             }
 
-            var lastText = a.content.substr(start, null);
+            var lastText = a.content.substr(start);
             if (lastText) {
-                runs.forEach((element, index) => {
-                    console.debug(element.text);
-                    runs[index].text = lastText
+                runs.push({
+                    text: lastText
                 });
             }
 
-            for (const run in runs) {
-                console.debug(runs[run])
-                if (runs[run].navigationEndpoint.watchEndpoint) {
-                    runs[run].text = runs[run].text.substr(
-                        //"https://www.youtube.com" + runs[run].navigationEndpoint.commandMetadata.webCommandMetadata.url,
-                        0, 37
-                    );
+            runs.forEach(function(run) {
+                if (run.navigationEndpoint?.watchEndpoint) {
+                    run.text = "https://www.youtube.com" + run.navigationEndpoint.commandMetadata.webCommandMetadata.url.substring(0, 37) + "...";
                 }
-            }
+            });
 
             return {
-                "runs": runs
+                runs: runs
             };
         },
         Sort: {
@@ -3984,7 +3971,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                 if (!da) return {};
 
                 let _description = da.detailedMetadataSnippets?.[0]?.snippetText?.runs || da.descriptionSnippet?.runs || da.description?.runs || da.videoDetails?.shortDescription || [];
-                if(da.attributedDescription) _description = [{"text": "Cosmic Cat Developer Note: Support for attributedDescription is still WIP."}];//document.cosmicCat.Utils.convertDescription(da.attributedDescription)?.runs;
+                if(da.attributedDescription) _description = document.cosmicCat.Utils.convertDescription(da.attributedDescription)?.runs;
 
                 let description = "";
                 for (const snippet in _description) {
@@ -3997,8 +3984,6 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                 }
 
                 description = description.replace(/(?:\r\n|\r|\n)/g, '<br/>');
-
-                console.log(da)
 
                 return {
                     owner: {
