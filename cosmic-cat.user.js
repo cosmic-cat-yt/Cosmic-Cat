@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.47
+// @version      0.6.48
 // @description  Broadcast Yourself
 // @author       Thistle Café, Cosmic Cat Maintainers
 // @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
@@ -1978,6 +1978,8 @@ ${localizeString("search.channels.by", data)}
 <div id="masthead-nav">
 <a href="https://www.youtube.com/feed/explore">${localizeString("global.browse")}</a>
 <span class="masthead-link-separator">|</span>
+<a href="https://www.youtube.com/feed/storefront?feature=mh">Movies</a>
+<span class="masthead-link-separator">|</span>
 <a href="https://youtube.com/upload">${localizeString("global.upload")}</a>
 </div>
 <form id="masthead-search" class="search-form consolidated-form" action="https://www.youtube.com/results" onsubmit="if (document.body.querySelector('#masthead-search-term').value == '') return false;">
@@ -2528,7 +2530,7 @@ Channel revision: <select class="cosmic-cat-settings" id="channelMode" data-acti
                     return `<div id="feed-main-credits" class="individual-feed hid">
 <div class="feed-container">
 <div class="feed-page">
-<pre style="text-align: center;overflow-y: auto;color:white;">
+<pre style="text-align: center;overflow-y: auto;">
 <h1>Cosmic Cat v${GM_info.script.version}</h1>
 <h3>==== Thistle Café ====</h3>
 Lead Developer -
@@ -5992,6 +5994,23 @@ margin-left:16px
             let a = document.querySelector("#movie_player");
             document.querySelector("#watch-player").append(a);
             document.querySelector("#player.skeleton.flexy").remove();
+
+            $(document).on('click', '.ytp-size-toggle-large, .ytp-size-button.toggled', function(e) {
+                if (e.target.classList.contains("ytp-size-button")) e.target.classList.remove("toggled");
+                document.querySelector('#watch-video-container').classList.remove("watch-wide");
+                document.querySelector('#watch-video').classList.add('small');
+                document.querySelector('#watch-video').classList.remove('medium');
+                setTimeout(function () {if (document.querySelector('.watch-playlist-collapsed')) document.querySelector('#player').classList.remove('watch-playlist-collapsed');}, 1);
+            });
+            $(document).on('click', '.ytp-size-toggle-small, .ytp-size-button:not(.toggled)', function(e) {
+                if (e.target.classList.contains("ytp-size-button")) e.target.classList.add("toggled");
+                if (document.querySelector('.watch-playlist')) document.querySelector('#player').classList.add('watch-playlist-collapsed');
+                document.querySelector('#watch-container').classList.add("watch-wide");
+                setTimeout(function () {
+                    document.querySelector('#watch-video').classList.remove('small');
+                    document.querySelector('#watch-video').classList.add('medium');
+                }, 300);
+            });
         };
         function buildErrorScreen() {
             console.log("build error screen"),
