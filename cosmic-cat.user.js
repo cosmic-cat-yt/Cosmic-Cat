@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.48
+// @version      0.6.49
 // @description  Broadcast Yourself
 // @author       Thistle Café, Cosmic Cat Maintainers
 // @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
@@ -5190,7 +5190,7 @@ margin-left:16px
 
         async function getPlayerData(e) {
             return (
-                await document.cosmicCat.Ajax.post("/youtubei/v1/player", "videoId: \"" + innertubevideoid + "\",contentCheckOk:true,racyCheckOk:true", "ANDROID", "16.02")
+                await document.cosmicCat.Ajax.post("/youtubei/v1/player", "videoId: \"" + innertubevideoid + "\",contentCheckOk:true,racyCheckOk:true", "IOS", "16.02")
             );
         };
         async function grabPlayerData() {
@@ -5231,7 +5231,7 @@ margin-left:16px
                     }, 1e3));
                 } catch (e) {}
 
-                console.log(innertuberesponse);
+                console.log("[Vorapis Player]\n", innertuberesponse);
 
                 try {
                     (innertuberesponse.streamingData.adaptiveFormats[0].qualityLabel.includes(
@@ -5708,7 +5708,7 @@ margin-left:16px
                         ));
                     }
                 } catch (e) {
-                    console.log(e);
+                    console.error("[Vorapis Player]\n", e);
                 }
             document.cosmicCat.Utils.waitForElm("#watch-player").then(function () {
                 try {
@@ -5751,7 +5751,7 @@ margin-left:16px
                             });
                         }
                     } catch (e) {
-                        console.log(e);
+                        console.error("[Vorapis Player]\n", e);
                     }
 
                     function t(e) {
@@ -5809,7 +5809,7 @@ margin-left:16px
                                 n++;
                         }
                 } catch (e) {
-                    console.error(e);
+                    console.error("[Vorapis Player]\n", e);
                 }
 
                 craftVarYtPlayer(craftedadaptivefmts);
@@ -5954,7 +5954,7 @@ margin-left:16px
                             i < parseInt(innertuberesponse.streamingData.formats.length - 1) &&
                             (n += ",");
                 } catch (e) {
-                    console.log("cound not craft legacy stream url", e);
+                    console.error("[Vorapis Player] could not craft legacy stream url", e);
                 }
 
                 ytplayer.config.args.url_encoded_fmt_stream_map = n;
@@ -5987,7 +5987,7 @@ margin-left:16px
                 (ytplayer.config.args.rvs = rvsdata),
                 (datawasloaded = !0),
                 playerwasloaded && !playerwasinvoked && invokePlayer(),
-                console.log("success to load player.", ytplayer, playerwasloaded, playerwasinvoked);
+                console.log("[Vorapis Player] success to load player.\n", ytplayer, playerwasloaded, playerwasinvoked);
         };
         function invokePlayer() {
             yt.player.Application.create("player-api", ytplayer.config);
