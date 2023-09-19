@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.49
+// @version      0.6.50
 // @description  Broadcast Yourself
 // @author       Thistle Café, Cosmic Cat Maintainers
 // @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
@@ -5231,7 +5231,7 @@ margin-left:16px
                     }, 1e3));
                 } catch (e) {}
 
-                console.log("[Vorapis Player]\n", innertuberesponse);
+                console.log("[Vorapis Player] Player API response:\n", innertuberesponse);
 
                 try {
                     (innertuberesponse.streamingData.adaptiveFormats[0].qualityLabel.includes(
@@ -5953,8 +5953,34 @@ margin-left:16px
                          innertuberesponse.streamingData.formats[i].itag),
                             i < parseInt(innertuberesponse.streamingData.formats.length - 1) &&
                             (n += ",");
-                } catch (e) {
-                    console.error("[Vorapis Player] could not craft legacy stream url", e);
+                } catch {
+                    // Try again with adaptiveFormats instead.
+                    try {
+                        for (
+                            var i = 0, j = innertuberesponse.streamingData.adaptiveFormats.length;
+                            i < j;
+                            i++
+                        )
+                            (n +=
+                             "fallback_host=" +
+                             innertuberesponse.streamingData.adaptiveFormats[i].url
+                             .split("://")[1]
+                             .split(".com")[0] +
+                             ".com&type=" +
+                             encodeURIComponent(
+                                innertuberesponse.streamingData.adaptiveFormats[i].mimeType
+                            ).replace("%20", "+") +
+                             "&url=" +
+                             encodeURIComponent(innertuberesponse.streamingData.adaptiveFormats[i].url) +
+                             "&quality=" +
+                             innertuberesponse.streamingData.adaptiveFormats[i].quality +
+                             "&itag=" +
+                             innertuberesponse.streamingData.adaptiveFormats[i].itag),
+                                i < parseInt(innertuberesponse.streamingData.adaptiveFormats.length - 1) &&
+                                (n += ",");
+                    } catch (e) {
+                        console.error("[Vorapis Player] could not craft legacy stream url", e);
+                    }
                 }
 
                 ytplayer.config.args.url_encoded_fmt_stream_map = n;
