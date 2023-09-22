@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.50
+// @version      0.6.51
 // @description  Broadcast Yourself
 // @author       Thistle Café, Cosmic Cat Maintainers
 // @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
@@ -466,6 +466,7 @@ ${document.cosmicCat.Channels.isOwner() ? `</a>`: `</div>`}
                         },
                         featuredVideo: (data, d) => {
                             return `<div class="channels-featured-video channel-module yt-uix-c3-module-container has-visible-edge">
+<div id="player-api"></div>
 <div class="channels-video-player player-root" data-video-id="1${data.id}" style="overflow: hidden;" data-swf-config=""></div>
 <div class="channels-featured-video-details yt-tile-visible clearfix">
 <h3 class="title">
@@ -875,7 +876,7 @@ ${document.cosmicCat.Template.Buttons.Subscribe(data.id)}
                         Main: (data) => {
                             return `<div id="playnav-body" style="height: auto;">
 <div id="playnav-player" class="playnav-player-container" style="height: 390px; visibility: visible; left: 0px;">
-
+<div id="player-api"></div><div id="watch-player" class="player-root"></div>
 </div>
 <div id="playnav-playview" class="" style="display: block;">
 ${document.cosmicCat.Template.Channel.Channels2.playlistNavigator.Content.Restricted(data)}
@@ -1008,7 +1009,6 @@ Please <a class="playnav-restricted-link" href="">confirm</a> that you wish to v
 <div class="cb"></div>
 <div class="playnav-video-panel inner-box-colors border-box-sizing">
 <div id="playnav-video-panel-inner" class="playnav-video-panel-inner border-box-sizing" style="overflow: auto;">
-${document.cosmicCat.Template.Channel.Channels2.playlistNavigator.Content.LeftPanel.Info(data)}
 </div>
 <div id="playnav-panel-comments" class="hid"></div>
 <div id="playnav-panel-favorite" class="hid"></div>
@@ -1018,10 +1018,9 @@ ${document.cosmicCat.Template.Channel.Channels2.playlistNavigator.Content.LeftPa
 </div>
 </div>
 </div>
-</div>
 </div>`;
                         },
-                            Info: (data) => {
+                            Info: (data, owner) => {
                                 return `<div id="playnav-panel-info" class="scrollable" style="display: block;">
 <div id="channel-like-action">
 <div id="channel-like-buttons">
@@ -1052,12 +1051,12 @@ ${document.cosmicCat.Template.Channel.Channels2.playlistNavigator.Content.LeftPa
 </div>
 </div>
 <div id="playnav-curvideo-title" class="inner-box-link-color" dir="ltr">
-<a href="https://www.youtube.com/watch?v=${data.id}&amp;feature=channel_video_title"></a>
+<a href="https://www.youtube.com/watch?v=${data.id}&amp;feature=channel_video_title">${data.title}</a>
 </div>
 <div id="playnav-curvideo-info-line">From:
 <span id="playnav-curvideo-channel-name">
-<a href="https://www.youtube.com/${data.info.url}" class="yt-user-name" dir="ltr">${data.info.name}</a>
-</span>| <span dir="ltr"></span>&nbsp;| <span id="playnav-curvideo-view-count"></span>
+<a href="https://www.youtube.com/${data.url}" class="yt-user-name" dir="ltr">${owner.name}</a>
+</span>| <span dir="ltr">${data.upload}</span>&nbsp;| <span id="playnav-curvideo-view-count">${data.views}</span>
 </div>
 <div class="cb"></div>
 <div id="channel-like-result" class="hid">
@@ -1067,6 +1066,7 @@ ${document.cosmicCat.Template.Channel.Channels2.playlistNavigator.Content.LeftPa
 <div class="cb"></div>
 <div id="playnav-curvideo-description-container">
 <div id="playnav-curvideo-description" dir="ltr">
+${data.description}
 <div id="playnav-curvideo-description-more-holder" style="display: block;">
 <div id="playnav-curvideo-description-more" class="inner-box-bg-color">
 ...&nbsp;<a class="channel-cmd" href="javascript:;" onclick="playnav.toggleFullVideoDescription(true)">(more info)</a>&nbsp;&nbsp;
@@ -5628,7 +5628,7 @@ margin-left:16px
             try {
                 streamingdata = ytInitialPlayerResponse.streamingData;
             } catch (e) {
-                streamingdata = streamingdata;
+                streamingdata = innertuberesponse.streamingData;
             }
 
             try {
@@ -5654,6 +5654,7 @@ margin-left:16px
                     (window.usingDashMpd = !1),
                         "/watch" == window.location.pathname && (window.wasVideo = !0);
             } catch (e) {
+                console.error(e);
                 return void (
                     window.location.pathname.includes("/watch") && buildErrorScreen()
                 );
@@ -5662,13 +5663,14 @@ margin-left:16px
             try {
                 var adaptivefmts = innertuberesponse.streamingData.adaptiveFormats;
             } catch (e) {
+                console.error("No fmt\n", e);
                 var adaptivefmts = streamingdata.adaptiveFormats;
             }
 
             var craftedadaptivefmts = "",
                 needscut = !1;
             if (
-                void 0 === streamingdata.hlsManifestUrl &&
+                void 0 === streamingdata.hlsManifestUrl ||
                 void 0 === streamingdata.dashManifestUrl
             )
                 try {
@@ -5710,7 +5712,7 @@ margin-left:16px
                 } catch (e) {
                     console.error("[Vorapis Player]\n", e);
                 }
-            document.cosmicCat.Utils.waitForElm("#watch-player").then(function () {
+            document.cosmicCat.Utils.waitForElm(".player-root").then(function () {
                 try {
                     try {
                         if (1 == yt.config_.LOGGED_IN) {
@@ -5824,7 +5826,7 @@ margin-left:16px
                 try {
                     t =
                         ytInitialPlayerResponse.storyboards.playerStoryboardSpecRenderer.spec;
-                } catch (e) {}
+                } catch (e) {console.error(e)}
             }
 
             !wasdash && dashmanifest && (wasdash = !0);
@@ -5834,13 +5836,13 @@ margin-left:16px
                 urlV8: "https://s.ytimg.com/yts/swfbin/player-vfl8Mj1Eu/cps.swf",
                 urlV9As2: "https://s.ytimg.com/yts/swfbin/player-vfl8Mj1Eu/cps.swf",
                 args: {
-                    author: ytInitialPlayerResponse.videoDetails.author,
+                    author: innertuberesponse.videoDetails.author,
                     dashmpd: dashmanifest,
                     focEnabled: "1",
                     adaptive_fmts: "",
                     account_playback_token: "",
                     enablecsi: "0",
-                    length_seconds: ytInitialPlayerResponse.videoDetails.lengthSeconds,
+                    length_seconds: innertuberesponse.videoDetails.lengthSeconds,
                     ytfocEnabled: "1",
                     remarketing_url: "",
                     cos: "Windows",
@@ -5848,14 +5850,14 @@ margin-left:16px
                     iv_invideo_url: "",
                     idpj: "0",
                     sourceid: "y",
-                    vid: ytInitialPlayerResponse.videoDetails.videoId,
+                    vid: innertuberesponse.videoDetails.videoId,
                     watermark: ",https://s.ytimg.com/yts/img/watermark/youtube_watermark-vflHX6b6E.png,https://s.ytimg.com/yts/img/watermark/youtube_hd_watermark-vflAzLcD6.png",
                     avg_rating: "",
                     fexp: "908547,914099,927622,930666,930672,932404,934040,940247,940642,947209,947215,949424,951701,952302,952901,953000,953912,957103,957201,958600",
                     host_language: "en",
                     iv_load_policy: "1",
                     token: "1",
-                    loaderUrl: "https://www.youtube.com/watch?v=" +ytInitialPlayerResponse.videoDetails.videoId,
+                    loaderUrl: "https://www.youtube.com/watch?v=" + innertuberesponse.videoDetails.videoId,
                     ptk: "ea",
                     baseUrl: "https://googleads.g.doubleclick.net/pagead/viewthroughconversion/962985656/",
                     cosver: "6.2",
@@ -5866,23 +5868,23 @@ margin-left:16px
                     ptchn: "",
                     dash: "1",
                     no_get_video_log: "1",
-                    sdetail: "p:/embed/" + ytInitialPlayerResponse.videoDetails.videoId,
+                    sdetail: "p:/embed/" + innertuberesponse.videoDetails.videoId,
                     tmi: "1",
-                    storyboard_spec: ytInitialPlayerResponse.storyboards?.playerStoryboardSpecRenderer?.spec || ytInitialPlayerResponse.storyboards?.playerLiveStoryboardSpecRenderer?.spec,
+                    storyboard_spec: innertuberesponse.storyboards?.playerStoryboardSpecRenderer?.spec || innertuberesponse.storyboards?.playerLiveStoryboardSpecRenderer?.spec,
                     vq: "auto",
                     atc: "",
                     of: "",
                     allow_embed: "1",
                     url_encoded_fmt_stream_map: "",
                     aid: "",
-                    ucid: ytInitialPlayerResponse.videoDetails.channelId,
+                    ucid: innertuberesponse.videoDetails.channelId,
                     cr: "RO",
                     timestamp: "1414688781",
                     iv_module: "https://s.ytimg.com/yts/swfbin/player-vfl8Mj1Eu/iv_module.swf",
                     rmktEnabled: "1",
-                    probe_url: "https://www.youtube.com/embed/" + ytInitialPlayerResponse.videoDetails.videoId,
-                    video_id: ytInitialPlayerResponse.videoDetails.videoId,
-                    title: ytInitialPlayerResponse.videoDetails.title,
+                    probe_url: "https://www.youtube.com/embed/" + innertuberesponse.videoDetails.videoId,
+                    video_id: innertuberesponse.videoDetails.videoId,
+                    title: innertuberesponse.videoDetails.title,
                     cl: "78766649",
                     eventid: "",
                     csi_page_type: "watch,watch7",
@@ -5892,14 +5894,14 @@ margin-left:16px
                     fmt_list: "22/1280x720/9/0/115,18/640x360/9/0/115,17/256x144/99/1/0",
                     cbr: "WEB",
                     ytfocHistoryEnabled: "0",
-                    referrer: "https://www.youtube.com/embed/" + ytInitialPlayerResponse.videoDetails.videoId,
+                    referrer: "https://www.youtube.com/embed/" + innertuberesponse.videoDetails.videoId,
                     allow_ratings: "1",
                     enablejsapi: 0,
                     pltype: "content",
-                    keywords: ytInitialPlayerResponse.videoDetails.title,
+                    keywords: innertuberesponse.videoDetails.title,
                     ldpj: "0",
                     c: "WEB",
-                    view_count: ytInitialPlayerResponse.videoDetails.viewCount
+                    view_count: innertuberesponse.videoDetails.viewCount
                 },
                 assets: {
                     css: "//s.ytimg.com/yts/cssbin/www-player-vfluwFMix.css",
@@ -6007,9 +6009,11 @@ margin-left:16px
                     (ytplayer.config.args.enable_cardio_before_playback = 0);
             }
 
-            ytInitialPlayerResponse.captions ||
+            console.log(ytplayer);
+
+            innertuberesponse.captions ||
                  (ytplayer.config.args.ttsurl =
-                  ytInitialPlayerResponse.captions?.playerCaptionsRenderer?.baseUrl),
+                  innertuberesponse.captions?.playerCaptionsRenderer?.baseUrl),
                 (ytplayer.config.args.rvs = rvsdata),
                 (datawasloaded = !0),
                 playerwasloaded && !playerwasinvoked && invokePlayer(),
@@ -6018,14 +6022,16 @@ margin-left:16px
         function invokePlayer() {
             yt.player.Application.create("player-api", ytplayer.config);
             let a = document.querySelector("#movie_player");
-            document.querySelector("#watch-player").append(a);
-            document.querySelector("#player.skeleton.flexy").remove();
+            document.querySelector(".player-root").append(a);
+            try {
+                document.querySelector("#player.skeleton.flexy").remove();
+            } catch {}
 
             $(document).on('click', '.ytp-size-toggle-large, .ytp-size-button.toggled', function(e) {
                 if (e.target.classList.contains("ytp-size-button")) e.target.classList.remove("toggled");
-                document.querySelector('#watch-video-container').classList.remove("watch-wide");
+                document.querySelector('#watch-container').classList.remove("watch-wide");
                 document.querySelector('#watch-video').classList.add('small');
-                document.querySelector('#watch-video').classList.remove('medium');
+                document.querySelector('#watch-video').classList.remove('large');
                 setTimeout(function () {if (document.querySelector('.watch-playlist-collapsed')) document.querySelector('#player').classList.remove('watch-playlist-collapsed');}, 1);
             });
             $(document).on('click', '.ytp-size-toggle-small, .ytp-size-button:not(.toggled)', function(e) {
@@ -6034,7 +6040,7 @@ margin-left:16px
                 document.querySelector('#watch-container').classList.add("watch-wide");
                 setTimeout(function () {
                     document.querySelector('#watch-video').classList.remove('small');
-                    document.querySelector('#watch-video').classList.add('medium');
+                    document.querySelector('#watch-video').classList.add('large');
                 }, 300);
             });
         };
@@ -6446,10 +6452,23 @@ margin-left:16px
                     }
                 };
 
+                try {
+                    var player = ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents.find(
+                        player => player.itemSectionRenderer.contents[0].channelVideoPlayerRenderer || player.itemSectionRenderer.contents[0].channelFeaturedContentRenderer
+                    );
+                    player = player.itemSectionRenderer.contents[0].channelVideoPlayerRenderer || player.itemSectionRenderer.contents[0].channelFeaturedContentRenderer.items[0].videoRenderer;
+                } catch {}
+
                 if (revision == "Channels2") {
                     document.cosmicCat.pageRenderer.add("body", document.cosmicCat.Template.Channel.Channels2.Stylesheet()),
                     document.cosmicCat.Channels.load2Modules(data.info);
-                    //document.querySelector("#channel-body").setAttribute("style", `background-image: url("https://i2.ytimg.com/bg/${document.cosmicCat.Channels.getChannelID(data.info.id)}/124.jpg")`);
+                    try {
+                        document.cosmicCat.pageRenderer.add("#playnav-video-panel-inner", document.cosmicCat.Template.Channel.Channels2.playlistNavigator.Content.LeftPanel.Info(
+                            document.cosmicCat.Utils.Sort.videoData(
+                                player
+                            ), data.header)
+                        );
+                    } catch {}
                 }
 
                 if (revision == "Channels3") {
@@ -6473,17 +6492,11 @@ margin-left:16px
 
                     if (document.cosmicCat.Channels.isCurrentChannelTab("featured")) {
                         try {
-                            var a = ytInitialData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents.find(
-                                    a => a.itemSectionRenderer.contents[0].channelVideoPlayerRenderer || a.itemSectionRenderer.contents[0].channelFeaturedContentRenderer
-                            );
-
                             document.cosmicCat.pageRenderer.add(".primary-pane", document.cosmicCat.Template.Channel.Channels3.primaryPane.featured.featuredVideo(
                                 document.cosmicCat.Utils.Sort.videoData(
-                                    a.itemSectionRenderer.contents[0].channelVideoPlayerRenderer || a.itemSectionRenderer.contents[0].channelFeaturedContentRenderer.items[0].videoRenderer
+                                    player
                                 ), data.header)
                             );
-
-                            console.log(a);
                         } catch {}
 
                         try {
@@ -6522,9 +6535,8 @@ margin-left:16px
                     document.cosmicCat.Channels.Channels3.Pagination.load()
                 );
 
-                document.cosmicCat.Utils.waitForElm("#video-player").then(() => {
-                    document.cosmicCat.vorapisPlayer.Create();
-                });
+                document.cosmicCat.vorapisPlayer(document.cosmicCat.Utils.Sort.videoData(player).id);
+
                 console.log(new Date().getTime() - startTime, "ms");
             });
         },
