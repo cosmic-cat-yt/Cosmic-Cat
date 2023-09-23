@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.53
+// @version      0.6.54
 // @description  Broadcast Yourself
 // @author       Thistle Café, Cosmic Cat Maintainers
 // @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
@@ -180,9 +180,6 @@ document.cosmicCat = {
             let Authorization = "";
             params = params ? params + "," : "";
 
-            //"context": {\r\n\t\t"client": {\r\n\t\t\t"clientName": "ANDROID",\r\n\t\t\t"clientVersion": "15.02",\r\n\t\t\t"hl": "en"\r\n\t\t}\r\n\t}}
-            // ???????????? WTF
-
             let body = `{${params} context: {client: {"clientName": "${name}", "clientVersion": "${version}", "hl": "en"}}}`;
 
             // Check if logged in
@@ -206,16 +203,22 @@ document.cosmicCat = {
                 body: body
             })
             .catch(err => {
-                console.error("[Ajax] Something went wrong:", err);
+                document.cosmicCat.Alert(1, "Cosmic Cat Error: Failed to fetch resource. Check console for more details.");
+                console.error("[Ajax] Failed to fetch resource at \"" + url + "\":\n", err);
             });
             return response.json();
         },
         Fetch: async (url, callback) => {
             if (!url) return console.error("[Ajax] Parameters must be supplied!");
-            let a = new Promise(async resolve => {
-                await fetch(url).then(a => document.cosmicCat.Utils.convertXHRtoJSON(a.text())).then(res => resolve((callback) ? callback(res) : res));
+
+            return await fetch(url).then(a =>
+              document.cosmicCat.Utils.convertXHRtoJSON(a.text())
+            ).then(
+                res => (callback) ? callback(res) : res
+            ).catch(e => {
+                document.cosmicCat.Alert(1, "Cosmic Cat Error: Failed to fetch resource. Check console for more details.");
+                console.error("[Ajax] Failed to fetch resource at \"" + url + "\":\n", e);
             });
-            return await a;
         }
     },
     Template: {
@@ -259,7 +262,7 @@ document.cosmicCat = {
 <img src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" class="icon master-sprite" alt="Alert icon">
 </div>
 <div class="yt-alert-buttons">
-<button type="button" class="close yt-uix-close yt-uix-button yt-uix-button-close" onclick="document.cosmicCat.toggleElm('#alerts');return false;" data-close-parent-class="yt-alert" role="button">
+<button type="button" class="close yt-uix-close yt-uix-button yt-uix-button-close" onclick="document.cosmicCat.toggleElm('.yt-alert-default');return false;" data-close-parent-class="yt-alert" role="button">
 <span class="yt-uix-button-content">Close</span>
 </button>
 </div>
@@ -6070,6 +6073,8 @@ margin-left:16px
 
             innertuberesponse.captions &&
                  (ytplayer.config.args.ttsurl =
+                  document.cosmicCat.Channels.isChannelsPage() ?
+                  "" :
                   innertuberesponse.captions?.playerCaptionsTracklistRenderer?.captionTracks?.find(a => a.languageCode == "en")?.baseUrl
                  ),
                 (ytplayer.config.args.rvs = rvsdata),
@@ -6527,6 +6532,7 @@ margin-left:16px
                             ), data.header)
                         );
                     } catch {}
+                    document.cosmicCat.Channels.playnav.selectTab("videos", document.querySelector("#playnav-navbar-tab-uploads"));
                 }
 
                 if (revision == "Channels3") {
