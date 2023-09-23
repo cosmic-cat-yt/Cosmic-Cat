@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.51
+// @version      0.6.52
 // @description  Broadcast Yourself
 // @author       Thistle Café, Cosmic Cat Maintainers
 // @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
@@ -816,7 +816,50 @@ background-repeat: no-repeat;
 background-position: center top;
 }
 </style>
-` : ""}`;
+` : ""}
+<style id="channels-2.0_urgent-button">
+.yt-subscription-button {
+height: 2.0833em !important;
+width: 69px !important;
+padding: 0 .5em !important;
+color: #000 !important;
+font-weight: bold !important;
+border-color: #ecc101 !important;
+background: #ffe971 !important;
+background-image: none !important;
+background-image: -moz-linear-gradient(top,#fff9c1,#fed81c) !important;
+background-image: -webkit-gradient(linear,left top,left bottom,from(#fff9c1),to(#fed81c)) !important;
+filter: progid:DXImageTransform.Microsoft.Gradient(startColorStr=#fff9c1,endColorStr=#fed81c) !important;
+}
+
+.yt-subscription-button:hover {
+border-color: #630 !important;
+background: #ecc101 !important;
+background-image: none !important;
+background-image: -moz-linear-gradient(top,#fff9c1,#fed81c) !important;
+background-image: -webkit-gradient(linear,left top,left bottom,from(#fff9c1),to(#fed81c)) !important;
+filter: progid:DXImageTransform.Microsoft.Gradient(startColorStr=#fff9c1,endColorStr=#fed81c) !important;
+}
+
+.yt-subscription-button .subscribe-label,
+.yt-subscription-button .subscribed-label,
+.yt-subscription-button .unsubscribe-label {
+display: inline;
+}
+
+.yt-subscription-button .yt-uix-button-icon-wrapper,
+.yt-subscription-button:not(.subscribed) .subscribed-label,
+.yt-subscription-button:not(.subscribed) .unsubscribe-label,
+.yt-subscription-button.subscribed .subscribe-label,
+.yt-subscription-button.subscribed:not(:hover) .unsubscribe-label,
+.yt-subscription-button.subscribed:hover .subscribed-label {
+display: none;
+}
+
+.yt-subscription-button.subscribed {
+padding: 0 !important;
+}
+</style>`;
                 },
                 playlistNavigator: {
                     Main: (data) => {
@@ -1055,7 +1098,7 @@ Please <a class="playnav-restricted-link" href="">confirm</a> that you wish to v
 </div>
 <div id="playnav-curvideo-info-line">From:
 <span id="playnav-curvideo-channel-name">
-<a href="https://www.youtube.com/${data.url}" class="yt-user-name" dir="ltr">${owner.name}</a>
+<a href="https://www.youtube.com${owner.url}" class="yt-user-name" dir="ltr">${owner.name}</a>
 </span>| <span dir="ltr">${data.upload}</span>&nbsp;| <span id="playnav-curvideo-view-count">${data.views}</span>
 </div>
 <div class="cb"></div>
@@ -1069,12 +1112,12 @@ Please <a class="playnav-restricted-link" href="">confirm</a> that you wish to v
 ${data.description}
 <div id="playnav-curvideo-description-more-holder" style="display: block;">
 <div id="playnav-curvideo-description-more" class="inner-box-bg-color">
-...&nbsp;<a class="channel-cmd" href="javascript:;" onclick="playnav.toggleFullVideoDescription(true)">(more info)</a>&nbsp;&nbsp;
+...&nbsp;<a class="channel-cmd" href="javascript:;" onclick="document.cosmicCat.Channels.playnav.toggleFullVideoDescription(true)">(more info)</a>&nbsp;&nbsp;
 </div>
 <div class="cb"></div>
 </div>
 <span id="playnav-curvideo-description-less">
-<a href="javascript:;" class="channel-cmd" onclick="playnav.toggleFullVideoDescription(false)">(less info)</a>
+<a href="javascript:;" class="channel-cmd" onclick="document.cosmicCat.Channels.playnav.toggleFullVideoDescription(false)">(less info)</a>
 </span>
 </div>
 </div>
@@ -4381,6 +4424,22 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                 }
 
                 document.querySelector("#playnav-play-loading").style.display = "none";
+            },
+            like: (a, b) => {
+                alert("Hello world.");
+            },
+            toggleFullVideoDescription: (a) => {
+                var b = document.querySelector("#playnav-curvideo-description-more-holder"),
+                    c = document.querySelector("#playnav-curvideo-description-less"),
+                    d = document.querySelector("#playnav-curvideo-description-container");
+
+                (a === true) &&
+                    ((b.style.display = "none"),
+                    (c.style.display = "inline"),
+                    (d.style.height = "auto" )) ||
+                    ((b.style.display = "inline"),
+                    (c.style.display = "none"),
+                    (d.style.height = "56px"))
             }
         },
         isChannelsPage: () => {
