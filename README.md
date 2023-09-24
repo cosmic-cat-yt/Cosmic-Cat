@@ -23,4 +23,10 @@ Cosmic Cat is early in development. If you encounter any problems while using Co
 We also welcome contributions to the project! Please see [CONTRIBUTING.md](https://github.com/thistlecafe/cosmic-cat/blob/main/CONTRIBUTING.md)!
  
 ## Acknowledgements/Credits
-Please see [CREDITS](https://github.com/thistlecafe/cosmic-cat/blob/main/CREDITS).
+| Name | Author | License |
+| ------------- | ------------- | ------------- |
+| [ReturnYouTubeDislike](https://github.com/Anarios/return-youtube-dislike) | [Dmitrii Selivanov](https://github.com/Anarios) | GPL-3.0 |
+| YabaiComponent, OpenUix | [Taniko Yamamoto](https://github.com/YukisCoffee) |
+| Components from Rehike | [The Rehike Maintainers](https://github.com/Rehike/Rehike) | The Unlicense |
+| Vorapis V3 Player, Components from Vorapis V3 | [Reprety](https://github.com/VORAPIS) | MIT; (c) v3video |
+| Cosmic Cat Banner | [UnderscoreAngel](https://github.com/UnderscoreAngel)</br>[travy-patty](https://github.com/travy-patty) |
