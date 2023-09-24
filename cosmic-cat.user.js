@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.54
+// @version      0.6.55
 // @description  Broadcast Yourself
 // @author       Thistle Café, Cosmic Cat Maintainers
 // @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
@@ -2610,6 +2610,8 @@ StackOverflow Code Solutions -
 
 
 View the rest on Github: <a href="https://github.com/thistlecafe/cosmic-cat">thistlecafe/cosmic-cat</a>
+
+All source code is available in the public domain under The Unlicense.
 </pre>
 </div>
 </div>
@@ -6075,7 +6077,7 @@ margin-left:16px
                  (ytplayer.config.args.ttsurl =
                   document.cosmicCat.Channels.isChannelsPage() ?
                   "" :
-                  innertuberesponse.captions?.playerCaptionsTracklistRenderer?.captionTracks?.find(a => a.languageCode == "en")?.baseUrl
+                  innertuberesponse.captions?.playerCaptionsTracklistRenderer?.captionTracks?.find(a => a.languageCode == "en" && a.kind !== "asr")?.baseUrl
                  ),
                 (ytplayer.config.args.rvs = rvsdata),
                 (datawasloaded = !0),
