@@ -9,7 +9,7 @@
 ![](https://img.shields.io/badge/version-0.6.x-purple?style=flat-square)
 
 ## Note
-This project is rarely maintained and therefore not recommended for everyday use. Please use alternatives such as [CustomTube](https://github.com/lightbeam24/customtube) instead.<br/><br/>
+This project is a work-in-progress with varying stability, therefore not recommended for everyday use.<br/><br/>
 
 You can access Cosmic Cat settings through the masthead or directly from this link (`youtube.com/cosmic_cat`):<br/>![image](https://github.com/thistlecafe/cosmic-cat/assets/79811506/3cc61d60-b9db-44a6-b8c5-eb858f83db08)
 
@@ -23,9 +23,4 @@ Cosmic Cat is early in development. If you encounter any problems while using Co
 We also welcome contributions to the project! Please see [CONTRIBUTING.md](https://github.com/thistlecafe/cosmic-cat/blob/main/CONTRIBUTING.md)!
  
 ## Acknowledgements/Credits
-| Name | Author |
-| ------------- | ------------- |
-| [ReturnYouTubeDislike](https://github.com/Anarios/return-youtube-dislike) | [Anarios](https://github.com/Anarios) |
-| YabaiComponent, OpenUix, Description Sort Code | [Taniko Yamamoto](https://github.com/YukisCoffee) |
-| Vorapis V3 Player, Several Utils functions | [Reprety](https://github.com/VORAPIS) |
-| Cosmic Cat Banner | [UnderscoreAngel](https://github.com/UnderscoreAngel)</br>[travy-patty](https://github.com/travy-patty) |
+Please see [CREDITS](https://github.com/thistlecafe/cosmic-cat/blob/main/CREDITS).
