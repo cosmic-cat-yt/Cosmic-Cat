@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.55
+// @version      0.6.56
 // @description  Broadcast Yourself
 // @author       Thistle Café, Cosmic Cat Maintainers
 // @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
@@ -6634,23 +6634,31 @@ margin-left:16px
                 var searchpar = document.cosmicCat.Utils.escapeHtml((new URL(document.location)).searchParams.get("search_query"));
 
                 document.querySelector("#page").classList.add("search-base");
-                var results = ytInitialData?.contents?.twoColumnSearchResultsRenderer?.primaryContents?.sectionListRenderer?.contents[0]?.itemSectionRenderer?.contents || [];
+                var results = ytInitialData?.contents?.twoColumnSearchResultsRenderer?.primaryContents?.sectionListRenderer?.contents.find(
+                    a => a?.itemSectionRenderer?.contents?.[1]?.videoRenderer
+                ).itemSectionRenderer?.contents;
 
                 document.cosmicCat.pageRenderer.set("#content-container", document.cosmicCat.Template.Search.Main(searchpar));
 
-                for(let i = 0; i < results.length; i++) {
-                    if(results[i].videoRenderer) {
-                        let videoData = document.cosmicCat.Utils.Sort.videoData(results[i].videoRenderer);
-                        document.cosmicCat.pageRenderer.add("#search-results", document.cosmicCat.Template.Search.videoRender(videoData));
+                try {
+                    for(let i = 0; i < results.length; i++) {
+                        if(results[i].videoRenderer) {
+                            let videoData = document.cosmicCat.Utils.Sort.videoData(results[i].videoRenderer);
+                            document.cosmicCat.pageRenderer.add("#search-results", document.cosmicCat.Template.Search.videoRender(videoData));
+                        }
+                        if(results[i].channelRenderer) {
+                            let channelData = document.cosmicCat.Utils.Sort.channelData(results[i].channelRenderer);
+                            document.cosmicCat.pageRenderer.add("#search-results", document.cosmicCat.Template.Search.channelRender(channelData));
+                        }
+                        if(results[i].playlistRenderer) {
+                            let playlistData = document.cosmicCat.Utils.Sort.playlistData(results[i].playlistRenderer);
+                            document.cosmicCat.pageRenderer.add("#search-results", document.cosmicCat.Template.Search.playlistRender(playlistData));
+                        }
                     }
-                    if(results[i].channelRenderer) {
-                        let channelData = document.cosmicCat.Utils.Sort.channelData(results[i].channelRenderer);
-                        document.cosmicCat.pageRenderer.add("#search-results", document.cosmicCat.Template.Search.channelRender(channelData));
-                    }
-                    if(results[i].playlistRenderer) {
-                        let playlistData = document.cosmicCat.Utils.Sort.playlistData(results[i].playlistRenderer);
-                        document.cosmicCat.pageRenderer.add("#search-results", document.cosmicCat.Template.Search.playlistRender(playlistData));
-                    }
+                } catch (err) {
+                    // I love inconsistent data <3
+                    console.error("[Search] Failed to parse search results.\n", err, "\nData appears to be inconsistent. fuck u YT.");
+                    document.cosmicCat.Alert(2, "Cosmic Cat Error: Failed to parse search results. Check console for more details.")
                 }
 
                 var a = ytInitialData.header.searchHeaderRenderer.searchFilterButton.buttonRenderer.command.openPopupAction.popup.searchFilterOptionsDialogRenderer.groups;
