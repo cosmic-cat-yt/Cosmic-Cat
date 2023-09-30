@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.56
+// @version      0.6.57
 // @description  Broadcast Yourself
 // @author       Thistle Café, Cosmic Cat Maintainers
 // @updateURL    https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
 // @downloadURL  https://raw.githubusercontent.com/thistlecafe/cosmic-cat/main/cosmic-cat.user.js
 // @match        https://www.youtube.com/*
 // @exclude      https://www.youtube.com/embed/*
+// @exclude      https://www.youtube.com/live_chat*
 // @icon         https://github.com/thistlecafe/cosmic-cat-branding/raw/main/icon.png
 // @require      https://github.com/thistlecafe/cosmic-cat/raw/main/modules/yabai_component.js
 // @require      https://github.com/thistlecafe/cosmic-cat/raw/main/modules/open_uix_components.js
@@ -4052,6 +4053,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
                     badges: da.badges || [],
                     thumbnail: da.thumbnail?.thumbnails?.[0]?.url,
                     tags: da.videoDetails?.keywords || [],
+                    isLive: da.videoDetails?.isLive,
                     category: (window.location.pathname.split("/")[1] == "watch") ? ytInitialPlayerResponse?.microformat?.playerMicroformatRenderer?.category : ""
                 };
             },
@@ -5742,7 +5744,7 @@ margin-left:16px
                         for (var i = 0, j = adaptivefmts.length; i < j; i++) {
                             try {
                                 if (0 == adaptivefmts[i].audioTrack.audioIsDefault) {
-                                    needscut = !0;
+                                    //needscut = !0;
                                     continue;
                                 }
                             } catch (e) {}
@@ -5934,7 +5936,7 @@ margin-left:16px
                     no_get_video_log: "1",
                     sdetail: "p:/embed/" + innertuberesponse.videoDetails.videoId,
                     tmi: "1",
-                    storyboard_spec: innertuberesponse.storyboards?.playerStoryboardSpecRenderer?.spec || innertuberesponse.storyboards?.playerLiveStoryboardSpecRenderer?.spec,
+                    storyboard_spec: t,
                     vq: "auto",
                     atc: "",
                     of: "",
@@ -6406,6 +6408,15 @@ margin-left:16px
                 } catch(err) {
                     console.debug("[Playlists] No playlist loaded.");
                 }
+
+                try {
+                    if (!0 == data.alternative.isLive) {
+                        var iframe = document.createElement("iframe");
+                        iframe.src = "https://www.youtube.com/live_chat?v=" + data.alternative.id;
+                        iframe.height = "500";
+                        document.querySelector("#watch-sidebar").insertAdjacentElement("afterbegin", iframe);
+                    }
+                } catch {}
 
                 try {
                     const obj_sug = ytInitialData.contents.twoColumnWatchNextResults.secondaryResults?.secondaryResults?.results?.[1]?.itemSectionRenderer?.contents || ytInitialData.contents.twoColumnWatchNextResults.secondaryResults?.secondaryResults?.results;
