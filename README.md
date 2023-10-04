@@ -6,22 +6,14 @@
     </picture>
 </p>
 
-![](https://img.shields.io/badge/version-0.6.x-purple?style=flat-square)
-
 ## Note
-This project is a work-in-progress with varying stability, therefore not recommended for everyday use.<br/><br/>
-
-You can access Cosmic Cat settings through the masthead or directly from this link (`youtube.com/cosmic_cat`):<br/>![image](https://github.com/thistlecafe/cosmic-cat/assets/79811506/3cc61d60-b9db-44a6-b8c5-eb858f83db08)
-
+Thank you for following the development of Cosmic Cat since March 20, 2022!<br/><br/>
+This repository, along with [cosmic-cat-i18n](https://github.com/thistlecafe/cosmic-cat-i18n) and [cosmic-cat-branding](https://github.com/thistlecafe/cosmic-cat-branding), will be deleted after Halloween. 
 
 ## Installation
 - Get **Tampermonkey** for your browser: https://www.tampermonkey.net<br/>
 - Click here to open up the install prompt (requires **Tampermonkey**): [cosmic-cat.user.js](https://github.com/ciulinuwu/cosmic-cat/raw/main/cosmic-cat.user.js)
 
-## Contributing
-Cosmic Cat is early in development. If you encounter any problems while using Cosmic Cat, [please make an issue](https://github.com/thistlecafe/cosmic-cat/issues/new?template=bug-issue.yml).<br/></br>
-We also welcome contributions to the project! Please see [CONTRIBUTING.md](https://github.com/thistlecafe/cosmic-cat/blob/main/CONTRIBUTING.md)!
- 
 ## Acknowledgements/Credits
 | Name | Author | License |
 | ------------- | ------------- | ------------- |
