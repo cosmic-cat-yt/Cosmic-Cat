@@ -8,4 +8,4 @@
 
 ## Note
 Thank you for following the development of Cosmic Cat since March 20, 2022!<br/><br/>
-This repository will be deleted after Halloween. 
+This repository will be deleted after Halloween. Please update to 0.6.59 if you wish to continue using Cosmic Cat until an internal YouTube update breaks the script.
