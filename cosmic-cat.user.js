@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.59
+// @version      0.6.59.1
 // @description  Broadcast Yourself
 // @author       Thistle Café, Cosmic Cat Maintainers
 // @license      The Unlicense
@@ -2816,7 +2816,7 @@ ${document.cosmicCat.Template.Buttons.addTo(data.id)}
 </div>
 <div id="disclaimer">Cosmic Cat v${GM_info.script.version}
 
-Made with ♥ by Thistle Café -
+Made with ♥ by Cosmic Cat Developers and Thistle Café -
 and its contributors.</div>
 </div>
 <div class="guide-background" style="top: 0"></div>
@@ -2900,11 +2900,14 @@ Channel revision: <select class="cosmic-cat-settings" id="channelMode" data-acti
 <div class="feed-page">
 <pre style="text-align: center;overflow-y: auto;">
 <h1>Cosmic Cat v${GM_info.script.version}</h1>
-<h3>==== Thistle Café ====</h3>
+<h3>==== Cosmic Cat ====</h3>
 Lead Developer -
-Emiri Floarea
+JT fluffy, Emiri Floarea
 
 <h3>==== Contributors / Acknowledgements ====</h3>
+Original Cosmic Cat Developer (Until October, 2023) -
+Emiri Floarea
+
 Components from Vorapis v3 & Vorapis v3 Player -
 <a href="https://github.com/VORAPIS" target="_blank">Reprety</a>
 
@@ -4027,7 +4030,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
         },
         TransSatanJumpscare: {
             Main: () => {
-                return `<link rel="stylesheet" href="//thistlecafe.github.io/cosmic-cat/666-transrights.css"/>
+                return `<link rel="stylesheet" href="//cosmic-cat-yt.github.io/cosmic-cat/666-transrights.css"/>
 <iframe src="https://youtube.com/embed/kVpPlWlHMrA?autoplay=1" width="1" height="1" allow="autoplay"></iframe>
 <div id="s"><div id="e"></div></div>`;
             }
@@ -5298,7 +5301,7 @@ ${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: botto
     vorapisPlayer: (innertubevideoid, mission) => {
         // Install player script.
         var _aaa = document.createElement("script");
-        _aaa.setAttribute("src", "//thistlecafe.github.io/cosmic-cat/html5player.js");
+        _aaa.setAttribute("src", "//cosmic-cat-yt.github.io/cosmic-cat/html5player.js");
         _aaa.onload = function () {
             (playerwasloaded = !0),
                 datawasloaded && (invokePlayer(), (playerwasinvoked = !0));
@@ -7235,7 +7238,7 @@ document.cosmicCat.Utils.waitForElm("ytd-app").then(async (e) => {
         let style = {
             3: ["//s.ytimg.com/yts/cssbin/www-channels3-vflIpog6R.css", "//s.ytimg.com/yts/cssbin/www-watch-inlineedit-vflg-l3kd.css"],
             2: ["//s.ytimg.com/yt/cssbin/www-refresh-vflzVUPsm.css", "//s.ytimg.com/yt/cssbin/www-the-rest-vflNb6rAI.css", "//s.ytimg.com/yt/cssbin/www-channel_new-vflrWkVe_.css"],
-            1: ["//thistlecafe.github.io/cosmic-cat/www-channel.css", "//thistlecafe.github.io/cosmic-cat/base_all-vfl42963.css"]
+            1: ["//cosmic-cat-yt.github.io/cosmic-cat/www-channel.css", "//cosmic-cat-yt.github.io/cosmic-cat/base_all-vfl42963.css"]
         };
         let boop = style[document.cosmicCat.Storage.get("channel_mode").value];
         for (let i = 0; i < boop.length; i++) {
