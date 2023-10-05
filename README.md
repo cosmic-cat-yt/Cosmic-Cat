@@ -34,7 +34,8 @@ This "cosmic-cat-yt" organization, we will continue to develop the user script.
 ## Note
 This project is a work-in-progress with varying stability, therefore not recommended for everyday use.<br/><br/>
 
-You can access Cosmic Cat settings through the masthead or directly from this link (`youtube.com/cosmic_cat`):<br/>![image](https://github.com/cosmic-cat-yt/cosmic-cat/assets/79811506/3cc61d60-b9db-44a6-b8c5-eb858f83db08)
+You can access Cosmic Cat settings through the masthead or directly from this link (`youtube.com/cosmic_cat`):<br/>![image](https://github.com/cosmic-cat-yt/cosmic-cat/assets/110828020/120be6e8-0be6-4fcc-abda-448f841e276a)
+
 
 
 ## Installation
