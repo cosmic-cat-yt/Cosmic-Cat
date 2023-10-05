@@ -6295,7 +6295,7 @@ margin-left:16px
                 assets: {
                     css: "//s.ytimg.com/yts/cssbin/www-player-vfluwFMix.css",
                     js: "//s.ytimg.com/yts/jsbin/html5player-en_US-vfln6g5Eq/html5player.js",
-                    html: "//cdn.discordapp.com/attachments/996734304560353332/1018500227629592656/html5_player_template.html"
+                    html: "//raw.githubusercontent.com/cosmic-cat-yt/Cosmic-Cat/main/html5_player_template"
                 },
                 attrs: {
                     id: "movie_player"
