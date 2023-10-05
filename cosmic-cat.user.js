@@ -1,10 +1,12 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.6.59.1
+// @version      0.6.59.2
 // @description  Broadcast Yourself
 // @author       Thistle Café, Cosmic Cat Maintainers
 // @license      The Unlicense
+// @updateURL    https://raw.githubusercontent.com/cosmic-cat-yt/Cosmic-Cat/main/cosmic-cat.user.js
+// @downloadURL  https://raw.githubusercontent.com/cosmic-cat-yt/Cosmic-Cat/main/cosmic-cat.user.js
 // @match        https://www.youtube.com/*
 // @exclude      https://www.youtube.com/embed/*
 // @exclude      https://www.youtube.com/live_chat*
