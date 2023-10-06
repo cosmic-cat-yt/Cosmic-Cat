@@ -6730,10 +6730,6 @@ margin-left:16px
                 console.log(new Date().getTime() - startTime, "ms");
             });
         },
-        "666": () => {
-            document.title = "6̷̯̝̍̾6̷̛͍͒̍̿͝6̵̨̡̛͎̙͙̹̺̞͚̭͍̳́̐̉̉̈́̈̌̈́͂̾͝͠ͅ6̶̢̞̯̖̲͚̆͘͝ͅ6̵͖̜̺́̑̚͜6̶̫̤̰̮̠̘̳̭̦͙̟̂̽͗̉̉͆̐̚̚6̴̫̻̟͉̟͕̫̥̭̞͖̩̹̠̥̾̊͋6̶̝̪̹̫̯̹̞̞̦̟͍̩̬͛̈́̆̉̒͊̀̐̿͛̇͛̐̚̚͜͜6̵̢̛̫̥̰̻̻͓̼̖͗͒͐6̶͇̺̤̣̈́̾͂͛̓̊̀̍̇̚̚͘͝6̵̡̻̺͖̬̞͕͈͎͇͖͖̣̬̆́̽̾͆̓͒͐͛̌͐̋͐̊6̴͈͔̘̝̟͎̲̺͍̝̖́̽̾̎͆̾͂̆̉̊̈ͅ6̵͎̭͎̓͆̐̋̌̐̑͑̈͠6̴̛̙̱͕͎̯̰̹͇͕̌́̑͂̇̏̿̀͌͘͠͝ͅ6̶̳͖̰͓̳̯̦͋̉̓͐̑̏̎͌̃̐̍̚̚͜͜6̸̨̲͓̖͕̯̞͈̹̈́6̶̡̛͓̖̣̌̌͒̂͌͠6̵̨̬̬̭̮̼̥͔̞̗͉̄̉͘6̴̡̰͍͙͍͖͖̥̣̥̲͕̎̄̐̆̀̌̏͗͒͝ͅ6̶̫̣̜͎͇̜̫̼͈̳͍̥̮̓̽̐͋͌̀̾̉́̾̀̚̕ͅͅ6̵̝̝́̐̒̽̂̉̽̌̚6̵̧͈̼̯̗̠͔̻͚̗̝̠͖̙̓̇̑̓̔̚͜͝6̶̰̹̹̺̺̭͓̿̍́̎͗̄͑͑̕͜6̴͕̹͇͙̓̌͑̍̐́̎̌̽̇͒͒̕͝͝6̶̱͇̻̜̺͎̣̤̿͆̂6̷̨̨̢͖͓̳̭̠̭̦̠͚̐̂̀̓͒ͅ6̶̢̛̹̥̗̳͔̻͍̰͍̽̎̎́͒̿̀̃̆͗̚͠͝6̵̡͍̬̖͈͒̎̇̋̎͝6̴̢͉͕̥̜̯̗͇̮͎̑͆̉̌͋̓̓͐̈́̉ͅ6̶̹̥͊́̒̑̆͊́̍̍̇̀̉̊̾̚6̷̨̟̟͇̗̯͖̬̦͕̝̮̲̋͂͑͒͌̿̚͜͝͝";
-            document.cosmicCat.pageRenderer.set("#content-container", document.cosmicCat.Template.TransSatanJumpscare.Main());
-        }
     },
     null: () => null
 };
@@ -6991,25 +6987,7 @@ document.cosmicCat.Utils.waitForElm("head").then(() => {
     document.cosmicCat.Utils.addStyle("//s.ytimg.com/yts/cssbin/www-core-vfleLhVpH.css");
 });
 
-if (document.cosmicCat.Utils.currentPage() === "666") {
-    // Hacky implementation.
 
-    $(document).ready(function(){
-        var a = document.createElement("ytd-app");
-        document.body.appendChild(a);
-
-        try {
-            a = document.querySelector("#error-page");
-            a.parentNode.removeChild(a);
-        } catch(e) {
-            try {
-                a = document.querySelector("iframe");
-                a.parentNode.removeChild(a);
-            } catch(e) {}
-        }
-    });
-    (document.cosmicCat.Storage.get("dark").value !== "1") && (document.cosmicCat.Storage.add("dark", "1") && window.location.reload());
-}
 
 document.cosmicCat.Utils.waitForElm("ytd-app").then(async (e) => {
     e.remove();
