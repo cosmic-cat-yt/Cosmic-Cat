@@ -7026,13 +7026,18 @@ document.cosmicCat.Utils.waitForElm("ytd-app").then(async (e) => {
         document.querySelector("head").append(p);
     }
 
+    // 壊れています
+    // バージョン文字列の比較は誤った部分文字列を取得するようです
+    // そのため、比較は失敗します
+    // TODO: Port to REGEX
+    
     // Check for updates here, because Tampermonkey's "Auto-updater" is SHIT!
-    fetch("https://raw.githubusercontent.com/cosmic-cat-yt/cosmic-cat/main/cosmic-cat.user.js").then(a => a.text()).then(a => {
-        var b = (a.substr(parseInt(a.search("@version") + 14)).substr(0, parseInt(a.search("@version") - 86)));
-        (GM_info.script.version !== b) && (update = !0);
-
-        console.debug("[Updater] Current version:", GM_info.script.version, "|", "GitHub version:", b);
-    });
+    //fetch("https://raw.githubusercontent.com/cosmic-cat-yt/cosmic-cat/main/cosmic-cat.user.js").then(a => a.text()).then(a => {
+    //    var b = (a.substr(parseInt(a.search("@version") + 14)).substr(0, parseInt(a.search("@version") - 86)));
+    //    (GM_info.script.version !== b) && (update = !0);
+//
+    //    console.debug("[Updater] Current version:", GM_info.script.version, "|", "GitHub version:", b);
+    //});
 
     fetch("https://raw.githubusercontent.com/cosmic-cat-yt/cosmic-cat-i18n/main/version.json").then(a => a.json()).then(a => {
         (document.cosmicCat.Storage.get("storageVer").value !== a.version) && (
