@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cosmic Cat
 // @namespace    https://www.youtube.com/*
-// @version      0.7.0
+// @version      0.7.1
 // @description  Broadcast Yourself
 // @author       Thistle Café, Cosmic Cat Maintainers
 // @updateURL    https://raw.githubusercontent.com/cosmic-cat-yt/cosmic-cat/main/cosmic-cat.user.js
@@ -78,6 +78,7 @@ document.cosmicCat = {
             "gl": "Galego",
             "hr": "Hrvatski",
             "hu": "Magyar",
+            "ja": "日本語",
             "pl": "Polski"
         }
     },
