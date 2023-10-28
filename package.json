@@ -1,0 +1,30 @@
+{
+  "name": "cosmic-cat",
+  "version": "1.0.0",
+  "description": "Cosmic Cat YouTube Extension",
+  "main": "cosmic-cat.user.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cosmic-cat-yt/cosmic-cat.git"
+  },
+  "type": "module",
+  "author": "fluffy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cosmic-cat-yt/cosmic-cat/issues"
+  },
+  "homepage": "https://github.com/cosmic-cat-yt/cosmic-cat#readme",
+  "dependencies": {
+    "@babel/preset-env": "^7.23.2",
+    "@babel/preset-typescript": "^7.23.2",
+    "@rollup/plugin-image": "^3.0.3",
+    "@rollup/plugin-typescript": "^11.1.5",
+    "babelify": "^10.0.0",
+    "through2": "^4.0.2",
+    "tslib": "^2.6.2",
+    "typescript": "^5.2.2"
+  }
+}
