@@ -1,12 +1,19 @@
 {
-  "files": ["src/main.ts"],
+  "files": [
+    "src/main.ts"
+  ],
   "compilerOptions": {
     "noImplicitAny": false,
     "target": "es2016",
-	"lib": [ "esnext", "dom" ],
-	"paths": {
-		"@/*": ["./src/*"]
-	},
-	"allowImportingTsExtensions": true
+    "lib": [
+      "esnext",
+      "dom"
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    }
   }
 }

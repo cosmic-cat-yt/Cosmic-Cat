@@ -43,6 +43,7 @@ export default class Template {
 		Subnav: BrowseSubnav,
 		Content: BrowseContent
 	};
+	public Comments = Comments;
 	public Channels = {
 		Channels3: {
 			Main: Channels3Main,

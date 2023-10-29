@@ -1,44 +1,47 @@
 import { CosmicCat } from "@/main";
+import InnerTubeObject from "@/Model/InnerTubeObject";
 
 export default class Utils {
 	cc: CosmicCat;
-	
+
 	constructor(cc: CosmicCat) {
 		this.cc = cc;
 	}
 
-	deabreviateCnt(e) {
-		if (e) {
+	deabreviateCnt(count: string): string {
+		if (count) {
 			var t,
 				n,
 				a = 0;
 			if (
-				("M" == e.charAt(e.length - 1) && (a = 1),
-				 "K" == e.charAt(e.length - 1) && (a = 2),
-				 0 != a)
+				("M" == count.charAt(count.length - 1) && (a = 1),
+					"K" == count.charAt(count.length - 1) && (a = 2),
+					0 != a)
 			)
 				1 == a && ((t = "000,000"), (n = "M")),
 					2 == a && ((t = "000"), (n = "K")),
-					(e =
-					 -1 != e.indexOf(".")
-					 ? e.split(".")[0] +
-					 "," +
-					 e.split(".")[1].split(n)[0].slice(0, 2) +
-					 t.slice(e.split(".")[1].split(n)[0].length, t.length)
-					 : e.substring(0, e.length - 1) + "," + t);
-			return e;
+					(count =
+						-1 != count.indexOf(".")
+							? count.split(".")[0] +
+							"," +
+							count.split(".")[1].split(n)[0].slice(0, 2) +
+							t.slice(count.split(".")[1].split(n)[0].length, t.length)
+							: count.substring(0, count.length - 1) + "," + t);
+			return count;
 		}
 
 		return null;
 	}
-	parseNumber(arg) {
+
+	parseNumber(arg: number): string {
 		try {
-			return arg.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+			return arg.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 		} catch {
-			return arg;
+			return String(arg);
 		}
 	}
-	currentPage(arg) {
+
+	currentPage(): string {
 		let _a = window.location.pathname.split("/")[1];
 
 		switch (true) {
@@ -58,10 +61,12 @@ export default class Utils {
 
 		return _a;
 	}
-	whatChannel() {
+
+	whatChannel(): string {
 		return `channels${this.cc.Storage.get("channel_mode").value}`;
 	}
-	convertXHRtoJSON(data) {
+
+	convertXHRtoJSON(data: Promise<string>): Object {
 		return data.then(da => {
 			try {
 				return JSON.parse(da.split("var ytInitialData = ")[1].split(";</script>")[0]);
@@ -70,11 +75,12 @@ export default class Utils {
 			}
 		});
 	}
-	getCookie(cname) {
+
+	getCookie(cname: string): string {
 		var name = cname + "=";
 		var decodedCookie = decodeURIComponent(document.cookie);
 		var ca = decodedCookie.split(';');
-		for(let i = 0; i <ca.length; i++) {
+		for (let i = 0; i < ca.length; i++) {
 			var c = ca[i];
 			while (c.charAt(0) == ' ') {
 				c = c.substring(1);
@@ -85,29 +91,31 @@ export default class Utils {
 		}
 		return "";
 	}
-	setCookie(cname, cvalue, exdays) {
+
+	setCookie(cname: string, cvalue: string, exdays: number): void {
 		const d = new Date();
-		d.setTime(d.getTime() + (exdays*24*60*60*1000));
-		let expires = "expires="+ d.toUTCString();
+		d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+		let expires = "expires=" + d.toUTCString();
 		document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 	}
+
 	browseTabs = {
-		find: (data, param) => {
+		find: (data: any, param: string): object => {
 			try {
 				return data.contents.twoColumnBrowseResultsRenderer.tabs.find(b =>
-				   b.tabRenderer.endpoint.commandMetadata.webCommandMetadata.url.split("/")[3] === param
+					b.tabRenderer.endpoint.commandMetadata.webCommandMetadata.url.split("/")[3] === param
 				);
 			} catch {
 				try {
 					return data.contents.twoColumnBrowseResultsRenderer.tabs.find(b =>
-					   b.tabRenderer.endpoint.commandMetadata.webCommandMetadata.url.split("/")[2] === param
+						b.tabRenderer.endpoint.commandMetadata.webCommandMetadata.url.split("/")[2] === param
 					);
 				} catch {
 					return {};
 				}
 			}
 		},
-		content: (data) => {
+		content: (data: any): object => {
 			try {
 				return data.sectionListRenderer?.contents || data.tabRenderer.content?.richGridRenderer?.contents || data.tabRenderer.content?.sectionListRenderer?.contents;
 			} catch {
@@ -115,22 +123,24 @@ export default class Utils {
 			}
 		}
 	}
-	addStyle(a) {
+
+	addStyle(a: string): void {
 		try {
 			var c;
 			try {
-				c=a.split("/www")[1].split("-").slice(0, -1).join("-")
-			} catch {}
+				c = a.split("/www")[1].split("-").slice(0, -1).join("-")
+			} catch { }
 			var b = document.createElement("link");
 			b.setAttribute("rel", "stylesheet");
 			b.setAttribute("href", a);
 			b.setAttribute("id", `www${c}-css`);
 			document.head.append(b);
-		} catch(err) {
+		} catch (err) {
 			console.error(`[addStyle] Function must have an argument!:\n`, err);
 		}
 	}
-	escapeHtml(unsafe) {
+
+	escapeHtml(unsafe: string): string {
 		try {
 			return unsafe
 				.replace(/&/g, "&amp;")
@@ -138,9 +148,12 @@ export default class Utils {
 				.replace(/>/g, "&gt;")
 				.replace(/"/g, "&quot;")
 				.replace(/'/g, "&#039;");
-		} catch {}
+		} catch {
+			return "";
+		}
 	}
-	waitForElm(e) {
+
+	waitForElm(e: string): Promise<Element> {
 		return new Promise((t) => {
 			if (document.querySelector(e)) return t(document.querySelector(e));
 			const n = new MutationObserver((s) => {
@@ -153,7 +166,8 @@ export default class Utils {
 			});
 		});
 	}
-	waitForElm2() {
+
+	waitForElm2(): Promise<object> {
 		return new Promise(resolve => {
 			if (document.querySelector("body").innerHTML.match(/ytInitialData/)) {
 				return resolve(document.querySelector("body"));
@@ -164,7 +178,7 @@ export default class Utils {
 					try {
 						let a = JSON.parse(document.body.innerHTML.substr(parseInt(document.body.innerHTML.search("var ytInitialData = ") + 20)).substr(0, parseInt(document.body.innerHTML.substr(parseInt(document.body.innerHTML.search("var ytInitialData = ") + 20)).search("</script>") - 1)));
 						(a.contents) && resolve(a) && observer.disconnect();
-					} catch {}
+					} catch { }
 				}
 			});
 
@@ -174,7 +188,8 @@ export default class Utils {
 			});
 		});
 	}
-	listCategories(params) {
+
+	listCategories(params: string): object {
 		var href = "";
 
 		switch (true) {
@@ -211,7 +226,8 @@ export default class Utils {
 			class: params
 		};
 	}
-	convertDescription(a) {
+
+	convertDescription(a: any): object {
 		// https://github.com/Rehike/Rehike/commit/cdabdd0d951ef3df06905172777efbc1bb34c1d6
 		// Originally written by aubymori in PHP.
 
@@ -232,7 +248,7 @@ export default class Utils {
 			var run = a.commandRuns[i],
 				beforeText = a.content.substr(start, run.startIndex - start);
 
-			if(beforeText) {
+			if (beforeText) {
 				runs.push({
 					text: beforeText
 				});
@@ -256,7 +272,7 @@ export default class Utils {
 			});
 		}
 
-		runs.forEach(function(run) {
+		runs.forEach(function (run) {
 			if (run.navigationEndpoint?.watchEndpoint) {
 				run.text = "https://www.youtube.com" + run.navigationEndpoint.commandMetadata.webCommandMetadata.url.substring(0, 37) + "...";
 			}
@@ -266,6 +282,7 @@ export default class Utils {
 			runs: runs
 		};
 	}
+	
 	Sort = {
 		channelData: (data) => {
 			if (!data) return {};
@@ -302,7 +319,7 @@ export default class Utils {
 			if (!da) return {};
 
 			let _description = da.detailedMetadataSnippets?.[0]?.snippetText?.runs || da.descriptionSnippet?.runs || da.description?.runs || da.videoDetails?.shortDescription || [];
-			if(da.attributedDescription) _description = this.cc.Utils.convertDescription(da.attributedDescription)?.runs;
+			if (da.attributedDescription) _description = this.cc.Utils.convertDescription(da.attributedDescription)?.runs;
 
 			let description = "";
 			for (const snippet in _description) {
@@ -321,14 +338,14 @@ export default class Utils {
 					name: da.owner?.videoOwnerRenderer?.title?.runs?.[0]?.text || da.bylineText?.runs?.[0]?.text || da.shortBylineText?.runs?.[0]?.text || da.ownerText?.runs?.[0]?.text || da.videoDetails?.author || da.owner?.videoOwnerRenderer?.title?.runs?.[0]?.text,
 					url: da.owner?.videoOwnerRenderer?.navigationEndpoint?.browseEndpoint?.canonicalBaseUrl || da.bylineText?.runs?.[0]?.navigationEndpoint?.browseEndpoint?.canonicalBaseUrl || da.shortBylineText?.runs?.[0]?.navigationEndpoint?.browseEndpoint?.canonicalBaseUrl || da.longBylineText?.runs?.[0]?.navigationEndpoint?.browseEndpoint?.canonicalBaseUrl,
 					id: da.videoDetails?.channelId || da.owner?.videoOwnerRenderer?.navigationEndpoint?.browseEndpoint?.browseId || da.shortBylineText?.runs?.[0]?.navigationEndpoint?.browseEndpoint?.browseId,
-					icon : da.channelThumbnailSupportedRenderers?.channelThumbnailWithLinkRenderer?.thumbnail?.thumbnails?.[0]?.url
+					icon: da.channelThumbnailSupportedRenderers?.channelThumbnailWithLinkRenderer?.thumbnail?.thumbnails?.[0]?.url
 				},
 				time: da.thumbnailOverlays?.find(c => c.thumbnailOverlayTimeStatusRenderer)?.thumbnailOverlayTimeStatusRenderer.text.simpleText || da.thumbnailOverlays?.find(c => c.thumbnailOverlayTimeStatusRenderer)?.thumbnailOverlayTimeStatusRenderer?.text?.runs?.[0]?.text || da.lengthText?.simpleText || "LIVE",
 				views: da.viewCount?.videoViewCountRenderer?.viewCount?.simpleText || da.viewCountText?.simpleText || da.viewCountText?.runs?.[0]?.text + da.viewCountText?.runs?.[1]?.text || da.videoDetails?.viewCount || this.cc.Utils.deabreviateCnt(da.metadataText?.simpleText?.split(" · ")?.[0]?.split(" ")?.[0] || da.videoInfo?.runs?.[0]?.text?.split(" ")?.[0]) + " views" || "",
 				title: da.title?.simpleText || da.title?.runs?.[0]?.text || da.videoDetails?.title || "Fallback title",
 				id: da.videoDetails?.videoId || da.videoId,
 				description: description,
-				upload: da.dateText?.simpleText || da.publishedTimeText?.simpleText|| da.publishedTimeText?.runs?.[0]?.text || da.microformat?.playerMicroformatRenderer?.publishDate || da.metadataText?.simpleText?.split(" · ")?.[1] || "",
+				upload: da.dateText?.simpleText || da.publishedTimeText?.simpleText || da.publishedTimeText?.runs?.[0]?.text || da.microformat?.playerMicroformatRenderer?.publishDate || da.metadataText?.simpleText?.split(" · ")?.[1] || "",
 				badges: da.badges || [],
 				thumbnail: da.thumbnail?.thumbnails?.[0]?.url,
 				tags: da.videoDetails?.keywords || [],
@@ -360,8 +377,8 @@ export default class Utils {
 				},
 				updated: data.publishedTimeText?.simpleText || "Updated a long time ago",
 				thumbnail: data.thumbnail?.thumbnails?.[0]?.url || data.thumbnailRenderer?.playlistVideoThumbnailRenderer?.thumbnail?.thumbnails?.[0]?.url,
-				rawThumbnail: data.thumbnail || {thumbnails: data.thumbnailRenderer?.playlistVideoThumbnailRenderer?.thumbnail},
-				sidethumbs: data.sidebarThumbnails || data.thumbnails || [{thumbnails: (data.thumbnail?.thumbnails || data.thumbnail)}],
+				rawThumbnail: data.thumbnail || { thumbnails: data.thumbnailRenderer?.playlistVideoThumbnailRenderer?.thumbnail },
+				sidethumbs: data.sidebarThumbnails || data.thumbnails || [{ thumbnails: (data.thumbnail?.thumbnails || data.thumbnail) }],
 				url: data.navigationEndpoint?.commandMetadata?.webCommandMetadata?.url || data.endpoint?.commandMetadata?.webCommandMetadata?.url
 			};
 		},
@@ -395,7 +412,7 @@ export default class Utils {
 			};
 		},
 		commentData: (data) => {
-			if(!data) return {};
+			if (!data) return {};
 
 			var RAW_COUNT = "";//da.voteCount ? da.voteCount.accessibility ? (da.voteCount.accessibility.accessibilityData ? parseInt(da.voteCount.accessibility.accessibilityData.label.replace(/[^0-9.]/g, '')) : '') : (da.voteCount.accessibility ? parseInt(da.voteCount.accessibility.label.replace(/[^0-9.]/g, '')) : '') : '';
 			//var PRESENTABLE_COUNT = (RAW_COUNT + (liketoggled ? -1 : 0)) ? (RAW_COUNT + (liketoggled ? -1 : 0)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : '';

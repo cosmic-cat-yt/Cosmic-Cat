@@ -1,3 +1,5 @@
+import * as YabaiComponent from "@/yabai_component";
+
 export default {
 	Main: () => {
 		YabaiComponent.addHandler("click", "guide-item-container", document.cosmicCat.Actions.handleSettingsTab);

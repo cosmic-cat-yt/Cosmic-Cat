@@ -11,8 +11,6 @@
 // @exclude      https://www.youtube.com/embed/*
 // @exclude      https://www.youtube.com/live_chat*
 // @icon         https://github.com/cosmic-cat-yt/cosmic-cat-branding/raw/main/icon.png
-// @require      https://github.com/cosmic-cat-yt/cosmic-cat/raw/main/modules/yabai_component.js
-// @require      https://github.com/cosmic-cat-yt/cosmic-cat/raw/main/modules/open_uix_components.js
 // @require      https://code.jquery.com/jquery-3.6.1.min.js
 // @grant unsafeWindow
 // @grant GM_addStyle
@@ -1219,13 +1217,14 @@ margin-left:16px
         getSApiSidHash() {
             return __awaiter(this, void 0, void 0, function* () {
                 function sha1(str) {
-                    return window.crypto.subtle.digest("SHA-1", new TextEncoder("utf-8").encode(str)).then(buf => {
+                    return __awaiter(this, void 0, void 0, function* () {
+                        const buf = yield window.crypto.subtle.digest("SHA-1", new TextEncoder().encode(str));
                         return Array.prototype.map.call(new Uint8Array(buf), x => (('00' + x.toString(16)).slice(-2))).join('');
                     });
                 }
                 const MS = Date.now().toString();
                 const TIMESTAMP = MS.substring(0, MS.length - 3);
-                const digest = yield sha1(`${TIMESTAMP} ${document.cosmicCat.Utils.getCookie("SAPISID")} https://www.youtube.com`);
+                const digest = yield sha1(`${TIMESTAMP} ${this.cc.Utils.getCookie("SAPISID")} https://www.youtube.com`);
                 return `SAPISIDHASH ${TIMESTAMP}_${digest}`;
             });
         }
@@ -1246,9 +1245,9 @@ margin-left:16px
                 }
             });
         }
-        updateLogin(isLoggedIn) {
+        updateLogin(logInData) {
             var _a;
-            let popup = isLoggedIn.data.actions[0].getMultiPageMenuAction.menu.multiPageMenuRenderer.sections[0].accountSectionListRenderer;
+            let popup = logInData.data.actions[0].getMultiPageMenuAction.menu.multiPageMenuRenderer.sections[0].accountSectionListRenderer;
             let accountItem = (_a = popup.contents[0].accountItemSectionRenderer.contents.find(a => a.accountItem.isSelected == true)) === null || _a === void 0 ? void 0 : _a.accountItem;
             let google = popup.header.googleAccountHeaderRenderer;
             this.cc.data.loggedin = true;
@@ -1272,7 +1271,8 @@ margin-left:16px
         isLoggedIn() {
             if (!this.cc.Utils.getCookie("SAPISID") && this.cc.Storage.get("accountInfo").exists) {
                 alert("Cosmic Cat\n\nUnsafe_logout_detected:\nDO NOT TYPE \"/logout\" INTO THE URL BAR!\nTHIS WILL CAUSE STUFF TO BREAK!");
-                return this.cc.Account.logout();
+                this.cc.Account.logout();
+                return false;
             }
             return this.cc.Storage.get("accountInfo").exists;
         }
@@ -1466,22 +1466,22 @@ margin-left:16px
             };
             this.cc = cc;
         }
-        deabreviateCnt(e) {
-            if (e) {
+        deabreviateCnt(count) {
+            if (count) {
                 var t, n, a = 0;
-                if (("M" == e.charAt(e.length - 1) && (a = 1),
-                    "K" == e.charAt(e.length - 1) && (a = 2),
+                if (("M" == count.charAt(count.length - 1) && (a = 1),
+                    "K" == count.charAt(count.length - 1) && (a = 2),
                     0 != a))
                     1 == a && ((t = "000,000"), (n = "M")),
                         2 == a && ((t = "000"), (n = "K")),
-                        (e =
-                            -1 != e.indexOf(".")
-                                ? e.split(".")[0] +
+                        (count =
+                            -1 != count.indexOf(".")
+                                ? count.split(".")[0] +
                                     "," +
-                                    e.split(".")[1].split(n)[0].slice(0, 2) +
-                                    t.slice(e.split(".")[1].split(n)[0].length, t.length)
-                                : e.substring(0, e.length - 1) + "," + t);
-                return e;
+                                    count.split(".")[1].split(n)[0].slice(0, 2) +
+                                    t.slice(count.split(".")[1].split(n)[0].length, t.length)
+                                : count.substring(0, count.length - 1) + "," + t);
+                return count;
             }
             return null;
         }
@@ -1490,10 +1490,10 @@ margin-left:16px
                 return arg.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             }
             catch (_b) {
-                return arg;
+                return String(arg);
             }
         }
-        currentPage(arg) {
+        currentPage() {
             let _a = window.location.pathname.split("/")[1];
             switch (true) {
                 case /channel|user|^c{1}$/.test(_a):
@@ -1571,7 +1571,9 @@ margin-left:16px
                     .replace(/"/g, "&quot;")
                     .replace(/'/g, "&#039;");
             }
-            catch (_b) { }
+            catch (_b) {
+                return "";
+            }
         }
         waitForElm(e) {
             return new Promise((t) => {
@@ -1734,7 +1736,7 @@ margin-left:16px
         }
     }
 
-    class Comments {
+    let Comments$1 = class Comments {
         constructor(cc) {
             this.Form = {
                 init: function () {
@@ -1863,7 +1865,7 @@ margin-left:16px
                 this.cc.toggleElm("#comments-loading");
             });
         }
-    }
+    };
 
     let Search$1 = class Search {
         constructor(cc) {
@@ -3009,7 +3011,7 @@ margin-left:16px
             guidecss.setAttribute("rel", "stylesheet");
             guidecss.setAttribute("href", "//s.ytimg.com/yts/cssbin/www-guide-vfljovH6N.css");
             document.querySelector("head").appendChild(guidecss);
-            YabaiComponent.addHandler("input", "cosmic-cat-settings", document.cosmicCat.Actions.handleSettingsButton);
+            addHandler("input", "cosmic-cat-settings", document.cosmicCat.Actions.handleSettingsButton);
             document.cosmicCat.pageRenderer.set("#content-container", document.cosmicCat.Template.Settings.Main() + document.cosmicCat.Template.Settings.Stylesheet());
             $(document).ready(function () {
                 $("#channelMode").val(document.cosmicCat.Storage.get("channel_mode").value);
@@ -5252,7 +5254,7 @@ ${document.cosmicCat.Template.Buttons.addTo(data.id)}
 
     var Settings = {
         Main: () => {
-            YabaiComponent.addHandler("click", "guide-item-container", document.cosmicCat.Actions.handleSettingsTab);
+            addHandler("click", "guide-item-container", document.cosmicCat.Actions.handleSettingsTab);
             return `<div id="content">
 <div class="guide-layout-container enable-fancy-subscribe-button">
 <div class="guide-container" style="height: 400px">
@@ -6355,6 +6357,136 @@ ${document.cosmicCat.Template.Buttons.addTo(videoData.id)}
         }
     };
 
+    var Comments = {
+        Main: (data) => {
+            var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+            const accountInfo = document.cosmicCat.Storage.get("accountInfo").value || {};
+            return `<div id="comments-view" data-type="highlights" class="hid">
+<div class="comments-section">
+<h4><strong>${localizeString("watch.comments.topcomments")}</strong></h4>
+<ul class="comment-list top hid"></ul>
+</div>
+<div class="comments-section">
+<h4><strong>${localizeString("watch.comments.allcomments")}</strong> (${((_j = (_h = (_g = (_f = (_e = (_d = (_c = (_b = (_a = ytInitialData.contents.twoColumnWatchNextResults.results) === null || _a === void 0 ? void 0 : _a.results) === null || _b === void 0 ? void 0 : _b.contents) === null || _c === void 0 ? void 0 : _c.find(b => b.itemSectionRenderer)) === null || _d === void 0 ? void 0 : _d.itemSectionRenderer) === null || _e === void 0 ? void 0 : _e.contents) === null || _f === void 0 ? void 0 : _f[0]) === null || _g === void 0 ? void 0 : _g.commentsEntryPointHeaderRenderer) === null || _h === void 0 ? void 0 : _h.commentCount) === null || _j === void 0 ? void 0 : _j.simpleText) || 0}) <a class="comments-section-see-all" href="https://www.youtube.com/all_comments?v=${data.id}">${localizeString("global.seeall")}</a></h4>
+<div class="comments-post-container clearfix">
+<div class="comments-post-alert ${document.cosmicCat.Storage.get("accountInfo").exists ? "hid" : ""}">
+<a href="${document.cosmicCat.data.loginUrl}">Sign In</a> or <a href="https://www.youtube.com/signup">Sign Up</a><span class="comments-post-form-rollover-text"> now to post a comment!</span>
+</div>
+<form class="comments-post ${document.cosmicCat.Storage.get("accountInfo").exists ? "" : "hid"}" method="post">
+<input type="text" id="session" hidden="">
+<div class="yt-alert yt-alert-default yt-alert-error hid comments-post-message">
+<div class="yt-alert-icon">
+<img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" class="icon master-sprite" alt="Alert icon">
+</div>
+<div class="yt-alert-buttons"></div><div class="yt-alert-content" role="alert"></div></div>
+<a href="/profile" class="yt-user-photo comments-post-profile">
+<span class="video-thumb ux-thumb yt-thumb-square-46">
+<span class="yt-thumb-clip">
+<span class="yt-thumb-clip-inner">
+<img src="${accountInfo.pfp}" alt="${accountInfo.name}" width="46"><span class="vertical-align"></span>
+</span>
+</span>
+</span>
+</a>
+<div class="comments-textarea-container" onclick="document.cosmicCat.Comments.Form.init();">
+<img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" alt="" class="comments-textarea-tip">
+<label class="comments-textarea-label" data-upsell="comment">${localizeString("watch.comments.respond")}</label>  <div class="yt-uix-form-input-fluid yt-grid-fluid ">
+<textarea id="" class="yt-uix-form-textarea comments-textarea" onfocus="document.cosmicCat.Comments.Form.init();" data-upsell="comment" name="comment"></textarea>
+</div>
+</div>
+<p class="comments-remaining">
+${localizeString("watch.comments.charactersremain")}
+</p>
+<p class="comments-threshold-countdown hid">
+<span class="comments-threshold-count"></span> ${localizeString("watch.comments.secondsremain")}
+</p>
+<p class="comments-post-buttons">
+<button type="submit" class="comments-post yt-uix-button yt-uix-button-default" onclick=";return true;" role="button">
+<span class="yt-uix-button-content">${localizeString("buttons.comments.post")} </span>
+</button>
+</p>
+</form>
+</div>
+<ul class="comment-list all hid"></ul>
+</div>
+<div class="comments-section">
+<div class="comments-pagination" data-Ajax-enabled="true">
+<div class="yt-uix-pager" role="navigation">
+<a id="next-btn" onclick="document.cosmicCat.Comments.next(this.getAttribute('data-token'), this.getAttribute('data-page'))" class="yt-uix-button yt-uix-sessionlink yt-uix-pager-button yt-uix-button-default hid" data-page="2"><span class="yt-uix-button-content">Next »</span></a>
+</div>
+</div>
+</div>
+<ul>
+<li class="hid" id="parent-comment-loading">${localizeString("global.loading.comment")}</li>
+</ul>
+<div id="comments-loading">${localizeString("global.loading.main")}</div>
+</div>
+</div>`;
+        },
+        Comment: (data) => {
+            return `<li class="comment yt-tile-default" data-author-id="${data.author.id}" data-id="${data.id}" data-score="-1">
+<div class="comment-body">
+<div class="content-container">
+<div class="content">
+<div class="comment-text" dir="ltr">
+<p>${data.text}</p>
+</div>
+<p class="metadata">
+<span class="author">
+<a href="${data.author.url}" class="yt-uix-sessionlink yt-user-name" data-sessionlink="" dir="ltr">${data.author.name}</a>
+</span>
+<span class="time" dir="ltr">
+<a dir="ltr" href="https://www.youtube.com/watch?v=${data.id}&lc=${data.id}">${data.time}</a>
+</span>
+${data.likes ? `<span dir="ltr" class="comments-rating-positive" title="">
+${data.likes}<img class="comments-rating-thumbs-up" style="vertical-align: bottom !important;" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif">
+</span>` : ""}
+</p>
+</div>
+<div class="comment-actions">
+<span class="yt-uix-button-group">
+<button type="button" class="start comment-action-vote-up comment-action yt-uix-button yt-uix-button-default yt-uix-tooltip yt-uix-button-empty" onclick=";return false;" title="Vote Up" data-action="vote-up" data-tooltip-show-delay="300" role="button">
+<span class="yt-uix-button-icon-wrapper">
+<img class="yt-uix-button-icon yt-uix-button-icon-watch-comment-vote-up" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="Vote Up">
+<span class="yt-valign-trick"></span>
+</span>
+</button><button type="button" class="end comment-action-vote-down comment-action yt-uix-button yt-uix-button-default yt-uix-tooltip yt-uix-button-empty" onclick=";return false;" title="Vote Down" data-action="vote-down" data-tooltip-show-delay="300" role="button">
+<span class="yt-uix-button-icon-wrapper">
+<img class="yt-uix-button-icon yt-uix-button-icon-watch-comment-vote-down" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="Vote Down">
+<span class="yt-valign-trick"></span>
+</span>
+</button>
+</span>
+<span class="yt-uix-button-group">
+<button type="button" class="start comment-action yt-uix-button yt-uix-button-default" onclick=";return false;" data-action="reply" role="button">
+<span class="yt-uix-button-content">Reply </span>
+</button><button type="button" class="end yt-uix-button yt-uix-button-default yt-uix-button-empty" onclick=";return false;" data-button-has-sibling-menu="true" role="button" aria-pressed="false" aria-expanded="false" aria-haspopup="true" aria-activedescendant="">
+<img class="yt-uix-button-arrow" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif" alt="">
+<div class=" yt-uix-button-menu yt-uix-button-menu-default" style="display: none;">
+<ul>
+<li class="comment-action-remove comment-action" data-action="remove">
+<span class="yt-uix-button-menu-item">Remove</span>
+</li>
+<li class="comment-action" data-action="flag">
+<span class="yt-uix-button-menu-item">Flag for spam</span>
+</li>
+<li class="comment-action-block comment-action" data-action="block">
+<span class="yt-uix-button-menu-item">Block User</span>
+</li>
+<li class="comment-action-unblock comment-action" data-action="unblock">
+<span class="yt-uix-button-menu-item">Unblock User</span>
+</li>
+</ul>
+</div>
+</button>
+</span>
+</div>
+</div>
+</div>
+</li>`;
+        },
+    };
+
     var supportedBrowsers = {
         Main: () => {
             return `<div id="content">
@@ -6427,6 +6559,7 @@ ${document.cosmicCat.Template.Buttons.addTo(videoData.id)}
                 Subnav: BrowseSubnav,
                 Content: BrowseContent
             };
+            this.Comments = Comments;
             this.Channels = {
                 Channels3: {
                     Main: Channels3Main,
@@ -6471,7 +6604,7 @@ ${document.cosmicCat.Template.Buttons.addTo(videoData.id)}
             this.Template = new Template(this);
             this.Utils = new Utils(this);
             this.Pagination = new Pagination;
-            this.Comments = new Comments(this);
+            this.Comments = new Comments$1(this);
             this.Search = new Search$1(this);
             this.Channels = Channels;
             this.Playlists = Playlists;

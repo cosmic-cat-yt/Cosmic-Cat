@@ -1,3 +1,5 @@
+import * as YabaiComponent from "@/yabai_component";
+
 export default {
 	404: () => {
 		document.cosmicCat.pageRenderer.set("title", "404 Not Found");
