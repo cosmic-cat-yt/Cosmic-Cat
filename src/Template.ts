@@ -44,7 +44,7 @@ export default class Template {
 		Content: BrowseContent
 	};
 	public Comments = Comments;
-	public Channels = {
+	public Channel = {
 		Channels3: {
 			Main: Channels3Main,
 			Header: Channels3Header,
